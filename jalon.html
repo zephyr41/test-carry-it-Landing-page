@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carry It - Objectif</title>
+    <!-- Police : Inter uniquement -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <style>
+        :root {
+            /* Palette Carry It Premium */
+            --bg-body: #050507;       /* Noir encore plus profond */
+            --text-primary: #FFFFFF;
+            --text-secondary: #86868B; /* Le gris classique Apple */
+            --accent: #FF5A1F;        /* Orange légèrement plus vibrant pour le noir */
+            
+            /* Glass & Borders */
+            --glass-surface: rgba(255, 255, 255, 0.04);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-highlight: rgba(255, 255, 255, 0.12);
+            
+            --radius-xl: 32px;
+            --radius-l: 24px;
+            --radius-m: 16px;
+            
+            --ease-apple: cubic-bezier(0.25, 1, 0.5, 1); /* Courbe d'animation iOS */
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-font-smoothing: antialiased; }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-primary);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 42vw 58vw; /* Ratio un peu plus dynamique */
+        }
+
+        /* --- LEFT PANEL --- */
+        .panel-left {
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--glass-border);
+            position: relative;
+            z-index: 2;
+            background: rgba(5, 5, 7, 0.8);
+            backdrop-filter: blur(20px);
+        }
+
+        .navbar {
+            padding: 32px 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .btn-back {
+            background: transparent;
+            border: 1px solid var(--glass-border);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s var(--ease-apple);
+        }
+
+        .btn-back:hover { 
+            background: var(--glass-surface); 
+            border-color: var(--text-primary);
+            transform: scale(1.05);
+        }
+
+        .brand {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        .content-wrapper {
+            flex: 1;
+            padding: 0 48px 48px 48px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            mask-image: linear-gradient(to bottom, black 90%, transparent 100%); /* Fade out scroll */
+        }
+        /* Hide Scrollbar but keep functionality */
+        .content-wrapper::-webkit-scrollbar { width: 0px; background: transparent; }
+
+        header { margin-bottom: 40px; margin-top: 20px; animation: fadeUp 0.8s var(--ease-apple) forwards; opacity: 0; transform: translateY(20px); }
+
+        .phase-tag {
+            display: inline-flex;
+            align-items: center;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+        }
+        
+        .phase-tag::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+            margin-right: 8px;
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        h1 {
+            font-size: 48px;
+            font-weight: 700;
+            letter-spacing: -1.5px;
+            color: var(--text-primary);
+            line-height: 1.1;
+            background: linear-gradient(180deg, #fff 0%, #ccc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* BENTO GRID REFINED */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 40px;
+        }
+
+        .bento-card {
+            background: var(--glass-surface);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-m);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.4s var(--ease-apple);
+            min-height: 130px;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            animation: fadeUp 0.8s var(--ease-apple) forwards;
+        }
+
+        /* Animation staggered delay */
+        .bento-card:nth-child(1) { animation-delay: 0.1s; }
+        .bento-card:nth-child(2) { animation-delay: 0.2s; }
+        .bento-card:nth-child(3) { animation-delay: 0.3s; }
+        .bento-card:nth-child(4) { animation-delay: 0.4s; }
+        .bento-card:nth-child(5) { animation-delay: 0.5s; }
+
+        .bento-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: var(--glass-highlight);
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5);
+        }
+
+        .card-wide { grid-column: span 2; }
+
+        .card-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .card-value {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-primary);
+            line-height: 1.4;
+            font-feature-settings: "ss01", "ss02"; /* Typo features */
+        }
+
+        /* Data formatting */
+        .card-value.highlight {
+            color: var(--accent);
+            font-weight: 800; /* Plus gras car Inter est moins "blocky" que Mono */
+            font-size: 24px;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: -0.5px;
+        }
+        
+        .card-value.date {
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* ACTION ZONE */
+        .action-zone { 
+            margin-top: auto; 
+            padding-top: 20px; 
+            opacity: 0; 
+            animation: fadeUp 0.8s var(--ease-apple) 0.6s forwards; 
+        }
+
+        .cta-primary {
+            width: 100%;
+            background: var(--text-primary);
+            color: #000;
+            padding: 20px 28px;
+            border-radius: var(--radius-l);
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s var(--ease-apple);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-primary:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+        }
+
+        /* --- RIGHT PANEL --- */
+        .panel-right {
+            position: relative;
+            height: 100vh;
+            background: #000;
+            overflow: hidden;
+        }
+
+        .bg-video {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover;
+            opacity: 0.6;
+            transform: scale(1.1); /* Slight zoom for cinematic feel */
+            filter: grayscale(20%); /* More sophisticated look */
+        }
+
+        /* GLASS WIDGET - THE HERO */
+        .floating-widget {
+            position: absolute;
+            top: 48px;
+            right: 48px;
+            z-index: 10;
+            width: 300px; /* Plus fin (était 360px) */
+            /* Apple Glass Effect */
+            background: rgba(22, 22, 24, 0.6);
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 
+                0 40px 80px -20px rgba(0,0,0,0.8),
+                inset 0 1px 0 rgba(255,255,255,0.1);
+            border-radius: var(--radius-xl);
+            padding: 24px; /* Padding réduit (était 28px) */
+            animation: floatIn 1.2s var(--ease-apple);
+        }
+
+        .widget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+        
+        .widget-title {
+            font-size: 10px; /* Plus discret */
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.4);
+            letter-spacing: 1px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .widget-value {
+            font-size: 32px; /* Un peu moins gros (était 36px) */
+            font-weight: 800;
+            color: var(--text-primary);
+            line-height: 1;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: -1px;
+        }
+        
+        .widget-sub {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            margin-top: 4px;
+        }
+
+        /* Container pour le graphique */
+        .chart-container {
+            height: 100px; /* Hauteur réduite drastiquement (était 160px) */
+            width: 100%;
+            margin-top: 8px;
+        }
+
+        .bottom-text-overlay {
+            position: absolute;
+            bottom: 60px;
+            left: 60px;
+            right: 60px;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .quote-block {
+            opacity: 0;
+            animation: fadeUp 1s var(--ease-apple) 0.8s forwards;
+        }
+
+        .quote-block h2 {
+            font-size: 32px;
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 16px;
+            color: #fff;
+            letter-spacing: -0.5px;
+        }
+
+        .quote-block p {
+            font-size: 16px;
+            color: rgba(255,255,255,0.7);
+            line-height: 1.6;
+            max-width: 480px;
+            font-weight: 400;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes floatIn {
+            from { opacity: 0; transform: translateY(40px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @media (max-width: 1024px) {
+            body { grid-template-columns: 1fr; overflow-y: auto; }
+            .panel-right { display: none; }
+            .panel-left { width: 100vw; border-right: none; }
+            .navbar { padding: 24px; }
+            .content-wrapper { padding: 24px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="panel-left">
+        <nav class="navbar">
+            <button class="btn-back" onclick="goBackToObjectif()">
+                <i class="ri-arrow-left-line" style="font-size: 20px;"></i>
+            </button>
+            <span class="brand">CARRY IT</span>
+        </nav>
+
+        <div class="content-wrapper">
+            <header>
+                <div class="phase-tag">Phase 1 : Synthèse</div>
+                <h1>Ton Objectif</h1>
+            </header>
+
+            <div class="bento-grid">
+                
+                <div class="bento-card card-wide">
+                    <span class="card-label">Indicateur Clé (KPI)</span>
+                    <div class="card-value highlight" id="disp-m">Chargement...</div>
+                </div>
+
+                <div class="bento-card">
+                    <span class="card-label">Spécifique</span>
+                    <div class="card-value" id="disp-s">-</div>
+                </div>
+
+                <div class="bento-card">
+                    <span class="card-label">Deadline</span>
+                    <div class="card-value date" id="disp-t">-</div>
+                </div>
+
+                <div class="bento-card">
+                    <span class="card-label">Atteignable</span>
+                    <div class="card-value" id="disp-a">-</div>
+                </div>
+
+                <div class="bento-card">
+                    <span class="card-label">Réaliste</span>
+                    <div class="card-value" id="disp-r">-</div>
+                </div>
+
+            </div>
+
+            <div class="action-zone">
+                <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 14px; font-weight: 500; line-height: 1.5;">
+                    La vision est claire. Transformons maintenant cette ambition en plan d'action concret.
+                </p>
+                <button class="cta-primary" onclick="goToJalons()">
+                    <span>Définir les Jalons</span>
+                    <i class="ri-arrow-right-line"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-right">
+        <video id="bgVideo" class="bg-video" muted loop playsinline autoplay>
+            <source src="Images/heropage/heropage.mp4" type="video/mp4">
+        </video>
+
+        <!-- Filtre sombre subtil par dessus la vidéo pour la lisibilité -->
+        <div style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent 60%);"></div>
+
+        <div class="floating-widget">
+            <div class="widget-header">
+                <div>
+                    <div class="widget-title">Progression</div>
+                    <div class="widget-value">0%</div>
+                    <div class="widget-sub">Point de départ</div>
+                </div>
+                <!-- Icône dans un cercle glass -->
+                <div style="width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center;">
+                    <i class="ri-pulse-line" style="color: var(--text-primary); font-size: 16px;"></i>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <canvas id="kpiChart"></canvas>
+            </div>
+        </div>
+
+        <div class="bottom-text-overlay">
+            <div class="quote-block">
+                <h2>C'est vide ? Normal.</h2>
+                <p>Tu n'as encore rien fait. Pas de fausse projection ici. Définit tes jalons pour que cette ligne commence à exister.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const data = JSON.parse(localStorage.getItem('carryItAllObjectifs') || '[]');
+            const obj = data[data.length - 1];
+
+            if (obj) {
+                document.getElementById('disp-s').textContent = obj.specifique || "Non défini";
+                document.getElementById('disp-m').textContent = obj.mesurable || "Non défini";
+                document.getElementById('disp-a').textContent = obj.atteignable || "Non défini";
+                document.getElementById('disp-r').textContent = obj.realiste || "Non défini";
+
+                if (obj.temporel) {
+                    const date = new Date(obj.temporel);
+                    document.getElementById('disp-t').textContent = date.toLocaleDateString('fr-FR', {
+                        day: 'numeric',
+                        month: 'short',
+                        year: 'numeric'
+                    });
+                } else {
+                    document.getElementById('disp-t').textContent = "Non défini";
+                }
+            }
+            initKPIChart();
+        });
+
+        function goToJalons() { window.location.href = 'jalons.html'; }
+        function goBackToObjectif() { window.location.href = 'objectif.html'; }
+
+        function initKPIChart() {
+            // Police Inter partout
+            Chart.defaults.font.family = "'Inter', sans-serif";
+            
+            const ctx = document.getElementById('kpiChart').getContext('2d');
+            
+            // Gradient plus subtil et vertical
+            let gradient = ctx.createLinearGradient(0, 0, 0, 100); // Hauteur gradient réduite
+            gradient.addColorStop(0, 'rgba(255, 90, 31, 0.25)'); // Orange Carry It
+            gradient.addColorStop(1, 'rgba(255, 90, 31, 0)');
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Start', '', '', '', 'Obj'],
+                    datasets: [
+                        {
+                            label: 'Réel',
+                            data: [0, 0, 0, 0, 0], 
+                            borderColor: '#FF5A1F',
+                            backgroundColor: gradient,
+                            borderWidth: 2, // Ligne un peu plus fine pour l'échelle réduite
+                            
+                            // Style du point "Orb"
+                            pointRadius: [5, 0, 0, 0, 0], // Point un peu plus petit (était 6)
+                            pointHoverRadius: 7,
+                            pointBackgroundColor: '#FF5A1F',
+                            pointBorderColor: '#FFFFFF',
+                            pointBorderWidth: 2,
+                            
+                            fill: true,
+                            tension: 0.4, 
+                            clip: false 
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false }, tooltip: { enabled: false } },
+                    scales: {
+                        x: { 
+                            display: true, 
+                            grid: { display: false }, 
+                            ticks: {
+                                color: 'rgba(255,255,255,0.4)',
+                                font: { size: 9, weight: 600 }, /* Texte plus petit */
+                                padding: 5
+                            },
+                            border: { display: false } 
+                        },
+                        y: { 
+                            display: true, 
+                            position: 'right', 
+                            min: 0, 
+                            max: 100, 
+                            grid: { 
+                                color: 'rgba(255, 255, 255, 0.05)', 
+                                borderDash: [4, 4],
+                                drawBorder: false,
+                                drawTicks: false
+                            },
+                            border: { display: false },
+                            ticks: {
+                                stepSize: 50,
+                                color: 'rgba(255,255,255,0.4)',
+                                font: { size: 9, weight: 600 }, /* Texte plus petit */
+                                padding: 5,
+                                callback: function(value) { return value + '%' }
+                            }
+                        }
+                    },
+                    layout: { 
+                        padding: { 
+                            left: 5, right: 5, top: 15, bottom: 5 
+                        } 
+                    },
+                    animation: {
+                        duration: 2000,
+                        easing: 'easeOutQuart'
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
