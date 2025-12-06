@@ -13,10 +13,10 @@
     <style>
         :root {
             /* Palette Carry It Premium */
-            --bg-body: #050507;       /* Noir encore plus profond */
+            --bg-body: #050507;       
             --text-primary: #FFFFFF;
-            --text-secondary: #86868B; /* Le gris classique Apple */
-            --accent: #FF5A1F;        /* Orange légèrement plus vibrant pour le noir */
+            --text-secondary: #86868B; 
+            --accent: #FF5A1F;        
             
             /* Glass & Borders */
             --glass-surface: rgba(255, 255, 255, 0.04);
@@ -27,7 +27,7 @@
             --radius-l: 24px;
             --radius-m: 16px;
             
-            --ease-apple: cubic-bezier(0.25, 1, 0.5, 1); /* Courbe d'animation iOS */
+            --ease-apple: cubic-bezier(0.25, 1, 0.5, 1);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-font-smoothing: antialiased; }
@@ -39,7 +39,7 @@
             height: 100vh;
             overflow: hidden;
             display: grid;
-            grid-template-columns: 42vw 58vw; /* Ratio un peu plus dynamique */
+            grid-template-columns: 42vw 58vw;
         }
 
         /* --- LEFT PANEL --- */
@@ -90,16 +90,15 @@
 
         .content-wrapper {
             flex: 1;
-            padding: 0 48px 48px 48px;
+            padding: 0 32px 32px 32px;
             display: flex;
             flex-direction: column;
             overflow-y: auto;
-            mask-image: linear-gradient(to bottom, black 90%, transparent 100%); /* Fade out scroll */
+            mask-image: linear-gradient(to bottom, black 90%, transparent 100%);
         }
-        /* Hide Scrollbar but keep functionality */
         .content-wrapper::-webkit-scrollbar { width: 0px; background: transparent; }
 
-        header { margin-bottom: 40px; margin-top: 20px; animation: fadeUp 0.8s var(--ease-apple) forwards; opacity: 0; transform: translateY(20px); }
+        header { margin-bottom: 24px; margin-top: 12px; animation: fadeUp 0.8s var(--ease-apple) forwards; opacity: 0; transform: translateY(20px); }
 
         .phase-tag {
             display: inline-flex;
@@ -123,41 +122,42 @@
         }
 
         h1 {
-            font-size: 48px;
+            font-size: 36px;
             font-weight: 700;
             letter-spacing: -1.5px;
-            color: var(--text-primary);
             line-height: 1.1;
-            background: linear-gradient(180deg, #fff 0%, #ccc 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            /* Gradient subtil blanc vers gris */
+            background: linear-gradient(180deg, #fff 0%, #aaa 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         /* BENTO GRID REFINED */
         .bento-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 40px;
+            gap: 8px;
+            margin-bottom: 24px;
         }
 
         .bento-card {
             background: var(--glass-surface);
             border: 1px solid var(--glass-border);
             border-radius: var(--radius-m);
-            padding: 24px;
+            padding: 12px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             transition: all 0.4s var(--ease-apple);
-            min-height: 130px;
+            min-height: 80px;
             position: relative;
             overflow: hidden;
             opacity: 0;
             animation: fadeUp 0.8s var(--ease-apple) forwards;
         }
 
-        /* Animation staggered delay */
         .bento-card:nth-child(1) { animation-delay: 0.1s; }
         .bento-card:nth-child(2) { animation-delay: 0.2s; }
         .bento-card:nth-child(3) { animation-delay: 0.3s; }
@@ -174,43 +174,46 @@
         .card-wide { grid-column: span 2; }
 
         .card-label {
-            font-size: 11px;
+            font-size: 9px;
             color: var(--text-secondary);
             text-transform: uppercase;
             letter-spacing: 0.5px;
             font-weight: 600;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .card-value {
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 500;
             color: var(--text-primary);
-            line-height: 1.4;
-            font-feature-settings: "ss01", "ss02"; /* Typo features */
+            line-height: 1.3;
         }
 
-        /* Data formatting */
         .card-value.highlight {
             color: var(--accent);
-            font-weight: 800; /* Plus gras car Inter est moins "blocky" que Mono */
-            font-size: 24px;
-            font-family: 'Inter', sans-serif;
+            font-weight: 800;
+            font-size: 18px;
             letter-spacing: -0.5px;
         }
-        
+
         .card-value.date {
             font-family: 'Inter', sans-serif;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 600;
+            margin-top: auto;
+            margin-bottom: auto;
         }
 
         /* ACTION ZONE */
-        .action-zone { 
-            margin-top: auto; 
-            padding-top: 20px; 
-            opacity: 0; 
-            animation: fadeUp 0.8s var(--ease-apple) 0.6s forwards; 
+        .action-zone {
+            position: sticky;
+            bottom: 0;
+            margin-top: 40px;
+            padding: 20px 0;
+            background: linear-gradient(to bottom, rgba(5, 5, 7, 0) 0%, rgba(5, 5, 7, 0.95) 60%, rgba(5, 5, 7, 1) 100%);
+            opacity: 0;
+            animation: fadeUp 0.8s var(--ease-apple) 0.6s forwards;
+            z-index: 5;
         }
 
         .cta-primary {
@@ -249,18 +252,17 @@
             top: 0; left: 0; width: 100%; height: 100%;
             object-fit: cover;
             opacity: 0.6;
-            transform: scale(1.1); /* Slight zoom for cinematic feel */
-            filter: grayscale(20%); /* More sophisticated look */
+            transform: scale(1.1); 
+            filter: grayscale(20%); 
         }
 
-        /* GLASS WIDGET - THE HERO */
+        /* GLASS WIDGET */
         .floating-widget {
             position: absolute;
             top: 48px;
             right: 48px;
             z-index: 10;
-            width: 300px; /* Plus fin (était 360px) */
-            /* Apple Glass Effect */
+            width: 300px;
             background: rgba(22, 22, 24, 0.6);
             backdrop-filter: blur(40px) saturate(180%);
             -webkit-backdrop-filter: blur(40px) saturate(180%);
@@ -269,7 +271,7 @@
                 0 40px 80px -20px rgba(0,0,0,0.8),
                 inset 0 1px 0 rgba(255,255,255,0.1);
             border-radius: var(--radius-xl);
-            padding: 24px; /* Padding réduit (était 28px) */
+            padding: 24px;
             animation: floatIn 1.2s var(--ease-apple);
         }
 
@@ -281,21 +283,23 @@
         }
         
         .widget-title {
-            font-size: 10px; /* Plus discret */
+            font-size: 10px;
             text-transform: uppercase;
             color: rgba(255,255,255,0.4);
             letter-spacing: 1px;
             font-weight: 700;
             margin-bottom: 4px;
+            font-family: 'Inter', sans-serif;
         }
 
         .widget-value {
-            font-size: 32px; /* Un peu moins gros (était 36px) */
+            font-size: 32px;
             font-weight: 800;
             color: var(--text-primary);
             line-height: 1;
-            font-family: 'Inter', sans-serif;
             letter-spacing: -1px;
+            margin-bottom: 16px;
+            font-family: 'Inter', sans-serif;
         }
         
         .widget-sub {
@@ -303,11 +307,11 @@
             color: var(--text-secondary);
             font-weight: 500;
             margin-top: 4px;
+            font-family: 'Inter', sans-serif;
         }
 
-        /* Container pour le graphique */
         .chart-container {
-            height: 100px; /* Hauteur réduite drastiquement (était 160px) */
+            height: 100px;
             width: 100%;
             margin-top: 8px;
         }
@@ -339,7 +343,7 @@
             font-size: 16px;
             color: rgba(255,255,255,0.7);
             line-height: 1.6;
-            max-width: 480px;
+            max-width: 500px;
             font-weight: 400;
         }
 
@@ -374,8 +378,8 @@
 
         <div class="content-wrapper">
             <header>
-                <div class="phase-tag">Phase 1 : Synthèse</div>
-                <h1>Ton Objectif</h1>
+                <div class="phase-tag">Phase 1 : Synthèse</div> 
+                <h1>Ton Cap</h1>
             </header>
 
             <div class="bento-grid">
@@ -424,31 +428,33 @@
             <source src="Images/heropage/heropage.mp4" type="video/mp4">
         </video>
 
-        <!-- Filtre sombre subtil par dessus la vidéo pour la lisibilité -->
+        <!-- Filtre sombre -->
         <div style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent 60%);"></div>
 
         <div class="floating-widget">
             <div class="widget-header">
                 <div>
-                    <div class="widget-title">Progression</div>
-                    <div class="widget-value">0%</div>
-                    <div class="widget-sub">Point de départ</div>
+                    <!-- Affiche le KPI du SMART -->
+                    <div class="widget-title" id="kpiTitle">La Réalité</div>
+                    <div class="widget-value">0</div>
                 </div>
-                <!-- Icône dans un cercle glass -->
                 <div style="width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center;">
                     <i class="ri-pulse-line" style="color: var(--text-primary); font-size: 16px;"></i>
                 </div>
             </div>
-            
+
             <div class="chart-container">
                 <canvas id="kpiChart"></canvas>
             </div>
+
+            <!-- Sous-titre "Miroir de Vérité" en dessous du graphique -->
+            <div class="widget-sub">Miroir de Vérité</div>
         </div>
 
         <div class="bottom-text-overlay">
             <div class="quote-block">
-                <h2>C'est vide ? Normal.</h2>
-                <p>Tu n'as encore rien fait. Pas de fausse projection ici. Définit tes jalons pour que cette ligne commence à exister.</p>
+                <h2>Maintenant, les jalons.</h2>
+                <p>Sans jalons, ton objectif reste une illusion. Ils te ramènent à la réalité : tu sauras où tu en es, pas ce que tu espères être. On te renverra toujours la vérité.</p>
             </div>
         </div>
     </div>
@@ -482,14 +488,22 @@
         function goBackToObjectif() { window.location.href = 'objectif.html'; }
 
         function initKPIChart() {
-            // Police Inter partout
             Chart.defaults.font.family = "'Inter', sans-serif";
-            
+
+            // Récupérer le KPI du SMART et l'afficher
+            const data = JSON.parse(localStorage.getItem('carryItAllObjectifs') || '[]');
+            const obj = data[data.length - 1];
+
+            if (obj && obj.mesurable) {
+                // Extraire le KPI (le texte avant les crochets s'il y en a)
+                const kpiText = obj.mesurable.split('[')[0].trim();
+                document.getElementById('kpiTitle').textContent = kpiText || 'La Réalité';
+            }
+
             const ctx = document.getElementById('kpiChart').getContext('2d');
-            
-            // Gradient plus subtil et vertical
-            let gradient = ctx.createLinearGradient(0, 0, 0, 100); // Hauteur gradient réduite
-            gradient.addColorStop(0, 'rgba(255, 90, 31, 0.25)'); // Orange Carry It
+
+            let gradient = ctx.createLinearGradient(0, 0, 0, 100);
+            gradient.addColorStop(0, 'rgba(255, 90, 31, 0.25)');
             gradient.addColorStop(1, 'rgba(255, 90, 31, 0)');
 
             new Chart(ctx, {
@@ -502,10 +516,9 @@
                             data: [0, 0, 0, 0, 0], 
                             borderColor: '#FF5A1F',
                             backgroundColor: gradient,
-                            borderWidth: 2, // Ligne un peu plus fine pour l'échelle réduite
+                            borderWidth: 2,
                             
-                            // Style du point "Orb"
-                            pointRadius: [5, 0, 0, 0, 0], // Point un peu plus petit (était 6)
+                            pointRadius: [5, 0, 0, 0, 0],
                             pointHoverRadius: 7,
                             pointBackgroundColor: '#FF5A1F',
                             pointBorderColor: '#FFFFFF',
@@ -527,7 +540,7 @@
                             grid: { display: false }, 
                             ticks: {
                                 color: 'rgba(255,255,255,0.4)',
-                                font: { size: 9, weight: 600 }, /* Texte plus petit */
+                                font: { size: 9, weight: 600 },
                                 padding: 5
                             },
                             border: { display: false } 
@@ -547,7 +560,7 @@
                             ticks: {
                                 stepSize: 50,
                                 color: 'rgba(255,255,255,0.4)',
-                                font: { size: 9, weight: 600 }, /* Texte plus petit */
+                                font: { size: 9, weight: 600 },
                                 padding: 5,
                                 callback: function(value) { return value + '%' }
                             }
