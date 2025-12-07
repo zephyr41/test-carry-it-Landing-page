@@ -3,6 +3,7 @@ let currentData = null;
 let currentObjectif = null;
 let jalons = [];
 let currentJalonIndex = 0;
+let monthMarkers = [];
 
 // Utility functions
 function formatDate(dateStr, locale = 'fr-FR') {
@@ -11,6 +12,13 @@ function formatDate(dateStr, locale = 'fr-FR') {
         day: 'numeric',
         month: 'long',
         year: 'numeric'
+    });
+}
+
+function getMonthLabel(date) {
+    return date.toLocaleDateString('fr-FR', {
+        month: 'short',
+        year: '2-digit'
     });
 }
 
@@ -47,6 +55,70 @@ function loadData() {
     }
 }
 
+// Generate months timeline
+function generateMonthsTimeline(startDate, endDate) {
+    const timelineContainer = document.getElementById('timelineMonths');
+    timelineContainer.innerHTML = '';
+    monthMarkers = [];
+
+    const start = new Date(startDate);
+    start.setDate(1); // First day of start month
+    const end = new Date(endDate);
+
+    let currentMonth = new Date(start);
+    let monthIndex = 0;
+
+    while (currentMonth <= end) {
+        const monthDate = new Date(currentMonth);
+        const marker = document.createElement('div');
+        marker.className = 'month-marker';
+        marker.dataset.monthIndex = monthIndex;
+
+        const monthNum = document.createElement('div');
+        monthNum.className = 'month-number';
+        monthNum.textContent = `M${monthIndex + 1}`;
+
+        const monthLabel = document.createElement('div');
+        monthLabel.className = 'month-label';
+        monthLabel.textContent = getMonthLabel(monthDate);
+
+        marker.appendChild(monthNum);
+        marker.appendChild(monthLabel);
+        timelineContainer.appendChild(marker);
+
+        monthMarkers.push({
+            element: marker,
+            date: new Date(monthDate),
+            index: monthIndex
+        });
+
+        currentMonth.setMonth(currentMonth.getMonth() + 1);
+        monthIndex++;
+    }
+}
+
+// Update active month indicator
+function updateActiveMonth() {
+    const currentJalon = jalons[currentJalonIndex];
+    if (!currentJalon) return;
+
+    const jalonDate = new Date(currentJalon.date);
+    const jalonMonth = jalonDate.getMonth();
+    const jalonYear = jalonDate.getFullYear();
+
+    // Remove all active classes
+    monthMarkers.forEach(m => m.element.classList.remove('active'));
+
+    // Add active class to matching month
+    monthMarkers.forEach(m => {
+        if (m.date.getMonth() === jalonMonth && m.date.getFullYear() === jalonYear) {
+            m.element.classList.add('active');
+            // Scroll into view
+            m.element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
+    });
+}
+
 // Display current jalon
 function displayJalon(index) {
     const jalon = jalons[index];
@@ -63,6 +135,9 @@ function displayJalon(index) {
         </div>
         <div class="jalon-counter">${index + 1} / ${jalons.length}</div>
     `;
+
+    // Update month indicator
+    updateActiveMonth();
 }
 
 // Update nav buttons state
@@ -116,6 +191,12 @@ function setupEventListeners() {
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     if (!loadData()) return;
+
+    const startDate = new Date(currentObjectif.dateCreation || Date.now());
+    const endDate = new Date(currentObjectif.temporel);
+
+    // Generate months timeline
+    generateMonthsTimeline(startDate, endDate);
 
     // Start from last jalon (index = jalons.length - 1)
     currentJalonIndex = jalons.length - 1;

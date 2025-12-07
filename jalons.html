@@ -223,6 +223,75 @@
             background: rgba(255, 90, 31, 0.9);
         }
 
+        /* TIMELINE MONTHS */
+        .timeline-months {
+            position: fixed;
+            bottom: 120px;
+            left: 0;
+            right: 0;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            padding: 0 40px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            gap: 16px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--border-subtle) transparent;
+        }
+
+        .timeline-months::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .timeline-months::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .timeline-months::-webkit-scrollbar-thumb {
+            background: var(--border-subtle);
+            border-radius: 2px;
+        }
+
+        .month-marker {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            min-width: 60px;
+            padding: 8px;
+            border-radius: 12px;
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            transition: all 0.3s var(--ease-ios);
+            flex-shrink: 0;
+        }
+
+        .month-marker.active {
+            background: rgba(255, 90, 31, 0.1);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .month-number {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .month-marker.active .month-number {
+            color: var(--accent);
+        }
+
+        .month-label {
+            font-size: 10px;
+            color: var(--text-secondary);
+        }
+
+        .month-marker.active .month-label {
+            color: var(--accent);
+        }
+
         /* MOBILE */
         @media (max-width: 1024px) {
             .navbar {
@@ -251,6 +320,25 @@
 
             .jalon-date {
                 font-size: 14px;
+            }
+
+            .timeline-months {
+                bottom: 100px;
+                padding: 0 20px;
+                gap: 12px;
+            }
+
+            .month-marker {
+                min-width: 50px;
+                padding: 6px;
+            }
+
+            .month-number {
+                font-size: 11px;
+            }
+
+            .month-label {
+                font-size: 9px;
             }
 
             .controls {
@@ -286,6 +374,10 @@
             <button class="nav-btn" id="nextBtn" title="Jalon suivant">
                 <i class="ri-arrow-right-s-line"></i>
             </button>
+        </div>
+
+        <div class="timeline-months" id="timelineMonths">
+            <!-- Months generated dynamically -->
         </div>
 
         <div class="controls">
