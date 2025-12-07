@@ -197,14 +197,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Display project title
     const titleDiv = document.getElementById('projectTitle');
-    const projectTitle = currentObjectif.mesurable || currentObjectif.titre || 'Mon Objectif';
+    const projectTitle = currentObjectif.titre || 'Mon Objectif';
 
-    if (titleDiv && projectTitle) {
+    if (titleDiv) {
         titleDiv.innerHTML = `<h2>${projectTitle}</h2>`;
     }
-
-    console.log('Project title:', projectTitle);
-    console.log('Objectif data:', currentObjectif);
 
     // Generate months timeline
     generateMonthsTimeline(startDate, endDate);
