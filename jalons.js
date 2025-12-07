@@ -195,6 +195,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const startDate = new Date(currentObjectif.dateCreation || Date.now());
     const endDate = new Date(currentObjectif.temporel);
 
+    // Display project title
+    const titleDiv = document.getElementById('projectTitle');
+    const projectTitle = currentObjectif.mesurable || 'Mon Objectif';
+    titleDiv.innerHTML = `<h2>${projectTitle}</h2>`;
+
     // Generate months timeline
     generateMonthsTimeline(startDate, endDate);
 
