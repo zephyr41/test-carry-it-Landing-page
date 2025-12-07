@@ -96,12 +96,12 @@
 
         .content-block {
             max-width: var(--max-width-content);
-            padding-bottom: 20px; /* Espace réduit */
-            padding-top: 16px;
+            padding-bottom: 40px; /* Espace pour desktop */
+            padding-top: 24px;
         }
 
         /* HEADER : HIÉRARCHIE VISUELLE CLAIRE */
-        header { margin-bottom: 24px; }
+        header { margin-bottom: 32px; }
 
         .phase-label {
             display: inline-block;
@@ -121,9 +121,9 @@
         .grid-layout {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px; /* Réduit pour compact */
+            gap: 14px; /* Espace pour desktop */
             width: 100%;
-            margin-bottom: 20px;
+            margin-bottom: 28px;
         }
 
         .card {
@@ -131,11 +131,11 @@
             backdrop-filter: blur(20px) saturate(180%); /* Material System iOS */
             -webkit-backdrop-filter: blur(20px) saturate(180%);
             border-radius: 18px;
-            padding: 18px;
+            padding: 22px;
             display: flex;
             flex-direction: column;
             transition: all 0.2s var(--ease-ios);
-            min-height: 90px;
+            min-height: 110px;
             border: 1px solid var(--border-subtle);
         }
         
@@ -189,16 +189,16 @@
 
         /* ZONE D'ACTION : REMONTÉE ET ALIGNÉE */
         .action-section {
-            margin-top: 12px; /* Séparation réduite */
+            margin-top: 24px; /* Séparation pour desktop */
             max-width: var(--max-width-content);
             padding: 0 0 0 0; /* Alignement sur l'axe */
         }
 
         .action-text {
             color: var(--text-secondary);
-            font-size: 14px; /* Taille réduite */
-            margin-bottom: 16px;
-            line-height: 1.5;
+            font-size: 15px; /* Taille desktop */
+            margin-bottom: 20px;
+            line-height: 1.6;
             font-weight: 500;
         }
 
@@ -438,7 +438,7 @@
             <button class="btn-back" onclick="goBackToObjectif()">
                 <i class="ri-arrow-left-line" style="font-size: 20px;"></i>
             </button>
-            <span class="brand">CARRY IT</span>
+            <span class="brand" style="cursor: pointer;" onclick="window.location.href='index.html'">CARRY IT</span>
         </nav>
 
         <!-- Main Content Scroll (Alignement Strict) -->
@@ -527,7 +527,8 @@
         <!-- Quote -->
         <div class="quote-container">
             <h2 class="quote-title">Prochaine Étape.</h2>
-            <p class="quote-body">Un objectif sans jalons n'est qu'un souhait. Fixez les points de passage clairs pour que votre progression soit mesurable et réelle.</p>
+            <p class="quote-body">Vous allez maintenant poser les jalons de votre objectif.</p>
+            <p class="quote-body" style="margin-top: 12px;">Chaque jalon clarifie ce qu'il faut atteindre et à quel moment. C'est la base d'une progression mesurable.</p>
         </div>
 
         <!-- Action Primaire (sur la vidéo mobile) -->
@@ -583,9 +584,8 @@
             initKPIChart();
         });
 
-        function goToJalons() { 
-            console.log("Navigation vers jalons.html");
-            // window.location.href = 'jalons.html'; 
+        function goToJalons() {
+            window.location.href = 'jalons.html';
         }
         function goBackToObjectif() { 
             console.log("Retour à objectif.html");
