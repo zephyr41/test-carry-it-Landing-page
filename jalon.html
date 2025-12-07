@@ -96,12 +96,12 @@
 
         .content-block {
             max-width: var(--max-width-content);
-            padding-bottom: 64px; /* Espace minimal de fin */
-            padding-top: 20px;
+            padding-bottom: 20px; /* Espace réduit */
+            padding-top: 16px;
         }
 
         /* HEADER : HIÉRARCHIE VISUELLE CLAIRE */
-        header { margin-bottom: 40px; }
+        header { margin-bottom: 24px; }
 
         .phase-label {
             display: inline-block;
@@ -121,20 +121,21 @@
         .grid-layout {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px; /* Retour à 12px pour une meilleure séparation visuelle */
+            gap: 10px; /* Réduit pour compact */
             width: 100%;
+            margin-bottom: 20px;
         }
 
         .card {
             background: var(--surface-card);
             backdrop-filter: blur(20px) saturate(180%); /* Material System iOS */
             -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border-radius: 18px; 
-            padding: 24px; 
+            border-radius: 18px;
+            padding: 18px;
             display: flex;
             flex-direction: column;
             transition: all 0.2s var(--ease-ios);
-            min-height: 130px; 
+            min-height: 90px;
             border: 1px solid var(--border-subtle);
         }
         
@@ -145,11 +146,11 @@
         }
 
         .card.kpi-main { /* Nouveau style pour le KPI dominant */
-            grid-column: span 2; 
-            background: var(--surface-kpi); 
+            grid-column: span 2;
+            background: var(--surface-kpi);
             border: 1px solid rgba(255, 90, 31, 0.2);
-            min-height: 110px;
-            padding: 20px 24px;
+            min-height: 85px;
+            padding: 16px 18px;
         }
 
         /* LABELS S.M.A.R.T */
@@ -188,16 +189,16 @@
 
         /* ZONE D'ACTION : REMONTÉE ET ALIGNÉE */
         .action-section {
-            margin-top: 40px; /* Séparation claire de la grille */
+            margin-top: 12px; /* Séparation réduite */
             max-width: var(--max-width-content);
-            padding: 0 0 20px 0; /* Alignement sur l'axe, padding interne */
+            padding: 0 0 0 0; /* Alignement sur l'axe */
         }
 
         .action-text {
             color: var(--text-secondary);
-            font-size: 15px; /* Taille augmentée */
-            margin-bottom: 28px;
-            line-height: 1.6;
+            font-size: 14px; /* Taille réduite */
+            margin-bottom: 16px;
+            line-height: 1.5;
             font-weight: 500;
         }
 
@@ -309,7 +310,8 @@
             .brand { font-size: 10px; }
             .btn-back { width: 36px; height: 36px; }
 
-            .content-block { padding-bottom: 0; padding-top: 12px; }
+            .content-block { padding-bottom: 0; padding-top: 8px; }
+            .scroll-container { padding: 0 var(--margin-axis); }
 
             /* Masquer desktop-only sur mobile */
             .desktop-only {
@@ -341,16 +343,16 @@
             /* Ajustement typographique pour mobile */
             h1 { font-size: 32px; letter-spacing: -1.5px; margin-bottom: 24px; }
             .phase-label { font-size: 9px; }
-            .grid-layout { gap: 12px; grid-template-columns: 1fr; margin-bottom: 32px; }
-            .card { padding: 14px; min-height: auto; }
-            .card.kpi-main { grid-column: span 1; min-height: auto; padding: 14px; }
-            .card-title { font-size: 9px; margin-bottom: 6px; }
-            .card-content { font-size: 13px; }
-            .card-content.kpi-value { font-size: 16px; }
-            .card-content.date { font-size: 13px; }
-            .btn-primary { height: 44px; font-size: 15px; border-radius: 22px; }
+            .grid-layout { gap: 8px; grid-template-columns: 1fr; margin-bottom: 16px; }
+            .card { padding: 10px; min-height: auto; }
+            .card.kpi-main { grid-column: span 1; min-height: auto; padding: 10px; }
+            .card-title { font-size: 8px; margin-bottom: 3px; }
+            .card-content { font-size: 12px; }
+            .card-content.kpi-value { font-size: 14px; }
+            .card-content.date { font-size: 12px; }
+            .btn-primary { height: 40px; font-size: 14px; border-radius: 20px; }
             .action-text { display: none; }
-            header { margin-bottom: 20px; }
+            header { margin-bottom: 12px; }
 
             /* Glass widget mobile - VISIBLE */
             .glass-widget {
