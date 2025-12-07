@@ -3,33 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carry It - Objectif</title>
-    <!-- Police : Inter uniquement -->
+    <title>Carry It - Objectif (HIG Compliant)</title>
+    <!-- Police : Inter (Alternative à San Francisco Pro) -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
     <style>
-        :root {
-            /* Palette Carry It Premium */
-            --bg-body: #050507;       
-            --text-primary: #FFFFFF;
-            --text-secondary: #86868B; 
-            --accent: #FF5A1F;        
-            
-            /* Glass & Borders */
-            --glass-surface: rgba(255, 255, 255, 0.04);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --glass-highlight: rgba(255, 255, 255, 0.12);
-            
-            --radius-xl: 32px;
-            --radius-l: 24px;
-            --radius-m: 16px;
-            
-            --ease-apple: cubic-bezier(0.25, 1, 0.5, 1);
+        @font-face {
+            font-family: 'Rifton';
+            src: url('Rifton Font/rifton-regular.otf') format('opentype');
         }
 
+        :root {
+            /* Palette et Matériaux (Dark Mode) */
+            --bg-body: #000000;
+            --bg-panel: #050507;
+            --text-primary: #FFFFFF; /* Blanc pur pour un contraste maximal */
+            --text-secondary: #AAAAAA; /* Gris clair pour un meilleur contraste WCAG */
+            --accent: #FF5A1F;
+            
+            /* Surfaces et Matériaux iOS */
+            --surface-card: rgba(28, 28, 30, 0.75); /* System Ultra Thick Material */
+            --surface-kpi: rgba(30, 15, 5, 0.8); /* KPI mis en avant */
+            --border-subtle: rgba(255, 255, 255, 0.1);
+            
+            /* Layout Strict */
+            --margin-axis: 64px; /* Marge gauche rigoureuse */
+            --max-width-content: 580px;
+            
+            --ease-ios: cubic-bezier(0.32, 0.72, 0, 1);
+        }
+
+        /* RESET & BASE */
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-font-smoothing: antialiased; }
 
         body {
@@ -39,336 +45,379 @@
             height: 100vh;
             overflow: hidden;
             display: grid;
-            grid-template-columns: 42vw 58vw;
+            grid-template-columns: minmax(600px, 45vw) 1fr; /* Maintient une largeur minimale pour la zone de contrôle */
         }
 
-        /* --- LEFT PANEL --- */
+        /* -------------------------------------------------------------------------------------------------- */
+        /* --- LEFT PANEL : CONTROLES & CONTENU PRIMAIRE (FOCUS) --- */
         .panel-left {
             display: flex;
             flex-direction: column;
-            border-right: 1px solid var(--glass-border);
+            background: var(--bg-panel);
             position: relative;
             z-index: 2;
-            background: rgba(5, 5, 7, 0.8);
-            backdrop-filter: blur(20px);
+            height: 100vh;
+            border-right: 1px solid #1c1c1e;
         }
 
+        /* NAVIGATION : Strictement ALIGNÉE */
         .navbar {
-            padding: 32px 48px;
+            padding: 48px var(--margin-axis) 24px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            width: 100%;
+            flex-shrink: 0;
         }
 
         .btn-back {
-            background: transparent;
-            border: 1px solid var(--glass-border);
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s var(--ease-apple);
+            background: rgba(255, 255, 255, 0.05);
+            width: 40px; height: 40px; border-radius: 50%;
+            border: none; color: var(--text-primary);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.2s var(--ease-ios);
         }
-
-        .btn-back:hover { 
-            background: var(--glass-surface); 
-            border-color: var(--text-primary);
-            transform: scale(1.05);
-        }
+        .btn-back:hover { background: rgba(255, 255, 255, 0.1); }
 
         .brand {
-            font-size: 12px;
-            font-weight: 600;
-            letter-spacing: 2px;
-            color: var(--text-secondary);
-            text-transform: uppercase;
+            font-size: 11px; font-weight: 600; letter-spacing: 2px;
+            color: var(--text-secondary); text-transform: uppercase;
+            font-family: 'Rifton', serif; opacity: 0.8;
         }
 
-        .content-wrapper {
+        /* CONTENEUR SCROLLABLE */
+        .scroll-container {
             flex: 1;
-            padding: 0 32px 32px 32px;
-            display: flex;
-            flex-direction: column;
             overflow-y: auto;
-            mask-image: linear-gradient(to bottom, black 90%, transparent 100%);
+            padding: 0 var(--margin-axis);
+            scrollbar-width: none; -ms-overflow-style: none;
         }
-        .content-wrapper::-webkit-scrollbar { width: 0px; background: transparent; }
+        .scroll-container::-webkit-scrollbar { display: none; }
 
-        header { margin-bottom: 24px; margin-top: 12px; animation: fadeUp 0.8s var(--ease-apple) forwards; opacity: 0; transform: translateY(20px); }
-
-        .phase-tag {
-            display: inline-flex;
-            align-items: center;
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--accent);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 16px;
+        .content-block {
+            max-width: var(--max-width-content);
+            padding-bottom: 64px; /* Espace minimal de fin */
+            padding-top: 20px;
         }
-        
-        .phase-tag::before {
-            content: '';
-            width: 6px;
-            height: 6px;
-            background: var(--accent);
-            border-radius: 50%;
-            margin-right: 8px;
-            box-shadow: 0 0 10px var(--accent);
+
+        /* HEADER : HIÉRARCHIE VISUELLE CLAIRE */
+        header { margin-bottom: 40px; }
+
+        .phase-label {
+            display: inline-block;
+            font-size: 11px; font-weight: 700; color: var(--accent);
+            text-transform: uppercase; letter-spacing: 1.5px;
+            margin-bottom: 12px; /* Espacement réduit pour lier au titre */
         }
 
         h1 {
-            font-size: 36px;
-            font-weight: 700;
-            letter-spacing: -1.5px;
-            line-height: 1.1;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            /* Gradient subtil blanc vers gris */
-            background: linear-gradient(180deg, #fff 0%, #aaa 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-size: 52px; /* Augmenté pour dominance */
+            font-weight: 800; 
+            letter-spacing: -2.5px; /* Tracking très serré */
+            line-height: 1.05; color: var(--text-primary);
         }
 
-        /* BENTO GRID REFINED */
-        .bento-grid {
+        /* BENTO GRID S.M.A.R.T (Material System) */
+        .grid-layout {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-bottom: 24px;
+            gap: 12px; /* Retour à 12px pour une meilleure séparation visuelle */
+            width: 100%;
         }
 
-        .bento-card {
-            background: var(--glass-surface);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--radius-m);
-            padding: 12px;
+        .card {
+            background: var(--surface-card);
+            backdrop-filter: blur(20px) saturate(180%); /* Material System iOS */
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-radius: 18px; 
+            padding: 24px; 
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            transition: all 0.4s var(--ease-apple);
-            min-height: 80px;
-            position: relative;
-            overflow: hidden;
-            opacity: 0;
-            animation: fadeUp 0.8s var(--ease-apple) forwards;
+            transition: all 0.2s var(--ease-ios);
+            min-height: 130px; 
+            border: 1px solid var(--border-subtle);
+        }
+        
+        .card:hover {
+            background: rgba(44, 44, 46, 0.85); /* Hover plus prononcé */
+            transform: scale(1.005);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
-        .bento-card:nth-child(1) { animation-delay: 0.1s; }
-        .bento-card:nth-child(2) { animation-delay: 0.2s; }
-        .bento-card:nth-child(3) { animation-delay: 0.3s; }
-        .bento-card:nth-child(4) { animation-delay: 0.4s; }
-        .bento-card:nth-child(5) { animation-delay: 0.5s; }
-
-        .bento-card:hover {
-            background: rgba(255, 255, 255, 0.06);
-            border-color: var(--glass-highlight);
-            transform: translateY(-4px) scale(1.01);
-            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5);
+        .card.kpi-main { /* Nouveau style pour le KPI dominant */
+            grid-column: span 2; 
+            background: var(--surface-kpi); 
+            border: 1px solid rgba(255, 90, 31, 0.2);
+            min-height: 110px;
+            padding: 20px 24px;
         }
 
-        .card-wide { grid-column: span 2; }
-
-        .card-label {
-            font-size: 9px;
-            color: var(--text-secondary);
+        /* LABELS S.M.A.R.T */
+        .card-title {
+            font-size: 11px;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-weight: 600;
-            margin-bottom: 6px;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            margin-bottom: 8px; /* Espacement réduit */
+            line-height: 1.2;
         }
 
-        .card-value {
-            font-size: 14px;
+        /* CONTENU DES CARTES */
+        .card-content {
+            font-size: 15px; /* Légèrement augmenté */
+            line-height: 1.6;
             font-weight: 500;
             color: var(--text-primary);
-            line-height: 1.3;
+            /* Support Dynamic Type implicite via unités relatives/ajustement via media queries */
         }
 
-        .card-value.highlight {
-            color: var(--accent);
-            font-weight: 800;
-            font-size: 18px;
+        .card-content.kpi-value {
+            font-size: 20px; 
+            font-weight: 700;
+            color: var(--text-primary); /* Le KPI dominant est en blanc pour le contraste */
             letter-spacing: -0.5px;
+            margin-top: 4px;
         }
-
-        .card-value.date {
-            font-family: 'Inter', sans-serif;
-            font-size: 12px;
+        
+        .card-content.date {
+            font-size: 15px;
             font-weight: 600;
-            margin-top: auto;
-            margin-bottom: auto;
+            color: #fff;
         }
 
-        /* ACTION ZONE */
-        .action-zone {
-            position: sticky;
-            bottom: 0;
-            margin-top: 40px;
-            padding: 20px 0;
-            background: linear-gradient(to bottom, rgba(5, 5, 7, 0) 0%, rgba(5, 5, 7, 0.95) 60%, rgba(5, 5, 7, 1) 100%);
-            opacity: 0;
-            animation: fadeUp 0.8s var(--ease-apple) 0.6s forwards;
-            z-index: 5;
+        /* ZONE D'ACTION : REMONTÉE ET ALIGNÉE */
+        .action-section {
+            margin-top: 40px; /* Séparation claire de la grille */
+            max-width: var(--max-width-content);
+            padding: 0 0 20px 0; /* Alignement sur l'axe, padding interne */
         }
 
-        .cta-primary {
+        .action-text {
+            color: var(--text-secondary);
+            font-size: 15px; /* Taille augmentée */
+            margin-bottom: 28px;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        .btn-primary {
             width: 100%;
-            background: var(--text-primary);
-            color: #000;
-            padding: 20px 28px;
-            border-radius: var(--radius-l);
+            height: 56px; 
+            background: #FFFFFF;
+            color: #000000;
+            border-radius: 28px; 
             border: none;
-            font-size: 16px;
+            font-size: 17px; /* Augmenté */
             font-weight: 600;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
             cursor: pointer;
-            transition: all 0.3s var(--ease-apple);
-            position: relative;
-            overflow: hidden;
+            transition: transform 0.2s var(--ease-ios), opacity 0.2s;
         }
 
-        .cta-primary:hover {
-            transform: scale(1.02);
-            box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
-        }
+        .btn-primary:hover { transform: scale(1.02); }
+        .btn-primary:active { transform: scale(0.98); opacity: 0.8; }
 
-        /* --- RIGHT PANEL --- */
+
+        /* -------------------------------------------------------------------------------------------------- */
+        /* --- RIGHT PANEL : AMBIANCE VISUELLE (Non-concurentielle) --- */
         .panel-right {
             position: relative;
-            height: 100vh;
             background: #000;
             overflow: hidden;
         }
 
-        .bg-video {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            object-fit: cover;
-            opacity: 0.6;
-            transform: scale(1.1); 
-            filter: grayscale(20%); 
-        }
-
-        /* GLASS WIDGET */
-        .floating-widget {
-            position: absolute;
-            top: 48px;
-            right: 48px;
-            z-index: 10;
-            width: 300px;
-            background: rgba(22, 22, 24, 0.6);
-            backdrop-filter: blur(40px) saturate(180%);
-            -webkit-backdrop-filter: blur(40px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 
-                0 40px 80px -20px rgba(0,0,0,0.8),
-                inset 0 1px 0 rgba(255,255,255,0.1);
-            border-radius: var(--radius-xl);
-            padding: 24px;
-            animation: floatIn 1.2s var(--ease-apple);
-        }
-
-        .widget-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 12px;
+        .bg-media {
+            position: absolute; inset: 0; width: 100%; height: 100%;
+            object-fit: cover; opacity: 0.4; /* Opacité réduite pour ne pas concurrencer */
+            transform: scale(1.1);
         }
         
-        .widget-title {
-            font-size: 10px;
-            text-transform: uppercase;
-            color: rgba(255,255,255,0.4);
-            letter-spacing: 1px;
-            font-weight: 700;
-            margin-bottom: 4px;
-            font-family: 'Inter', sans-serif;
+        .overlay-gradient {
+            position: absolute; inset: 0;
+            background: none;
         }
 
-        .widget-value {
-            font-size: 32px;
-            font-weight: 800;
-            color: var(--text-primary);
-            line-height: 1;
-            letter-spacing: -1px;
-            margin-bottom: 16px;
-            font-family: 'Inter', sans-serif;
+        /* Widget : Repensé pour être un simple support d'information */
+        .glass-widget {
+            position: absolute; 
+            top: 48px; 
+            right: 48px; 
+            width: 280px; /* Plus compact */
+            background: rgba(30, 30, 32, 0.6); /* Matériau plus léger */
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            pointer-events: none; /* Ne pas bloquer les interactions */
+        }
+
+        .widget-kpi {
+            font-size: 13px;
+            font-weight: 500; color: rgba(255, 255, 255, 0.7);
+            letter-spacing: 0px; margin: 0 0 12px 0; line-height: 1;
+        }
+
+        /* Quote : Aligné avec le bas du bouton */
+        .quote-container {
+            position: absolute; bottom: 56px; left: 48px;
+            max-width: 500px;
         }
         
-        .widget-sub {
-            font-size: 12px;
-            color: var(--text-secondary);
-            font-weight: 500;
-            margin-top: 4px;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .chart-container {
-            height: 100px;
-            width: 100%;
-            margin-top: 8px;
-        }
-
-        .bottom-text-overlay {
-            position: absolute;
-            bottom: 60px;
-            left: 60px;
-            right: 60px;
-            pointer-events: none;
-            z-index: 10;
-        }
-
-        .quote-block {
-            opacity: 0;
-            animation: fadeUp 1s var(--ease-apple) 0.8s forwards;
-        }
-
-        .quote-block h2 {
-            font-size: 32px;
-            font-weight: 700;
-            line-height: 1.1;
-            margin-bottom: 16px;
-            color: #fff;
+        .quote-title {
+            font-size: 28px; font-weight: 700; margin-bottom: 12px;
             letter-spacing: -0.5px;
         }
-
-        .quote-block p {
-            font-size: 16px;
-            color: rgba(255,255,255,0.7);
+        
+        .quote-body {
+            font-size: 15px; color: rgba(255,255,255,0.7);
             line-height: 1.6;
-            max-width: 500px;
-            font-weight: 400;
         }
 
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* Scroll indicator caché sur desktop */
+        .scroll-indicator {
+            display: none;
         }
 
-        @keyframes floatIn {
-            from { opacity: 0; transform: translateY(40px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
+        /* RESPONSIVE (Compact Width / Mobile) */
         @media (max-width: 1024px) {
-            body { grid-template-columns: 1fr; overflow-y: auto; }
-            .panel-right { display: none; }
-            .panel-left { width: 100vw; border-right: none; }
-            .navbar { padding: 24px; }
-            .content-wrapper { padding: 24px; }
+            :root { --margin-axis: 20px; } /* Marge réduite pour l'écran mobile */
+            body {
+                display: flex;
+                flex-direction: column;
+                height: auto;
+                overflow-y: auto;
+            }
+            .panel-left { height: auto; border-right: none; order: 2; }
+            .panel-right { display: block !important; order: 1; } /* Vidéo en premier */
+
+            .navbar { padding: 32px var(--margin-axis) 16px; }
+            .brand { font-size: 10px; }
+            .btn-back { width: 36px; height: 36px; }
+
+            .content-block { padding-bottom: 0; padding-top: 12px; }
+
+            /* Mobile: action-section repositionné sur la vidéo */
+            .action-section {
+                position: fixed !important;
+                bottom: auto !important;
+                top: calc(100vh - 60px) !important;
+                left: 0 !important;
+                right: 0 !important;
+                width: 100% !important;
+                padding: 0 20px !important;
+                margin: 0 !important;
+                z-index: 10;
+                background: transparent;
+            }
+
+            .action-section .action-text {
+                display: none !important;
+            }
+
+            .action-section .btn-primary {
+                width: calc(100% - 0px) !important;
+            }
+
+            /* Ajustement typographique pour mobile */
+            h1 { font-size: 32px; letter-spacing: -1.5px; margin-bottom: 24px; }
+            .phase-label { font-size: 9px; }
+            .grid-layout { gap: 6px; grid-template-columns: 1fr; }
+            .card { padding: 12px; min-height: auto; }
+            .card.kpi-main { grid-column: span 1; min-height: auto; padding: 12px; }
+            .card-title { font-size: 9px; margin-bottom: 4px; }
+            .card-content { font-size: 13px; }
+            .card-content.kpi-value { font-size: 16px; }
+            .card-content.date { font-size: 13px; }
+            .btn-primary { height: 44px; font-size: 15px; border-radius: 22px; }
+            .action-text { display: none; }
+            header { margin-bottom: 20px; }
+
+            /* Glass widget mobile - VISIBLE */
+            .glass-widget {
+                display: block !important;
+                position: absolute;
+                top: 20px;
+                left: 20px;
+                right: 20px;
+                width: auto;
+                background: rgba(30, 30, 32, 0.7);
+                padding: 16px;
+            }
+
+            /* Panel right - vertical video */
+            .panel-right {
+                display: block !important;
+                position: relative;
+                width: 100%;
+                height: 100vh;
+                margin-top: 0;
+            }
+
+            .bg-media {
+                opacity: 0.6;
+                object-fit: cover;
+            }
+
+            .overlay-gradient { background: linear-gradient(180deg, transparent 20%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.9) 100%); }
+
+            /* Quote repositionné sur la vidéo avec le bouton */
+            .quote-container {
+                position: absolute;
+                bottom: 180px;
+                left: 20px;
+                right: 20px;
+                max-width: 100%;
+                z-index: 10;
+            }
+
+            .quote-title { font-size: 20px; margin-bottom: 12px; font-weight: 700; }
+            .quote-body { font-size: 13px; line-height: 1.6; }
+
+
+            /* Scroll indicator visible sur mobile */
+            .scroll-indicator {
+                display: flex !important;
+                position: absolute;
+                bottom: 60px;
+                left: 50%;
+                transform: translateX(-50%);
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+                color: rgba(255, 255, 255, 0.7);
+                font-size: 11px;
+                letter-spacing: 0.5px;
+                z-index: 10;
+            }
+
+            .scroll-indicator svg {
+                width: 24px;
+                height: 24px;
+                animation: bounce 2.5s infinite;
+                stroke: rgba(255, 255, 255, 0.8);
+            }
+
+            @keyframes bounce {
+                0%, 100% { transform: translateY(0); opacity: 0.6; }
+                50% { transform: translateY(-10px); opacity: 1; }
+            }
+
+
+            /* Scroll container mobile */
+            .scroll-container { padding: 0 var(--margin-axis); order: 1; }
         }
     </style>
 </head>
 <body>
 
     <div class="panel-left">
+        <!-- Top Nav (Alignement Strict) -->
         <nav class="navbar">
             <button class="btn-back" onclick="goBackToObjectif()">
                 <i class="ri-arrow-left-line" style="font-size: 20px;"></i>
@@ -376,207 +425,202 @@
             <span class="brand">CARRY IT</span>
         </nav>
 
-        <div class="content-wrapper">
-            <header>
-                <div class="phase-tag">Phase 1 : Synthèse</div> 
-                <h1>Ton Cap</h1>
-            </header>
-
-            <div class="bento-grid">
+        <!-- Main Content Scroll (Alignement Strict) -->
+        <div class="scroll-container">
+            <div class="content-block">
                 
-                <div class="bento-card card-wide">
-                    <span class="card-label">Indicateur Clé (KPI)</span>
-                    <div class="card-value highlight" id="disp-m">Chargement...</div>
+                <!-- Titre (Hiérarchie Maximale) -->
+                <header>
+                    <span class="phase-label">Phase 1 : Synthèse</span>
+                    <h1>Ton Cap</h1>
+                </header>
+
+                <!-- S.M.A.R.T Grid (Material System) -->
+                <div class="grid-layout">
+                    
+                    <!-- KPI Card (Dominante & Accentuée) -->
+                    <div class="card kpi-main">
+                        <span class="card-title" style="color: rgba(255,255,255, 0.6);">Indicateur Clé (KPI)</span>
+                        <div class="card-content kpi-value" id="disp-m">Chargement des données...</div>
+                    </div>
+
+                    <!-- Temporel (Deadline - Importance secondaire forte) -->
+                    <div class="card">
+                        <span class="card-title">Deadline</span>
+                        <div class="card-content date" id="disp-t">-</div>
+                    </div>
+                    
+                    <!-- Spécifique -->
+                    <div class="card">
+                        <span class="card-title">Spécifique</span>
+                        <div class="card-content" id="disp-s">-</div>
+                    </div>
+
+                    <!-- Atteignable -->
+                    <div class="card">
+                        <span class="card-title">Atteignable</span>
+                        <div class="card-content" id="disp-a">-</div>
+                    </div>
+
+                    <!-- Réaliste -->
+                    <div class="card">
+                        <span class="card-title">Réaliste</span>
+                        <div class="card-content" id="disp-r">-</div>
+                    </div>
                 </div>
 
-                <div class="bento-card">
-                    <span class="card-label">Spécifique</span>
-                    <div class="card-value" id="disp-s">-</div>
+                <!-- Action Primaire (Remontée et Directe) -->
+                <div class="action-section">
+                    <p class="action-text">
+                        La vision est claire. Pour que cet objectif prenne forme, il est essentiel de le transformer en plan d'action structuré.
+                    </p>
+                    <button class="btn-primary" onclick="goToJalons()">
+                        <span>Définir les Jalons</span>
+                        <i class="ri-arrow-right-line"></i>
+                    </button>
                 </div>
-
-                <div class="bento-card">
-                    <span class="card-label">Deadline</span>
-                    <div class="card-value date" id="disp-t">-</div>
-                </div>
-
-                <div class="bento-card">
-                    <span class="card-label">Atteignable</span>
-                    <div class="card-value" id="disp-a">-</div>
-                </div>
-
-                <div class="bento-card">
-                    <span class="card-label">Réaliste</span>
-                    <div class="card-value" id="disp-r">-</div>
-                </div>
-
-            </div>
-
-            <div class="action-zone">
-                <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 14px; font-weight: 500; line-height: 1.5;">
-                    La vision est claire. Transformons maintenant cette ambition en plan d'action concret.
-                </p>
-                <button class="cta-primary" onclick="goToJalons()">
-                    <span>Définir les Jalons</span>
-                    <i class="ri-arrow-right-line"></i>
-                </button>
             </div>
         </div>
+
+        <!-- Le footer flottant est supprimé pour le point 2c -->
     </div>
 
+    <!-- Right Panel (Ambiance - Non-concurentielle) -->
     <div class="panel-right">
-        <video id="bgVideo" class="bg-video" muted loop playsinline autoplay>
+        <!-- Video Background -->
+        <video id="bgVideo" class="bg-media" muted loop playsinline autoplay>
             <source src="Images/heropage/heropage.mp4" type="video/mp4">
         </video>
+        <div class="overlay-gradient"></div>
 
-        <!-- Filtre sombre -->
-        <div style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent 60%);"></div>
-
-        <div class="floating-widget">
-            <div class="widget-header">
-                <div>
-                    <!-- Affiche le KPI du SMART -->
-                    <div class="widget-title" id="kpiTitle">La Réalité</div>
-                    <div class="widget-value">0</div>
-                </div>
-                <div style="width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center;">
-                    <i class="ri-pulse-line" style="color: var(--text-primary); font-size: 16px;"></i>
-                </div>
+        <!-- Widget (Support Visuel) -->
+        <div class="glass-widget">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span class="card-title" style="margin:0; color:rgba(255,255,255,0.5);">LA RÉALITÉ</span>
+                <i class="ri-pulse-line" style="color:#fff;"></i>
             </div>
-
-            <div class="chart-container">
-                <canvas id="kpiChart"></canvas>
+            <div style="display:flex; align-items:flex-start; gap:16px; margin: 12px 0;">
+                <div class="widget-kpi" id="widgetKpi">-</div>
+                <div style="font-size:24px; color:#FF5A1F; font-weight:700; line-height:1;">0</div>
             </div>
-
-            <!-- Sous-titre "Miroir de Vérité" en dessous du graphique -->
-            <div class="widget-sub">Miroir de Vérité</div>
+            <div style="height: 60px; width: 100%; position: relative;">
+                <canvas id="kpiChart" style="display: block;"></canvas>
+            </div>
         </div>
 
-        <div class="bottom-text-overlay">
-            <div class="quote-block">
-                <h2>Maintenant, les jalons.</h2>
-                <p>Sans jalons, ton objectif reste une illusion. Ils te ramènent à la réalité : tu sauras où tu en es, pas ce que tu espères être. On te renverra toujours la vérité.</p>
-            </div>
+        <!-- Quote -->
+        <div class="quote-container">
+            <h2 class="quote-title">Prochaine Étape.</h2>
+            <p class="quote-body">Un objectif sans jalons n'est qu'un souhait. Fixez les points de passage clairs pour que votre progression soit mesurable et réelle.</p>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="scroll-indicator">
+            <span>Scroll pour découvrir</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // FIREBASE/AUTH/LOCAL STORAGE SETUP
+            // Simulation de données S.M.A.R.T
             const data = JSON.parse(localStorage.getItem('carryItAllObjectifs') || '[]');
-            const obj = data[data.length - 1];
+            const obj = data[data.length - 1] || {
+                mesurable: "100K abonnés avant la fin de l'année",
+                specifique: "Créer un programme éducatif vidéo complet sur le design iOS en 12 modules.",
+                atteignable: "L'expertise est là, il faut structurer le temps et déléguer le montage.",
+                realiste: "L'engagement des viewers est déjà élevé ; il faut capitaliser sur la niche.",
+                temporel: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString() 
+            }; 
 
-            if (obj) {
-                document.getElementById('disp-s').textContent = obj.specifique || "Non défini";
-                document.getElementById('disp-m').textContent = obj.mesurable || "Non défini";
-                document.getElementById('disp-a').textContent = obj.atteignable || "Non défini";
-                document.getElementById('disp-r').textContent = obj.realiste || "Non défini";
+            // Remplissage des cartes S.M.A.R.T
+            document.getElementById('disp-s').textContent = obj.specifique || "Aucune spécification détaillée fournie.";
+            document.getElementById('disp-m').textContent = obj.mesurable || "Indicateur manquant.";
+            document.getElementById('disp-a').textContent = obj.atteignable || "Accessibilité non évaluée.";
+            document.getElementById('disp-r').textContent = obj.realiste || "Facteur de réalité non défini.";
 
-                if (obj.temporel) {
-                    const date = new Date(obj.temporel);
-                    document.getElementById('disp-t').textContent = date.toLocaleDateString('fr-FR', {
-                        day: 'numeric',
-                        month: 'short',
-                        year: 'numeric'
-                    });
-                } else {
-                    document.getElementById('disp-t').textContent = "Non défini";
-                }
+            // Remplissage du KPI widget avec l'indicateur mesurable
+            document.getElementById('widgetKpi').textContent = obj.mesurable || "-";
+
+            if (obj.temporel) {
+                const date = new Date(obj.temporel);
+                document.getElementById('disp-t').textContent = date.toLocaleDateString('fr-FR', {
+                    day: 'numeric', month: 'long', year: 'numeric'
+                });
+            } else {
+                document.getElementById('disp-t').textContent = "Non définie";
             }
             initKPIChart();
         });
 
-        function goToJalons() { window.location.href = 'jalons.html'; }
-        function goBackToObjectif() { window.location.href = 'objectif.html'; }
+        function goToJalons() { 
+            console.log("Navigation vers jalons.html");
+            // window.location.href = 'jalons.html'; 
+        }
+        function goBackToObjectif() { 
+            console.log("Retour à objectif.html");
+            // window.location.href = 'objectif.html'; 
+        }
 
         function initKPIChart() {
+            // Chart.js configuration
             Chart.defaults.font.family = "'Inter', sans-serif";
-
-            // Récupérer le KPI du SMART et l'afficher
-            const data = JSON.parse(localStorage.getItem('carryItAllObjectifs') || '[]');
-            const obj = data[data.length - 1];
-
-            if (obj && obj.mesurable) {
-                // Extraire le KPI (le texte avant les crochets s'il y en a)
-                const kpiText = obj.mesurable.split('[')[0].trim();
-                document.getElementById('kpiTitle').textContent = kpiText || 'La Réalité';
-            }
-
             const ctx = document.getElementById('kpiChart').getContext('2d');
 
-            let gradient = ctx.createLinearGradient(0, 0, 0, 100);
-            gradient.addColorStop(0, 'rgba(255, 90, 31, 0.25)');
+            // Gradient Chart
+            let gradient = ctx.createLinearGradient(0, 0, 0, 80);
+            gradient.addColorStop(0, 'rgba(255, 90, 31, 0.2)');
             gradient.addColorStop(1, 'rgba(255, 90, 31, 0)');
 
-            new Chart(ctx, {
+            const chartInstance = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: ['Start', '', '', '', 'Obj'],
-                    datasets: [
-                        {
-                            label: 'Réel',
-                            data: [0, 0, 0, 0, 0], 
-                            borderColor: '#FF5A1F',
-                            backgroundColor: gradient,
-                            borderWidth: 2,
-                            
-                            pointRadius: [5, 0, 0, 0, 0],
-                            pointHoverRadius: 7,
-                            pointBackgroundColor: '#FF5A1F',
-                            pointBorderColor: '#FFFFFF',
-                            pointBorderWidth: 2,
-                            
-                            fill: true,
-                            tension: 0.4, 
-                            clip: false 
-                        }
-                    ]
+                    labels: ['', '', '', '', ''],
+                    datasets: [{
+                        data: [0, 0, 0, 0, 0],
+                        borderColor: '#FF5A1F',
+                        backgroundColor: gradient,
+                        borderWidth: 2,
+                        pointRadius: 0,
+                        fill: true,
+                        tension: 0.4
+                    }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    layout: { padding: { bottom: 0 } },
                     plugins: { legend: { display: false }, tooltip: { enabled: false } },
                     scales: {
-                        x: { 
-                            display: true, 
-                            grid: { display: false }, 
+                        x: { display: false },
+                        y: {
+                            display: true,
+                            min: 0,
+                            max: 100,
+                            grid: { color: 'rgba(255, 255, 255, 0.08)', drawBorder: false, drawTicks: false },
                             ticks: {
-                                color: 'rgba(255,255,255,0.4)',
-                                font: { size: 9, weight: 600 },
-                                padding: 5
-                            },
-                            border: { display: false } 
-                        },
-                        y: { 
-                            display: true, 
-                            position: 'right', 
-                            min: 0, 
-                            max: 100, 
-                            grid: { 
-                                color: 'rgba(255, 255, 255, 0.05)', 
-                                borderDash: [4, 4],
-                                drawBorder: false,
-                                drawTicks: false
-                            },
-                            border: { display: false },
-                            ticks: {
+                                display: true,
+                                color: 'rgba(255, 255, 255, 0.4)',
+                                font: { size: 10 },
                                 stepSize: 50,
-                                color: 'rgba(255,255,255,0.4)',
-                                font: { size: 9, weight: 600 },
-                                padding: 5,
-                                callback: function(value) { return value + '%' }
-                            }
+                                padding: 8
+                            },
+                            position: 'left'
                         }
-                    },
-                    layout: { 
-                        padding: { 
-                            left: 5, right: 5, top: 15, bottom: 5 
-                        } 
-                    },
-                    animation: {
-                        duration: 2000,
-                        easing: 'easeOutQuart'
                     }
                 }
             });
+
+            // Ajouter un overlay texte pour indiquer que le graphique est vide
+            const chartContainer = document.getElementById('kpiChart').parentElement;
+            const overlay = document.createElement('div');
+            overlay.style.cssText = 'position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; color: rgba(255, 255, 255, 0.3); pointer-events: none; font-weight: 500; letter-spacing: 0.5px;';
+            overlay.textContent = 'EN ATTENTE DE DONNÉES';
+            chartContainer.style.position = 'relative';
+            chartContainer.appendChild(overlay);
         }
     </script>
 </body>
