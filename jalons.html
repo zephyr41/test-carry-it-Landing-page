@@ -15,22 +15,16 @@
         }
 
         :root {
-            /* Palette et Matériaux (Dark Mode) */
             --bg-body: #000000;
             --bg-panel: #050507;
             --text-primary: #FFFFFF;
             --text-secondary: #AAAAAA;
             --accent: #FF5A1F;
-
-            /* Surfaces et Matériaux iOS */
             --surface-card: rgba(28, 28, 30, 0.75);
             --border-subtle: rgba(255, 255, 255, 0.1);
-
-            /* Easing */
             --ease-ios: cubic-bezier(0.32, 0.72, 0, 1);
         }
 
-        /* RESET & BASE */
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-font-smoothing: antialiased; }
 
         body {
@@ -92,178 +86,104 @@
             opacity: 1;
         }
 
-        /* MAIN TIMELINE STAGE */
+        /* MAIN */
         main {
             height: calc(100vh - 72px);
             margin-top: 72px;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             position: relative;
             overflow: hidden;
         }
 
-        .timeline-scroll-wrapper {
-            width: 100%;
-            height: 100%;
-            overflow-x: auto;
-            overflow-y: hidden;
-            display: flex;
-            align-items: center;
-            scrollbar-width: thin;
-            scrollbar-color: var(--border-subtle) transparent;
-        }
-
-        .timeline-scroll-wrapper::-webkit-scrollbar {
-            height: 4px;
-        }
-
-        .timeline-scroll-wrapper::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .timeline-scroll-wrapper::-webkit-scrollbar-thumb {
-            background: var(--border-subtle);
-            border-radius: 2px;
-        }
-
-        .timeline-track {
-            display: flex;
-            align-items: center;
-            gap: 44px;
-            padding: 0 50vw;
-            position: relative;
-            min-width: max-content;
-            will-change: transform;
-        }
-
-        /* Horizontal line through timeline */
-        .timeline-track::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg,
-                transparent 0%,
-                var(--border-subtle) 10%,
-                var(--border-subtle) 90%,
-                transparent 100%
-            );
-            z-index: 0;
-        }
-
-        /* TIMELINE CIRCLES */
-        .timeline-circle {
-            position: relative;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--surface-card);
-            border: 1px solid var(--border-subtle);
-            backdrop-filter: blur(20px) saturate(180%);
+        /* JALON DISPLAY CONTAINER */
+        .jalon-container {
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-shrink: 0;
-            transition: all 0.3s var(--ease-ios);
-            z-index: 1;
-            cursor: pointer;
+            gap: 40px;
+            width: 100%;
+            height: 100%;
+            padding: 40px;
         }
 
-        .timeline-circle:hover {
-            transform: scale(1.15);
-            border-color: var(--accent);
-        }
-
-        .timeline-circle.is-today {
-            width: 56px;
-            height: 56px;
-            background: var(--accent);
-            border: 2px solid var(--accent);
-            box-shadow: 0 0 20px rgba(255, 90, 31, 0.5);
-        }
-
-        .timeline-circle.is-today .day-number {
-            font-weight: 700;
-            color: #000;
-            font-size: 13px;
-        }
-
-        .timeline-circle.has-jalon {
-            border-color: var(--accent);
-            border-width: 2px;
-        }
-
-        .timeline-circle.is-deadline {
-            border: 2px dashed var(--text-secondary);
-        }
-
-        .day-number {
-            font-size: 11px;
-            color: var(--text-secondary);
-            font-weight: 500;
-            white-space: nowrap;
-        }
-
-        /* PULSE ANIMATION */
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        .pulse {
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        /* JALON MARKERS */
-        .jalon-marker {
-            position: absolute;
-            top: -80px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            z-index: 10;
-        }
-
-        .jalon-badge {
+        .nav-btn {
+            background: var(--surface-card);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
             width: 48px;
             height: 48px;
             border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s var(--ease-ios);
+            font-size: 20px;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background: rgba(255, 90, 31, 0.1);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        /* JALON DISPLAY */
+        .jalon-display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            flex: 1;
+            max-width: 600px;
+        }
+
+        .jalon-badge {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
             background: var(--accent);
             color: #000;
-            font-size: 13px;
+            font-size: 48px;
             font-weight: 700;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 12px rgba(255, 90, 31, 0.3);
+            box-shadow: 0 8px 32px rgba(255, 90, 31, 0.4);
         }
 
-        .jalon-badge.lointain {
-            background: transparent;
-            border: 2px solid var(--accent);
-            color: var(--accent);
-            box-shadow: none;
+        .jalon-info {
+            text-align: center;
         }
 
         .jalon-title {
-            font-size: 12px;
-            color: var(--text-primary);
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(10px);
-            padding: 6px 12px;
-            border-radius: 12px;
-            white-space: nowrap;
-            border: 1px solid var(--border-subtle);
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 12px;
         }
 
-        /* TIMELINE CONTROLS */
-        .timeline-controls {
+        .jalon-date {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+
+        .jalon-counter {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 24px;
+        }
+
+        /* CONTROLS */
+        .controls {
             position: fixed;
             bottom: 40px;
             left: 50%;
@@ -303,168 +223,43 @@
             background: rgba(255, 90, 31, 0.9);
         }
 
-        /* MODAL */
-        .modal-jalon {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(4px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-            padding: 20px;
-        }
-
-        .modal-jalon[hidden] {
-            display: none;
-        }
-
-        .modal-content {
-            background: var(--bg-panel);
-            border: 1px solid var(--border-subtle);
-            border-radius: 24px;
-            padding: 32px;
-            width: 100%;
-            max-width: 400px;
-            backdrop-filter: blur(20px);
-        }
-
-        .modal-content h2 {
-            font-size: 18px;
-            margin-bottom: 24px;
-            font-weight: 600;
-        }
-
-        .form-group {
-            margin-bottom: 16px;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 13px;
-            color: var(--text-secondary);
-            margin-bottom: 6px;
-            font-weight: 500;
-        }
-
-        .form-group input,
-        .form-group select {
-            width: 100%;
-            padding: 12px 16px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-subtle);
-            border-radius: 12px;
-            color: var(--text-primary);
-            font-family: inherit;
-            font-size: 14px;
-            transition: all 0.2s var(--ease-ios);
-        }
-
-        .form-group input:focus,
-        .form-group select:focus {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: var(--accent);
-        }
-
-        .form-group input::placeholder {
-            color: var(--text-secondary);
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 12px;
-            margin-top: 24px;
-        }
-
-        .btn-modal {
-            flex: 1;
-            padding: 12px 16px;
-            border-radius: 12px;
-            border: none;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s var(--ease-ios);
-            font-size: 14px;
-        }
-
-        .btn-modal.cancel {
-            background: transparent;
-            border: 1px solid var(--border-subtle);
-            color: var(--text-primary);
-        }
-
-        .btn-modal.cancel:hover {
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .btn-modal.submit {
-            background: var(--accent);
-            color: #000;
-        }
-
-        .btn-modal.submit:hover {
-            background: rgba(255, 90, 31, 0.9);
-        }
-
-        /* MOBILE RESPONSIVE */
+        /* MOBILE */
         @media (max-width: 1024px) {
             .navbar {
                 padding: 0 20px;
             }
 
-            .timeline-circle {
-                width: 28px;
-                height: 28px;
+            .jalon-container {
+                gap: 20px;
             }
 
-            .timeline-circle.is-today {
+            .nav-btn {
                 width: 40px;
                 height: 40px;
-            }
-
-            .timeline-circle.is-today .day-number {
-                font-size: 11px;
-            }
-
-            .day-number {
-                font-size: 9px;
-            }
-
-            .jalon-marker {
-                top: -70px;
+                font-size: 16px;
             }
 
             .jalon-badge {
-                width: 40px;
-                height: 40px;
-                font-size: 11px;
+                width: 100px;
+                height: 100px;
+                font-size: 40px;
             }
 
             .jalon-title {
-                font-size: 11px;
+                font-size: 24px;
             }
 
-            .timeline-controls {
+            .jalon-date {
+                font-size: 14px;
+            }
+
+            .controls {
                 bottom: 20px;
-                gap: 8px;
             }
 
             .btn-control {
                 padding: 10px 16px;
                 font-size: 13px;
-            }
-
-            .modal-content {
-                padding: 24px;
-            }
-
-            .modal-content h2 {
-                font-size: 16px;
-                margin-bottom: 20px;
             }
         }
     </style>
@@ -479,50 +274,24 @@
     </nav>
 
     <main>
-        <div class="timeline-scroll-wrapper">
-            <div class="timeline-track" id="timelineTrack">
-                <!-- Cercles de jours générés dynamiquement -->
+        <div class="jalon-container">
+            <button class="nav-btn" id="prevBtn" title="Jalon précédent">
+                <i class="ri-arrow-left-s-line"></i>
+            </button>
+
+            <div class="jalon-display" id="jalonDisplay">
+                <!-- Jalon info displayed here -->
             </div>
+
+            <button class="nav-btn" id="nextBtn" title="Jalon suivant">
+                <i class="ri-arrow-right-s-line"></i>
+            </button>
         </div>
 
-        <div class="timeline-controls">
-            <button class="btn-control" id="zoomOutBtn" title="Zoom out">
-                <i class="ri-zoom-out-line"></i>
-            </button>
-            <button class="btn-control" id="zoomInBtn" title="Zoom in">
-                <i class="ri-zoom-in-line"></i>
-            </button>
-            <button class="btn-control" id="addJalonBtn">
-                <i class="ri-add-line"></i> Ajouter un Jalon
-            </button>
+        <div class="controls">
             <button class="btn-control primary" id="validateBtn">Valider mes Jalons</button>
         </div>
     </main>
-
-    <!-- Modal for adding jalon -->
-    <div class="modal-jalon" id="modalJalon" hidden>
-        <div class="modal-content">
-            <h2>Nouveau Jalon</h2>
-            <form id="jalonForm">
-                <div class="form-group">
-                    <label for="jalonTitle">Nom du jalon</label>
-                    <input type="text" id="jalonTitle" name="titre" placeholder="Ex: Atteindre 100K abonnés" required>
-                </div>
-                <div class="form-group">
-                    <label for="jalonDate">Date</label>
-                    <input type="date" id="jalonDate" name="date" required>
-                </div>
-                <div class="form-group">
-                    <label for="jalonKpi">KPI associé (optionnel)</label>
-                    <input type="text" id="jalonKpi" name="kpi" placeholder="Ex: 100K abonnés">
-                </div>
-                <div class="modal-buttons">
-                    <button type="button" class="btn-modal cancel" onclick="document.getElementById('modalJalon').hidden = true">Annuler</button>
-                    <button type="submit" class="btn-modal submit">Créer</button>
-                </div>
-            </form>
-        </div>
-    </div>
 
     <script src="jalons.js"></script>
 
