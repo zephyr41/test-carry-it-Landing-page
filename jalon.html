@@ -279,7 +279,16 @@
             line-height: 1.6;
         }
 
-        /* Scroll indicator caché sur desktop */
+        /* Styles desktop */
+        .desktop-only {
+            display: block !important;
+        }
+
+        /* Action section et scroll indicator cachés sur desktop */
+        .panel-right .action-section {
+            display: none;
+        }
+
         .scroll-indicator {
             display: none;
         }
@@ -302,15 +311,20 @@
 
             .content-block { padding-bottom: 0; padding-top: 12px; }
 
-            /* Mobile: action-section repositionné sur la vidéo */
-            .action-section {
-                position: fixed !important;
-                bottom: auto !important;
-                top: calc(100vh - 60px) !important;
-                left: 0 !important;
-                right: 0 !important;
-                width: 100% !important;
-                padding: 0 20px !important;
+            /* Masquer desktop-only sur mobile */
+            .desktop-only {
+                display: none !important;
+            }
+
+            /* Mobile: action-section visible sur la vidéo après la quote */
+            .panel-right .action-section {
+                display: block !important;
+                position: absolute !important;
+                bottom: 130px !important;
+                left: 20px !important;
+                right: 20px !important;
+                width: calc(100% - 40px) !important;
+                padding: 0 !important;
                 margin: 0 !important;
                 z-index: 10;
                 background: transparent;
@@ -321,16 +335,16 @@
             }
 
             .action-section .btn-primary {
-                width: calc(100% - 0px) !important;
+                width: 100% !important;
             }
 
             /* Ajustement typographique pour mobile */
             h1 { font-size: 32px; letter-spacing: -1.5px; margin-bottom: 24px; }
             .phase-label { font-size: 9px; }
-            .grid-layout { gap: 6px; grid-template-columns: 1fr; }
-            .card { padding: 12px; min-height: auto; }
-            .card.kpi-main { grid-column: span 1; min-height: auto; padding: 12px; }
-            .card-title { font-size: 9px; margin-bottom: 4px; }
+            .grid-layout { gap: 12px; grid-template-columns: 1fr; margin-bottom: 32px; }
+            .card { padding: 14px; min-height: auto; }
+            .card.kpi-main { grid-column: span 1; min-height: auto; padding: 14px; }
+            .card-title { font-size: 9px; margin-bottom: 6px; }
             .card-content { font-size: 13px; }
             .card-content.kpi-value { font-size: 16px; }
             .card-content.date { font-size: 13px; }
@@ -377,7 +391,7 @@
             }
 
             .quote-title { font-size: 20px; margin-bottom: 12px; font-weight: 700; }
-            .quote-body { font-size: 13px; line-height: 1.6; }
+            .quote-body { font-size: 13px; line-height: 1.6; margin-bottom: 24px; }
 
 
             /* Scroll indicator visible sur mobile */
@@ -469,8 +483,8 @@
                     </div>
                 </div>
 
-                <!-- Action Primaire (Remontée et Directe) -->
-                <div class="action-section">
+                <!-- Action Primaire (Remontée et Directe) - DESKTOP -->
+                <div class="action-section desktop-only">
                     <p class="action-text">
                         La vision est claire. Pour que cet objectif prenne forme, il est essentiel de le transformer en plan d'action structuré.
                     </p>
@@ -512,6 +526,17 @@
         <div class="quote-container">
             <h2 class="quote-title">Prochaine Étape.</h2>
             <p class="quote-body">Un objectif sans jalons n'est qu'un souhait. Fixez les points de passage clairs pour que votre progression soit mesurable et réelle.</p>
+        </div>
+
+        <!-- Action Primaire (sur la vidéo mobile) -->
+        <div class="action-section">
+            <p class="action-text">
+                La vision est claire. Pour que cet objectif prenne forme, il est essentiel de le transformer en plan d'action structuré.
+            </p>
+            <button class="btn-primary" onclick="goToJalons()">
+                <span>Définir les Jalons</span>
+                <i class="ri-arrow-right-line"></i>
+            </button>
         </div>
 
         <!-- Scroll Indicator -->
