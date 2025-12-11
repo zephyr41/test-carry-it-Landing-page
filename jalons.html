@@ -2,30 +2,46 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Carry It - Configuration des Jalons</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Carry It - Configuration des Jalons (Retroplanning)</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Icons -->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <!-- Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        @font-face {
-            font-family: 'Rifton';
-            src: url('Rifton Font/rifton-regular.otf') format('opentype');
-        }
-
         :root {
+            /* --- PALETTE CARRY IT --- */
             --bg-body: #000000;
-            --bg-panel: #050507;
+            --surface-card: #0A0A0A;
+            --border-card: rgba(255, 255, 255, 0.12);
+            --border-focus: #FF4D00;
             --text-primary: #FFFFFF;
-            --text-secondary: #AAAAAA;
-            --accent: #FF5A1F;
-            --surface-card: rgba(28, 28, 30, 0.75);
-            --border-subtle: rgba(255, 255, 255, 0.1);
-            --ease-ios: cubic-bezier(0.32, 0.72, 0, 1);
+            --text-secondary: #9CA3AF;
+            --text-muted: #525252;
+            
+            /* L'orange "Lave" */
+            --accent: #FF4D00; 
+            --accent-hover: #FF6620;
+            --accent-dim: rgba(255, 77, 0, 0.15);
+
+            /* --- ANIMATIONS --- */
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-font-smoothing: antialiased; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
+        }
+
+        input, textarea { user-select: text; }
 
         body {
             background-color: var(--bg-body);
@@ -33,375 +49,738 @@
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             height: 100vh;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* NAVBAR */
+        /* --- HEADER --- */
         .navbar {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
-            height: 72px;
-            background: rgba(5, 5, 7, 0.95);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border-subtle);
-            padding: 0 64px;
+            height: 70px;
             display: flex;
+            align-items: center;
             justify-content: space-between;
-            align-items: center;
-            z-index: 1000;
+            padding: 0 24px;
+            z-index: 100;
+            background: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
         }
 
-        .btn-back {
-            background: rgba(255, 255, 255, 0.05);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: none;
+        .brand-logo {
+            font-weight: 900;
+            font-size: 14px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
             color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s var(--ease-ios);
         }
 
-        .btn-back:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .navbar-brand {
+        .phase-indicator {
             font-size: 11px;
             font-weight: 600;
-            letter-spacing: 2px;
-            color: var(--text-secondary);
+            letter-spacing: 1px;
+            color: var(--accent);
             text-transform: uppercase;
-            font-family: 'Rifton', serif;
-            opacity: 0.8;
+            background: var(--accent-dim);
+            padding: 6px 12px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 77, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 24px;
             cursor: pointer;
-            transition: opacity 0.2s var(--ease-ios);
         }
 
-        .navbar-brand:hover {
-            opacity: 1;
-        }
-
-        /* MAIN */
+        /* --- MAIN CONTENT --- */
         main {
-            height: calc(100vh - 72px);
-            margin-top: 72px;
+            flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             position: relative;
-            overflow: hidden;
+            padding-bottom: 140px; 
         }
 
-        /* JALON DISPLAY CONTAINER */
-        .jalon-container {
+        /* --- CARD SYSTEM --- */
+        .card-stage {
+            width: 100%;
+            max-width: 600px;
+            position: relative;
+            height: 420px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 40px;
-            width: 100%;
-            height: 100%;
-            padding: 40px;
         }
 
-        .nav-btn {
+        .milestone-card {
+            width: 90%;
             background: var(--surface-card);
-            border: 1px solid var(--border-subtle);
-            color: var(--text-primary);
-            width: 48px;
-            height: 48px;
+            border: 1px solid var(--border-card);
+            border-radius: 24px;
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            position: absolute;
+            opacity: 0;
+            transform: scale(0.95);
+            transition: all 0.4s var(--ease-out-expo);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+        }
+
+        .milestone-card.active {
+            opacity: 1;
+            transform: scale(1);
+            z-index: 2;
+        }
+
+        /* Card Header */
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .step-badge {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-edit {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-card);
+            color: var(--text-secondary);
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.3s var(--ease-ios);
-            font-size: 20px;
+            transition: all 0.2s;
         }
-
-        .nav-btn:hover:not(:disabled) {
-            background: rgba(255, 90, 31, 0.1);
-            border-color: var(--accent);
+        .btn-edit:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        .btn-edit.editing {
             color: var(--accent);
+            border-color: var(--accent);
+            background: var(--accent-dim);
         }
 
-        .nav-btn:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
+        /* Editable Fields */
+        .input-group {
+            position: relative;
+            margin-bottom: 16px;
         }
 
-        /* JALON DISPLAY */
-        .jalon-display {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 24px;
-            flex: 1;
-            max-width: 600px;
-        }
-
-        .jalon-badge {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: var(--accent);
-            color: #000;
-            font-size: 32px;
+        .field-label {
+            font-size: 11px;
             font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 8px 32px rgba(255, 90, 31, 0.4);
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            display: block;
         }
 
-        .jalon-info {
-            text-align: center;
-        }
-
-        .jalon-title {
+        .milestone-input-title {
+            width: 100%;
+            background: transparent;
+            border: none;
+            font-family: 'Inter', sans-serif;
             font-size: 32px;
-            font-weight: 700;
-            margin-bottom: 12px;
+            font-weight: 800;
+            color: var(--text-primary);
+            line-height: 1.1;
+            letter-spacing: -0.5px;
+            padding: 0;
+            margin: 0;
+            border-bottom: 2px solid transparent;
+            border-radius: 0;
+            transition: border-color 0.3s;
         }
 
-        .jalon-date {
-            font-size: 16px;
+        .milestone-input-desc {
+            width: 100%;
+            background: transparent;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            line-height: 1.6;
             color: var(--text-secondary);
-            margin-bottom: 24px;
+            resize: none;
+            padding: 0;
+            min-height: 80px;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.3s;
         }
 
-        .jalon-counter {
-            font-size: 14px;
-            color: var(--text-secondary);
-            margin-top: 24px;
+        .milestone-input-title:focus,
+        .milestone-input-desc:focus {
+            border-bottom-color: var(--accent);
+            outline: none;
         }
 
-        /* CONTROLS */
-        .controls {
-            position: fixed;
-            bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%);
+        /* KPI Controls */
+        .kpi-controls {
             display: flex;
             gap: 12px;
-            z-index: 999;
+            align-items: center;
         }
 
-        .btn-control {
-            background: var(--surface-card);
-            border: 1px solid var(--border-subtle);
+        .kpi-type-select {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-card);
             color: var(--text-primary);
-            padding: 12px 20px;
-            border-radius: 24px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
             font-size: 14px;
-            font-weight: 500;
             cursor: pointer;
-            transition: all 0.3s var(--ease-ios);
-            backdrop-filter: blur(20px);
-        }
-
-        .btn-control:hover {
-            background: rgba(255, 90, 31, 0.1);
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
-        .btn-control.primary {
-            background: var(--accent);
-            border-color: var(--accent);
-            color: #000;
-            font-weight: 600;
-        }
-
-        .btn-control.primary:hover {
-            background: rgba(255, 90, 31, 0.9);
-        }
-
-        /* PROJECT TITLE */
-        #projectTitle {
-            padding: 20px 40px;
-        }
-
-        #projectTitle h2 {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin: 0;
-        }
-
-        /* TIMELINE MONTHS */
-        .timeline-months {
-            position: fixed;
-            bottom: 120px;
-            left: 0;
-            right: 0;
-            height: 80px;
-            display: flex;
-            align-items: center;
-            padding: 0 40px;
-            overflow-x: auto;
-            overflow-y: hidden;
-            gap: 16px;
-            scrollbar-width: thin;
-            scrollbar-color: var(--border-subtle) transparent;
-        }
-
-        .timeline-months::-webkit-scrollbar {
-            height: 4px;
-        }
-
-        .timeline-months::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .timeline-months::-webkit-scrollbar-thumb {
-            background: var(--border-subtle);
-            border-radius: 2px;
-        }
-
-        .month-marker {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-            min-width: 60px;
-            padding: 8px;
-            border-radius: 12px;
-            background: transparent;
-            border: 1px solid var(--border-subtle);
-            transition: all 0.3s var(--ease-ios);
+            transition: all 0.2s;
             flex-shrink: 0;
         }
 
-        .month-marker.active {
-            background: rgba(255, 90, 31, 0.1);
+        .kpi-type-select:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: var(--border-focus);
+        }
+
+        .kpi-type-select:focus {
+            outline: none;
             border-color: var(--accent);
-            color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(255, 77, 0, 0.1);
         }
 
-        .month-number {
-            font-size: 12px;
+        .kpi-value-input {
+            flex: 1;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-card);
+            color: var(--text-primary);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .kpi-value-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .kpi-value-input:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: var(--border-focus);
+        }
+
+        .kpi-value-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(255, 77, 0, 0.1);
+        }
+
+        /* Card Meta */
+        .card-meta {
+            margin-top: auto;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-card);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .date-badge {
+            color: var(--accent);
             font-weight: 600;
-            color: var(--text-secondary);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
-        .month-marker.active .month-number {
+        .days-left {
+            font-size: 12px;
+            color: var(--text-muted);
+            background: rgba(255,255,255,0.05);
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+
+        /* Question prompt for Backcasting */
+        .retro-prompt {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 13px;
             color: var(--accent);
+            font-weight: 500;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.5s ease;
+        }
+        .retro-prompt.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- TIMELINE (RULER) --- */
+        .timeline-container {
+            position: fixed;
+            bottom: 100px;
+            left: 0;
+            width: 100%;
+            height: 90px;
+            mask-image: linear-gradient(to right, transparent, black 20%, black 80%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 20%, black 80%, transparent);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .timeline-indicator {
+            position: absolute;
+            left: 50%;
+            top: 10px;
+            bottom: 10px;
+            width: 2px;
+            background: var(--accent);
+            z-index: 10;
+            transform: translateX(-50%);
+            border-radius: 2px;
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        .timeline-track {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            overflow-x: auto;
+            padding: 0 50vw;
+            scroll-behavior: smooth;
+            height: 100%;
+            scrollbar-width: none;
+            cursor: grab;
+        }
+        .timeline-track:active { cursor: grabbing; }
+        .timeline-track::-webkit-scrollbar { display: none; }
+
+        .timeline-month {
+            flex-shrink: 0;
+            width: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.3;
+            transition: opacity 0.3s;
+            position: relative;
+            height: 100%;
+        }
+
+        .timeline-month.active { opacity: 1; }
+
+        .tick {
+            width: 1px;
+            height: 12px;
+            background: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+        .timeline-month.active .tick {
+            height: 18px;
+            background: var(--text-primary);
+            width: 2px;
         }
 
         .month-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            line-height: 1;
+        }
+        .year-label {
             font-size: 10px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            font-variant-numeric: tabular-nums;
+            font-weight: 500;
+        }
+        .timeline-month.active .year-label { color: var(--text-primary); }
+
+        .has-milestone::after {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+            position: absolute;
+            bottom: 5px;
+            box-shadow: 0 0 5px var(--accent);
+        }
+
+        /* --- FOOTER ACTIONS --- */
+        .footer-actions {
+            position: fixed;
+            bottom: 30px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between; /* To enable Back button placement */
+            padding: 0 24px;
+            z-index: 50;
+            pointer-events: none;
+        }
+
+        .btn-nav {
+            pointer-events: auto;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.1s, background 0.2s;
+            font-size: 20px;
+        }
+
+        .btn-prev {
+            background: var(--surface-card);
+            border: 1px solid var(--border-card);
             color: var(--text-secondary);
         }
-
-        .month-marker.active .month-label {
-            color: var(--accent);
+        .btn-prev:hover {
+            color: var(--text-primary);
+            background: rgba(255,255,255,0.1);
         }
 
-        /* MOBILE */
-        @media (max-width: 1024px) {
-            .navbar {
-                padding: 0 20px;
-            }
-
-            .jalon-container {
-                gap: 20px;
-            }
-
-            .nav-btn {
-                width: 40px;
-                height: 40px;
-                font-size: 16px;
-            }
-
-            .jalon-badge {
-                width: 70px;
-                height: 70px;
-                font-size: 28px;
-            }
-
-            .jalon-title {
-                font-size: 24px;
-            }
-
-            .jalon-date {
-                font-size: 14px;
-            }
-
-            .timeline-months {
-                bottom: 100px;
-                padding: 0 20px;
-                gap: 12px;
-            }
-
-            .month-marker {
-                min-width: 50px;
-                padding: 6px;
-            }
-
-            .month-number {
-                font-size: 11px;
-            }
-
-            .month-label {
-                font-size: 9px;
-            }
-
-            .controls {
-                bottom: 20px;
-            }
-
-            .btn-control {
-                padding: 10px 16px;
-                font-size: 13px;
-            }
+        .btn-next {
+            background: var(--text-primary);
+            color: #000;
+            padding: 0 24px;
+            border-radius: 25px;
+            width: auto;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 5px 20px rgba(255,255,255,0.15);
+            display: flex;
+            gap: 8px;
         }
+        .btn-next:active { transform: scale(0.96); }
+
+        .spacer { width: 50px; } /* To balance the center if needed, or just flex-start/end */
+
     </style>
 </head>
 <body>
 
     <nav class="navbar">
-        <button class="btn-back" onclick="window.history.back()">
-            <i class="ri-arrow-left-line"></i>
-        </button>
-        <span class="navbar-brand" onclick="window.location.href='index.html'">CARRY IT</span>
+        <span class="brand-logo">CARRY IT</span>
+        <div class="phase-indicator">
+            <i class="ri-rewind-line"></i> Retroplanning
+        </div>
+        <button class="close-btn"><i class="ri-close-line"></i></button>
     </nav>
 
     <main>
-        <div id="projectTitle" style="text-align: center; margin-bottom: 40px; margin-top: 20px;">
-            <!-- Project title inserted here -->
-        </div>
-
-        <div class="jalon-container">
-            <button class="nav-btn" id="prevBtn" title="Jalon précédent">
-                <i class="ri-arrow-left-s-line"></i>
-            </button>
-
-            <div class="jalon-display" id="jalonDisplay">
-                <!-- Jalon info displayed here -->
+        <div class="card-stage">
+            <div class="retro-prompt" id="retroPrompt">
+                Pour réussir ça, que dois-je faire juste avant ?
             </div>
 
-            <button class="nav-btn" id="nextBtn" title="Jalon suivant">
-                <i class="ri-arrow-right-s-line"></i>
-            </button>
-        </div>
+            <div class="milestone-card active" id="card">
+                <div class="card-header">
+                    <span class="step-badge">Jalon <span id="stepDisplay">Final</span></span>
+                    <button class="btn-edit" id="editBtn" title="Modifier le texte">
+                        <i class="ri-pencil-fill"></i>
+                    </button>
+                </div>
 
-        <div class="timeline-months" id="timelineMonths">
-            <!-- Months generated dynamically -->
-        </div>
+                <div class="input-group">
+                    <div class="field-label">L'Identité</div>
+                    <input type="text" class="milestone-input-title" id="inputTitle" placeholder="Nom du jalon - Ex: 20km" value="">
+                </div>
 
-        <div class="controls">
-            <button class="btn-control primary" id="validateBtn">Valider mes Jalons</button>
+                <div class="input-group">
+                    <div class="field-label">L'Objectif Spécifique</div>
+                    <textarea class="milestone-input-desc" id="inputDesc" placeholder="Ce qui aura été accompli - Ex: 20km courus, rythme stable" rows="3"></textarea>
+                </div>
+
+                <div class="input-group">
+                    <div class="field-label">Le KPI</div>
+                    <div class="kpi-controls">
+                        <select class="kpi-type-select" id="kpiTypeSelect">
+                            <option value="numeric">Numérique</option>
+                            <option value="boolean">Oui/Non</option>
+                        </select>
+                        <input type="text" class="kpi-value-input" id="kpiValueInput" placeholder="Ex: 20km ou Oui">
+                    </div>
+                </div>
+
+                <div class="card-meta">
+                    <div class="date-badge">
+                        <i class="ri-calendar-line"></i>
+                        <span id="dateDisplay">--</span>
+                    </div>
+                    <span class="days-left" id="daysLeftDisplay">--</span>
+                </div>
+            </div>
         </div>
     </main>
 
-    <script src="jalons.js"></script>
+    <div class="timeline-container">
+        <div class="timeline-indicator"></div>
+        <div class="timeline-track" id="timelineTrack">
+            <!-- Timeline generated via JS -->
+        </div>
+    </div>
 
+    <div class="footer-actions">
+        <!-- Bouton Retour (Vers le futur) -->
+        <button class="btn-nav btn-prev" id="prevBtn" title="Revenir au jalon suivant (futur)">
+            <i class="ri-arrow-right-line"></i> <!-- Flèche droite car on avance dans le temps vers le futur, mais "retour" dans la navigation -->
+        </button>
+
+        <!-- Bouton Action (Vers le passé/présent) -->
+        <button class="btn-nav btn-next" id="nextBtn">
+            <span>Planifier l'étape précédente</span>
+            <i class="ri-arrow-left-line"></i>
+        </button>
+    </div>
+
+    <script>
+        // --- DATA & CONFIG ---
+        const projectDurationMonths = 24;
+        const projectDeadline = new Date();
+        projectDeadline.setMonth(projectDeadline.getMonth() + projectDurationMonths);
+
+        // RETROPLANNING : L'ordre est inversé.
+        // Index 0 = LA FIN (Offset 0).
+        // Index N = LE DÉBUT (Offset 24).
+        let milestones = [
+            { offset: 0, title: "Objectif Final", desc: "Atteinte des 300 utilisateurs payants (~2400€/mois). Le système est stable et autonome.", kpiType: "numeric", kpiValue: "300" },
+            { offset: 3, title: "Optimisation & Rentabilité", desc: "Maximisation de la conversion. Le produit est complet, on affine les coûts.", kpiType: "numeric", kpiValue: "" },
+            { offset: 6, title: "Expansion", desc: "Mise en place des leviers de croissance. Le produit fonctionne, il faut du volume.", kpiType: "numeric", kpiValue: "" },
+            { offset: 12, title: "Traction (MVP Validé)", desc: "Première base d'utilisateurs fidèles. Le produit délivre sa promesse de base.", kpiType: "boolean", kpiValue: "yes" },
+            { offset: 18, title: "Prototype & Bêta", desc: "Première version testable par des vrais utilisateurs. Feedback loop active.", kpiType: "boolean", kpiValue: "no" },
+            { offset: 24, title: "Lancement (Kick-off)", desc: "Démarrage du projet. Tout commence ici.", kpiType: "boolean", kpiValue: "no" }
+        ];
+
+        // --- DOM ELEMENTS ---
+        const timelineTrack = document.getElementById('timelineTrack');
+        const inputTitle = document.getElementById('inputTitle');
+        const inputDesc = document.getElementById('inputDesc');
+        const kpiTypeSelect = document.getElementById('kpiTypeSelect');
+        const kpiValueInput = document.getElementById('kpiValueInput');
+        const dateDisplay = document.getElementById('dateDisplay');
+        const daysLeftDisplay = document.getElementById('daysLeftDisplay');
+        const stepDisplay = document.getElementById('stepDisplay');
+        const retroPrompt = document.getElementById('retroPrompt');
+
+        const nextBtn = document.getElementById('nextBtn');
+        const prevBtn = document.getElementById('prevBtn');
+        const card = document.getElementById('card');
+
+        // State
+        let currentMilestoneIndex = 0; // Starts at 0 (End Goal)
+        let allMonths = [];
+
+        // --- INIT ---
+        function init() {
+            generateTimelineData();
+            renderTimeline();
+            updateCard(0, false);
+            updateButtons();
+        }
+
+        // --- TIMELINE GENERATION ---
+        function generateTimelineData() {
+            allMonths = [];
+            // On génère la timeline de gauche (passé/start) à droite (futur/end)
+            // Offset 24 (Start) -> Offset 0 (End)
+            for (let i = projectDurationMonths; i >= 0; i--) {
+                const d = new Date(projectDeadline);
+                d.setMonth(projectDeadline.getMonth() - i);
+                
+                // Find matching milestone
+                const linkedIndex = milestones.findIndex(m => Math.abs(m.offset - i) < 1);
+                
+                allMonths.push({
+                    offset: i,
+                    date: d,
+                    label: d.toLocaleDateString('fr-FR', { month: 'short' }).toUpperCase(),
+                    year: d.getFullYear(),
+                    milestoneIndex: linkedIndex 
+                });
+            }
+        }
+
+        function renderTimeline() {
+            timelineTrack.innerHTML = '';
+            
+            allMonths.forEach((m, idx) => {
+                const el = document.createElement('div');
+                el.className = `timeline-month ${m.milestoneIndex !== -1 ? 'has-milestone' : ''}`;
+                el.dataset.index = idx;
+                
+                if (m.milestoneIndex !== -1) {
+                    el.onclick = () => updateCard(m.milestoneIndex);
+                    el.style.cursor = 'pointer';
+                }
+
+                el.innerHTML = `
+                    <div class="tick"></div>
+                    <span class="month-label">${m.label}</span>
+                    <span class="year-label">${m.year}</span>
+                `;
+                timelineTrack.appendChild(el);
+            });
+        }
+
+        // --- CORE UPDATE LOGIC ---
+        function updateCard(index, animate = true) {
+            if (index < 0 || index >= milestones.length) return;
+
+            // 1. Save state logic (basic)
+            milestones[currentMilestoneIndex].title = inputTitle.value;
+            milestones[currentMilestoneIndex].desc = inputDesc.value;
+            milestones[currentMilestoneIndex].kpiType = kpiTypeSelect.value;
+            milestones[currentMilestoneIndex].kpiValue = kpiValueInput.value;
+
+            currentMilestoneIndex = index;
+            const data = milestones[index];
+
+            // 2. Animate Transition
+            if (animate) {
+                // Direction of animation depends on if we are going Back or Forward in planning
+                card.style.opacity = '0.5';
+                card.style.transform = 'translateX(-10px) scale(0.98)'; // Slight shift left
+                setTimeout(() => {
+                    fillCardData(data);
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateX(0) scale(1)';
+                }, 200);
+            } else {
+                fillCardData(data);
+            }
+
+            // 3. Highlight Ruler
+            highlightTimelineMonth(data.offset);
+
+            // 4. Update Prompts & Buttons
+            updateButtons();
+        }
+
+        function fillCardData(data) {
+            inputTitle.value = data.title;
+            inputDesc.value = data.desc;
+            kpiTypeSelect.value = data.kpiType;
+            kpiValueInput.value = data.kpiValue;
+
+            // Label Logic
+            if (currentMilestoneIndex === 0) stepDisplay.innerText = "Final (Objectif)";
+            else if (currentMilestoneIndex === milestones.length - 1) stepDisplay.innerText = "Départ (Aujourd'hui)";
+            else stepDisplay.innerText = `Intermédiaire ${currentMilestoneIndex}`;
+
+            // Prompt Logic (Retroplanning Question)
+            if (currentMilestoneIndex === milestones.length - 1) {
+                retroPrompt.classList.remove('visible'); // No question for Start
+            } else {
+                retroPrompt.innerText = "Pour réussir ça, que dois-je faire juste avant ?";
+                retroPrompt.classList.add('visible');
+            }
+
+            // Date & Days Logic
+            const dateObj = new Date(projectDeadline);
+            dateObj.setMonth(projectDeadline.getMonth() - data.offset);
+            dateDisplay.innerText = dateObj.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+
+            const now = new Date();
+            const diffTime = dateObj - now;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            if (data.offset === 0) daysLeftDisplay.innerText = "Date butoir";
+            else daysLeftDisplay.innerText = diffDays > 0 ? `Dans ${Math.floor(diffDays/30)} mois` : "Maintenant";
+        }
+
+        function updateButtons() {
+            // BACK BUTTON (Vers le futur/jalon précédent dans la liste inversée)
+            if (currentMilestoneIndex > 0) {
+                prevBtn.style.opacity = '1';
+                prevBtn.style.pointerEvents = 'auto';
+                // Icon points Right (Future)
+                prevBtn.innerHTML = '<i class="ri-arrow-right-line"></i>';
+            } else {
+                prevBtn.style.opacity = '0';
+                prevBtn.style.pointerEvents = 'none';
+            }
+
+            // NEXT BUTTON (Vers le passé/jalon suivant à planifier)
+            const btnSpan = nextBtn.querySelector('span');
+            const btnIcon = nextBtn.querySelector('i');
+            
+            if (currentMilestoneIndex < milestones.length - 1) {
+                btnSpan.innerText = "Planifier l'étape précédente";
+                btnIcon.className = "ri-arrow-left-line"; // Arrow Left (Past)
+                nextBtn.onclick = () => updateCard(currentMilestoneIndex + 1);
+            } else {
+                btnSpan.innerText = "Valider le Retroplanning";
+                btnIcon.className = "ri-check-line";
+                nextBtn.onclick = () => alert("Planification terminée !");
+            }
+        }
+
+        function highlightTimelineMonth(offset) {
+            const monthIndex = allMonths.findIndex(m => m.offset === offset);
+            const monthEls = document.querySelectorAll('.timeline-month');
+            
+            monthEls.forEach(el => el.classList.remove('active'));
+            if (monthEls[monthIndex]) {
+                monthEls[monthIndex].classList.add('active');
+                monthEls[monthIndex].scrollIntoView({
+                    behavior: 'smooth',
+                    inline: 'center',
+                    block: 'nearest'
+                });
+            }
+        }
+
+        // --- EVENTS ---
+        document.getElementById('editBtn').addEventListener('click', () => inputTitle.focus());
+        prevBtn.addEventListener('click', () => updateCard(currentMilestoneIndex - 1)); // Go "Back" to Future
+
+        // Inputs
+        inputTitle.addEventListener('input', (e) => milestones[currentMilestoneIndex].title = e.target.value);
+        inputDesc.addEventListener('input', (e) => milestones[currentMilestoneIndex].desc = e.target.value);
+        kpiTypeSelect.addEventListener('change', (e) => milestones[currentMilestoneIndex].kpiType = e.target.value);
+        kpiValueInput.addEventListener('input', (e) => milestones[currentMilestoneIndex].kpiValue = e.target.value);
+
+        // Key Nav
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') updateCard(currentMilestoneIndex + 1); // Left = Past = Next Step in Retroplanning
+            if (e.key === 'ArrowRight') updateCard(currentMilestoneIndex - 1); // Right = Future = Prev Step
+        });
+
+        init();
+
+    </script>
 </body>
 </html>
