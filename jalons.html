@@ -466,10 +466,10 @@
     <!-- CONTROLS -->
     <div class="controls-bottom">
         <button class="btn-nav" id="prevBtn" title="Revenir vers l'objectif final">
-            VERS L'OBJECTIF <i class="ri-arrow-right-line"></i>
+            <i class="ri-arrow-left-line"></i> VERS L'OBJECTIF
         </button>
         <button class="btn-nav primary" id="nextBtn">
-            <i class="ri-arrow-left-line"></i> JALON ANTÉCÉDENT
+            JALON ANTÉCÉDENT <i class="ri-arrow-right-line"></i>
         </button>
     </div>
 
@@ -500,8 +500,6 @@
         let currentMilestoneIndex = 0;
         let isScrollingViewport = false;
         let isScrollingTimeline = false;
-        let lastViewportScroll = 0;
-        let lastTimelineScroll = 0;
 
         // --- UTILS ---
         function formatDate(milestone) {
@@ -702,9 +700,9 @@
 
         // --- UPDATE BUTTONS ---
         function updateButtons() {
-            // Prev button
+            // Prev button (VERS L'OBJECTIF = goes LEFT)
             if (currentMilestoneIndex > 0) {
-                prevBtn.innerHTML = 'VERS L\'OBJECTIF <i class="ri-arrow-right-line"></i>';
+                prevBtn.innerHTML = '<i class="ri-arrow-left-line"></i> VERS L\'OBJECTIF';
                 prevBtn.style.opacity = '1';
                 prevBtn.style.pointerEvents = 'auto';
             } else {
@@ -712,9 +710,9 @@
                 prevBtn.style.pointerEvents = 'none';
             }
 
-            // Next button
+            // Next button (JALON ANTÉCÉDENT = goes RIGHT)
             if (currentMilestoneIndex < milestones.length - 1) {
-                nextBtn.innerHTML = '<i class="ri-arrow-left-line"></i> JALON ANTÉCÉDENT';
+                nextBtn.innerHTML = 'JALON ANTÉCÉDENT <i class="ri-arrow-right-line"></i>';
             } else {
                 nextBtn.innerHTML = '<i class="ri-check-double-line"></i> VALIDER LE PLAN';
             }
@@ -760,17 +758,19 @@
         function syncScrolls() {
             // Quand le viewport scroll, la timeline scroll aussi
             timelineViewport.addEventListener('scroll', () => {
-                if (isScrollingTimeline) return; // Éviter la boucle infinie
+                if (isScrollingTimeline) return;
 
                 isScrollingViewport = true;
-                const viewportScrollDelta = timelineViewport.scrollLeft - lastViewportScroll;
-                lastViewportScroll = timelineViewport.scrollLeft;
 
-                // Appliquer le même delta à la timeline
-                lastTimelineScroll += viewportScrollDelta;
-                timelineTrack.scrollLeft = lastTimelineScroll;
+                const viewportScroll = timelineViewport.scrollLeft;
+                const viewportMax = timelineViewport.scrollWidth - timelineViewport.clientWidth;
+                const timelineMax = timelineTrack.scrollWidth - timelineTrack.parentElement.clientWidth;
 
-                // Reset flag après un délai pour permettre au scroll listener de se déclencher
+                if (viewportMax > 0 && timelineMax > 0) {
+                    const scrollPercent = viewportScroll / viewportMax;
+                    timelineTrack.scrollLeft = scrollPercent * timelineMax;
+                }
+
                 requestAnimationFrame(() => {
                     isScrollingViewport = false;
                 });
@@ -778,17 +778,19 @@
 
             // Quand la timeline scroll, le viewport scroll aussi
             timelineTrack.addEventListener('scroll', () => {
-                if (isScrollingViewport) return; // Éviter la boucle infinie
+                if (isScrollingViewport) return;
 
                 isScrollingTimeline = true;
-                const timelineScrollDelta = timelineTrack.scrollLeft - lastTimelineScroll;
-                lastTimelineScroll = timelineTrack.scrollLeft;
 
-                // Appliquer le même delta au viewport
-                lastViewportScroll += timelineScrollDelta;
-                timelineViewport.scrollLeft = lastViewportScroll;
+                const timelineScroll = timelineTrack.scrollLeft;
+                const timelineMax = timelineTrack.scrollWidth - timelineTrack.parentElement.clientWidth;
+                const viewportMax = timelineViewport.scrollWidth - timelineViewport.clientWidth;
 
-                // Reset flag après un délai pour permettre au scroll listener de se déclencher
+                if (timelineMax > 0 && viewportMax > 0) {
+                    const scrollPercent = timelineScroll / timelineMax;
+                    timelineViewport.scrollLeft = scrollPercent * viewportMax;
+                }
+
                 requestAnimationFrame(() => {
                     isScrollingTimeline = false;
                 });
