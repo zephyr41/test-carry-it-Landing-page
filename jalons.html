@@ -3,28 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Carry It - Configuration des Jalons (Retroplanning)</title>
+    <title>Carry It - Cockpit Jalons</title>
 
     <!-- Icons -->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-    <!-- Font Inter -->
+    <!-- Font : Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            /* --- PALETTE CARRY IT --- */
-            --bg-body: #000000;
-            --surface-card: #0A0A0A;
-            --border-card: rgba(255, 255, 255, 0.12);
-            --border-focus: #FF4D00;
-            --text-primary: #FFFFFF;
-            --text-secondary: #9CA3AF;
-            --text-muted: #525252;
-            
-            /* L'orange "Lave" */
-            --accent: #FF4D00; 
-            --accent-hover: #FF6620;
-            --accent-dim: rgba(255, 77, 0, 0.15);
+            /* --- PALETTE COCKPIT CARRY IT --- */
+            --bg-deep: #050505;        /* Noir Absolu */
+            --surface: #0F0F0F;        /* Surface Technique */
+            --surface-active: #1A1A1A;
+
+            --text-primary: #E0E0E0;   /* Blanc cassé technique */
+            --text-secondary: #666666; /* Gris neutre */
+            --text-dim: #333333;
+
+            --accent: #FF4D00;         /* Orange Lave (Alerte/Action) */
+            --accent-dim: rgba(255, 77, 0, 0.1);
+            --accent-glow: rgba(255, 77, 0, 0.2);
+
+            --border: #222222;         /* Limites strictes */
+            --border-active: #444444;
+
+            /* Safe Areas */
+            --safe-top: env(safe-area-inset-top, 20px);
+            --safe-bottom: env(safe-area-inset-bottom, 20px);
 
             /* --- ANIMATIONS --- */
             --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
@@ -44,7 +50,7 @@
         input, textarea { user-select: text; }
 
         body {
-            background-color: var(--bg-body);
+            background-color: var(--bg-deep);
             color: var(--text-primary);
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             height: 100vh;
@@ -53,332 +59,242 @@
             flex-direction: column;
         }
 
-        /* --- HEADER --- */
-        .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 70px;
+        /* --- HUD (HEAD UP DISPLAY) --- */
+        .hud-top {
+            height: 50px;
+            padding-top: var(--safe-top);
+            padding-left: 20px;
+            padding-right: 20px;
             display: flex;
-            align-items: center;
+            align-items: flex-end;
             justify-content: space-between;
-            padding: 0 24px;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-deep);
             z-index: 100;
-            background: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
-        }
-
-        .brand-logo {
-            font-weight: 900;
-            font-size: 14px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            color: var(--text-primary);
-        }
-
-        .phase-indicator {
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 1px;
-            color: var(--accent);
-            text-transform: uppercase;
-            background: var(--accent-dim);
-            padding: 6px 12px;
-            border-radius: 4px;
-            border: 1px solid rgba(255, 77, 0, 0.2);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            font-size: 24px;
-            cursor: pointer;
-        }
-
-        /* --- MAIN CONTENT --- */
-        main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            padding-bottom: 140px; 
-        }
-
-        /* --- CARD SYSTEM --- */
-        .card-stage {
-            width: 100%;
-            max-width: 600px;
-            position: relative;
-            height: 420px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .milestone-card {
-            width: 90%;
-            background: var(--surface-card);
-            border: 1px solid var(--border-card);
-            border-radius: 24px;
-            padding: 32px;
-            display: flex;
-            flex-direction: column;
-            position: absolute;
-            opacity: 0;
-            transform: scale(0.95);
-            transition: all 0.4s var(--ease-out-expo);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-        }
-
-        .milestone-card.active {
-            opacity: 1;
-            transform: scale(1);
-            z-index: 2;
-        }
-
-        /* Card Header */
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 16px;
-        }
-
-        .step-badge {
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .btn-edit {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-card);
-            color: var(--text-secondary);
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .btn-edit:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--text-primary);
-            border-color: rgba(255, 255, 255, 0.3);
-        }
-        .btn-edit.editing {
-            color: var(--accent);
-            border-color: var(--accent);
-            background: var(--accent-dim);
-        }
-
-        /* Editable Fields */
-        .input-group {
-            position: relative;
-            margin-bottom: 16px;
-        }
-
-        .field-label {
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--accent);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 8px;
-            display: block;
-        }
-
-        .milestone-input-title {
-            width: 100%;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--border-card);
-            font-family: 'Inter', sans-serif;
-            font-size: 32px;
-            font-weight: 800;
-            color: var(--text-primary);
-            line-height: 1.1;
-            letter-spacing: -0.5px;
-            padding: 12px 16px;
-            margin: 0;
-            border-radius: 12px;
-            transition: all 0.3s;
-        }
-
-        .milestone-input-title::placeholder {
-            font-size: 16px;
-            color: var(--text-muted);
-        }
-
-        .milestone-input-title:hover {
-            background: rgba(255,255,255,0.08);
-            border-color: var(--accent);
-        }
-
-        .milestone-input-title:focus {
-            outline: none;
-            background: rgba(255,255,255,0.1);
-            border-color: var(--accent);
-            box-shadow: 0 0 0 2px rgba(255, 77, 0, 0.1);
-        }
-
-        .milestone-input-desc {
-            width: 100%;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--border-card);
-            font-family: 'Inter', sans-serif;
-            font-size: 15px;
-            line-height: 1.6;
-            color: var(--text-secondary);
-            resize: none;
-            padding: 12px 16px;
-            min-height: 80px;
-            border-radius: 12px;
-            transition: all 0.3s;
-        }
-
-        .milestone-input-desc::placeholder {
-            color: var(--text-muted);
-        }
-
-        .milestone-input-desc:hover {
-            background: rgba(255,255,255,0.08);
-            border-color: var(--accent);
-        }
-
-        .milestone-input-desc:focus {
-            outline: none;
-            background: rgba(255,255,255,0.1);
-            border-color: var(--accent);
-            box-shadow: 0 0 0 2px rgba(255, 77, 0, 0.1);
-        }
-
-        /* KPI Controls */
-        .kpi-controls {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-
-        .kpi-type-select {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--border-card);
-            color: var(--text-primary);
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-family: 'Inter', sans-serif;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s;
             flex-shrink: 0;
         }
 
-        .kpi-type-select:hover {
-            background: rgba(255,255,255,0.1);
-            border-color: var(--border-focus);
+        .hud-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .kpi-type-select:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 2px rgba(255, 77, 0, 0.1);
-        }
+        .hud-value { color: var(--accent); font-weight: 700; }
 
-        .kpi-value-input {
+        .btn-icon {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 18px;
+            cursor: pointer;
+            padding: 4px;
+            transition: color 0.2s;
+        }
+        .btn-icon:hover { color: var(--text-primary); }
+
+        /* --- TIMELINE VIEWPORT (Main scroll container) --- */
+        .timeline-viewport {
             flex: 1;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--border-card);
+            width: 100vw;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            scrollbar-width: none;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        .timeline-viewport::-webkit-scrollbar { display: none; }
+
+        /* Flex container pour le scroll horizontal */
+        .timeline-scroll {
+            display: flex;
+            flex-direction: row;
+            width: fit-content;
+            height: 100%;
+            flex: 1;
+        }
+
+        /* --- CARD SLOTS --- */
+        .card-slot {
+            flex: 0 0 100vw;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            scroll-snap-align: center;
+            scroll-snap-stop: always;
+            position: relative;
+            padding-top: 20px;
+            padding-bottom: 200px;
+        }
+
+        .card-wrapper {
+            width: 90%;
+            max-width: 460px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* SENTINEL BLOCK (DATE) */
+        .sentinel-block {
+            text-align: center;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            padding: 12px;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            align-self: center;
+            margin-bottom: 10px;
+        }
+        .sentinel-date {
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
             color: var(--text-primary);
-            padding: 8px 12px;
-            border-radius: 8px;
+            text-transform: uppercase;
+        }
+        .sentinel-icon { color: var(--accent); font-size: 14px; }
+
+        /* DATA BLOCKS */
+        .data-block {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            position: relative;
+        }
+
+        .block-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 10px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            letter-spacing: 1px;
+        }
+
+        /* INPUTS */
+        .input-raw {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            padding: 12px 0;
+            border-radius: 0;
+            transition: border-color 0.2s;
+            width: 100%;
+        }
+        .input-raw:focus {
+            border-bottom-color: var(--accent);
+        }
+        .input-raw::placeholder { color: var(--text-dim); }
+
+        .input-title {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            line-height: 1.1;
+        }
+        .input-title::placeholder { font-size: 16px; }
+
+        .input-area {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-primary);
             font-family: 'Inter', sans-serif;
             font-size: 14px;
+            line-height: 1.6;
+            padding: 16px;
+            min-height: 120px;
+            resize: none;
+            border-radius: 4px;
+            transition: border-color 0.2s;
+        }
+        .input-area:focus { border-color: var(--accent); }
+        .input-area::placeholder { color: var(--text-dim); }
+
+        /* KPI WRAPPER */
+        .kpi-wrapper {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            border-bottom: 1px solid var(--border);
+            padding: 8px 0;
+            transition: border-color 0.2s;
+        }
+        .kpi-wrapper:focus-within { border-bottom-color: var(--accent); }
+
+        .kpi-icon { color: var(--accent); font-size: 16px; }
+
+        .input-kpi {
+            background: transparent;
+            border: none;
+            color: var(--accent);
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            flex: 1;
+            padding: 0;
+        }
+        .input-kpi::placeholder { color: var(--text-dim); font-weight: 400; }
+
+        /* CARD CONNECTOR (Add button) */
+        .card-connector {
+            position: absolute;
+            right: -30px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.3;
+            transition: opacity 0.2s;
+        }
+
+        .card-slot:hover .card-connector {
+            opacity: 1;
+        }
+
+        .btn-add-jalon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--accent);
+            border: 1px solid var(--accent);
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             transition: all 0.2s;
         }
 
-        .kpi-value-input::placeholder {
-            color: var(--text-muted);
+        .btn-add-jalon:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 12px var(--accent-glow);
         }
 
-        .kpi-value-input:hover {
-            background: rgba(255,255,255,0.1);
-            border-color: var(--border-focus);
-        }
-
-        .kpi-value-input:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 2px rgba(255, 77, 0, 0.1);
-        }
-
-        /* Card Meta */
-        .card-meta {
-            margin-top: auto;
-            padding-top: 24px;
-            border-top: 1px solid var(--border-card);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .date-badge {
-            color: var(--accent);
-            font-weight: 600;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .days-left {
-            font-size: 12px;
-            color: var(--text-muted);
-            background: rgba(255,255,255,0.05);
-            padding: 4px 8px;
-            border-radius: 6px;
-        }
-
-        /* Question prompt for Backcasting */
-        .retro-prompt {
-            position: absolute;
-            top: -40px;
-            left: 0;
-            width: 100%;
-            text-align: center;
-            font-size: 13px;
-            color: var(--accent);
-            font-weight: 500;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: all 0.5s ease;
-        }
-        .retro-prompt.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* --- TIMELINE (RULER) --- */
-        .timeline-container {
+        /* --- TIMELINE RAIL (Fixed at bottom) --- */
+        .timeline-rail {
             position: fixed;
             bottom: 100px;
             left: 0;
             width: 100%;
             height: 90px;
-            mask-image: linear-gradient(to right, transparent, black 20%, black 80%, transparent);
-            -webkit-mask-image: linear-gradient(to right, transparent, black 20%, black 80%, transparent);
-            overflow: hidden;
+            border-top: 1px solid var(--border);
+            background: var(--bg-deep);
             display: flex;
             align-items: center;
             justify-content: center;
+            z-index: 50;
         }
 
         .timeline-indicator {
@@ -391,7 +307,7 @@
             z-index: 10;
             transform: translateX(-50%);
             border-radius: 2px;
-            box-shadow: 0 0 10px var(--accent);
+            box-shadow: 0 0 10px var(--accent-glow);
         }
 
         .timeline-track {
@@ -404,6 +320,7 @@
             height: 100%;
             scrollbar-width: none;
             cursor: grab;
+            width: 100%;
         }
         .timeline-track:active { cursor: grabbing; }
         .timeline-track::-webkit-scrollbar { display: none; }
@@ -419,6 +336,12 @@
             transition: opacity 0.3s;
             position: relative;
             height: 100%;
+            cursor: pointer;
+            padding: 0 10px;
+        }
+
+        .timeline-month:hover {
+            opacity: 0.7;
         }
 
         .timeline-month.active { opacity: 1; }
@@ -444,7 +367,7 @@
         }
         .year-label {
             font-size: 10px;
-            color: var(--text-muted);
+            color: var(--text-dim);
             margin-top: 4px;
             font-variant-numeric: tabular-nums;
             font-weight: 500;
@@ -459,130 +382,94 @@
             border-radius: 50%;
             position: absolute;
             bottom: 5px;
-            box-shadow: 0 0 5px var(--accent);
+            box-shadow: 0 0 5px var(--accent-glow);
         }
 
-        /* --- FOOTER ACTIONS --- */
-        .footer-actions {
+        /* --- CONTROLS --- */
+        .controls-bottom {
             position: fixed;
-            bottom: 30px;
-            width: 100%;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            padding: 0 20px;
+            padding-bottom: var(--safe-bottom);
             display: flex;
-            justify-content: space-between; /* To enable Back button placement */
-            padding: 0 24px;
-            z-index: 50;
-            pointer-events: none;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-deep);
+            border-top: 1px solid var(--border);
+            z-index: 100;
         }
 
         .btn-nav {
-            pointer-events: auto;
-            border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
+            height: 40px;
+            padding: 0 24px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            cursor: pointer;
             display: flex;
             align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: transform 0.1s, background 0.2s;
-            font-size: 20px;
-        }
-
-        .btn-prev {
-            background: var(--surface-card);
-            border: 1px solid var(--border-card);
-            color: var(--text-secondary);
-        }
-        .btn-prev:hover {
-            color: var(--text-primary);
-            background: rgba(255,255,255,0.1);
-        }
-
-        .btn-next {
-            background: var(--text-primary);
-            color: #000;
-            padding: 0 24px;
-            border-radius: 25px;
-            width: auto;
-            font-size: 14px;
-            font-weight: 600;
-            box-shadow: 0 5px 20px rgba(255,255,255,0.15);
-            display: flex;
             gap: 8px;
+            transition: all 0.2s;
+            letter-spacing: 0.5px;
         }
-        .btn-next:active { transform: scale(0.96); }
+        .btn-nav:hover {
+            border-color: var(--border-active);
+            background: var(--surface-active);
+        }
+        .btn-nav:active { transform: scale(0.98); }
 
-        .spacer { width: 50px; } /* To balance the center if needed, or just flex-start/end */
+        .btn-nav.primary {
+            background: var(--text-primary);
+            color: var(--bg-deep);
+            font-weight: 700;
+            border-color: var(--text-primary);
+        }
+        .btn-nav.primary:hover {
+            background: rgba(224, 224, 224, 0.9);
+        }
+
+        .btn-nav.disabled { opacity: 0.3; pointer-events: none; }
 
     </style>
 </head>
 <body>
 
-    <nav class="navbar">
-        <span class="brand-logo">CARRY IT</span>
-        <div class="phase-indicator">
-            <i class="ri-rewind-line"></i> Retroplanning
+    <!-- HUD TOP -->
+    <div class="hud-top">
+        <div class="hud-label">COCKPIT <span class="hud-value">CARRY IT</span></div>
+        <div class="hud-label" id="stepIndicator">JALON --/--</div>
+        <button class="btn-icon" title="Paramètres"><i class="ri-settings-3-line"></i></button>
+    </div>
+
+    <!-- TIMELINE VIEWPORT (Main scroll container) -->
+    <div class="timeline-viewport" id="timelineViewport">
+        <div class="timeline-scroll" id="timelineScroll">
+            <!-- Cartes générées par JS -->
         </div>
-        <button class="close-btn"><i class="ri-close-line"></i></button>
-    </nav>
 
-    <main>
-        <div class="card-stage">
-            <div class="retro-prompt" id="retroPrompt">
-                Pour réussir ça, que dois-je faire juste avant ?
+        <!-- TIMELINE RAIL (Fixed) -->
+        <div class="timeline-rail" id="timelineRail">
+            <div class="timeline-indicator"></div>
+            <div class="timeline-track" id="timelineTrack">
+                <!-- Timeline mois générée par JS -->
             </div>
-
-            <div class="milestone-card active" id="card">
-                <div class="card-header">
-                    <span class="step-badge">Jalon <span id="stepDisplay">Final</span></span>
-                    <button class="btn-edit" id="editBtn" title="Modifier le texte">
-                        <i class="ri-pencil-fill"></i>
-                    </button>
-                </div>
-
-                <div class="input-group">
-                    <div class="field-label">Nom du jalon</div>
-                    <input type="text" class="milestone-input-title" id="inputTitle" placeholder="Ex: 20km" value="">
-                </div>
-
-                <div class="input-group">
-                    <div class="field-label">L'Objectif Spécifique</div>
-                    <textarea class="milestone-input-desc" id="inputDesc" placeholder="Ce qui aura été accompli - Ex: 20km courus, rythme stable" rows="3"></textarea>
-                </div>
-
-                <div class="input-group">
-                    <div class="field-label">Le KPI</div>
-                    <input type="text" class="kpi-value-input" id="kpiValueInput" placeholder="Ex: 5000 utilisateurs ou Oui">
-                </div>
-
-                <div class="card-meta">
-                    <div class="date-badge">
-                        <i class="ri-calendar-line"></i>
-                        <span id="dateDisplay">--</span>
-                    </div>
-                    <span class="days-left" id="daysLeftDisplay">--</span>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <div class="timeline-container">
-        <div class="timeline-indicator"></div>
-        <div class="timeline-track" id="timelineTrack">
-            <!-- Timeline generated via JS -->
         </div>
     </div>
 
-    <div class="footer-actions">
-        <!-- Bouton Retour (Vers le futur) -->
-        <button class="btn-nav btn-prev" id="prevBtn" title="Revenir au jalon suivant (futur)">
-            <i class="ri-arrow-right-line"></i> <!-- Flèche droite car on avance dans le temps vers le futur, mais "retour" dans la navigation -->
+    <!-- CONTROLS -->
+    <div class="controls-bottom">
+        <button class="btn-nav" id="prevBtn" title="Revenir vers l'objectif final">
+            VERS L'OBJECTIF <i class="ri-arrow-right-line"></i>
         </button>
-
-        <!-- Bouton Action (Vers le passé/présent) -->
-        <button class="btn-nav btn-next" id="nextBtn">
-            <span>Planifier l'étape précédente</span>
-            <i class="ri-arrow-left-line"></i>
+        <button class="btn-nav primary" id="nextBtn">
+            <i class="ri-arrow-left-line"></i> JALON ANTÉCÉDENT
         </button>
     </div>
 
@@ -592,208 +479,330 @@
         const projectDeadline = new Date();
         projectDeadline.setMonth(projectDeadline.getMonth() + projectDurationMonths);
 
-        // RETROPLANNING : L'ordre est inversé.
-        // Index 0 = LA FIN (Offset 0).
-        // Index N = LE DÉBUT (Offset 24).
         let milestones = [
-            { offset: 0, title: "Objectif Final", desc: "Atteinte des 300 utilisateurs payants (~2400€/mois). Le système est stable et autonome.", kpiType: "numeric", kpiValue: "300" },
-            { offset: 3, title: "Optimisation & Rentabilité", desc: "Maximisation de la conversion. Le produit est complet, on affine les coûts.", kpiType: "numeric", kpiValue: "" },
-            { offset: 6, title: "Expansion", desc: "Mise en place des leviers de croissance. Le produit fonctionne, il faut du volume.", kpiType: "numeric", kpiValue: "" },
-            { offset: 12, title: "Traction (MVP Validé)", desc: "Première base d'utilisateurs fidèles. Le produit délivre sa promesse de base.", kpiType: "boolean", kpiValue: "yes" },
-            { offset: 18, title: "Prototype & Bêta", desc: "Première version testable par des vrais utilisateurs. Feedback loop active.", kpiType: "boolean", kpiValue: "no" },
-            { offset: 24, title: "Lancement (Kick-off)", desc: "Démarrage du projet. Tout commence ici.", kpiType: "boolean", kpiValue: "no" }
+            { offset: 0, title: "Objectif Final", desc: "Atteinte des 300 utilisateurs payants (~2400€/mois). Le système est stable et autonome.", kpiValue: "300" },
+            { offset: 3, title: "Optimisation & Rentabilité", desc: "Maximisation de la conversion. Le produit est complet, on affine les coûts.", kpiValue: "" },
+            { offset: 6, title: "Expansion", desc: "Mise en place des leviers de croissance. Le produit fonctionne, il faut du volume.", kpiValue: "" },
+            { offset: 12, title: "Traction (MVP Validé)", desc: "Première base d'utilisateurs fidèles. Le produit délivre sa promesse de base.", kpiValue: "Oui" },
+            { offset: 18, title: "Prototype & Bêta", desc: "Première version testable par des vrais utilisateurs. Feedback loop active.", kpiValue: "" },
+            { offset: 24, title: "Lancement (Kick-off)", desc: "Démarrage du projet. Tout commence ici.", kpiValue: "" }
         ];
 
-        // --- DOM ELEMENTS ---
+        // --- DOM REFS ---
+        const timelineViewport = document.getElementById('timelineViewport');
+        const timelineScroll = document.getElementById('timelineScroll');
         const timelineTrack = document.getElementById('timelineTrack');
-        const inputTitle = document.getElementById('inputTitle');
-        const inputDesc = document.getElementById('inputDesc');
-        const kpiValueInput = document.getElementById('kpiValueInput');
-        const dateDisplay = document.getElementById('dateDisplay');
-        const daysLeftDisplay = document.getElementById('daysLeftDisplay');
-        const stepDisplay = document.getElementById('stepDisplay');
-        const retroPrompt = document.getElementById('retroPrompt');
-
-        const nextBtn = document.getElementById('nextBtn');
+        const stepIndicator = document.getElementById('stepIndicator');
         const prevBtn = document.getElementById('prevBtn');
-        const card = document.getElementById('card');
+        const nextBtn = document.getElementById('nextBtn');
 
-        // State
-        let currentMilestoneIndex = 0; // Starts at 0 (End Goal)
-        let allMonths = [];
+        // --- STATE ---
+        let currentMilestoneIndex = 0;
+        let isScrollingViewport = false;
+        let isScrollingTimeline = false;
 
-        // --- INIT ---
-        function init() {
-            generateTimelineData();
-            renderTimeline();
-            updateCard(0, false);
-            updateButtons();
+        // --- UTILS ---
+        function formatDate(milestone) {
+            const dateObj = new Date(projectDeadline);
+            dateObj.setMonth(projectDeadline.getMonth() - milestone.offset);
+            return dateObj.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' }).toUpperCase();
         }
 
-        // --- TIMELINE GENERATION ---
-        function generateTimelineData() {
-            allMonths = [];
-            // On génère la timeline de gauche (passé/start) à droite (futur/end)
-            // Offset 24 (Start) -> Offset 0 (End)
-            for (let i = projectDurationMonths; i >= 0; i--) {
-                const d = new Date(projectDeadline);
-                d.setMonth(projectDeadline.getMonth() - i);
-                
-                // Find matching milestone
-                const linkedIndex = milestones.findIndex(m => Math.abs(m.offset - i) < 1);
-                
-                allMonths.push({
-                    offset: i,
-                    date: d,
-                    label: d.toLocaleDateString('fr-FR', { month: 'short' }).toUpperCase(),
-                    year: d.getFullYear(),
-                    milestoneIndex: linkedIndex 
-                });
-            }
-        }
+        // --- RENDER ALL CARDS ---
+        function renderAllCards() {
+            timelineScroll.innerHTML = '';
 
-        function renderTimeline() {
-            timelineTrack.innerHTML = '';
-            
-            allMonths.forEach((m, idx) => {
-                const el = document.createElement('div');
-                el.className = `timeline-month ${m.milestoneIndex !== -1 ? 'has-milestone' : ''}`;
-                el.dataset.index = idx;
-                
-                if (m.milestoneIndex !== -1) {
-                    el.onclick = () => updateCard(m.milestoneIndex);
-                    el.style.cursor = 'pointer';
-                }
+            milestones.forEach((milestone, index) => {
+                const slot = document.createElement('div');
+                slot.className = 'card-slot';
+                slot.dataset.index = index;
 
-                el.innerHTML = `
-                    <div class="tick"></div>
-                    <span class="month-label">${m.label}</span>
-                    <span class="year-label">${m.year}</span>
+                // Card wrapper
+                const wrapper = document.createElement('div');
+                wrapper.className = 'card-wrapper';
+                wrapper.innerHTML = `
+                    <div class="sentinel-block">
+                        <i class="ri-time-line sentinel-icon"></i>
+                        <span class="sentinel-date">${formatDate(milestone)}</span>
+                    </div>
+                    <div class="data-block">
+                        <div class="block-label">01 // Nom du Jalon</div>
+                        <input type="text" class="input-raw input-title"
+                               value="${milestone.title}"
+                               data-index="${index}"
+                               placeholder="Ex: Lancement V1"
+                               autocomplete="off">
+                    </div>
+                    <div class="data-block">
+                        <div class="block-label">02 // Le KPI (Mesurable)</div>
+                        <div class="kpi-wrapper">
+                            <i class="ri-flag-fill kpi-icon"></i>
+                            <input type="text" class="input-kpi"
+                                   value="${milestone.kpiValue}"
+                                   data-index="${index}"
+                                   placeholder="Ex: 500 utilisateurs ou Oui"
+                                   autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="data-block">
+                        <div class="block-label">03 // Objectif Spécifique (Vérité Concrète)</div>
+                        <textarea class="input-area"
+                                  data-index="${index}"
+                                  placeholder="Ce qui aura été accompli. Pas de blabla, des faits observables.">${milestone.desc}</textarea>
+                    </div>
                 `;
-                timelineTrack.appendChild(el);
+
+                // Connector (Add button)
+                const connector = document.createElement('div');
+                connector.className = 'card-connector';
+                connector.innerHTML = `<button class="btn-add-jalon" data-index="${index}" title="Ajouter un jalon après celui-ci">+</button>`;
+
+                slot.appendChild(wrapper);
+                slot.appendChild(connector);
+                timelineScroll.appendChild(slot);
+            });
+
+            setupCardInputs();
+            setupAddJalonButtons();
+            setupIntersectionObserver();
+        }
+
+        // --- SETUP CARD INPUTS ---
+        function setupCardInputs() {
+            document.querySelectorAll('.input-title, .input-kpi, .input-area').forEach(input => {
+                input.addEventListener('change', (e) => {
+                    const index = parseInt(e.target.dataset.index);
+                    const field = e.target.classList.contains('input-title') ? 'title' :
+                                 e.target.classList.contains('input-kpi') ? 'kpiValue' : 'desc';
+                    milestones[index][field] = e.target.value;
+                });
             });
         }
 
-        // --- CORE UPDATE LOGIC ---
-        function updateCard(index, animate = true) {
-            if (index < 0 || index >= milestones.length) return;
-
-            // 1. Save state logic (basic)
-            milestones[currentMilestoneIndex].title = inputTitle.value;
-            milestones[currentMilestoneIndex].desc = inputDesc.value;
-            milestones[currentMilestoneIndex].kpiValue = kpiValueInput.value;
-
-            currentMilestoneIndex = index;
-            const data = milestones[index];
-
-            // 2. Animate Transition
-            if (animate) {
-                // Direction of animation depends on if we are going Back or Forward in planning
-                card.style.opacity = '0.5';
-                card.style.transform = 'translateX(-10px) scale(0.98)'; // Slight shift left
-                setTimeout(() => {
-                    fillCardData(data);
-                    card.style.opacity = '1';
-                    card.style.transform = 'translateX(0) scale(1)';
-                }, 200);
-            } else {
-                fillCardData(data);
-            }
-
-            // 3. Highlight Ruler
-            highlightTimelineMonth(data.offset);
-
-            // 4. Update Prompts & Buttons
-            updateButtons();
+        // --- SETUP ADD JALON BUTTONS ---
+        function setupAddJalonButtons() {
+            document.querySelectorAll('.btn-add-jalon').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const index = parseInt(btn.dataset.index);
+                    addJalonInline(index);
+                });
+            });
         }
 
-        function fillCardData(data) {
-            inputTitle.value = data.title;
-            inputDesc.value = data.desc;
-            kpiValueInput.value = data.kpiValue;
+        // --- ADD JALON INLINE ---
+        function addJalonInline(afterIndex) {
+            const newJalon = {
+                offset: milestones[afterIndex].offset + 1,
+                title: '',
+                desc: '',
+                kpiValue: ''
+            };
 
-            // Label Logic
-            if (currentMilestoneIndex === 0) stepDisplay.innerText = "Final (Objectif)";
-            else if (currentMilestoneIndex === milestones.length - 1) stepDisplay.innerText = "Départ (Aujourd'hui)";
-            else stepDisplay.innerText = `Intermédiaire ${currentMilestoneIndex}`;
+            milestones.splice(afterIndex + 1, 0, newJalon);
+            renderAllCards();
+            renderTimeline();
 
-            // Prompt Logic (Retroplanning Question)
-            if (currentMilestoneIndex === milestones.length - 1) {
-                retroPrompt.classList.remove('visible'); // No question for Start
-            } else {
-                retroPrompt.innerText = "Pour réussir ça, que dois-je faire juste avant ?";
-                retroPrompt.classList.add('visible');
-            }
-
-            // Date & Days Logic
-            const dateObj = new Date(projectDeadline);
-            dateObj.setMonth(projectDeadline.getMonth() - data.offset);
-            dateDisplay.innerText = dateObj.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
-
-            const now = new Date();
-            const diffTime = dateObj - now;
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-            if (data.offset === 0) daysLeftDisplay.innerText = "Date butoir";
-            else daysLeftDisplay.innerText = diffDays > 0 ? `Dans ${Math.floor(diffDays/30)} mois` : "Maintenant";
+            // Scroll vers la nouvelle carte
+            setTimeout(() => {
+                const newSlot = document.querySelector(`[data-index="${afterIndex + 1}"]`);
+                if (newSlot) {
+                    newSlot.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+                    updateTimeline();
+                }
+            }, 100);
         }
 
+        // --- INTERSECTION OBSERVER ---
+        function setupIntersectionObserver() {
+            const cards = document.querySelectorAll('.card-slot');
+
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const index = parseInt(entry.target.dataset.index);
+                        currentMilestoneIndex = index;
+                        updateTimeline();
+                        updateButtons();
+                    }
+                });
+            }, {
+                threshold: 0.5,
+            });
+
+            cards.forEach(card => observer.observe(card));
+        }
+
+        // --- TIMELINE CLICKABLE ---
+        function setupTimelineClickable() {
+            timelineTrack.addEventListener('click', (e) => {
+                if (e.target.classList.contains('timeline-month')) {
+                    const offset = parseInt(e.target.dataset.offset);
+                    const milestoneIndex = milestones.findIndex(m => Math.abs(m.offset - offset) < 1);
+
+                    if (milestoneIndex !== -1) {
+                        const slot = document.querySelector(`[data-index="${milestoneIndex}"]`);
+                        if (slot) {
+                            slot.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- UPDATE TIMELINE ---
+        function updateTimeline() {
+            const milestone = milestones[currentMilestoneIndex];
+            const monthEls = document.querySelectorAll('.timeline-month');
+
+            monthEls.forEach(el => {
+                const offset = parseInt(el.dataset.offset);
+                el.classList.toggle('active', Math.abs(milestone.offset - offset) < 1);
+            });
+
+            // Scroll timeline pour montrer le mois actif
+            const activeMonth = document.querySelector('.timeline-month.active');
+            if (activeMonth) {
+                activeMonth.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            }
+        }
+
+        // --- RENDER TIMELINE ---
+        function renderTimeline() {
+            timelineTrack.innerHTML = '';
+
+            // Inverser pour que la timeline aille de gauche (passé/24) à droite (futur/0)
+            for (let i = 0; i <= projectDurationMonths; i++) {
+                const d = new Date(projectDeadline);
+                d.setMonth(projectDeadline.getMonth() - i);
+
+                const linkedIndex = milestones.findIndex(m => Math.abs(m.offset - i) < 1);
+
+                const monthEl = document.createElement('div');
+                monthEl.className = `timeline-month ${linkedIndex !== -1 ? 'has-milestone' : ''}`;
+                monthEl.dataset.offset = i;
+                monthEl.dataset.index = linkedIndex;
+
+                const label = d.toLocaleDateString('fr-FR', { month: 'short' }).toUpperCase();
+                const year = d.getFullYear();
+
+                monthEl.innerHTML = `
+                    <div class="tick"></div>
+                    <span class="month-label">${label}</span>
+                    <span class="year-label">${year}</span>
+                `;
+
+                timelineTrack.appendChild(monthEl);
+            }
+
+            setupTimelineClickable();
+        }
+
+        // --- UPDATE BUTTONS ---
         function updateButtons() {
-            // BACK BUTTON (Vers le futur/jalon précédent dans la liste inversée)
+            // Prev button
             if (currentMilestoneIndex > 0) {
+                prevBtn.innerHTML = 'VERS L\'OBJECTIF <i class="ri-arrow-right-line"></i>';
                 prevBtn.style.opacity = '1';
                 prevBtn.style.pointerEvents = 'auto';
-                // Icon points Right (Future)
-                prevBtn.innerHTML = '<i class="ri-arrow-right-line"></i>';
             } else {
-                prevBtn.style.opacity = '0';
+                prevBtn.style.opacity = '0.3';
                 prevBtn.style.pointerEvents = 'none';
             }
 
-            // NEXT BUTTON (Vers le passé/jalon suivant à planifier)
-            const btnSpan = nextBtn.querySelector('span');
-            const btnIcon = nextBtn.querySelector('i');
-            
+            // Next button
             if (currentMilestoneIndex < milestones.length - 1) {
-                btnSpan.innerText = "Planifier l'étape précédente";
-                btnIcon.className = "ri-arrow-left-line"; // Arrow Left (Past)
-                nextBtn.onclick = () => updateCard(currentMilestoneIndex + 1);
+                nextBtn.innerHTML = '<i class="ri-arrow-left-line"></i> JALON ANTÉCÉDENT';
             } else {
-                btnSpan.innerText = "Valider le Retroplanning";
-                btnIcon.className = "ri-check-line";
-                nextBtn.onclick = () => alert("Planification terminée !");
+                nextBtn.innerHTML = '<i class="ri-check-double-line"></i> VALIDER LE PLAN';
             }
+
+            // Step indicator
+            stepIndicator.innerText = `JALON ${currentMilestoneIndex + 1}/${milestones.length}`;
         }
 
-        function highlightTimelineMonth(offset) {
-            const monthIndex = allMonths.findIndex(m => m.offset === offset);
-            const monthEls = document.querySelectorAll('.timeline-month');
-            
-            monthEls.forEach(el => el.classList.remove('active'));
-            if (monthEls[monthIndex]) {
-                monthEls[monthIndex].classList.add('active');
-                monthEls[monthIndex].scrollIntoView({
-                    behavior: 'smooth',
-                    inline: 'center',
-                    block: 'nearest'
-                });
+        // --- NAVIGATION ---
+        prevBtn.addEventListener('click', () => {
+            if (currentMilestoneIndex > 0) {
+                const slot = document.querySelector(`[data-index="${currentMilestoneIndex - 1}"]`);
+                if (slot) {
+                    slot.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+                }
             }
-        }
-
-        // --- EVENTS ---
-        document.getElementById('editBtn').addEventListener('click', () => inputTitle.focus());
-        prevBtn.addEventListener('click', () => updateCard(currentMilestoneIndex - 1)); // Go "Back" to Future
-
-        // Inputs
-        inputTitle.addEventListener('input', (e) => milestones[currentMilestoneIndex].title = e.target.value);
-        inputDesc.addEventListener('input', (e) => milestones[currentMilestoneIndex].desc = e.target.value);
-        kpiValueInput.addEventListener('input', (e) => milestones[currentMilestoneIndex].kpiValue = e.target.value);
-
-        // Key Nav
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowLeft') updateCard(currentMilestoneIndex + 1); // Left = Past = Next Step in Retroplanning
-            if (e.key === 'ArrowRight') updateCard(currentMilestoneIndex - 1); // Right = Future = Prev Step
         });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentMilestoneIndex < milestones.length - 1) {
+                const slot = document.querySelector(`[data-index="${currentMilestoneIndex + 1}"]`);
+                if (slot) {
+                    slot.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+                }
+            } else {
+                alert('Retroplanning validé !');
+            }
+        });
+
+        // --- KEYBOARD NAVIGATION ---
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') {
+                const slot = document.querySelector(`[data-index="${currentMilestoneIndex + 1}"]`);
+                if (slot) slot.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+            }
+            if (e.key === 'ArrowRight') {
+                const slot = document.querySelector(`[data-index="${currentMilestoneIndex - 1}"]`);
+                if (slot) slot.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+            }
+        });
+
+        // --- SYNC SCROLLS ---
+        function syncScrolls() {
+            // Quand le viewport scroll, la timeline scroll aussi
+            timelineViewport.addEventListener('scroll', () => {
+                if (isScrollingTimeline) return; // Éviter la boucle infinie
+
+                isScrollingViewport = true;
+                const viewportScrollableWidth = timelineViewport.scrollWidth - timelineViewport.clientWidth;
+                const timelineMaxScroll = timelineTrack.scrollWidth - timelineTrack.parentElement.clientWidth;
+
+                if (viewportScrollableWidth > 0 && timelineMaxScroll > 0) {
+                    const scrollRatio = timelineViewport.scrollLeft / viewportScrollableWidth;
+                    timelineTrack.scrollLeft = scrollRatio * timelineMaxScroll;
+                }
+
+                // Reset flag après un délai pour permettre au scroll listener de se déclencher
+                requestAnimationFrame(() => {
+                    isScrollingViewport = false;
+                });
+            });
+
+            // Quand la timeline scroll, le viewport scroll aussi
+            timelineTrack.addEventListener('scroll', () => {
+                if (isScrollingViewport) return; // Éviter la boucle infinie
+
+                isScrollingTimeline = true;
+                const timelineScrollableWidth = timelineTrack.scrollWidth - timelineTrack.parentElement.clientWidth;
+                const viewportMaxScroll = timelineViewport.scrollWidth - timelineViewport.clientWidth;
+
+                if (timelineScrollableWidth > 0 && viewportMaxScroll > 0) {
+                    const scrollRatio = timelineTrack.scrollLeft / timelineScrollableWidth;
+                    timelineViewport.scrollLeft = scrollRatio * viewportMaxScroll;
+                }
+
+                // Reset flag après un délai pour permettre au scroll listener de se déclencher
+                requestAnimationFrame(() => {
+                    isScrollingTimeline = false;
+                });
+            });
+        }
+
+        // --- INIT ---
+        function init() {
+            renderAllCards();
+            renderTimeline();
+            syncScrolls();
+            updateTimeline();
+            updateButtons();
+        }
 
         init();
 
