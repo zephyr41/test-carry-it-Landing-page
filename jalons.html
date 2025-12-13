@@ -507,16 +507,83 @@
 
         .btn-nav.disabled { opacity: 0.3; pointer-events: none; }
 
+        /* --- NAVBAR --- */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: rgba(5, 5, 5, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .navbar-logo {
+            font-family: 'Inter', sans-serif;
+            font-size: 18px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+        .navbar-logo:hover {
+            color: var(--accent);
+        }
+
+        .navbar-links {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .navbar-link {
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        .navbar-link:hover {
+            color: var(--text-primary);
+        }
+
+        .navbar-link.cta {
+            background-color: var(--accent);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        .navbar-link.cta:hover {
+            background-color: #ff5d1a;
+            transform: translateY(-1px);
+        }
+
+        /* Adjust timeline viewport to account for navbar */
+        .timeline-viewport {
+            margin-top: 60px;
+        }
+
     </style>
 </head>
 <body>
 
-    <!-- HUD TOP -->
-    <div class="hud-top">
-        <div class="hud-label">COCKPIT <span class="hud-value">CARRY IT</span></div>
-        <div class="hud-label" id="stepIndicator">JALON --/--</div>
-        <button class="btn-icon" title="Paramètres"><i class="ri-settings-3-line"></i></button>
-    </div>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="index.html" class="navbar-logo">Carry It</a>
+        <div class="navbar-links">
+            <a href="index.html" class="navbar-link">Accueil</a>
+            <a href="jalons.html" class="navbar-link cta">Cockpit</a>
+        </div>
+    </nav>
 
     <!-- TIMELINE VIEWPORT (Main scroll container) -->
     <div class="timeline-viewport" id="timelineViewport">
