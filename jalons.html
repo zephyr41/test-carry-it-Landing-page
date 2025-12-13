@@ -905,14 +905,51 @@
             timelineViewport.scrollBy({ left: -window.innerWidth * 0.85, behavior: 'smooth' });
         });
 
-        // --- SYNC SCROLLS (Approximation pour l'effet visuel) ---
-        // On simplifie pour éviter les boucles infinies : seul le viewport pilote le rail via l'observer
-        
+        // --- SYNC SCROLLS ---
+        function syncScrolls() {
+            timelineViewport.addEventListener('scroll', () => {
+                if (isScrollingTimeline) return;
+
+                isScrollingViewport = true;
+                const viewportScroll = timelineViewport.scrollLeft;
+                const viewportMax = timelineViewport.scrollWidth - timelineViewport.clientWidth;
+                const timelineMax = timelineTrack.scrollWidth - timelineTrack.parentElement.clientWidth;
+
+                if (viewportMax > 0 && timelineMax > 0) {
+                    const scrollPercent = viewportScroll / viewportMax;
+                    timelineTrack.scrollLeft = scrollPercent * timelineMax;
+                }
+
+                requestAnimationFrame(() => {
+                    isScrollingViewport = false;
+                });
+            });
+
+            timelineTrack.addEventListener('scroll', () => {
+                if (isScrollingViewport) return;
+
+                isScrollingTimeline = true;
+                const timelineScroll = timelineTrack.scrollLeft;
+                const timelineMax = timelineTrack.scrollWidth - timelineTrack.parentElement.clientWidth;
+                const viewportMax = timelineViewport.scrollWidth - timelineViewport.clientWidth;
+
+                if (timelineMax > 0 && viewportMax > 0) {
+                    const scrollPercent = timelineScroll / timelineMax;
+                    timelineViewport.scrollLeft = scrollPercent * viewportMax;
+                }
+
+                requestAnimationFrame(() => {
+                    isScrollingTimeline = false;
+                });
+            });
+        }
+
         // --- INIT ---
         function init() {
             renderAllCards();
             renderTimeline();
-            
+            syncScrolls();
+
             // DEMARRAGE : SCROLL TOUT A DROITE (Objectif Final)
             // On attend que le rendu soit fait
             setTimeout(() => {
