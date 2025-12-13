@@ -31,9 +31,6 @@
             /* Safe Areas */
             --safe-top: env(safe-area-inset-top, 20px);
             --safe-bottom: env(safe-area-inset-bottom, 20px);
-
-            /* --- ANIMATIONS --- */
-            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         * {
@@ -113,15 +110,17 @@
         /* Flex container pour le scroll horizontal */
         .timeline-scroll {
             display: flex;
-            flex-direction: row;
+            flex-direction: row; /* On garde ROW standard, c'est le tri JS qui fera le boulot */
             width: fit-content;
             height: 100%;
             flex: 1;
+            padding: 0 10vw; /* Padding pour centrer les cartes extrêmes */
         }
 
         /* --- CARD SLOTS --- */
         .card-slot {
-            flex: 0 0 100vw;
+            flex: 0 0 85vw; /* 85vw pour voir un bout des voisines */
+            margin: 0 5px;  /* Espacement léger */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -130,10 +129,18 @@
             position: relative;
             padding-top: 20px;
             padding-bottom: 200px;
+            opacity: 0.3;
+            transform: scale(0.95);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        
+        .card-slot.active {
+            opacity: 1;
+            transform: scale(1);
         }
 
         .card-wrapper {
-            width: 90%;
+            width: 100%;
             max-width: 460px;
             display: flex;
             flex-direction: column;
@@ -246,49 +253,56 @@
         .input-kpi::placeholder { color: var(--text-dim); font-weight: 400; }
 
         /* CARD CONNECTOR (Add button) */
+        /* IMPORTANT: Positionné à GAUCHE visuellement (car on remonte le temps) */
         .card-connector {
             position: absolute;
-            right: -30px;
+            left: -20px; /* À gauche de la carte */
             width: 40px;
             height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
-            opacity: 0.3;
+            opacity: 0;
             transition: opacity 0.2s;
+            z-index: 50;
+            pointer-events: none;
         }
 
-        .card-slot:hover .card-connector {
+        .card-slot.active .card-connector {
             opacity: 1;
+            pointer-events: auto;
         }
 
         .btn-add-jalon {
             width: 36px;
             height: 36px;
             border-radius: 50%;
-            background: var(--accent);
+            background: var(--bg-deep);
             border: 1px solid var(--accent);
-            color: white;
+            color: var(--accent);
             font-size: 18px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.2s;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
         }
 
         .btn-add-jalon:hover {
             transform: scale(1.1);
+            background: var(--accent);
+            color: white;
             box-shadow: 0 0 12px var(--accent-glow);
         }
 
         /* --- TIMELINE RAIL (Fixed at bottom) --- */
         .timeline-rail {
             position: fixed;
-            bottom: 100px;
+            bottom: 80px;
             left: 0;
             width: 100%;
-            height: 90px;
+            height: 80px;
             border-top: 1px solid var(--border);
             background: var(--bg-deep);
             display: flex;
@@ -327,7 +341,7 @@
 
         .timeline-month {
             flex-shrink: 0;
-            width: 80px;
+            width: 70px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -337,13 +351,10 @@
             position: relative;
             height: 100%;
             cursor: pointer;
-            padding: 0 10px;
+            padding: 0 5px;
         }
 
-        .timeline-month:hover {
-            opacity: 0.7;
-        }
-
+        .timeline-month:hover { opacity: 0.7; }
         .timeline-month.active { opacity: 1; }
 
         .tick {
@@ -359,14 +370,14 @@
         }
 
         .month-label {
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             line-height: 1;
         }
         .year-label {
-            font-size: 10px;
+            font-size: 9px;
             color: var(--text-dim);
             margin-top: 4px;
             font-variant-numeric: tabular-nums;
@@ -381,7 +392,7 @@
             background: var(--accent);
             border-radius: 50%;
             position: absolute;
-            bottom: 5px;
+            bottom: 10px;
             box-shadow: 0 0 5px var(--accent-glow);
         }
 
@@ -465,11 +476,14 @@
 
     <!-- CONTROLS -->
     <div class="controls-bottom">
-        <button class="btn-nav" id="prevBtn" title="Revenir vers l'objectif final">
-            <i class="ri-arrow-left-line"></i> VERS L'OBJECTIF
+        <!-- BOUTON GAUCHE: Aller vers la DROITE (Futur) -->
+        <button class="btn-nav" id="btnForward">
+            VERS L'OBJECTIF <i class="ri-arrow-right-line"></i>
         </button>
-        <button class="btn-nav primary" id="nextBtn">
-            JALON ANTÉCÉDENT <i class="ri-arrow-right-line"></i>
+
+        <!-- BOUTON DROITE: Aller vers la GAUCHE (Passé) -->
+        <button class="btn-nav primary" id="btnBackward">
+            <i class="ri-arrow-left-line"></i> JALON ANTÉCÉDENT
         </button>
     </div>
 
@@ -479,13 +493,12 @@
         const projectDeadline = new Date();
         projectDeadline.setMonth(projectDeadline.getMonth() + projectDurationMonths);
 
+        // DATA SOURCE (Ordre logique : 0 = Futur, N = Passé)
         let milestones = [
-            { offset: 0, title: "Objectif Final", desc: "Atteinte des 300 utilisateurs payants (~2400€/mois). Le système est stable et autonome.", kpiValue: "300" },
-            { offset: 3, title: "Optimisation & Rentabilité", desc: "Maximisation de la conversion. Le produit est complet, on affine les coûts.", kpiValue: "" },
-            { offset: 6, title: "Expansion", desc: "Mise en place des leviers de croissance. Le produit fonctionne, il faut du volume.", kpiValue: "" },
-            { offset: 12, title: "Traction (MVP Validé)", desc: "Première base d'utilisateurs fidèles. Le produit délivre sa promesse de base.", kpiValue: "Oui" },
-            { offset: 18, title: "Prototype & Bêta", desc: "Première version testable par des vrais utilisateurs. Feedback loop active.", kpiValue: "" },
-            { offset: 24, title: "Lancement (Kick-off)", desc: "Démarrage du projet. Tout commence ici.", kpiValue: "" }
+            { id: 'm1', offset: 0, title: "Objectif Final", desc: "Le système est stable et autonome.", kpiValue: "300 Clients" },
+            { id: 'm2', offset: 3, title: "Optimisation", desc: "Maximisation de la conversion.", kpiValue: "" },
+            { id: 'm3', offset: 12, title: "MVP Validé", desc: "Première base d'utilisateurs.", kpiValue: "Oui" },
+            { id: 'm4', offset: 24, title: "Lancement", desc: "Démarrage du projet.", kpiValue: "" }
         ];
 
         // --- DOM REFS ---
@@ -493,29 +506,36 @@
         const timelineScroll = document.getElementById('timelineScroll');
         const timelineTrack = document.getElementById('timelineTrack');
         const stepIndicator = document.getElementById('stepIndicator');
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
+        const btnForward = document.getElementById('btnForward');
+        const btnBackward = document.getElementById('btnBackward');
 
         // --- STATE ---
-        let currentMilestoneIndex = 0;
+        let currentMilestoneId = null;
         let isScrollingViewport = false;
         let isScrollingTimeline = false;
 
         // --- UTILS ---
-        function formatDate(milestone) {
+        function formatDate(offset) {
             const dateObj = new Date(projectDeadline);
-            dateObj.setMonth(projectDeadline.getMonth() - milestone.offset);
-            return dateObj.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' }).toUpperCase();
+            dateObj.setMonth(projectDeadline.getMonth() - offset);
+            return dateObj.toLocaleDateString('fr-FR', { month: 'short', year: '2-digit' }).toUpperCase();
         }
 
         // --- RENDER ALL CARDS ---
         function renderAllCards() {
             timelineScroll.innerHTML = '';
 
-            milestones.forEach((milestone, index) => {
+            // LOGIQUE INVERSÉE : On trie du Passé (Offset Max) vers le Futur (Offset 0)
+            // Ainsi, dans le DOM Flex ROW :
+            // Gauche = Passé (Offset 24)
+            // Droite = Futur (Offset 0)
+            const sortedMilestones = [...milestones].sort((a, b) => b.offset - a.offset);
+
+            sortedMilestones.forEach((milestone, index) => {
                 const slot = document.createElement('div');
                 slot.className = 'card-slot';
-                slot.dataset.index = index;
+                slot.dataset.id = milestone.id;
+                slot.id = `card-${milestone.id}`;
 
                 // Card wrapper
                 const wrapper = document.createElement('div');
@@ -523,15 +543,16 @@
                 wrapper.innerHTML = `
                     <div class="sentinel-block">
                         <i class="ri-time-line sentinel-icon"></i>
-                        <span class="sentinel-date">${formatDate(milestone)}</span>
+                        <span class="sentinel-date">${milestone.offset === 0 ? 'FIN PROJET' : formatDate(milestone.offset)}</span>
                     </div>
                     <div class="data-block">
                         <div class="block-label">01 // Nom du Jalon</div>
                         <input type="text" class="input-raw input-title"
                                value="${milestone.title}"
-                               data-index="${index}"
-                               placeholder="Ex: Lancement V1"
-                               autocomplete="off">
+                               data-id="${milestone.id}"
+                               placeholder="Titre..."
+                               autocomplete="off"
+                               oninput="updateData('${milestone.id}', 'title', this.value)">
                     </div>
                     <div class="data-block">
                         <div class="block-label">02 // Le KPI (Mesurable)</div>
@@ -539,152 +560,100 @@
                             <i class="ri-flag-fill kpi-icon"></i>
                             <input type="text" class="input-kpi"
                                    value="${milestone.kpiValue}"
-                                   data-index="${index}"
-                                   placeholder="Ex: 500 utilisateurs ou Oui"
-                                   autocomplete="off">
+                                   data-id="${milestone.id}"
+                                   placeholder="Ex: 500 utilisateurs"
+                                   autocomplete="off"
+                                   oninput="updateData('${milestone.id}', 'kpiValue', this.value)">
                         </div>
                     </div>
                     <div class="data-block">
-                        <div class="block-label">03 // Objectif Spécifique (Vérité Concrète)</div>
+                        <div class="block-label">03 // Objectif Concret</div>
                         <textarea class="input-area"
-                                  data-index="${index}"
-                                  placeholder="Ce qui aura été accompli. Pas de blabla, des faits observables.">${milestone.desc}</textarea>
+                                  data-id="${milestone.id}"
+                                  placeholder="Description factuelle..."
+                                  oninput="updateData('${milestone.id}', 'desc', this.value)">${milestone.desc}</textarea>
                     </div>
                 `;
 
-                // Connector (Add button)
+                // Connector (Add button) - Placé visuellement à GAUCHE via CSS (left: -20px)
                 const connector = document.createElement('div');
                 connector.className = 'card-connector';
-                connector.innerHTML = `<button class="btn-add-jalon" data-index="${index}" title="Ajouter un jalon après celui-ci">+</button>`;
+                connector.innerHTML = `<button class="btn-add-jalon" onclick="addJalonInline('${milestone.id}')" title="Ajouter une étape avant">+</button>`;
 
+                slot.appendChild(connector); // Le CSS le place à gauche
                 slot.appendChild(wrapper);
-                slot.appendChild(connector);
                 timelineScroll.appendChild(slot);
             });
 
-            setupCardInputs();
-            setupAddJalonButtons();
             setupIntersectionObserver();
         }
 
-        // --- SETUP CARD INPUTS ---
-        function setupCardInputs() {
-            document.querySelectorAll('.input-title, .input-kpi, .input-area').forEach(input => {
-                input.addEventListener('change', (e) => {
-                    const index = parseInt(e.target.dataset.index);
-                    const field = e.target.classList.contains('input-title') ? 'title' :
-                                 e.target.classList.contains('input-kpi') ? 'kpiValue' : 'desc';
-                    milestones[index][field] = e.target.value;
-                });
-            });
-        }
-
-        // --- SETUP ADD JALON BUTTONS ---
-        function setupAddJalonButtons() {
-            document.querySelectorAll('.btn-add-jalon').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const index = parseInt(btn.dataset.index);
-                    addJalonInline(index);
-                });
-            });
+        function updateData(id, field, value) {
+            const m = milestones.find(m => m.id === id);
+            if (m) m[field] = value;
         }
 
         // --- ADD JALON INLINE ---
-        function addJalonInline(afterIndex) {
-            const newJalon = {
-                offset: milestones[afterIndex].offset + 1,
-                title: '',
-                desc: '',
-                kpiValue: ''
-            };
+        function addJalonInline(refId) {
+            const refMilestone = milestones.find(m => m.id === refId);
+            if (!refMilestone) return;
 
-            milestones.splice(afterIndex + 1, 0, newJalon);
+            // On ajoute un jalon avec un offset un peu plus grand (donc vers le passé)
+            // Pour simplifier, on prend l'offset actuel + 1 (ou moyenne si besoin)
+            const newOffset = refMilestone.offset + 1;
+            const newId = 'm_' + Date.now();
+
+            milestones.push({
+                id: newId,
+                offset: newOffset,
+                title: "",
+                desc: "",
+                kpiValue: ""
+            });
+
+            // Re-render (le tri automatique placera la carte à gauche)
             renderAllCards();
             renderTimeline();
 
             // Scroll vers la nouvelle carte
             setTimeout(() => {
-                const newSlot = document.querySelector(`[data-index="${afterIndex + 1}"]`);
+                const newSlot = document.getElementById(`card-${newId}`);
                 if (newSlot) {
                     newSlot.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
-                    updateTimeline();
+                    // Focus titre
+                    newSlot.querySelector('.input-title').focus();
                 }
             }, 100);
         }
 
-        // --- INTERSECTION OBSERVER ---
-        function setupIntersectionObserver() {
-            const cards = document.querySelectorAll('.card-slot');
-
-            const observer = new IntersectionObserver(entries => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const index = parseInt(entry.target.dataset.index);
-                        currentMilestoneIndex = index;
-                        updateTimeline();
-                        updateButtons();
-                    }
-                });
-            }, {
-                threshold: 0.5,
-            });
-
-            cards.forEach(card => observer.observe(card));
-        }
-
-        // --- TIMELINE CLICKABLE ---
-        function setupTimelineClickable() {
-            timelineTrack.addEventListener('click', (e) => {
-                if (e.target.classList.contains('timeline-month')) {
-                    const offset = parseInt(e.target.dataset.offset);
-                    const milestoneIndex = milestones.findIndex(m => Math.abs(m.offset - offset) < 1);
-
-                    if (milestoneIndex !== -1) {
-                        const slot = document.querySelector(`[data-index="${milestoneIndex}"]`);
-                        if (slot) {
-                            slot.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
-                        }
-                    }
-                }
-            });
-        }
-
-        // --- UPDATE TIMELINE ---
-        function updateTimeline() {
-            const milestone = milestones[currentMilestoneIndex];
-            const monthEls = document.querySelectorAll('.timeline-month');
-
-            monthEls.forEach(el => {
-                const offset = parseInt(el.dataset.offset);
-                el.classList.toggle('active', Math.abs(milestone.offset - offset) < 1);
-            });
-
-            // Scroll timeline pour montrer le mois actif
-            const activeMonth = document.querySelector('.timeline-month.active');
-            if (activeMonth) {
-                activeMonth.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-            }
-        }
-
-        // --- RENDER TIMELINE ---
+        // --- RENDER TIMELINE RAIL ---
         function renderTimeline() {
             timelineTrack.innerHTML = '';
 
-            // Inverser pour que la timeline aille de gauche (passé/24) à droite (futur/0)
-            for (let i = 0; i <= projectDurationMonths; i++) {
-                const d = new Date(projectDeadline);
-                d.setMonth(projectDeadline.getMonth() - i);
-
-                const linkedIndex = milestones.findIndex(m => Math.abs(m.offset - i) < 1);
-
+            // Timeline: Passé (24) à gauche -> Futur (0) à droite
+            // On boucle de 24 (Start) à 0 (End)
+            for (let i = projectDurationMonths; i >= 0; i--) {
                 const monthEl = document.createElement('div');
-                monthEl.className = `timeline-month ${linkedIndex !== -1 ? 'has-milestone' : ''}`;
+                const isMilestone = milestones.some(m => Math.abs(m.offset - i) < 0.5);
+                
+                monthEl.className = `timeline-month ${isMilestone ? 'has-milestone' : ''}`;
                 monthEl.dataset.offset = i;
-                monthEl.dataset.index = linkedIndex;
+                
+                // Clic sur rail
+                monthEl.onclick = () => {
+                   // Trouver le jalon le plus proche
+                   const target = milestones.reduce((prev, curr) => 
+                       Math.abs(curr.offset - i) < Math.abs(prev.offset - i) ? curr : prev
+                   );
+                   const slot = document.getElementById(`card-${target.id}`);
+                   if(slot) slot.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+                };
 
-                const label = d.toLocaleDateString('fr-FR', { month: 'short' }).toUpperCase();
-                const year = d.getFullYear();
+                const dateObj = new Date(projectDeadline);
+                dateObj.setMonth(projectDeadline.getMonth() - i);
+                
+                const label = i === 0 ? 'FIN' : dateObj.toLocaleDateString('fr-FR', { month: 'short' }).toUpperCase();
+                const year = dateObj.getFullYear();
 
                 monthEl.innerHTML = `
                     <div class="tick"></div>
@@ -694,116 +663,88 @@
 
                 timelineTrack.appendChild(monthEl);
             }
-
-            setupTimelineClickable();
         }
 
-        // --- UPDATE BUTTONS ---
-        function updateButtons() {
-            // Prev button (VERS L'OBJECTIF = goes LEFT)
-            if (currentMilestoneIndex > 0) {
-                prevBtn.innerHTML = '<i class="ri-arrow-left-line"></i> VERS L\'OBJECTIF';
-                prevBtn.style.opacity = '1';
-                prevBtn.style.pointerEvents = 'auto';
-            } else {
-                prevBtn.style.opacity = '0.3';
-                prevBtn.style.pointerEvents = 'none';
-            }
+        // --- INTERSECTION OBSERVER ---
+        function setupIntersectionObserver() {
+            const cards = document.querySelectorAll('.card-slot');
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        // Highlight Card
+                        document.querySelectorAll('.card-slot').forEach(c => c.classList.remove('active'));
+                        entry.target.classList.add('active');
 
-            // Next button (JALON ANTÉCÉDENT = goes RIGHT)
-            if (currentMilestoneIndex < milestones.length - 1) {
-                nextBtn.innerHTML = 'JALON ANTÉCÉDENT <i class="ri-arrow-right-line"></i>';
-            } else {
-                nextBtn.innerHTML = '<i class="ri-check-double-line"></i> VALIDER LE PLAN';
-            }
+                        // Update State
+                        currentMilestoneId = entry.target.dataset.id;
+                        const m = milestones.find(m => m.id === currentMilestoneId);
 
-            // Step indicator
-            stepIndicator.innerText = `JALON ${currentMilestoneIndex + 1}/${milestones.length}`;
-        }
+                        // Update HUD
+                        const total = milestones.length;
+                        // Index visuel (trié)
+                        const sortedIds = [...milestones].sort((a, b) => b.offset - a.offset).map(m => m.id);
+                        const visualIndex = sortedIds.indexOf(currentMilestoneId) + 1;
+                        stepIndicator.innerText = `JALON ${visualIndex}/${total}`;
 
-        // --- NAVIGATION ---
-        prevBtn.addEventListener('click', () => {
-            if (currentMilestoneIndex > 0) {
-                const slot = document.querySelector(`[data-index="${currentMilestoneIndex - 1}"]`);
-                if (slot) {
-                    slot.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
-                }
-            }
-        });
-
-        nextBtn.addEventListener('click', () => {
-            if (currentMilestoneIndex < milestones.length - 1) {
-                const slot = document.querySelector(`[data-index="${currentMilestoneIndex + 1}"]`);
-                if (slot) {
-                    slot.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
-                }
-            } else {
-                alert('Retroplanning validé !');
-            }
-        });
-
-        // --- KEYBOARD NAVIGATION ---
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowLeft') {
-                const slot = document.querySelector(`[data-index="${currentMilestoneIndex + 1}"]`);
-                if (slot) slot.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
-            }
-            if (e.key === 'ArrowRight') {
-                const slot = document.querySelector(`[data-index="${currentMilestoneIndex - 1}"]`);
-                if (slot) slot.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
-            }
-        });
-
-        // --- SYNC SCROLLS ---
-        function syncScrolls() {
-            // Quand le viewport scroll, la timeline scroll aussi
-            timelineViewport.addEventListener('scroll', () => {
-                if (isScrollingTimeline) return;
-
-                isScrollingViewport = true;
-
-                const viewportScroll = timelineViewport.scrollLeft;
-                const viewportMax = timelineViewport.scrollWidth - timelineViewport.clientWidth;
-                const timelineMax = timelineTrack.scrollWidth - timelineTrack.parentElement.clientWidth;
-
-                if (viewportMax > 0 && timelineMax > 0) {
-                    const scrollPercent = viewportScroll / viewportMax;
-                    timelineTrack.scrollLeft = scrollPercent * timelineMax;
-                }
-
-                requestAnimationFrame(() => {
-                    isScrollingViewport = false;
+                        // Sync Rail
+                        syncRail(m.offset);
+                        updateButtons(m);
+                    }
                 });
-            });
+            }, { threshold: 0.5, root: timelineViewport });
 
-            // Quand la timeline scroll, le viewport scroll aussi
-            timelineTrack.addEventListener('scroll', () => {
-                if (isScrollingViewport) return;
-
-                isScrollingTimeline = true;
-
-                const timelineScroll = timelineTrack.scrollLeft;
-                const timelineMax = timelineTrack.scrollWidth - timelineTrack.parentElement.clientWidth;
-                const viewportMax = timelineViewport.scrollWidth - timelineViewport.clientWidth;
-
-                if (timelineMax > 0 && viewportMax > 0) {
-                    const scrollPercent = timelineScroll / timelineMax;
-                    timelineViewport.scrollLeft = scrollPercent * viewportMax;
-                }
-
-                requestAnimationFrame(() => {
-                    isScrollingTimeline = false;
-                });
-            });
+            cards.forEach(card => observer.observe(card));
         }
 
+        function syncRail(offset) {
+            document.querySelectorAll('.timeline-month').forEach(el => {
+                el.classList.toggle('active', parseInt(el.dataset.offset) === offset);
+            });
+            const activeMonth = document.querySelector('.timeline-month.active');
+            if (activeMonth && !isScrollingTimeline) {
+                activeMonth.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            }
+        }
+
+        // --- BUTTONS LOGIC ---
+        function updateButtons(currentMilestone) {
+            // Si on est à l'Objectif (Offset 0) -> Pas de bouton "Vers l'Objectif"
+            if (currentMilestone.offset === 0) {
+                btnForward.style.opacity = '0.3';
+                btnForward.style.pointerEvents = 'none';
+            } else {
+                btnForward.style.opacity = '1';
+                btnForward.style.pointerEvents = 'auto';
+            }
+
+            // Bouton Action Principale (Antécédent)
+            // Si on est au tout début du projet (Offset Max), ça devient "Terminer" ?
+            // Ici on garde simple.
+        }
+
+        btnForward.addEventListener('click', () => {
+            // Aller vers la Droite (Futur)
+            timelineViewport.scrollBy({ left: window.innerWidth * 0.85, behavior: 'smooth' });
+        });
+
+        btnBackward.addEventListener('click', () => {
+            // Aller vers la Gauche (Passé)
+            timelineViewport.scrollBy({ left: -window.innerWidth * 0.85, behavior: 'smooth' });
+        });
+
+        // --- SYNC SCROLLS (Approximation pour l'effet visuel) ---
+        // On simplifie pour éviter les boucles infinies : seul le viewport pilote le rail via l'observer
+        
         // --- INIT ---
         function init() {
             renderAllCards();
             renderTimeline();
-            syncScrolls();
-            updateTimeline();
-            updateButtons();
+            
+            // DEMARRAGE : SCROLL TOUT A DROITE (Objectif Final)
+            // On attend que le rendu soit fait
+            setTimeout(() => {
+                timelineViewport.scrollLeft = timelineViewport.scrollWidth;
+            }, 100);
         }
 
         init();
