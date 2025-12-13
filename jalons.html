@@ -211,6 +211,21 @@
         }
         .input-title::placeholder { font-size: 16px; }
 
+        .input-offset {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--accent);
+            max-width: 80px;
+        }
+        .input-offset::-webkit-outer-spin-button,
+        .input-offset::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .input-offset[type=number] {
+            -moz-appearance: textfield;
+        }
+
         .input-area {
             background: transparent;
             border: 1px solid var(--border);
@@ -546,6 +561,17 @@
                         <span class="sentinel-date">${milestone.offset === 0 ? 'FIN PROJET' : formatDate(milestone.offset)}</span>
                     </div>
                     <div class="data-block">
+                        <div class="block-label">00 // Date (mois avant deadline)</div>
+                        <input type="number" class="input-raw input-offset"
+                               value="${milestone.offset}"
+                               data-id="${milestone.id}"
+                               min="0"
+                               max="24"
+                               placeholder="Ex: 12"
+                               autocomplete="off"
+                               oninput="updateData('${milestone.id}', 'offset', parseInt(this.value))">
+                    </div>
+                    <div class="data-block">
                         <div class="block-label">01 // Nom du Jalon</div>
                         <input type="text" class="input-raw input-title"
                                value="${milestone.title}"
@@ -590,7 +616,15 @@
 
         function updateData(id, field, value) {
             const m = milestones.find(m => m.id === id);
-            if (m) m[field] = value;
+            if (m) {
+                m[field] = value;
+                // Si l'offset change, on doit re-render car l'ordre des cartes change
+                if (field === 'offset') {
+                    renderAllCards();
+                    renderTimeline();
+                    updateTimeline();
+                }
+            }
         }
 
         // --- ADD JALON INLINE ---
