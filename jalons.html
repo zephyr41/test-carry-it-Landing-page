@@ -223,6 +223,26 @@
             opacity: 1;
         }
 
+        /* Hint when jalon is empty - make date picker more prominent */
+        .date-picker-hint {
+            opacity: 0.8;
+            border-top-color: var(--accent-glow);
+        }
+        .date-picker-hint .date-label {
+            color: var(--accent) !important;
+        }
+        .date-picker-hint .date-hint {
+            font-size: 10px;
+            color: var(--accent);
+            font-weight: 600;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
         .date-label {
             display: flex;
             align-items: center;
@@ -638,14 +658,15 @@
                                   placeholder="Description factuelle..."
                                   oninput="updateData('${milestone.id}', 'desc', this.value)">${milestone.desc}</textarea>
                     </div>
-                    <div class="data-block date-picker-subtle">
-                        <label class="block-label date-label">
+                    <div class="data-block date-picker-subtle ${!milestone.title ? 'date-picker-hint' : ''}">
+                        <label class="block-label date-label" title="Cliquer pour modifier la date">
                             <i class="ri-calendar-line"></i>
                             <input type="date" class="input-date-subtle"
                                    value="${getDateFromOffset(milestone.offset)}"
                                    data-id="${milestone.id}"
                                    autocomplete="off"
                                    onchange="updateDateFromInput('${milestone.id}', this.value)">
+                            ${!milestone.title ? '<span class="date-hint">Définir date</span>' : ''}
                         </label>
                     </div>
                 `;
