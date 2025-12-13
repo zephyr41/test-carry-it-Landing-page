@@ -9,8 +9,8 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <!-- Font : Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Styles CSS (for navbar variables) -->
-    <link rel="stylesheet" href="styles.css">
+    <!-- Font : Rifton for navbar logo -->
+    <link href="https://fonts.googleapis.com/css2?family=Rifton&display=swap" rel="stylesheet">
 
     <style>
         :root {
@@ -509,18 +509,18 @@
 
         .btn-nav.disabled { opacity: 0.3; pointer-events: none; }
 
-        /* --- NAVBAR (from styles.css) --- */
+        /* --- NAVBAR --- */
         .navbar {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
-            height: var(--navbar-height);
+            height: 72px;
             background: rgba(5, 6, 8, 0.9);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--color-border-default);
-            padding: 0 var(--space-48);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0 48px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -528,39 +528,39 @@
         }
 
         .navbar-logo {
-            font-family: var(--font-display);
+            font-family: 'Rifton', serif;
             font-size: 20px;
-            color: var(--color-text-primary);
+            color: #FFFDF6;
             text-decoration: none;
             font-weight: normal;
         }
 
         .navbar-links {
             display: flex;
-            gap: var(--space-32);
+            gap: 32px;
             align-items: center;
         }
 
         .navbar-link {
-            font-family: var(--font-primary);
-            font-size: var(--text-small);
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
             font-weight: 500;
-            color: var(--color-text-secondary);
+            color: #A8A8A8;
             text-decoration: none;
             transition: all 0.2s ease;
             position: relative;
         }
 
         .navbar-link:hover {
-            color: var(--color-text-primary);
+            color: #FFFDF6;
             transform: translateY(-1px);
         }
 
         .navbar-link.cta {
-            background-color: var(--color-accent-action);
-            color: var(--color-text-primary);
-            padding: 12px var(--space-24);
-            border-radius: var(--btn-radius);
+            background-color: #EE4408;
+            color: #FFFDF6;
+            padding: 12px 24px;
+            border-radius: 8px;
             font-weight: 600;
         }
 
@@ -571,7 +571,7 @@
 
         /* Adjust timeline viewport to account for navbar */
         .timeline-viewport {
-            margin-top: var(--navbar-height);
+            margin-top: 72px;
         }
 
     </style>
