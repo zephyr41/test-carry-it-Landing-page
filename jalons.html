@@ -211,19 +211,15 @@
         }
         .input-title::placeholder { font-size: 16px; }
 
-        .input-offset {
+        .input-date {
             font-size: 14px;
             font-weight: 600;
             color: var(--accent);
-            max-width: 80px;
+            cursor: pointer;
         }
-        .input-offset::-webkit-outer-spin-button,
-        .input-offset::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        .input-offset[type=number] {
-            -moz-appearance: textfield;
+        .input-date::-webkit-calendar-picker-indicator {
+            cursor: pointer;
+            filter: invert(0.8);
         }
 
         .input-area {
@@ -536,6 +532,32 @@
             return dateObj.toLocaleDateString('fr-FR', { month: 'short', year: '2-digit' }).toUpperCase();
         }
 
+        function getDateFromOffset(offset) {
+            const dateObj = new Date(projectDeadline);
+            dateObj.setMonth(projectDeadline.getMonth() - offset);
+            // Format: YYYY-MM-DD pour l'input date
+            const year = dateObj.getFullYear();
+            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const day = String(dateObj.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function getOffsetFromDate(dateString) {
+            const selectedDate = new Date(dateString + 'T00:00:00');
+            const today = new Date(projectDeadline);
+            // Calculer la différence en mois
+            const yearDiff = today.getFullYear() - selectedDate.getFullYear();
+            const monthDiff = today.getMonth() - selectedDate.getMonth();
+            const offset = yearDiff * 12 + monthDiff;
+            // Clamp entre 0 et 24
+            return Math.max(0, Math.min(24, offset));
+        }
+
+        function updateDateFromInput(id, dateString) {
+            const offset = getOffsetFromDate(dateString);
+            updateData(id, 'offset', offset);
+        }
+
         // --- RENDER ALL CARDS ---
         function renderAllCards() {
             timelineScroll.innerHTML = '';
@@ -561,15 +583,12 @@
                         <span class="sentinel-date">${milestone.offset === 0 ? 'FIN PROJET' : formatDate(milestone.offset)}</span>
                     </div>
                     <div class="data-block">
-                        <div class="block-label">00 // Date (mois avant deadline)</div>
-                        <input type="number" class="input-raw input-offset"
-                               value="${milestone.offset}"
+                        <div class="block-label">00 // Date du Jalon</div>
+                        <input type="date" class="input-raw input-date"
+                               value="${getDateFromOffset(milestone.offset)}"
                                data-id="${milestone.id}"
-                               min="0"
-                               max="24"
-                               placeholder="Ex: 12"
                                autocomplete="off"
-                               oninput="updateData('${milestone.id}', 'offset', parseInt(this.value))">
+                               onchange="updateDateFromInput('${milestone.id}', this.value)">
                     </div>
                     <div class="data-block">
                         <div class="block-label">01 // Nom du Jalon</div>
