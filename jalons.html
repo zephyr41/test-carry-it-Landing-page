@@ -211,15 +211,43 @@
         }
         .input-title::placeholder { font-size: 16px; }
 
-        .input-date {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--accent);
+        /* Date picker subtil en bas de carte */
+        .date-picker-subtle {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+        .date-picker-subtle:hover {
+            opacity: 1;
+        }
+
+        .date-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            font-size: 11px !important;
+            color: var(--text-secondary) !important;
+        }
+
+        .input-date-subtle {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            padding: 0;
             cursor: pointer;
         }
-        .input-date::-webkit-calendar-picker-indicator {
+        .input-date-subtle::-webkit-calendar-picker-indicator {
             cursor: pointer;
-            filter: invert(0.8);
+            filter: invert(0.6);
+            opacity: 0.7;
+        }
+        .input-date-subtle:hover::-webkit-calendar-picker-indicator {
+            opacity: 1;
         }
 
         .input-area {
@@ -583,14 +611,6 @@
                         <span class="sentinel-date">${milestone.offset === 0 ? 'FIN PROJET' : formatDate(milestone.offset)}</span>
                     </div>
                     <div class="data-block">
-                        <div class="block-label">00 // Date du Jalon</div>
-                        <input type="date" class="input-raw input-date"
-                               value="${getDateFromOffset(milestone.offset)}"
-                               data-id="${milestone.id}"
-                               autocomplete="off"
-                               onchange="updateDateFromInput('${milestone.id}', this.value)">
-                    </div>
-                    <div class="data-block">
                         <div class="block-label">01 // Nom du Jalon</div>
                         <input type="text" class="input-raw input-title"
                                value="${milestone.title}"
@@ -617,6 +637,16 @@
                                   data-id="${milestone.id}"
                                   placeholder="Description factuelle..."
                                   oninput="updateData('${milestone.id}', 'desc', this.value)">${milestone.desc}</textarea>
+                    </div>
+                    <div class="data-block date-picker-subtle">
+                        <label class="block-label date-label">
+                            <i class="ri-calendar-line"></i>
+                            <input type="date" class="input-date-subtle"
+                                   value="${getDateFromOffset(milestone.offset)}"
+                                   data-id="${milestone.id}"
+                                   autocomplete="off"
+                                   onchange="updateDateFromInput('${milestone.id}', this.value)">
+                        </label>
                     </div>
                 `;
 
