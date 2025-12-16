@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pkill:*)",
+      "Bash(xattr -d:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nRefactor objectif.html: SMART methodology, personal branding & mobile optimization\n\nMajor changes:\n- Replace step titles with SMART terms (Spécifique, Mesurable, Atteignable, Réaliste, Temporel)\n- Switch to informal tone (tu/ta instead of vous/votre) for personal branding\n- Change \"Nouveau Projet\" to \"Nouvelle Ambition\" for better positioning\n- Import Rifton font for navbar consistency\n- Enhance progress bar visibility (3px height, positioned below navbar)\n- Optimize mobile experience:\n  - Fix navbar logo on single line (white-space: nowrap)\n  - Responsive typography and spacing\n  - Improved footer visibility with gradient background\n  - Hide back button on mobile for better UX\n  - Proper padding adjustments for content spacing\n- Add margin-top to steps for better visual separation\n- Improve footer styling with z-index and background gradient\n\n🤖 Generated with Claude Code\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git commit -m \"$(cat <<''EOF''\nFix: Make navigation buttons visible on mobile\n\nChanges:\n- Convert .app-footer from position:fixed to position:relative\n- Remove fixed positioning (bottom: 0, z-index) so buttons follow document flow\n- Update mobile media query to show both buttons stacked vertically\n- Reduce main-stage padding-bottom (100px→40px desktop, 120px→20px mobile)\n- Add proper spacing and width to buttons on mobile\n\nThe buttons are now properly rendered as part of the main content\nrather than floating elements, making them visible and accessible.\n\n🤖 Generated with Claude Code\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git commit:*)",
+      "Bash(git --version:*)",
+      "Bash(git config:*)",
+      "Bash(ffmpeg:*)",
+      "Bash(git checkout:*)",
+      "Bash(ls:*)",
+      "WebSearch",
+      "Bash(git push)",
+      "Bash(git remote add:*)",
+      "Bash(git push:*)",
+      "Bash(git fetch:*)"
+    ]
+  }
+}

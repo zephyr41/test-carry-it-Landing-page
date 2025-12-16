@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark-mode">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Carry It</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="index.html" class="navbar-logo">Carry It</a>
+        <div class="navbar-links">
+            <a href="index.html" class="navbar-link">Accueil</a>
+        </div>
+    </nav>
+    <section class="dashboard-section" id="dashboardSection">
+        <div class="dashboard-container">
+            <!-- Header du Dashboard -->
+            <div class="dashboard-header">
+                <h1 class="dashboard-title">Mes Objectifs</h1>
+                <a href="objectif.html" class="btn-create">+ Créer un objectif</a>
+            </div>
+
+            <!-- Carrousel -->
+            <div class="carousel-container">
+                <div class="carousel-nav left" id="carouselPrev" onclick="navigateCarousel(-1)">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                </div>
+
+                <div class="carousel-wrapper">
+                    <div class="carousel-track" id="carouselTrack">
+                        <!-- Les cartes SMART seront générées ici -->
+                    </div>
+                </div>
+
+                <div class="carousel-nav right" id="carouselNext" onclick="navigateCarousel(1)">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Dots de navigation -->
+            <div class="carousel-dots" id="carouselDots"></div>
+        </div>
+    </section>
+    <script>
+        let currentStep = 1;
+        const totalSteps = 6;
+
+        const sections = [
+            'step-1',
+            'step-2',
+            'step-3',
+            'step-4',
+            'step-5',
+            'step-6'
+        ];
+
+        function showObjectif() {
+            window.location.href = 'objectif.html';
+        }
+
+        function goBackFromObjectif() {
+            window.location.href = 'index.html';
+        }
+
+        function goToStep(step) {
+            if (step < 1 || step > totalSteps) return;
+
+            // Hide current step
+            const currentSection = document.getElementById(sections[currentStep - 1]);
+            currentSection.classList.remove('active');
+            currentSection.classList.add('hidden');
+
+            // Show new step
+            const nextSection = document.getElementById(sections[step - 1]);
+            nextSection.classList.remove('hidden');
+            nextSection.classList.add('active');
+
+            // Update progress
+            currentStep = step;
+            updateProgress();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function navigateNext() {
+            if (currentStep < totalSteps) {
+                saveStep(currentStep);
+                goToStep(currentStep + 1);
+            } else if (currentStep === totalSteps) {
+                finalizeObjectif();
+            }
+        }
+
+        function navigatePrevious() {
+            if (currentStep > 1) goToStep(currentStep - 1);
+        }
+
+        function updateProgress() {
+            // Update progress fill (percentage based on current step)
+            const progressPercent = (currentStep / totalSteps) * 100;
+            document.getElementById('progressFill').style.width = progressPercent + '%';
+
+            // Update button text on last step
+            const continueBtn = document.getElementById('continueBtn');
+            if (currentStep === totalSteps) {
+                continueBtn.textContent = 'Finaliser';
+            } else {
+                continueBtn.textContent = 'Continuer';
+            }
+        }
+
+        function updateArrows() {
+            // This function kept for compatibility but no longer needed
+        }
+
+        function openCarryItAI() {
+            window.open('https://chatgpt.com/g/g-692ca373fe108191a36c15ad1250a4a8-carry-it-ai', '_blank');
+        }
+
+        function saveStep(step) {
+            const stepNames = ['specifique', 'mesurable', 'atteignable', 'realiste', 'temporel', 'titre'];
+            const smartData = JSON.parse(localStorage.getItem('carryItObjectifSMART') || '{}');
+            smartData[stepNames[step - 1]] = document.getElementById(stepNames[step - 1] + 'Input').value;
+            localStorage.setItem('carryItObjectifSMART', JSON.stringify(smartData));
+        }
+
+        // checkScroll() removed - not needed with fade-in/out design pattern
+        // Sections use opacity transitions, not carousel scrolling
+
+        // Stockage localStorage
+        function saveSmartData() {
+            const smartData = {
+                specifique: document.getElementById('specifiqueInput').value,
+                mesurable: document.getElementById('mesurableInput').value,
+                atteignable: document.getElementById('atteignableInput').value,
+                realiste: document.getElementById('realisteInput').value,
+                temporel: document.getElementById('temporelInput').value,
+                titre: document.getElementById('titreInput').value,
+                lastUpdate: new Date().toISOString()
+            };
+            localStorage.setItem('carryItObjectifSMART', JSON.stringify(smartData));
+        }
+
+        function loadSmartData() {
+            const saved = localStorage.getItem('carryItObjectifSMART');
+            if (saved) {
+                const smartData = JSON.parse(saved);
+                document.getElementById('specifiqueInput').value = smartData.specifique || '';
+                document.getElementById('mesurableInput').value = smartData.mesurable || '';
+                document.getElementById('atteignableInput').value = smartData.atteignable || '';
+                document.getElementById('realisteInput').value = smartData.realiste || '';
+                document.getElementById('temporelInput').value = smartData.temporel || '';
+                document.getElementById('titreInput').value = smartData.titre || '';
+            }
+        }
+
+        function finalizeObjectif() {
+            saveSmartData();
+
+            // Récupérer les données SMART
+            const smartData = JSON.parse(localStorage.getItem('carryItObjectifSMART'));
+
+            console.log('📝 finalizeObjectif - titre:', smartData?.titre);
+            console.log('📊 État actuel de allObjectifs:', allObjectifs.length, 'objectifs avant loadAllObjectifs');
+
+            if (smartData && smartData.titre) {
+                // ⚠️ IMPORTANT: Ne pas surcharger allObjectifs si elle a déjà des données en mémoire
+                // On utilise loadAllObjectifs SEULEMENT pour la première fois ou après refresh
+                if (allObjectifs.length === 0) {
+                    loadAllObjectifs();
+                    console.log('📚 loadAllObjectifs appelé - allObjectifs est vide');
+                } else {
+                    console.log('⏭️  Skiping loadAllObjectifs - allObjectifs a déjà', allObjectifs.length, 'objectifs');
+                }
+
+                if (editingObjectifIndex !== null) {
+                    // Mode édition : mettre à jour l'objectif existant
+                    console.log('✏️ Mode édition - index:', editingObjectifIndex);
+                    allObjectifs[editingObjectifIndex] = {
+                        ...allObjectifs[editingObjectifIndex],
+                        ...smartData,
+                        id: allObjectifs[editingObjectifIndex].id // Garder l'ID original
+                    };
+                    currentCarouselIndex = editingObjectifIndex;
+                    editingObjectifIndex = null;
+                } else {
+                    // Mode création : ajouter un nouvel objectif
+                    console.log('➕ Mode création - nouvel objectif');
+                    const newObjectif = {
+                        id: Date.now(),
+                        ...smartData,
+                        measures: [] // Initialiser measures vide
+                    };
+                    allObjectifs.push(newObjectif);
+                    console.log('➕ Nouvel objectif ajouté - total allObjectifs:', allObjectifs.length);
+                    currentCarouselIndex = allObjectifs.length - 1;
+                }
+
+                // Sauvegarder tous les objectifs
+                saveAllObjectifs();
+                const verify = JSON.parse(localStorage.getItem('carryItAllObjectifs'));
+                console.log('✅ Sauvegardé - localStorage contient:', verify.length, 'objectifs');
+                verify.forEach((obj, i) => console.log(`   [${i}] ${obj.titre}`));
+
+                // Nettoyer le draft SMART (carryItObjectifSMART) pour éviter les conflits
+                // On ne le supprime PAS complètement, on le garde pour les données temporaires
+                console.log('🧹 Draft SMART gardé pour édition future');
+            } else {
+                console.warn('⚠️ smartData invalide ou titre vide');
+                alert('Veuillez remplir au moins le titre de votre objectif');
+                return;
+            }
+
+            // Masquer le flow SMART et afficher le dashboard
+            document.getElementById('smartContainer').classList.remove('active');
+            document.getElementById('dashboardSection').classList.add('active');
+
+            renderCarousel();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Prompt Copy Functions
+        function copyPromptSpecifique() {
+            const prompt = `Tu es Carry It, un outil de structuration personnelle. Ton rôle est d’aider l’utilisateur à définir des objectifs SMART (Spécifique, Mesurable, Atteignable, Réaliste, Temporel) de manière concrète, réaliste et rationnelle. Tu adoptes un ton simple, direct et concis. Tu poses une seule question à la fois. Aujourd’hui, tu travailles uniquement sur la partie “Spécifique” — c’est-à-dire ce que l’utilisateur veut accomplir précisément. Explique-lui brièvement : “Un objectif SMART est précis, mesurable, atteignable, réaliste et défini dans le temps. Aujourd’hui, on va juste définir ce que tu veux accomplir précisément. Carry It t’aidera ensuite à mesurer et planifier la suite.” Puis pose-lui directement la question : “Qu’est-ce que tu veux accomplir ? (Essaye d’être le plus précis possible, mais je vais t’aider à reformuler.)” Quand l’utilisateur répond : Reformule son objectif de façon claire, factuelle et actionnable. Vérifie s’il est réaliste à court terme. Si l’objectif semble irréaliste ou démesuré (ex : Ironman sans expérience, 10 000€/mois en 3 mois, etc.), ne mens pas et ne le flattes pas. Dis-lui que l’objectif est peut-être atteignable, mais pas dans ce délai. Replace le but final dans une projection à 5 ans. Propose un objectif intermédiaire à 2 ans et un palier concret à 6 mois. Si l’utilisateur veut définir plusieurs objectifs (santé, business, etc.), guide-le un par un. À chaque étape : Reformule ce que tu as compris. Valide la clarté de l’objectif avant de passer à la suite.`;
+            copyToClipboard(prompt, event.target);
+        }
+
+        function copyPromptMesurable() {
+            const prompt = `System Prompt : Tu es Carry It, un outil de structuration personnelle. Ton rôle est d'aider l'utilisateur à définir des objectifs SMART (Spécifique, Mesurable, Atteignable, Réaliste, Temporel) de manière concrète, réaliste et rationnelle. Tu adoptes un ton simple, direct et concis. Tu poses une seule question à la fois.
+
+Aujourd'hui, tu travailles uniquement sur la partie "Mesurable" — c'est-à-dire comment l'utilisateur va mesurer sa progression.
+
+L'utilisateur a déjà défini son objectif spécifique. Maintenant, aide-le à définir comment il va mesurer sa progression de manière concrète.
+
+Explique-lui brièvement : "Pour que ton objectif soit mesurable, tu dois pouvoir suivre ta progression avec des chiffres, des dates, ou des indicateurs concrets. Ça te permet de savoir objectivement où t'en es."
+
+Puis pose-lui directement la question : "Comment tu vas mesurer que tu progresses vers ton objectif ? Quels indicateurs concrets tu peux suivre ?"
+
+Exemples d'indicateurs mesurables :
+- Temps (ex: courir 10km en moins de 55 minutes)
+- Distance (ex: courir 10km sans s'arrêter)
+- Poids (ex: perdre 5kg)
+- Répétitions (ex: 10 tractions d'affilée)
+- Fréquence (ex: 3 séances par semaine)
+- Chiffre d'affaires (ex: 5000€ de CA mensuel)
+- Nombre de clients (ex: 20 clients actifs)
+
+Quand l'utilisateur répond :
+Vérifie que l'indicateur est quantifiable et observable objectivement.
+Si c'est trop vague (ex: "être en meilleure forme"), demande comment il peut le mesurer concrètement.
+Propose des indicateurs mesurables adaptés à son objectif.
+
+À chaque étape :
+Reformule ce que tu as compris.
+Demande régulièrement : "Est-ce que c'est bon ?" pour valider avec l'utilisateur.
+Valide la clarté de l'indicateur avant de passer à la suite.
+
+Quand l'indicateur mesurable est finalement validé et clair, écris :
+"C'est bon. Dans Carry It, à 'Mesurable', écris : [l'indicateur mesurable reformulé]"
+basé sur son objectif. propose lui une première mesure et explique dans son cas ce qui serait le plus pertinent
+
+IMPORTANT - FORMAT OBLIGATOIRE :
+La phrase finale DOIT commencer par l'unité de mesure entre crochets, suivie de la description.
+Format : [unité] description
+
+Exemples corrects :
+- [km] distance parcourue par semaine
+- [€] chiffre d'affaires mensuel
+- [Visites] nombre de visites immobilières par mois
+- [kg] poids perdu
+- [%] taux de conversion
+- [heures] temps d'entraînement hebdomadaire
+- [clients] nombre de clients acquis
+
+Si l'utilisateur te donne une mesure sans ce format, reformule-la avec [unité] au début et demande confirmation.`;
+            copyToClipboard(prompt, event.target);
+        }
+
+        function copyPromptAtteignable() {
+            const prompt = `System Prompt Carry It — Partie Atteignable Contexte : L’utilisateur a déjà défini : Spécifique : [objectif validé] Mesurable : [indicateur validé] Tu vas maintenant travailler sur la partie Atteignable — c’est-à-dire vérifier si cet objectif peut réellement être atteint avec les moyens, les compétences et le temps actuels de l’utilisateur. Explique-lui brièvement : « Pour qu’un objectif soit atteignable, il faut que tu puisses réellement le réaliser avec ce que tu as aujourd’hui : ton temps, ton énergie, tes ressources, tes connaissances. Ce n’est pas grave si ce n’est pas encore possible tout de suite : dans ce cas, on ajuste la temporalité. » Instruction : Pose directement la question : « Avec tes ressources et ton temps actuel, penses-tu que cet objectif est atteignable à court terme (dans les 6 à 12 mois) ? » Quand l’utilisateur répond : Évalue si son niveau de moyens (temps, argent, compétences, contraintes externes) rend l’objectif réaliste à court terme. Si c’est atteignable, reformule simplement et valide : « D’accord, donc ton objectif est atteignable dans les conditions actuelles. » Puis note : Atteignable : Oui, dans les 6–12 mois. Si ce n’est pas atteignable immédiatement, détermine ce qui manque (temps, compétences, argent, expérience, régularité, etc.). Reformule ce manque en une phrase claire. Propose de recaler la temporalité de l’objectif : 2 ans si le projet nécessite un apprentissage ou une montée en compétence. 3 à 5 ans si c’est un projet de vie majeur ou transformation profonde. Confirme avec l’utilisateur : « Si on se donne plus de temps, par exemple [durée suggérée], est-ce que ça te semble atteignable ? » Quand c’est validé, affiche le résultat sous cette forme : Dans Carry It, à "Atteignable", écris simplement : [Oui/Non — ajusté à X ans, avec condition(s)]`;
+            copyToClipboard(prompt, event.target);
+        }
+
+        function copyPromptRealiste() {
+            const prompt = `Contexte : L’utilisateur a déjà défini : Spécifique : [objectif validé] Mesurable : [indicateur validé] Atteignable : [évaluation validée] Tu vas maintenant travailler sur la partie Réaliste — c’est-à-dire vérifier si l’objectif s’inscrit dans la vie actuelle de l’utilisateur sans contradiction majeure avec ses priorités, contraintes ou valeurs. Explique-lui brièvement : « Un objectif réaliste, ce n’est pas seulement quelque chose de possible, c’est quelque chose de compatible avec ta vie actuelle. Il doit pouvoir s’intégrer dans ton emploi du temps, ton niveau d’énergie, tes obligations, et ne pas aller à l’encontre de ce qui est vraiment important pour toi. » Instruction : Pose directement la question : « Est-ce que cet objectif est cohérent avec ta vie actuelle, ton emploi du temps, et tes priorités ? Ou faudrait-il adapter quelque chose pour qu’il le devienne ? » Quand l’utilisateur répond : Analyse si la réponse montre une cohérence avec sa réalité actuelle (temps, énergie, contexte de vie, engagements). Si c’est réaliste : Reformule la phrase de validation : « D’accord, cet objectif est réaliste dans ta situation actuelle. » Note : Réaliste : Oui, compatible avec la situation actuelle. Si ce n’est pas encore réaliste, identifie ce qui bloque (charge de travail, rythme, priorités conflictuelles, fatigue, contexte personnel). Reformule clairement la cause du blocage. Propose une adaptation concrète : Réduire l’intensité ou la fréquence. Fractionner l’objectif en sous-objectifs. Déplacer une partie dans le temps. Vérifie avec l’utilisateur : « Si on ajuste comme ça, est-ce que ça te semble plus réaliste ? » Quand c’est validé, affiche le résultat sous cette forme : Dans carry it Réaliste : [Oui/Non — avec ajustement(s) précisé(s)]`;
+            copyToClipboard(prompt, event.target);
+        }
+
+        function copyPromptTemporel() {
+            const prompt = `Contexte :
+L’utilisateur a déjà défini les parties précédentes du SMART.
+Tu vas maintenant fixer une date unique et claire à laquelle l’objectif doit être atteint.
+
+Explique-lui brièvement :
+
+« Pour qu’un objectif soit concret, il faut une date précise. On ne parle plus de durée, mais d’un jour exact où ton objectif doit être accompli. »
+
+Instruction :
+Pose directement la question :
+
+« À quelle date précise veux-tu avoir atteint cet objectif ? (exemple : 23 septembre 2028) »
+
+Quand l’utilisateur répond :
+
+Reformule la date dans un format clair : jour mois année.
+
+Affiche uniquement la date finale, sans autre texte, ainsi :
+
+Temporel : [JJ mois AAAA]`;
+            copyToClipboard(prompt, event.target);
+        }
+
+        function copyToClipboard(text, button) {
+            navigator.clipboard.writeText(text).then(() => {
+                const original = button.textContent;
+                button.textContent = '✓ Copié !';
+                button.style.backgroundColor = '#404025';
+                setTimeout(() => {
+                    button.textContent = original;
+                    button.style.backgroundColor = '#0A2A53';
+                }, 2000);
+            });
+        }
+        function scrollToManifest() {
+            document.getElementById('manifestSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Navigation functions
+        function goToHome() {
+            // Masquer tous les conteneurs
+            document.getElementById('smartContainer').classList.remove('active');
+            document.getElementById('dashboardSection').classList.remove('active');
+
+            // Afficher hero et manifest
+            document.getElementById('heroSection').classList.remove('hidden', 'fade-out');
+            document.getElementById('manifestSection').classList.remove('hidden');
+
+            // Scroll vers le haut
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Gestion des objectifs multiples
+        let allObjectifs = [];
+        let currentCarouselIndex = 0;
+
+        function loadAllObjectifs() {
+            const stored = localStorage.getItem('carryItAllObjectifs');
+            console.log('📂 loadAllObjectifs - stored data:', stored ? JSON.parse(stored).length + ' objectifs' : 'aucun');
+
+            if (stored) {
+                try {
+                    allObjectifs = JSON.parse(stored);
+                    console.log('✅ Chargé depuis carryItAllObjectifs:', allObjectifs.length, 'objectifs');
+                } catch (e) {
+                    console.error('❌ Erreur parsing carryItAllObjectifs:', e);
+                    allObjectifs = [];
+                }
+            } else {
+                // Migration depuis l'ancien système
+                console.log('🔄 Migration - cherche carryItObjectifSMART');
+                const oldData = localStorage.getItem('carryItObjectifSMART');
+                if (oldData) {
+                    try {
+                        const parsed = JSON.parse(oldData);
+                        allObjectifs = [{ id: Date.now(), ...parsed }];
+                        localStorage.setItem('carryItAllObjectifs', JSON.stringify(allObjectifs));
+                        console.log('🔄 Migration complétée - 1 objectif migré');
+                    } catch (e) {
+                        console.error('❌ Erreur migration:', e);
+                        allObjectifs = [];
+                    }
+                } else {
+                    console.log('⚠️ Aucune donnée trouvée');
+                    allObjectifs = [];
+                }
+            }
+        }
+
+        function saveAllObjectifs() {
+            localStorage.setItem('carryItAllObjectifs', JSON.stringify(allObjectifs));
+        }
+
+        function goToDashboard() {
+            loadAllObjectifs();
+
+            if (allObjectifs.length === 0) {
+                alert('Vous devez d\'abord créer un objectif SMART !');
+                return;
+            }
+
+            // Masquer toutes les sections sauf dashboard
+            document.getElementById('heroSection').classList.add('hidden', 'fade-out');
+            document.getElementById('manifestSection').classList.add('hidden');
+            document.getElementById('smartContainer').classList.remove('active');
+            document.querySelector('.message-section').style.display = 'none';
+            document.querySelector('.eisenhower-section').style.display = 'none';
+            document.querySelector('.descente-section').style.display = 'none';
+            document.querySelector('.projection-section').style.display = 'none';
+
+            // Afficher dashboard
+            document.getElementById('dashboardSection').classList.add('active');
+
+            // Charger le carrousel
+            renderCarousel();
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function goBackFromDashboard() {
+            // Masquer dashboard
+            document.getElementById('dashboardSection').classList.remove('active');
+
+            // Réafficher toutes les sections
+            document.getElementById('heroSection').classList.remove('hidden', 'fade-out');
+            document.getElementById('manifestSection').classList.remove('hidden');
+            document.querySelector('.message-section').style.display = 'block';
+            document.querySelector('.eisenhower-section').style.display = 'block';
+            document.querySelector('.descente-section').style.display = 'block';
+            document.querySelector('.projection-section').style.display = 'block';
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function renderCarousel() {
+            const track = document.getElementById('carouselTrack');
+            const dotsContainer = document.getElementById('carouselDots');
+
+            console.log('🔄 renderCarousel called with', allObjectifs.length, 'objectifs');
+
+            track.innerHTML = '';
+            dotsContainer.innerHTML = '';
+
+            if (allObjectifs.length === 0) {
+                console.warn('⚠️ Aucun objectif à afficher');
+                track.innerHTML = '<div style="width: 100%; text-align: center; padding: 60px 20px; color: #929292;">Aucun objectif créé. Commencez par en créer un !</div>';
+                return;
+            }
+
+            // Réinitialiser l'index du carousel
+            currentCarouselIndex = Math.min(currentCarouselIndex, allObjectifs.length - 1);
+
+            allObjectifs.forEach((objectif, index) => {
+                // Créer le wrapper pour les 2 cartes
+                const item = document.createElement('div');
+                item.className = 'carousel-item';
+                item.innerHTML = `
+                    <div class="carousel-cards-grid">
+                        <!-- CARTE 1: SMART -->
+                        <div class="smart-card" id="card-${index}" style="min-height: 500px; background: #111113; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.35);">
+                            <div style="padding: 24px; border-bottom: 1px solid rgba(255, 255, 255, 0.12); display: flex; justify-content: space-between; align-items: flex-start; gap: 16px;">
+                                <div style="flex: 1;">
+                                    <label id="label-titre-${index}" style="display: none; font-size: 11px; color: #404025; font-weight: 600; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; font-family: 'Inter', sans-serif;">TITRE</label>
+                                    <div id="view-titre-${index}" style="font-size: 24px; font-weight: 700; color: #FFFFFF; font-family: 'Inter', sans-serif; margin-bottom: 12px; line-height: 1.2;">${objectif.titre || 'Sans titre'}</div>
+                                    <input type="text" id="edit-titre-${index}" value="${objectif.titre || ''}" placeholder="Titre de l'objectif..." style="display: none; font-size: 1.5rem; font-weight: 700; color: #FFFDF6; background: transparent; border: none; border-bottom: 2px solid rgba(238, 68, 8, 0.3); outline: none; width: 100%; font-family: 'Inter', sans-serif; padding: 0 0 8px 0; transition: border-color 0.2s;" onfocus="this.style.borderColor='rgba(238, 68, 8, 1)'" onblur="this.style.borderColor='rgba(238, 68, 8, 0.3)'; updateObjectifField(${index}, 'titre', this.value)">
+
+                                    <div id="view-duree-${index}" style="display: inline-flex; align-items: center; gap: 6px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 500; color: #A8A8A8; font-family: 'Inter', sans-serif;">
+                                        <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="flex-shrink: 0;">
+                                            <circle cx="12" cy="12" r="10" stroke-width="2"></circle>
+                                            <path stroke-linecap="round" stroke-width="2" d="M12 6v6l4 2"></path>
+                                        </svg>
+                                        <span>Deadline: ${objectif.temporel || 'Non défini'}</span>
+                                    </div>
+                                </div>
+                                <button onclick="toggleEditMode(${index})" id="editBtn-${index}" style="background: transparent; border: none; color: #EE4408; padding: 4px 8px; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; font-family: 'Inter', sans-serif; flex-shrink: 0; display: flex; align-items: center; justify-content: center;" onmouseover="this.style.background='rgba(238, 68, 8, 0.1)'" onmouseout="this.style.background='transparent'">
+                                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: block;">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="smart-card-item">
+                                <div class="smart-circle">S</div>
+                                <div class="smart-content">
+                                    <div class="smart-label">Spécifique</div>
+                                    <div class="smart-value" id="view-s-${index}">${objectif.specifique || '-'}</div>
+                                    <textarea id="edit-s-${index}" style="display: none; width: 100%; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; padding: 8px; color: #FFFDF6; font-family: 'Inter', sans-serif; font-size: 0.9rem; resize: vertical; min-height: 60px;" onblur="updateObjectifField(${index}, 'specifique', this.value)">${objectif.specifique || ''}</textarea>
+                                </div>
+                            </div>
+                            <div class="smart-card-item">
+                                <div class="smart-circle">M</div>
+                                <div class="smart-content">
+                                    <div class="smart-label">Mesurable</div>
+                                    <div class="smart-value" id="view-m-${index}">${objectif.mesurable || '-'}</div>
+                                    <textarea id="edit-m-${index}" style="display: none; width: 100%; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; padding: 8px; color: #FFFDF6; font-family: 'Inter', sans-serif; font-size: 0.9rem; resize: vertical; min-height: 60px;" onblur="updateObjectifField(${index}, 'mesurable', this.value)">${objectif.mesurable || ''}</textarea>
+                                </div>
+                            </div>
+                            <div class="smart-card-item">
+                                <div class="smart-circle">A</div>
+                                <div class="smart-content">
+                                    <div class="smart-label">Atteignable</div>
+                                    <div class="smart-value" id="view-a-${index}">${objectif.atteignable || '-'}</div>
+                                    <textarea id="edit-a-${index}" style="display: none; width: 100%; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; padding: 8px; color: #FFFDF6; font-family: 'Inter', sans-serif; font-size: 0.9rem; resize: vertical; min-height: 60px;" onblur="updateObjectifField(${index}, 'atteignable', this.value)">${objectif.atteignable || ''}</textarea>
+                                </div>
+                            </div>
+                            <div class="smart-card-item">
+                                <div class="smart-circle">R</div>
+                                <div class="smart-content">
+                                    <div class="smart-label">Réaliste</div>
+                                    <div class="smart-value" id="view-r-${index}">${objectif.realiste || '-'}</div>
+                                    <textarea id="edit-r-${index}" style="display: none; width: 100%; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; padding: 8px; color: #FFFDF6; font-family: 'Inter', sans-serif; font-size: 0.9rem; resize: vertical; min-height: 60px;" onblur="updateObjectifField(${index}, 'realiste', this.value)">${objectif.realiste || ''}</textarea>
+                                </div>
+                            </div>
+                            <div class="smart-card-item">
+                                <div class="smart-circle">T</div>
+                                <div class="smart-content">
+                                    <div class="smart-label">Temporel</div>
+                                    <div class="smart-value" id="view-t-${index}">${objectif.temporel || '-'}</div>
+                                    <input type="date" id="edit-t-${index}" value="${objectif.temporel || ''}" style="display: none; width: 100%; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; padding: 8px; color: #FFFDF6; font-family: 'Inter', sans-serif; font-size: 0.9rem;" onblur="updateObjectifField(${index}, 'temporel', this.value)">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CARTE 2: KPI -->
+                        <div style="background: #111113; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.35); display: flex; flex-direction: column; overflow: hidden; min-height: 500px;">
+                            <div style="padding: 24px; border-bottom: 1px solid rgba(255, 255, 255, 0.12); display: flex; justify-content: space-between; align-items: flex-start; gap: 16px;">
+                                <div>
+                                    <h3 style="font-size: 16px; font-weight: 600; color: #FFFFFF; font-family: 'Inter', sans-serif; margin: 0 0 8px 0;">Suivi du KPI</h3>
+                                    <p style="font-size: 13px; color: #A8A8A8; font-family: 'Inter', sans-serif; margin: 0; font-weight: 500;">${extractTargetValue(objectif.mesurable) || '?'} ${extractKPI(objectif.mesurable) || ''}</p>
+                                </div>
+                                <button onclick="openAddMeasureModal(${index})" style="background: rgba(238, 68, 8, 0.1); border: 1px solid #EE4408; color: #EE4408; padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; font-family: 'Inter', sans-serif; flex-shrink: 0;" onmouseover="this.style.background='rgba(238, 68, 8, 0.2)'" onmouseout="this.style.background='rgba(238, 68, 8, 0.1)'">
+                                    + Ajouter
+                                </button>
+                            </div>
+                            <div style="flex: 1; padding: 28px; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 220px;">
+                                <canvas id="kpiChart-${index}"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- CARTE 3: JALONS -->
+                        ${objectif.jalons && objectif.jalons.length > 0 ? `
+                            <div style="background: #111113; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.35); min-height: 500px; padding: 24px; display: flex; flex-direction: column;">
+                                <div style="border-bottom: 1px solid rgba(255, 255, 255, 0.12); padding-bottom: 16px; margin-bottom: 24px;">
+                                    <h3 style="font-size: 16px; font-weight: 600; color: #FFFFFF; margin: 0 0 8px 0;">Plan d'Action</h3>
+                                    <p style="font-size: 13px; color: #A8A8A8; margin: 0;">
+                                        ${objectif.jalons.filter(j => j.statut === 'completed').length}/${objectif.jalons.length} jalons complétés
+                                    </p>
+                                </div>
+
+                                <div style="flex: 1; overflow-y: auto;">
+                                    ${renderJalonsTimeline(objectif, index)}
+                                </div>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+                track.appendChild(item);
+
+                // Initialiser le graphique après que l'élément soit ajouté au DOM
+                setTimeout(() => initKPIChart(index, objectif), 0);
+
+                // Créer le dot
+                const dot = document.createElement('div');
+                dot.className = `carousel-dot ${index === currentCarouselIndex ? 'active' : ''}`;
+                dot.onclick = () => goToCarouselIndex(index);
+                dotsContainer.appendChild(dot);
+            });
+
+            updateCarouselPosition();
+            updateCarouselNav();
+        }
+
+        function navigateCarousel(direction) {
+            const newIndex = currentCarouselIndex + direction;
+            if (newIndex >= 0 && newIndex < allObjectifs.length) {
+                currentCarouselIndex = newIndex;
+                updateCarouselPosition();
+                updateCarouselNav();
+                updateCarouselDots();
+            }
+        }
+
+        function goToCarouselIndex(index) {
+            currentCarouselIndex = index;
+            updateCarouselPosition();
+            updateCarouselNav();
+            updateCarouselDots();
+        }
+
+        function updateCarouselPosition() {
+            const track = document.getElementById('carouselTrack');
+            const offset = -currentCarouselIndex * 100;
+            track.style.transform = `translateX(${offset}%)`;
+        }
+
+        function updateCarouselNav() {
+            const prevBtn = document.getElementById('carouselPrev');
+            const nextBtn = document.getElementById('carouselNext');
+
+            prevBtn.classList.toggle('disabled', currentCarouselIndex === 0);
+            nextBtn.classList.toggle('disabled', currentCarouselIndex === allObjectifs.length - 1);
+        }
+
+        function updateCarouselDots() {
+            const dots = document.querySelectorAll('.carousel-dot');
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentCarouselIndex);
+            });
+        }
+
+        let editingObjectifIndex = null;
+
+        function createNewObjectif() {
+            editingObjectifIndex = null;
+
+            // Réinitialiser les inputs pour un nouvel objectif
+            document.getElementById('specifiqueInput').value = '';
+            document.getElementById('mesurableInput').value = '';
+            document.getElementById('atteignableInput').value = '';
+            document.getElementById('realisteInput').value = '';
+            document.getElementById('temporelInput').value = '';
+            document.getElementById('titreInput').value = '';
+
+            // Vider le localStorage temporaire
+            localStorage.removeItem('carryItObjectifSMART');
+
+            // Rediriger vers le flow SMART
+            window.location.href = 'objectif.html';
+        }
+
+        let editModeActive = {};
+        let kpiCharts = {}; // Stocker les instances de graphiques
+
+        // Fonction pour extraire la valeur cible du mesurable
+        function extractTargetValue(mesurableText) {
+            if (!mesurableText) return null;
+
+            // Rechercher un nombre dans le texte (peut contenir des espaces, virgules, etc.)
+            // Exemples: "100 000", "100000", "100,000", "100k"
+            const numberMatch = mesurableText.match(/(\d+[\s,]?\d*[\s,]?\d*)\s*(k|K)?/);
+
+            if (numberMatch) {
+                // Retirer les espaces et virgules
+                let value = numberMatch[1].replace(/[\s,]/g, '');
+                value = parseFloat(value);
+
+                // Si c'est en "k" (milliers), multiplier par 1000
+                if (numberMatch[2] && (numberMatch[2] === 'k' || numberMatch[2] === 'K')) {
+                    value *= 1000;
+                }
+
+                return value;
+            }
+
+            return null;
+        }
+
+        // Fonction pour initialiser le graphique KPI avec 3 états
+        function initKPIChart(index, objectif) {
+            const canvas = document.getElementById(`kpiChart-${index}`);
+            if (!canvas) return;
+
+            const kpiUnit = extractKPI(objectif.mesurable);
+            const targetValue = extractTargetValue(objectif.mesurable);
+            let measures = objectif.measures || [];
+
+            // Détruire l'ancien graphique s'il existe
+            if (kpiCharts[index]) {
+                kpiCharts[index].destroy();
+            }
+
+            // ====== ÉTAT 0: AUCUNE DONNÉE ======
+            if (measures.length === 0) {
+                return renderEmptyKPIState(canvas, index);
+            }
+
+            // Trier les mesures par ordre chronologique
+            measures = [...measures].sort((a, b) => {
+                const timestampA = a.timestamp || parseDateString(a.date);
+                const timestampB = b.timestamp || parseDateString(b.date);
+                return timestampA - timestampB;
+            });
+
+            // ====== ÉTAT 1: UNE SEULE DONNÉE ======
+            if (measures.length === 1) {
+                return renderSingleMeasureKPIState(canvas, index, measures[0], kpiUnit, targetValue);
+            }
+
+            // ====== ÉTAT 2: PLUSIEURS DONNÉES ======
+            return renderMultipleMeasuresKPIChart(canvas, index, measures, kpiUnit, targetValue);
+        }
+
+        // État 0: Aucune donnée
+        function renderEmptyKPIState(canvas, index) {
+            const container = canvas.parentElement;
+            canvas.style.display = 'none';
+
+            container.innerHTML = `
+                <div style="text-align: center; width: 100%; padding: 48px 24px;">
+                    <svg width="52" height="52" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: #EE4408; margin: 0 auto 20px; opacity: 0.7;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                    <p style="color: #FFFDF6; font-size: 15px; font-weight: 600; font-family: 'Inter', sans-serif; margin: 0 0 6px 0;">Aucune mesure enregistrée</p>
+                    <p style="color: #929292; font-size: 13px; font-family: 'Inter', sans-serif; margin: 0; line-height: 1.4;">Commencez par ajouter votre première mesure pour suivre votre progression</p>
+                </div>
+            `;
+        }
+
+        // État 1: Une seule donnée
+        function renderSingleMeasureKPIState(canvas, index, measure, kpiUnit, targetValue) {
+            const container = canvas.parentElement;
+            canvas.style.display = 'none';
+
+            container.innerHTML = `
+                <div style="text-align: center; width: 100%; padding: 48px 24px;">
+                    <div style="display: flex; justify-content: center; margin-bottom: 24px;">
+                        <div style="background: rgba(238, 68, 8, 0.1); border: 2px solid #EE4408; border-radius: 12px; padding: 16px 32px;">
+                            <p style="color: #EE4408; font-size: 32px; font-weight: 700; font-family: 'Inter', sans-serif; margin: 0;">${measure.value}</p>
+                            <p style="color: #929292; font-size: 13px; font-family: 'Inter', sans-serif; margin: 6px 0 0 0; font-weight: 500;">${kpiUnit}</p>
+                        </div>
+                    </div>
+                    <p style="color: #FFFDF6; font-size: 15px; font-weight: 600; font-family: 'Inter', sans-serif; margin: 0 0 6px 0;">Mesure du ${measure.date}</p>
+                    <p style="color: #929292; font-size: 13px; font-family: 'Inter', sans-serif; margin: 0;">Ajoutez une autre mesure pour voir l'évolution</p>
+                </div>
+            `;
+        }
+
+        // État 2: Plusieurs données - Affichage du graphique
+        function renderMultipleMeasuresKPIChart(canvas, index, measures, kpiUnit, targetValue) {
+            const container = canvas.parentElement;
+            canvas.style.display = 'block';
+
+            const ctx = canvas.getContext('2d');
+            const labels = measures.map(m => m.date);
+            const data = measures.map(m => m.value);
+
+            kpiCharts[index] = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Progression',
+                        data: data,
+                        borderColor: '#404025',
+                        backgroundColor: 'rgba(64, 64, 37, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: '#404025',
+                        pointBorderColor: 'rgba(64, 64, 37, 0.8)',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                            titleColor: '#FFFDF6',
+                            bodyColor: '#FFFDF6',
+                            borderColor: '#404025',
+                            borderWidth: 1,
+                            padding: 12,
+                            displayColors: false,
+                            callbacks: {
+                                title: function(context) {
+                                    return context[0].label;
+                                },
+                                label: function(context) {
+                                    return context.parsed.y + ' ' + kpiUnit;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(146, 146, 146, 0.06)',
+                                drawBorder: false,
+                                drawTicks: false
+                            },
+                            ticks: {
+                                color: '#929292',
+                                font: {
+                                    family: 'Inter',
+                                    size: 11,
+                                    weight: '400'
+                                },
+                                maxRotation: 45,
+                                minRotation: 0
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: 'rgba(146, 146, 146, 0.06)',
+                                drawBorder: false,
+                                drawTicks: false
+                            },
+                            ticks: {
+                                color: '#929292',
+                                font: {
+                                    family: 'Inter',
+                                    size: 11,
+                                    weight: '400'
+                                },
+                                stepSize: targetValue ? Math.ceil(targetValue / 4) : undefined,
+                                callback: function(value) {
+                                    return Math.round(value);
+                                }
+                            },
+                            beginAtZero: true,
+                            max: targetValue || undefined
+                        }
+                    }
+                }
+            });
+        }
+
+        // Fonction pour ouvrir le modal d'ajout de mesure
+        let currentMeasureIndex = null;
+
+        function openAddMeasureModal(index) {
+            currentMeasureIndex = index;
+
+            // Réinitialiser le formulaire
+            document.getElementById('measureForm').reset();
+            document.getElementById('dateError').textContent = '';
+            document.getElementById('dateError').classList.remove('show');
+            document.getElementById('valueError').textContent = '';
+            document.getElementById('valueError').classList.remove('show');
+
+            // Définir la date du jour par défaut
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('measureDate').value = today;
+
+            // Afficher la modale
+            const overlay = document.getElementById('measureModalOverlay');
+            overlay.classList.add('active');
+
+            // Focus sur le champ valeur
+            setTimeout(() => document.getElementById('measureValue').focus(), 100);
+        }
+
+        function closeMeasureModal() {
+            const overlay = document.getElementById('measureModalOverlay');
+            overlay.classList.remove('active');
+            currentMeasureIndex = null;
+        }
+
+        // Gestion de la soumission du formulaire
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('measureForm');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+
+                    const dateInput = document.getElementById('measureDate').value;
+                    const valueInput = document.getElementById('measureValue').value;
+
+                    // Validation
+                    let hasError = false;
+
+                    if (!dateInput) {
+                        document.getElementById('dateError').textContent = 'La date est requise';
+                        document.getElementById('dateError').classList.add('show');
+                        hasError = true;
+                    } else {
+                        document.getElementById('dateError').classList.remove('show');
+                    }
+
+                    if (!valueInput || isNaN(valueInput) || valueInput === '') {
+                        document.getElementById('valueError').textContent = 'Veuillez entrer une valeur numérique valide';
+                        document.getElementById('valueError').classList.add('show');
+                        hasError = true;
+                    } else {
+                        document.getElementById('valueError').classList.remove('show');
+                    }
+
+                    if (hasError) return;
+
+                    // Convertir la date de YYYY-MM-DD en JJ/MM/AAAA
+                    const [year, month, day] = dateInput.split('-');
+                    const formattedDate = `${day}/${month}/${year}`;
+
+                    // Ajouter la mesure
+                    addMeasure(currentMeasureIndex, formattedDate, parseFloat(valueInput));
+
+                    // Fermer la modale avec animation
+                    closeMeasureModal();
+                });
+            }
+
+            // Fermer la modale si on clique en dehors
+            document.getElementById('measureModalOverlay').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeMeasureModal();
+                }
+            });
+
+            // Fermer avec Échap
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeMeasureModal();
+                }
+            });
+        });
+
+        // Fonction pour parser une date au format JJ/MM/AAAA
+        function parseDateString(dateStr) {
+            if (!dateStr) return Date.now();
+
+            // Format JJ/MM/AAAA
+            const parts = dateStr.split('/');
+            if (parts.length === 3) {
+                const day = parseInt(parts[0]);
+                const month = parseInt(parts[1]) - 1; // Les mois commencent à 0
+                const year = parseInt(parts[2]);
+                return new Date(year, month, day).getTime();
+            }
+
+            return Date.now();
+        }
+
+        // Fonction pour ajouter une mesure
+        function addMeasure(index, date, value) {
+            console.log('➕ addMeasure - index:', index, 'date:', date, 'value:', value);
+
+            if (!allObjectifs[index]) {
+                console.error('❌ Objectif non trouvé à l\'index', index);
+                return;
+            }
+
+            if (!allObjectifs[index].measures) {
+                allObjectifs[index].measures = [];
+            }
+
+            allObjectifs[index].measures.push({
+                date: date,
+                value: value,
+                timestamp: parseDateString(date)
+            });
+
+            console.log('✅ Mesure ajoutée - total measures:', allObjectifs[index].measures.length);
+
+            // Trier par timestamp chronologique
+            allObjectifs[index].measures.sort((a, b) => a.timestamp - b.timestamp);
+
+            saveAllObjectifs();
+
+            console.log('💾 Données sauvegardées');
+
+            // Mettre à jour le graphique avec délai pour s'assurer que le DOM est à jour
+            setTimeout(() => {
+                console.log('🔄 Appel initKPIChart');
+                const canvas = document.getElementById(`kpiChart-${index}`);
+                console.log('🎯 Canvas trouvé:', !!canvas);
+
+                initKPIChart(index, allObjectifs[index]);
+
+                console.log('✨ Graphique mis à jour');
+            }, 100);
+        }
+
+        function toggleEditMode(index) {
+            const isEditing = !editModeActive[index];
+            editModeActive[index] = isEditing;
+
+            // Toggle title field
+            const labelTitre = document.getElementById(`label-titre-${index}`);
+            const viewTitre = document.getElementById(`view-titre-${index}`);
+            const editTitre = document.getElementById(`edit-titre-${index}`);
+
+            if (labelTitre && viewTitre && editTitre) {
+                labelTitre.style.display = isEditing ? 'block' : 'none';
+                viewTitre.style.display = isEditing ? 'none' : 'block';
+                editTitre.style.display = isEditing ? 'block' : 'none';
+            }
+
+            // Toggle SMART fields
+            const fields = ['s', 'm', 'a', 'r', 't'];
+            fields.forEach(field => {
+                const viewEl = document.getElementById(`view-${field}-${index}`);
+                const editEl = document.getElementById(`edit-${field}-${index}`);
+
+                if (viewEl && editEl) {
+                    viewEl.style.display = isEditing ? 'none' : 'block';
+                    editEl.style.display = isEditing ? 'block' : 'none';
+                }
+            });
+
+            const btn = document.getElementById(`editBtn-${index}`);
+            if (btn) {
+                btn.textContent = isEditing ? 'Terminer' : 'Modifier';
+            }
+        }
+
+        function updateObjectifField(index, field, value) {
+            if (allObjectifs[index]) {
+                allObjectifs[index][field] = value;
+                saveAllObjectifs();
+
+                // Mettre à jour l'affichage (sauf pour titre qui est déjà un input)
+                if (field !== 'titre') {
+                    const fieldMap = {
+                        'specifique': 's',
+                        'mesurable': 'm',
+                        'atteignable': 'a',
+                        'realiste': 'r',
+                        'temporel': 't'
+                    };
+                    const shortField = fieldMap[field];
+                    if (shortField) {
+                        const viewEl = document.getElementById(`view-${shortField}-${index}`);
+                        if (viewEl) {
+                            viewEl.textContent = value || '-';
+                        }
+                    }
+                }
+
+                // Mettre à jour le badge de durée si c'est le champ temporel
+                if (field === 'temporel') {
+                    const dureeEl = document.getElementById(`view-duree-${index}`);
+                    if (dureeEl) {
+                        dureeEl.innerHTML = `
+                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="10" stroke-width="2"></circle>
+                                <path stroke-linecap="round" stroke-width="2" d="M12 6v6l4 2"></path>
+                            </svg>
+                            ${calculateDuree(value)}
+                        `;
+                    }
+                }
+            }
+        }
+
+        // Fonction pour extraire le KPI depuis le format [unité] description
+        function extractKPI(mesurableText) {
+            if (!mesurableText) return '';
+
+            // Regex pour capturer le texte entre crochets au début de la phrase
+            const regex = /^\[([^\]]+)\]/;
+            const match = mesurableText.match(regex);
+
+            if (match) {
+                // Retourne uniquement l'unité entre crochets
+                return match[1];
+            }
+
+            // Fallback : si pas de crochets trouvés, retourne toute la phrase
+            return mesurableText;
+        }
+
+        // Fonction pour calculer la durée intelligemment à partir du champ temporel
+        function calculateDuree(temporelText) {
+            if (!temporelText) return 'Non défini';
+
+            // Rechercher une date dans le texte (format DD/MM/YYYY ou YYYY-MM-DD ou variations)
+            const dateRegex = /(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})|(\d{4})[\/\-\.](\d{1,2})[\/\-\.](\d{1,2})/;
+            const match = temporelText.match(dateRegex);
+
+            if (match) {
+                let targetDate;
+                if (match[1]) {
+                    // Format DD/MM/YYYY
+                    targetDate = new Date(match[3], match[2] - 1, match[1]);
+                } else {
+                    // Format YYYY-MM-DD
+                    targetDate = new Date(match[4], match[5] - 1, match[6]);
+                }
+
+                const now = new Date();
+                const diffTime = targetDate - now;
+                const diffMonths = Math.ceil(diffTime / (1000 * 60 * 60 * 24 * 30.44));
+
+                if (diffMonths < 0) {
+                    return 'Dépassé';
+                } else if (diffMonths < 12) {
+                    return diffMonths === 1 ? '1 mois' : `${diffMonths} mois`;
+                } else {
+                    const years = Math.floor(diffMonths / 12);
+                    const remainingMonths = diffMonths % 12;
+                    if (remainingMonths === 0) {
+                        return years === 1 ? '1 an' : `${years} ans`;
+                    } else {
+                        return years === 1 ? `1 an ${remainingMonths} mois` : `${years} ans ${remainingMonths} mois`;
+                    }
+                }
+            }
+
+            // Si pas de date trouvée, rechercher des mentions directes (ex: "dans 5 ans", "5 ans", etc.)
+            const yearMatch = temporelText.match(/(\d+)\s*ans?/i);
+            const monthMatch = temporelText.match(/(\d+)\s*mois/i);
+
+            if (yearMatch) {
+                const years = parseInt(yearMatch[1]);
+                return years === 1 ? '1 an' : `${years} ans`;
+            } else if (monthMatch) {
+                const months = parseInt(monthMatch[1]);
+                return months === 1 ? '1 mois' : `${months} mois`;
+            }
+
+            // Fallback : retourner le texte original s'il est court
+            return temporelText.length > 30 ? 'Non défini' : temporelText;
+        }
+
+        // Animation Descente Section - Scroll Triggered
+        function initDescenteAnimations() {
+            const container = document.querySelector('.descente-container-text');
+            if (!container) return;
+
+            const descenteTexts = container.querySelectorAll('.descente-text, .descente-text-first, .descente-text-final');
+            if (!descenteTexts.length) return;
+
+            // Observer pour déclencher l'animation au scroll
+            const textObserver = new IntersectionObserver((entries) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting && !entry.target.classList.contains('visible')) {
+                        // Délai progressif pour chaque élément (stagger effect)
+                        const delay = index * 120; // 120ms between each element
+                        setTimeout(() => {
+                            entry.target.classList.add('visible');
+                        }, delay);
+                    }
+                });
+            }, {
+                threshold: 0.3,
+                rootMargin: '0px 0px -50px 0px'
+            });
+
+            // Observer chaque texte individuellement
+            descenteTexts.forEach((text) => {
+                textObserver.observe(text);
+            });
+        }
+
+        // Parallax Effect on Video - DISABLED
+        // function initVideoParallax() {
+        //     const video = document.querySelector('.descente-video');
+        //     if (!video) return;
+        //
+        //     let ticking = false;
+        //
+        //     window.addEventListener('scroll', () => {
+        //         if (!ticking) {
+        //             window.requestAnimationFrame(() => {
+        //                 const rect = video.getBoundingClientRect();
+        //                 const scrolled = window.pageYOffset;
+        //                 const yPos = scrolled * 0.5; // Parallax factor
+        //
+        //                 // Subtle parallax movement
+        //                 if (rect.top < window.innerHeight && rect.bottom > 0) {
+        //                     video.style.transform = `translateY(${yPos * 0.1}px) scale(1.05)`;
+        //                 }
+        //
+        //                 ticking = false;
+        //             });
+        //             ticking = true;
+        //         }
+        //     });
+        // }
+
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+            // Afficher le dashboard au chargement
+            const dashboardSection = document.getElementById('dashboardSection');
+            if (dashboardSection) {
+                dashboardSection.classList.add('active');
+                loadAllObjectifs();
+                renderCarousel();
+            }
+
+            // Essayer d'exécuter les fonctions de transition si elles existent
+            try { updateStepper(); } catch(e) {}
+            try { updateArrows(); } catch(e) {}
+            try { loadSmartData(); } catch(e) {}
+            try { initDescenteAnimations(); } catch(e) {}
+
+            // Sauvegarde automatique à chaque changement (si les inputs existent)
+            try { document.getElementById('specifiqueInput').addEventListener('input', saveSmartData); } catch(e) {}
+            try { document.getElementById('mesurableInput').addEventListener('input', saveSmartData); } catch(e) {}
+            try { document.getElementById('atteignableInput').addEventListener('input', saveSmartData); } catch(e) {}
+            try { document.getElementById('realisteInput').addEventListener('input', saveSmartData); } catch(e) {}
+            try { document.getElementById('temporelInput').addEventListener('change', saveSmartData); } catch(e) {}
+            try { document.getElementById('titreInput').addEventListener('input', saveSmartData); } catch(e) {}
+
+            // Check scroll on resize
+            try { window.addEventListener('resize', checkScroll); } catch(e) {}
+        });
+
+        // --- JALONS MANAGEMENT ---
+
+        /**
+         * Rendu de la timeline des jalons
+         */
+        function renderJalonsTimeline(objectif, objectifIndex) {
+            const today = new Date();
+
+            return objectif.jalons.map((jalon, jalonIndex) => {
+                const jalonDate = new Date(jalon.date);
+                const isPast = jalonDate < today;
+                const isCurrent = jalon.statut === 'in_progress';
+                const isCompleted = jalon.statut === 'completed';
+                const daysRemaining = Math.ceil((jalonDate - today) / (1000 * 60 * 60 * 24));
+
+                return `
+                    <div class="timeline-item" style="
+                        display: flex;
+                        gap: 16px;
+                        margin-bottom: 24px;
+                        opacity: ${isCompleted ? 0.6 : 1};
+                        position: relative;
+                    ">
+                        <!-- Ligne verticale -->
+                        ${jalonIndex < objectif.jalons.length - 1 ? `
+                            <div style="
+                                position: absolute;
+                                left: 15px;
+                                top: 32px;
+                                bottom: -24px;
+                                width: 2px;
+                                background: rgba(255, 255, 255, 0.1);
+                            "></div>
+                        ` : ''}
+
+                        <!-- Dot -->
+                        <div style="
+                            width: 32px;
+                            height: 32px;
+                            border-radius: 50%;
+                            border: 3px solid ${isCompleted ? '#2C8657' : isCurrent ? '#EE4408' : 'rgba(255,255,255,0.2)'};
+                            background: ${isCompleted ? '#2C8657' : isCurrent ? 'rgba(238,68,8,0.2)' : 'transparent'};
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-size: 12px;
+                            font-weight: 700;
+                            color: ${isCompleted ? '#FFF' : isCurrent ? '#EE4408' : '#929292'};
+                            flex-shrink: 0;
+                            position: relative;
+                            z-index: 1;
+                        ">
+                            ${isCompleted ? '✓' : jalonIndex + 1}
+                        </div>
+
+                        <!-- Content -->
+                        <div style="flex: 1;">
+                            <h4 style="font-size: 15px; font-weight: 600; color: #FFFDF6; margin: 0 0 6px 0;">
+                                ${jalon.titre}
+                            </h4>
+
+                            <div style="display: flex; gap: 12px; margin-bottom: 8px; flex-wrap: wrap;">
+                                <span style="font-size: 12px; color: #929292;">
+                                    📅 ${formatDateJalonFR(jalon.date)}
+                                </span>
+                                ${!isCompleted && daysRemaining > 0 ? `
+                                    <span style="font-size: 12px; color: ${daysRemaining < 30 ? '#EE4408' : '#929292'};">
+                                        ${daysRemaining < 30 ? '⚠️' : '⏱️'} Dans ${daysRemaining} jours
+                                    </span>
+                                ` : ''}
+                                ${isPast && !isCompleted ? `
+                                    <span style="font-size: 12px; color: #EE4408; font-weight: 600;">
+                                        ⚠️ En retard
+                                    </span>
+                                ` : ''}
+                            </div>
+
+                            <p style="font-size: 12px; color: #EE4408; font-weight: 600; margin: 0 0 12px 0;">
+                                ${jalon.progression}% de l'objectif
+                            </p>
+
+                            ${!isCompleted ? `
+                                <button onclick="completeJalon(${objectifIndex}, ${jalonIndex})" style="
+                                    background: rgba(238, 68, 8, 0.1);
+                                    border: 1px solid #EE4408;
+                                    color: #EE4408;
+                                    padding: 8px 16px;
+                                    border-radius: 8px;
+                                    font-size: 12px;
+                                    font-weight: 600;
+                                    cursor: pointer;
+                                    transition: all 0.2s;
+                                " onmouseover="this.style.background='#EE4408'; this.style.color='#FFF'"
+                                   onmouseout="this.style.background='rgba(238, 68, 8, 0.1)'; this.style.color='#EE4408'">
+                                    ✓ Marquer comme complété
+                                </button>
+                            ` : `
+                                <div style="
+                                    padding: 8px 16px;
+                                    background: rgba(44,134,87,0.1);
+                                    border: 1px solid #2C8657;
+                                    border-radius: 8px;
+                                    text-align: center;
+                                ">
+                                    <span style="color: #2C8657; font-size: 12px; font-weight: 600;">
+                                        ✓ Jalon complété
+                                    </span>
+                                </div>
+                            `}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        /**
+         * Complète un jalon
+         */
+        function completeJalon(objectifIndex, jalonIndex) {
+            const objectif = allObjectifs[objectifIndex];
+            const jalon = objectif.jalons[jalonIndex];
+
+            if (confirm(`Marquer "${jalon.titre}" comme complété ?`)) {
+                jalon.statut = 'completed';
+
+                // Activer le prochain jalon
+                if (objectif.jalons[jalonIndex + 1]) {
+                    objectif.jalons[jalonIndex + 1].statut = 'in_progress';
+                }
+
+                saveAllObjectifs();
+                renderCarousel();
+
+                showSuccessToastJalon(`Bravo ! "${jalon.titre}" complété !`);
+            }
+        }
+
+        /**
+         * Toast de succès pour jalons
+         */
+        function showSuccessToastJalon(message) {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 40px;
+                left: 50%;
+                transform: translateX(-50%) translateY(100px);
+                background: #2C8657;
+                color: white;
+                padding: 16px 32px;
+                border-radius: 12px;
+                font-size: 14px;
+                font-weight: 600;
+                z-index: 10000;
+                transition: all 0.3s;
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.transform = 'translateX(-50%) translateY(0)';
+            }, 10);
+
+            setTimeout(() => {
+                toast.style.transform = 'translateX(-50%) translateY(100px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        /**
+         * Formatte une date pour affichage jalon
+         */
+        function formatDateJalonFR(dateString) {
+            const date = new Date(dateString);
+            const months = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin',
+                            'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
+            return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+        }
+    </script>
+</body>
+</html>

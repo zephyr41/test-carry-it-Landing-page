@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark-mode">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Carry It</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="#" class="navbar-logo" onclick="goToHome()">Carry It</a>
+        <div class="navbar-links">
+            <a href="#" class="navbar-link" onclick="goToHome()">Accueil</a>
+            <a href="#" class="navbar-link cta" onclick="goToDashboard()">Dashboard</a>
+        </div>
+    </nav>
+
+    <section class="hero-section" id="heroSection">
+        <!-- Vidéo Background -->
+        <video class="hero-video-bg" autoplay muted loop playsinline preload="auto">
+            <source src="Images/heropage/heropage.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+
+        <!-- Flou radial externe -->
+        <div class="hero-blur-outer"></div>
+
+        <!-- Overlay avec dégradé -->
+        <div class="hero-overlay"></div>
+
+        <div class="hero-content">
+            <p class="hero-overline">CARRY IT</p>
+
+            <h1 class="hero-title">Structurer ses objectifs <span style="color: var(--accent-orange);">ambitieux</span></h1>
+            <!-- <h1 class="hero-title">TAG LINE<span style="color: var(--accent-orange);"> ICI</span></h1> -->
+
+
+            <h2 class="hero-subtitle">Mesure, planifie, exécute — chaque semaine.</h2>
+
+            <p class="hero-description">
+CarryIt structure tes ambitions en objectifs clairs et mesurables pour tenir sur le long termes .</p>
+
+            <div class="hero-ctas">
+                <button class="btn btn-primary" onclick="scrollToManifest()">Commencer maintenant</button>
+                <button class="btn btn-secondary" onclick="scrollToManifest()">Voir le manifeste</button>
+            </div>
+
+            <p class="hero-reassurance">Structurer sa vie avec rigueur, clarté et exigence</p>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <img src="Images/climb.png" alt="Résilience" class="feature-icon">
+                    <div class="feature-title">Résilience</div>
+                    <div class="feature-desc">Des objectifs à long termes</div>
+                </div>
+                <div class="feature-card">
+                    <img src="Images/kpi.png" alt="KPI" class="feature-icon">
+                    <div class="feature-title">1 KPI / semaine</div>
+                    <div class="feature-desc">Mesure ta progression de manière concrète</div>
+                </div>
+                <div class="feature-card">
+                    <img src="Images/dashboard.png" alt="Dashboard" class="feature-icon">
+                    <div class="feature-title">Dashboard</div>
+                    <div class="feature-desc">Visualise ton évolution en temps réel</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projection Section - Section introspective -->
+    <section class="projection-section">
+        <div class="projection-inner">
+            <p class="projection-text">
+                Dans 5 ans, tu veux être où ?<br>
+                Trace une ligne droite. <br>
+                Tu serais satisfait ?
+            </p>
+
+            <p class="projection-subtitle">
+                Dans 5 ans, tu veux quoi — réellement ?<br>
+                Pas avec ta vie actuelle. Avec ce que tu veux au fond.
+            </p>
+
+            <div class="projection-tags">
+                <button class="projection-tag" type="button">Mental Stable</button>
+                <button class="projection-tag" type="button">Ironman</button>
+                <button class="projection-tag" type="button">Ecrire un livre</button>
+                <button class="projection-tag" type="button">Epargner 20k</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Descente Section - Point le plus sombre -->
+    <section class="descente-section">
+        <div class="descente-inner">
+            <!-- Texte -->
+            <div class="descente-text-block">
+                <p class="descente-kicker">DE MON CÔTÉ</p>
+
+                <p class="descente-paragraph">J'ai déclaré la guerre. À mon esprit.</p>
+                <p class="descente-paragraph">Je suis descendu là où ça pue. L'endroit où tu n'a vraiment pas envie d'aller.</p>
+                <p class="descente-paragraph">
+                    J'ai tout coupé — clope, réseaux, habitudes — parce que ça ne correspondait plus à la personne que je voulais devenir.
+                </p>
+                <p class="descente-paragraph descente-paragraph-strong">
+                    c'est la pire période de ma vie.
+                </p>
+            </div>
+
+            <!-- Vidéo -->
+            <div class="descente-video-shell">
+                <div class="descente-video-frame">
+                    <video class="descente-video" autoplay muted loop playsinline>
+                        <source src="Images/heropage/video2/video2.mp4" type="video/mp4">
+                        Votre navigateur ne supporte pas la vidéo HTML5.
+                    </video>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Le Message Section - Apple Minimalist -->
+    <section class="message-section">
+        <img class="message-glass-hand" src="Images/verre-eau.png" alt="Main tenant un verre d'eau">
+        <div class="message-container">
+            <div class="message-content">
+                <p class="message-line message-line-1">On va pas te féliciter parce que t'as bu un verre d'eau.</p>
+
+                <p class="message-line message-line-2">C'est toi qui poses le plan.<br>Toi qui t'organises.<br>Toi qui fais le taf.</p>
+
+                <p class="message-line message-line-3">Nous ? On te tend juste un miroir.</p>
+
+                <p class="message-line message-line-4">Et on te dit : <span class="message-emphasis">lâche pas...</span><br>Lâche pas ce que t'es en train de construire <br></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Eisenhower Matrix Section -->
+    <section class="eisenhower-section">
+        <div class="eisenhower-container">
+            <!-- Title Above -->
+            <div class="eisenhower-title">
+                <h2>Voici<br><span class="title-rifton">Carry It</span></h2>
+            </div>
+
+            <!-- Left: Text -->
+            <div class="eisenhower-text">
+                <h2>Matrice Eisenhower</h2>
+                <p class="eisenhower-subtitle-main">Priorise ce qui compte vraiment.</p>
+                <p class="eisenhower-subtitle-desc">Cette matrice permet de prioriser les tâches de manière simple & claire.</p>
+                <p class="eisenhower-subtitle-extra">Classe tes tâches selon leur urgence et leur importance pour identifier ce qui mérite vraiment ton attention.</p>
+            </div>
+
+            <!-- Right: Matrix -->
+            <div class="eisenhower-matrix">
+                <div class="matrix-wrapper">
+                    <!-- Axes -->
+                    <div class="axis axis-top-left">Urgent</div>
+                    <div class="axis axis-top-right">Non urgent</div>
+                    <div class="axis axis-left-top">Important</div>
+                    <div class="axis axis-left-bottom">Non important</div>
+
+                    <!-- Matrice -->
+                    <div class="matrix">
+                        <div class="cell cell--do">
+                            <span class="cell-label">Urgent · Important</span>
+                            <span class="cell-verb">Faire</span>
+                        </div>
+                        <div class="cell cell--plan">
+                            <span class="cell-label">Non urgent · Important</span>
+                            <span class="cell-verb">Planifier</span>
+                        </div>
+                        <div class="cell cell--delegate">
+                            <span class="cell-label">Urgent · Non important</span>
+                            <span class="cell-verb">Déléguer</span>
+                        </div>
+                        <div class="cell cell--drop">
+                            <span class="cell-label">Non urgent · Non important</span>
+                            <span class="cell-verb">Supprimer</span>
+                        </div>
+
+                        <!-- Task Card -->
+                        <div class="task">
+                            <div class="task-handle">
+                                <div class="task-handle-dot"></div>
+                                <div class="task-handle-dot"></div>
+                                <div class="task-handle-dot"></div>
+                            </div>
+                            <div class="task-content">
+                                <div class="title">Road map produit</div>
+                                <div class="meta">définir la roadmap produit</div>
+                            </div>
+                            <img class="cursor-icon" src="https://images.vexels.com/media/users/3/139568/isolated/svg/e121099fc09680fdfce5445933a5ed89.svg" alt="curseur">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="manifest-section" id="manifestSection">
+
+        <button class="cta-button" onclick="showObjectif()">Pose ton objectif</button>
+    </section>
+    <script>
+        function goToHome() {
+            window.location.href = 'index.html';
+        }
+        
+        function showObjectif() {
+            window.location.href = 'objectif.html';
+        }
+        
+        function goToDashboard() {
+            window.location.href = 'dashboard.html';
+        }
+        
+        function scrollToManifest() {
+            document.getElementById('manifestSection').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

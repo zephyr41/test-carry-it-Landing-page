@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" class="dark-mode">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -9,8 +9,6 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <!-- Font : Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Font : Rifton for navbar logo -->
-    <link href="https://fonts.googleapis.com/css2?family=Rifton&display=swap" rel="stylesheet">
 
     <style>
         :root {
@@ -212,65 +210,6 @@
             line-height: 1.1;
         }
         .input-title::placeholder { font-size: 16px; }
-
-        /* Date picker subtil en bas de carte */
-        .date-picker-subtle {
-            margin-top: 20px;
-            padding-top: 16px;
-            border-top: 1px solid var(--border);
-            opacity: 0.6;
-            transition: opacity 0.2s;
-        }
-        .date-picker-subtle:hover {
-            opacity: 1;
-        }
-
-        /* Hint when jalon is empty - make date picker more prominent */
-        .date-picker-hint {
-            opacity: 0.8;
-            border-top-color: var(--accent-glow);
-        }
-        .date-picker-hint .date-label {
-            color: var(--accent) !important;
-        }
-        .date-picker-hint .date-hint {
-            font-size: 10px;
-            color: var(--accent);
-            font-weight: 600;
-            animation: pulse 1.5s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 0.6; }
-            50% { opacity: 1; }
-        }
-
-        .date-label {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-            font-size: 11px !important;
-            color: var(--text-secondary) !important;
-        }
-
-        .input-date-subtle {
-            background: transparent;
-            border: none;
-            color: var(--text-secondary);
-            font-family: 'Inter', sans-serif;
-            font-size: 11px;
-            padding: 0;
-            cursor: pointer;
-        }
-        .input-date-subtle::-webkit-calendar-picker-indicator {
-            cursor: pointer;
-            filter: invert(0.6);
-            opacity: 0.7;
-        }
-        .input-date-subtle:hover::-webkit-calendar-picker-indicator {
-            opacity: 1;
-        }
 
         .input-area {
             background: transparent;
@@ -509,83 +448,16 @@
 
         .btn-nav.disabled { opacity: 0.3; pointer-events: none; }
 
-        /* --- NAVBAR --- */
-        .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 72px;
-            background: rgba(5, 6, 8, 0.9);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 0 48px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .navbar-logo {
-            font-family: 'Rifton', serif;
-            font-size: 20px;
-            color: #FFFDF6;
-            text-decoration: none;
-            font-weight: normal;
-        }
-
-        .navbar-links {
-            display: flex;
-            gap: 32px;
-            align-items: center;
-        }
-
-        .navbar-link {
-            font-family: 'Inter', sans-serif;
-            font-size: 14px;
-            font-weight: 500;
-            color: #A8A8A8;
-            text-decoration: none;
-            transition: all 0.2s ease;
-            position: relative;
-        }
-
-        .navbar-link:hover {
-            color: #FFFDF6;
-            transform: translateY(-1px);
-        }
-
-        .navbar-link.cta {
-            background-color: #EE4408;
-            color: #FFFDF6;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-weight: 600;
-        }
-
-        .navbar-link.cta:hover {
-            background-color: #ff5d1a;
-            transform: translateY(-2px);
-        }
-
-        /* Adjust timeline viewport to account for navbar */
-        .timeline-viewport {
-            margin-top: 72px;
-        }
-
     </style>
 </head>
 <body>
 
-    <!-- Navbar -->
-    <nav class="navbar">
-        <a href="index.html" class="navbar-logo">Carry It</a>
-        <div class="navbar-links">
-            <a href="index.html" class="navbar-link">Accueil</a>
-            <a href="jalons.html" class="navbar-link cta">Cockpit</a>
-        </div>
-    </nav>
+    <!-- HUD TOP -->
+    <div class="hud-top">
+        <div class="hud-label">COCKPIT <span class="hud-value">CARRY IT</span></div>
+        <div class="hud-label" id="stepIndicator">JALON --/--</div>
+        <button class="btn-icon" title="Paramètres"><i class="ri-settings-3-line"></i></button>
+    </div>
 
     <!-- TIMELINE VIEWPORT (Main scroll container) -->
     <div class="timeline-viewport" id="timelineViewport">
@@ -649,32 +521,6 @@
             return dateObj.toLocaleDateString('fr-FR', { month: 'short', year: '2-digit' }).toUpperCase();
         }
 
-        function getDateFromOffset(offset) {
-            const dateObj = new Date(projectDeadline);
-            dateObj.setMonth(projectDeadline.getMonth() - offset);
-            // Format: YYYY-MM-DD pour l'input date
-            const year = dateObj.getFullYear();
-            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-            const day = String(dateObj.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
-        }
-
-        function getOffsetFromDate(dateString) {
-            const selectedDate = new Date(dateString + 'T00:00:00');
-            const today = new Date(projectDeadline);
-            // Calculer la différence en mois
-            const yearDiff = today.getFullYear() - selectedDate.getFullYear();
-            const monthDiff = today.getMonth() - selectedDate.getMonth();
-            const offset = yearDiff * 12 + monthDiff;
-            // Clamp entre 0 et 24
-            return Math.max(0, Math.min(24, offset));
-        }
-
-        function updateDateFromInput(id, dateString) {
-            const offset = getOffsetFromDate(dateString);
-            updateData(id, 'offset', offset);
-        }
-
         // --- RENDER ALL CARDS ---
         function renderAllCards() {
             timelineScroll.innerHTML = '';
@@ -727,17 +573,6 @@
                                   placeholder="Description factuelle..."
                                   oninput="updateData('${milestone.id}', 'desc', this.value)">${milestone.desc}</textarea>
                     </div>
-                    <div class="data-block date-picker-subtle ${!milestone.title ? 'date-picker-hint' : ''}">
-                        <label class="block-label date-label" title="Cliquer pour modifier la date">
-                            <i class="ri-calendar-line"></i>
-                            <input type="date" class="input-date-subtle"
-                                   value="${getDateFromOffset(milestone.offset)}"
-                                   data-id="${milestone.id}"
-                                   autocomplete="off"
-                                   onchange="updateDateFromInput('${milestone.id}', this.value)">
-                            ${!milestone.title ? '<span class="date-hint">Définir date</span>' : ''}
-                        </label>
-                    </div>
                 `;
 
                 // Connector (Add button) - Placé visuellement à GAUCHE via CSS (left: -20px)
@@ -755,15 +590,7 @@
 
         function updateData(id, field, value) {
             const m = milestones.find(m => m.id === id);
-            if (m) {
-                m[field] = value;
-                // Si l'offset change, on doit re-render car l'ordre des cartes change
-                if (field === 'offset') {
-                    renderAllCards();
-                    renderTimeline();
-                    updateTimeline();
-                }
-            }
+            if (m) m[field] = value;
         }
 
         // --- ADD JALON INLINE ---
@@ -905,11 +732,14 @@
             timelineViewport.scrollBy({ left: -window.innerWidth * 0.85, behavior: 'smooth' });
         });
 
+        // --- SYNC SCROLLS (Approximation pour l'effet visuel) ---
+        // On simplifie pour éviter les boucles infinies : seul le viewport pilote le rail via l'observer
+        
         // --- INIT ---
         function init() {
             renderAllCards();
             renderTimeline();
-
+            
             // DEMARRAGE : SCROLL TOUT A DROITE (Objectif Final)
             // On attend que le rendu soit fait
             setTimeout(() => {

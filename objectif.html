@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Carry It</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        @font-face {
+            font-family: 'Rifton';
+            src: url('Rifton Font/rifton-regular.otf') format('opentype');
+        }
+
+        @font-face {
+            font-family: 'Rifton';
+            src: url('Rifton Font/rifton-italic.otf') format('opentype');
+            font-style: italic;
+        }
+
+        :root {
+            /* COLORS - Background */
+            --color-background-base: #080809;
+            --color-background-secondary: #1C1C1E;
+            --color-background-card: #0D1D32;
+            --color-background-elevated: #2A2A2E;
+
+            /* COLORS - Text */
+            --color-text-primary: #FFFDF6;
+            --color-text-secondary: #A8A8A8;
+            --color-text-tertiary: #86868B;
+            --color-text-informational: #929292;
+
+            /* COLORS - Accent & Action */
+            --color-accent-action: #EE4408;
+            --color-accent-secondary: #F34C0A;
+            --color-confirm-validity: #0A2A53;
+            --color-focus-tracker: #404025;
+
+            /* COLORS - Borders & UI */
+            --color-border-subtle: rgba(255, 255, 255, 0.08);
+            --color-border-default: rgba(255, 255, 255, 0.1);
+            --color-border-strong: rgba(255, 255, 255, 0.15);
+
+            /* COLORS - Interactive States */
+            --color-interactive-hover: rgba(255, 255, 255, 0.08);
+            --color-interactive-active: rgba(238, 68, 8, 0.1);
+            --color-interactive-disabled: rgba(255, 255, 255, 0.3);
+
+            /* Typography */
+            --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-display: 'Rifton', serif;
+
+            /* Font Sizes */
+            --text-h1: 48px;
+            --text-h2: 32px;
+            --text-h3: 24px;
+            --text-body: 16px;
+            --text-small: 14px;
+            --text-caption: 12px;
+
+            /* Spacing */
+            --space-8: 8px;
+            --space-16: 16px;
+            --space-24: 24px;
+            --space-32: 32px;
+            --space-48: 48px;
+
+            /* Layout */
+            --navbar-height: 72px;
+            --btn-radius: 14px;
+
+            /* Legacy variables for compatibility */
+            --bg-body: #080809;
+            --bg-input: rgba(28, 28, 30, 0.6);
+            --text-primary: #FFFDF6;
+            --text-secondary: #A8A8A8;
+            --text-tertiary: #86868B;
+            --accent-color: #EE4408;
+            --separator: rgba(255, 255, 255, 0.1);
+            --radius-input: 16px;
+            --font-stack: -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+
+        /* --- NAVBAR --- */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--navbar-height);
+            background: rgba(5, 6, 8, 0.9);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--color-border-default);
+            padding: 0 var(--space-48);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .navbar-logo {
+            font-family: var(--font-display);
+            font-size: 20px;
+            color: var(--color-text-primary);
+            text-decoration: none;
+            font-weight: normal;
+        }
+
+        .navbar-links {
+            display: flex;
+            gap: var(--space-32);
+            align-items: center;
+        }
+
+        .navbar-link {
+            font-family: var(--font-primary);
+            font-size: var(--text-small);
+            font-weight: 500;
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .navbar-link:hover {
+            color: var(--color-text-primary);
+            transform: translateY(-1px);
+        }
+
+        .navbar-link.cta {
+            background-color: var(--color-accent-action);
+            color: var(--color-text-primary);
+            padding: 12px var(--space-24);
+            border-radius: var(--btn-radius);
+            font-weight: 600;
+        }
+
+        .navbar-link.cta:hover {
+            background-color: #ff5d1a;
+            transform: translateY(-2px);
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-primary);
+            font-family: var(--font-stack);
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* --- HEADER (Fixe haut, sous navbar) --- */
+        .app-header {
+            height: 80px; /* Plus aéré */
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            z-index: 100;
+            position: fixed;
+            top: 72px; left: 0; right: 0;
+        }
+
+        .header-btn {
+            color: var(--text-secondary);
+            background: none;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 10px;
+            transition: color 0.2s;
+        }
+        .header-btn:hover { color: var(--text-primary); }
+        
+        .header-title {
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+        }
+
+        /* --- PROGRESS BAR --- */
+        .progress-track {
+            position: fixed;
+            top: 72px; left: 0; right: 0;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.05);
+            z-index: 999;
+        }
+        .progress-bar {
+            height: 100%;
+            background: var(--accent-color);
+            width: 16%;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 20px rgba(238, 68, 8, 0.8);
+        }
+
+        /* --- MAIN CONTENT (Centré) --- */
+        .main-stage {
+            flex: 1;
+            display: flex;
+            align-items: flex-start;     /* Aligné en haut pour cohérence step-by-step */
+            justify-content: center; /* Centrage Horizontal */
+            padding: 225px 20px 120px 20px;
+            position: relative;
+        }
+
+        .step-wrapper {
+            width: 100%;
+            max-width: 640px; /* Largeur de lecture idéale */
+            margin-top: 24px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            display: none;
+        }
+
+        .step-wrapper.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- TYPOGRAPHY (Large & Clean) --- */
+        .step-indicator {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--accent-color);
+            margin-bottom: 16px;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        h1 {
+            font-size: 48px; /* Titre massif Apple Style */
+            font-weight: 700;
+            letter-spacing: -1px;
+            margin-top: 16px;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+            line-height: 1.1;
+        }
+
+        .description {
+            font-size: 20px; /* Texte plus grand pour l'immersion */
+            line-height: 1.5;
+            color: var(--text-secondary);
+            margin-bottom: 48px;
+            max-width: 580px;
+        }
+
+        /* --- INPUTS (Directly on background) --- */
+        .input-group {
+            background-color: var(--bg-input);
+            border-radius: var(--radius-input);
+            /* Glassmorphism léger */
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: border-color 0.3s, transform 0.3s;
+        }
+
+        .input-group:focus-within {
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            background-color: rgba(35, 35, 37, 0.8);
+        }
+
+        .input-row {
+            padding: 20px 24px;
+            position: relative;
+        }
+
+        .input-label {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            margin-top: 12px;
+            display: block;
+        }
+
+        .paste-btn {
+            position: absolute;
+            right: 20px; top: 18px;
+            font-size: 12px;
+            color: var(--accent-color);
+            background: rgba(238, 68, 8, 0.1);
+            padding: 4px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .input-group:hover .paste-btn { opacity: 1; }
+
+        textarea, input, select {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-family: var(--font-stack);
+            font-size: 18px; /* Grande taille */
+            width: 100%;
+            outline: none;
+            resize: none;
+            line-height: 1.5;
+            padding: 0;
+        }
+
+        select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23A8A8A8' stroke-width='2'%3e%3cpath d='M6 9l6 6 6-6'%3e%3c/path%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 0 center;
+            background-size: 20px;
+            padding-right: 25px;
+        }
+
+        textarea::placeholder, input::placeholder {
+            color: var(--text-tertiary);
+            opacity: 0.5;
+        }
+
+        select option {
+            background: #1c1c1e;
+            color: var(--text-primary);
+        }
+
+        /* --- AI TRIGGER BUTTON (Contextual) --- */
+        .ai-trigger {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 24px;
+            background: transparent;
+            color: #dcb08a; /* Gold IA */
+            border: 1px solid rgba(238, 68, 8, 0.3);
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .ai-trigger:hover {
+            background: rgba(238, 68, 8, 0.1);
+            color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+        .ai-trigger svg { width: 18px; height: 18px; }
+
+        /* --- NAVIGATION BUTTONS --- */
+        .footer-container {
+            width: 100%;
+            max-width: 640px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 0 40px;
+            height: 100px;
+            z-index: 500;
+            margin: 0 auto;
+            justify-self: center;
+        }
+
+        .btn-back {
+            color: var(--text-secondary);
+            background: none; border: none;
+            font-size: 16px; cursor: pointer;
+            padding: 12px 24px;
+            transition: color 0.2s;
+        }
+        .btn-back:hover { color: var(--text-primary); }
+
+        .btn-next {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            padding: 16px 48px;
+            border-radius: 100px;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(238, 68, 8, 0.3);
+            transition: transform 0.1s, box-shadow 0.2s, background-color 0.2s;
+        }
+        .btn-next:hover {
+            background-color: #ff551a;
+            box-shadow: 0 12px 32px rgba(238, 68, 8, 0.4);
+            transform: translateY(-2px);
+        }
+        .btn-next:active { transform: translateY(0); }
+
+        /* --- MODAL (AI Sheet) --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);
+            z-index: 200; display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s;
+        }
+        .modal-overlay.open { opacity: 1; pointer-events: auto; }
+
+        .modal-box {
+            background: #1c1c1e;
+            width: 400px;
+            border-radius: 24px;
+            padding: 40px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+            transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .modal-overlay.open .modal-box { transform: scale(1); }
+
+        .modal-title { font-size: 20px; font-weight: 700; color: #FFF; margin-bottom: 12px; }
+        .modal-text { color: #999; font-size: 16px; line-height: 1.5; margin-bottom: 32px; }
+        .modal-btn { width: 100%; padding: 16px; border-radius: 14px; font-size: 16px; font-weight: 600; border: none; cursor: pointer; margin-bottom: 12px; }
+        .btn-go { background: #FFF; color: #000; }
+        .btn-close { background: transparent; color: #999; margin-bottom: 0; }
+
+        @media (max-width: 768px) {
+            .navbar-logo { font-size: 16px; white-space: nowrap; }
+            .navbar-links { gap: 16px; }
+            .navbar-link { font-size: 12px; }
+            .navbar-link.cta { padding: 8px 16px; }
+
+            .progress-track { height: 3px; }
+
+            .app-header { padding: 0 20px; height: 60px; }
+            .header-title { font-size: 12px; margin-top: 10px; }
+
+            .app-footer { padding: 0 20px; height: 80px; }
+            .footer-container { padding: 0 10px; }
+            .btn-back { padding: 8px 16px; font-size: 12px; }
+            .btn-next { padding: 12px 28px; font-size: 14px; }
+
+            h1 { font-size: 28px; }
+            .description { font-size: 16px; }
+            .main-stage { padding-top: 140px; padding-bottom: 120px; }
+            .step-indicator { font-size: 12px; margin-bottom: 8px; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="#" class="navbar-logo" onclick="goToHome()">Carry It</a>
+        <div class="navbar-links">
+            <a href="#" class="navbar-link" onclick="goToHome()">Accueil</a>
+            <a href="#" class="navbar-link cta" onclick="goToDashboard()">Dashboard</a>
+        </div>
+    </nav>
+
+    <!-- Barre de progression (Top Edge) -->
+    <div class="progress-track">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <!-- Header (Navigation globale) -->
+    <header class="app-header">
+        <button class="header-btn" onclick="goBackFromObjectif()">✕</button>
+        <span class="header-title">Nouvelle Ambition</span>
+        <div style="width: 40px;"></div>
+    </header>
+
+    <!-- Scène Principale (Centrée) -->
+    <main class="main-stage">
+        
+        <!-- STEP 1 -->
+        <div class="step-wrapper active" id="step-1">
+            <span class="step-indicator">Étape 1 sur 6</span>
+            <h1>Spécifique</h1>
+            <p class="description">Utilise l'assistant pour définir un objectif précis, factuel et motivant. Ne laisse rien au hasard.</p>
+
+            <button class="ai-trigger" onclick="openAIModal('specifique')">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6-4.8-6 4.8 2.4-7.2-6-4.8h7.6z"/></svg>
+                Ouvrir l'assistant
+            </button>
+
+            <div class="input-group">
+                <div class="input-row">
+                    <span class="input-label">TON OBJECTIF</span>
+                    <span class="paste-btn" onclick="pasteFromClipboard('specifiqueInput')">Coller</span>
+                    <textarea id="specifiqueInput" rows="3" placeholder="En attente de la suggestion de l'assistant..." oninput="autoGrow(this)"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 2 -->
+        <div class="step-wrapper" id="step-2">
+            <span class="step-indicator">Étape 2 sur 6</span>
+            <h1>Mesurable</h1>
+            <p class="description">Quel est l'indicateur unique (KPI) qui te permettra de savoir si tu progresses chaque semaine ?</p>
+
+            <button class="ai-trigger" onclick="openAIModal('mesurable')">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6-4.8-6 4.8 2.4-7.2-6-4.8h7.6z"/></svg>
+                Ouvrir l'assistant
+            </button>
+
+            <div class="input-group">
+                <div class="input-row">
+                    <span class="input-label">KPI</span>
+                    <span class="paste-btn" onclick="pasteFromClipboard('mesurableInput')">Coller</span>
+                    <input type="text" id="mesurableInput" placeholder="Ex: 10 km, 500€, 3 articles...">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <div class="input-row">
+                    <span class="input-label">FRÉQUENCE DE MESURE</span>
+                    <select id="frequenceSelect" onchange="updateDayLabel()">
+                        <option value="quotidien">Quotidien</option>
+                        <option value="hebdomadaire" selected>Hebdomadaire</option>
+                        <option value="mensuel">Mensuel</option>
+                        <option value="trimestriel">Trimestriel</option>
+                        <option value="annuel">Annuel</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <div class="input-row">
+                    <span class="input-label" id="dayLabel">QUEL JOUR DE LA SEMAINE ?</span>
+                    <select id="daySelect">
+                        <option value="lundi">Lundi</option>
+                        <option value="mardi">Mardi</option>
+                        <option value="mercredi">Mercredi</option>
+                        <option value="jeudi">Jeudi</option>
+                        <option value="vendredi">Vendredi</option>
+                        <option value="samedi">Samedi</option>
+                        <option value="dimanche">Dimanche</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 3 -->
+        <div class="step-wrapper" id="step-3">
+            <span class="step-indicator">Étape 3 sur 6</span>
+            <h1>Atteignable</h1>
+            <p class="description">Fais l'inventaire de tes ressources. As-tu tout ce qu'il faut pour commencer dès maintenant ?</p>
+
+            <button class="ai-trigger" onclick="openAIModal('atteignable')">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6-4.8-6 4.8 2.4-7.2-6-4.8h7.6z"/></svg>
+                Ouvrir l'assistant
+            </button>
+
+            <div class="input-group">
+                <div class="input-row">
+                    <span class="input-label">ANALYSE</span>
+                    <span class="paste-btn" onclick="pasteFromClipboard('atteignableInput')">Coller</span>
+                    <textarea id="atteignableInput" rows="2" placeholder="Collez l'analyse de faisabilité ici." oninput="autoGrow(this)"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 4 -->
+        <div class="step-wrapper" id="step-4">
+            <span class="step-indicator">Étape 4 sur 6</span>
+            <h1>Réaliste</h1>
+            <p class="description">Cet objectif est-il réaliste par rapport à ta charge de travail actuelle et tes obligations ?</p>
+
+            <button class="ai-trigger" onclick="openAIModal('realiste')">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6-4.8-6 4.8 2.4-7.2-6-4.8h7.6z"/></svg>
+                Ouvrir l'assistant
+            </button>
+
+            <div class="input-group">
+                <div class="input-row">
+                    <span class="input-label">CONFIRMATION</span>
+                    <span class="paste-btn" onclick="pasteFromClipboard('realisteInput')">Coller</span>
+                    <textarea id="realisteInput" rows="2" placeholder="Collez la confirmation ici." oninput="autoGrow(this)"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 5 -->
+        <div class="step-wrapper" id="step-5">
+            <span class="step-indicator">Étape 5 sur 6</span>
+            <h1>Temporel</h1>
+            <p class="description">Fixe une date de fin précise. L'urgence crée l'action.</p>
+
+            <button class="ai-trigger" onclick="openAIModal('temporel')">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6-4.8-6 4.8 2.4-7.2-6-4.8h7.6z"/></svg>
+                Ouvrir l'assistant
+            </button>
+
+            <div class="input-group">
+                <div class="input-row">
+                    <span class="input-label">DATE CIBLE</span>
+                    <input type="date" id="temporelInput" style="color-scheme: dark;">
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 6 -->
+        <div class="step-wrapper" id="step-6">
+            <span class="step-indicator">Dernière étape</span>
+            <h1>Identité</h1>
+            <p class="description">Donne un nom court et percutant à ce projet pour l'identifier sur ton Dashboard.</p>
+
+            <button class="ai-trigger" onclick="openAIModal('titre')">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6-4.8-6 4.8 2.4-7.2-6-4.8h7.6z"/></svg>
+                Ouvrir l'assistant
+            </button>
+
+            <div class="input-group">
+                <div class="input-row">
+                    <span class="input-label">TITRE DU PROJET</span>
+                    <span class="paste-btn" onclick="pasteFromClipboard('titreInput')">Coller</span>
+                    <input type="text" id="titreInput" placeholder="Ex: Opération Marathon">
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="footer-container">
+            <button class="btn-back" id="backBtn" onclick="navigate(-1)">Retour</button>
+            <button class="btn-next" id="continueBtn" onclick="navigate(1)">Continuer</button>
+        </div>
+    </main>
+
+    <!-- Modal AI -->
+    <div class="modal-overlay" id="aiModal">
+        <div class="modal-box">
+            <div class="modal-title">Contexte copié !</div>
+            <div class="modal-text">
+                Le prompt est dans votre presse-papier.<br>
+                Collez-le dans le chat (Ctrl+V), puis copiez la réponse de l'IA et revenez ici.
+            </div>
+            <button class="modal-btn btn-go" onclick="proceedToGPT()">Ouvrir le chat</button>
+            <button class="modal-btn btn-close" onclick="closeAIModal()">Fermer</button>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 6;
+        const GPT_URL = 'https://chatgpt.com/g/g-692ca373fe108191a36c15ad1250a4a8-carry-it-ai';
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSmartData();
+            updateUI();
+        });
+
+        function navigate(direction) {
+            const nextStep = currentStep + direction;
+            if (nextStep > totalSteps) { finalizeObjectif(); return; }
+            if (nextStep < 1) return;
+
+            saveDraft(currentStep);
+
+            // Animation Sortie
+            const currentEl = document.getElementById(`step-${currentStep}`);
+            currentEl.style.opacity = '0';
+            currentEl.style.transform = 'translateY(-20px)';
+            
+            setTimeout(() => {
+                currentEl.classList.remove('active');
+                currentEl.style.display = 'none'; // Clean reset style
+                
+                // Animation Entrée
+                const nextEl = document.getElementById(`step-${nextStep}`);
+                nextEl.style.display = 'block';
+                // Force Reflow
+                void nextEl.offsetWidth;
+                
+                nextEl.classList.add('active');
+                nextEl.style.opacity = '1';
+                nextEl.style.transform = 'translateY(0)';
+                
+                currentStep = nextStep;
+                updateUI();
+            }, 300);
+        }
+
+        function updateUI() {
+            const percent = (currentStep / totalSteps) * 100;
+            document.getElementById('progressBar').style.width = `${percent}%`;
+
+            const continueBtn = document.getElementById('continueBtn');
+            continueBtn.textContent = currentStep === totalSteps ? 'Créer le projet' : 'Continuer';
+        }
+
+        // --- Logic (Identique) ---
+        function saveDraft(step) {
+            const keys = [null, 'specifique', 'mesurable', 'atteignable', 'realiste', 'temporel', 'titre'];
+            const key = keys[step];
+            const data = JSON.parse(localStorage.getItem('carryItObjectifSMART') || '{}');
+
+            const el = document.getElementById(key + 'Input');
+            if(el) {
+                data[key] = el.value;
+            }
+
+            // Sauvegarder les champs spéciaux pour l'étape 2 (Mesurable)
+            if(step === 2) {
+                data['frequence'] = document.getElementById('frequenceSelect').value;
+                data['jour'] = document.getElementById('daySelect').value;
+            }
+
+            localStorage.setItem('carryItObjectifSMART', JSON.stringify(data));
+        }
+
+        function loadSmartData() {
+            const data = JSON.parse(localStorage.getItem('carryItObjectifSMART') || '{}');
+            const keys = ['specifique', 'mesurable', 'atteignable', 'realiste', 'temporel', 'titre'];
+            keys.forEach(k => {
+                const el = document.getElementById(k + 'Input');
+                if(el && data[k]) el.value = data[k];
+            });
+
+            // Charger les champs spéciaux pour l'étape 2 (Mesurable)
+            if(data['frequence']) {
+                document.getElementById('frequenceSelect').value = data['frequence'];
+                updateDayLabel();
+            }
+            if(data['jour']) {
+                document.getElementById('daySelect').value = data['jour'];
+            }
+        }
+
+        function finalizeObjectif() {
+            saveDraft(6);
+            let all = JSON.parse(localStorage.getItem('carryItAllObjectifs') || '[]');
+            const current = JSON.parse(localStorage.getItem('carryItObjectifSMART') || '{}');
+
+            if(!current.titre) { alert('Titre manquant'); return; }
+
+            // Générer les jalons automatiquement
+            const jalons = generateJalons(current.temporel);
+
+            all.push({
+                id: Date.now(),
+                ...current,
+                measures: [],
+                jalons: jalons  // NOUVEAU
+            });
+            localStorage.setItem('carryItAllObjectifs', JSON.stringify(all));
+            window.location.href = 'jalon.html';
+        }
+
+        function goBackFromObjectif() {
+            if(confirm('Quitter ?')) window.location.href = 'index.html';
+        }
+
+        function openAIModal(context) {
+            let userInput = document.getElementById(context + 'Input').value;
+            if (!userInput) userInput = "";
+            let prompt = `Aide-moi pour l'étape : ${context.toUpperCase()}. ${userInput}`;
+            if(context === 'titre') prompt = "Génère 3 titres courts pour ce projet.";
+
+            navigator.clipboard.writeText(prompt).then(() => {
+                document.getElementById('aiModal').classList.add('open');
+            }).catch(() => proceedToGPT());
+        }
+
+        function proceedToGPT() {
+            window.open(GPT_URL, '_blank');
+            closeAIModal();
+        }
+
+        function closeAIModal() {
+            document.getElementById('aiModal').classList.remove('open');
+        }
+
+        function pasteFromClipboard(targetId) {
+            navigator.clipboard.readText().then(text => {
+                const el = document.getElementById(targetId);
+                el.value = text;
+                autoGrow(el);
+                saveDraft(currentStep);
+            });
+        }
+
+        function autoGrow(element) {
+            if(element.tagName === 'TEXTAREA') {
+                element.style.height = "5px";
+                element.style.height = (element.scrollHeight) + "px";
+            }
+        }
+
+        function updateDayLabel() {
+            const frequence = document.getElementById('frequenceSelect').value;
+            const dayLabel = document.getElementById('dayLabel');
+            const daySelect = document.getElementById('daySelect');
+
+            if(frequence === 'quotidien') {
+                dayLabel.textContent = 'MATIN OU SOIR ?';
+                daySelect.innerHTML = '<option value="matin">Matin</option><option value="midi">Midi</option><option value="soir">Soir</option>';
+            } else if(frequence === 'hebdomadaire') {
+                dayLabel.textContent = 'QUEL JOUR DE LA SEMAINE ?';
+                daySelect.innerHTML = '<option value="lundi">Lundi</option><option value="mardi">Mardi</option><option value="mercredi">Mercredi</option><option value="jeudi">Jeudi</option><option value="vendredi">Vendredi</option><option value="samedi">Samedi</option><option value="dimanche">Dimanche</option>';
+            } else if(frequence === 'mensuel') {
+                dayLabel.textContent = 'QUEL JOUR DU MOIS ?';
+                let options = '<option value="1">1er</option>';
+                for(let i = 2; i <= 31; i++) {
+                    options += `<option value="${i}">${i}</option>`;
+                }
+                daySelect.innerHTML = options;
+            } else if(frequence === 'trimestriel') {
+                dayLabel.textContent = 'QUEL MOIS ?';
+                daySelect.innerHTML = '<option value="janvier">Janvier</option><option value="avril">Avril</option><option value="juillet">Juillet</option><option value="octobre">Octobre</option>';
+            } else if(frequence === 'annuel') {
+                dayLabel.textContent = 'QUEL MOIS ?';
+                daySelect.innerHTML = '<option value="janvier">Janvier</option><option value="fevrier">Février</option><option value="mars">Mars</option><option value="avril">Avril</option><option value="mai">Mai</option><option value="juin">Juin</option><option value="juillet">Juillet</option><option value="aout">Août</option><option value="septembre">Septembre</option><option value="octobre">Octobre</option><option value="novembre">Novembre</option><option value="decembre">Décembre</option>';
+            }
+        }
+
+        function goToHome() {
+            window.location.href = 'index.html';
+        }
+
+        function goToDashboard() {
+            window.location.href = 'dashboard.html';
+        }
+
+        // --- JALONS AUTO-GENERATION ---
+        function generateJalons(temporelDate) {
+            const today = new Date();
+            const endDate = new Date(temporelDate);
+            const durationDays = Math.ceil((endDate - today) / (1000 * 60 * 60 * 24));
+
+            let jalonsConfig = [];
+
+            // CAS 1: < 90 jours
+            if (durationDays < 90) {
+                jalonsConfig = [
+                    { titre: 'Jalon Mi-Parcours', progression: 50, dateOffset: Math.floor(durationDays * 0.5) },
+                    { titre: 'Jalon Final', progression: 100, dateOffset: durationDays }
+                ];
+            }
+            // CAS 2: 90-365 jours
+            else if (durationDays >= 90 && durationDays <= 365) {
+                jalonsConfig = [
+                    { titre: 'Jalon Décollage', progression: 15, dateOffset: 30 },
+                    { titre: 'Jalon Mi-Parcours', progression: 50, dateOffset: Math.floor(durationDays * 0.5) },
+                    { titre: 'Jalon Final', progression: 100, dateOffset: durationDays }
+                ];
+            }
+            // CAS 3: > 365 jours
+            else {
+                jalonsConfig = [
+                    { titre: 'Jalon Décollage', progression: 10, dateOffset: 30 },
+                    { titre: 'Jalon Trimestriel', progression: 25, dateOffset: 90 },
+                    { titre: 'Jalon Mi-Parcours', progression: 50, dateOffset: Math.floor(durationDays * 0.5) },
+                    { titre: 'Jalon Final', progression: 100, dateOffset: durationDays }
+                ];
+            }
+
+            // Générer les objets jalons
+            return jalonsConfig.map((config, index) => {
+                const jalonDate = new Date(today);
+                jalonDate.setDate(jalonDate.getDate() + config.dateOffset);
+                const daysDiff = Math.ceil((jalonDate - today) / (1000 * 60 * 60 * 24));
+                const isProche = daysDiff < 90;
+
+                return {
+                    id: Date.now() + index,
+                    ordre: index + 1,
+                    titre: config.titre,
+                    date: jalonDate.toISOString().split('T')[0],
+                    type: isProche ? 'proche' : 'lointain',
+                    progression: config.progression,
+                    statut: index === 0 ? 'in_progress' : 'pending',
+                    miniSmart: {
+                        specifique: '',
+                        mesurable: '',
+                        atteignable: isProche ? '' : null,
+                        realiste: isProche ? '' : null
+                    },
+                    taches: isProche ? [] : null
+                };
+            });
+        }
+    </script>
+</body>
+</html>
