@@ -92,6 +92,36 @@
         }
         .btn-icon:hover { color: var(--text-primary); }
 
+        /* --- AI ASSISTANT BUTTON --- */
+        .btn-ai-assistant {
+            background: linear-gradient(135deg, rgba(238, 68, 8, 0.15), rgba(220, 176, 138, 0.15));
+            border: 1px solid rgba(238, 68, 8, 0.4);
+            color: #dcb08a;
+            padding: 6px 12px;
+            border-radius: 18px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn-ai-assistant:hover {
+            background: rgba(238, 68, 8, 0.2);
+            border-color: var(--accent);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px var(--accent-glow);
+        }
+
+        .btn-ai-assistant i {
+            font-size: 14px;
+        }
+
         /* --- TIMELINE VIEWPORT (Main scroll container) --- */
         .timeline-viewport {
             flex: 1;
@@ -448,6 +478,92 @@
 
         .btn-nav.disabled { opacity: 0.3; pointer-events: none; }
 
+        /* --- MODAL (AI Sheet) --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .modal-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-box {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            width: 90%;
+            max-width: 450px;
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .modal-overlay.open .modal-box {
+            transform: scale(1);
+        }
+
+        .modal-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+        }
+
+        .modal-text {
+            color: var(--text-secondary);
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+
+        .modal-btn {
+            width: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            margin-bottom: 12px;
+            transition: all 0.2s;
+        }
+
+        .btn-go {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-go:hover {
+            background: rgba(255, 77, 0, 0.9);
+            transform: translateY(-2px);
+        }
+
+        .btn-close {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            margin-bottom: 0;
+        }
+
+        .btn-close:hover {
+            border-color: var(--border-active);
+            color: var(--text-primary);
+        }
+
     </style>
 </head>
 <body>
@@ -455,8 +571,13 @@
     <!-- HUD TOP -->
     <div class="hud-top">
         <div class="hud-label">COCKPIT <span class="hud-value">CARRY IT</span></div>
-        <div class="hud-label" id="stepIndicator">JALON --/--</div>
-        <button class="btn-icon" title="Paramètres"><i class="ri-settings-3-line"></i></button>
+        <div style="display: flex; gap: 12px; align-items: flex-end;">
+            <div class="hud-label" id="stepIndicator">JALON --/--</div>
+            <button class="btn-ai-assistant" onclick="openAIAssistant()" title="Assistant IA">
+                <i class="ri-magic-line"></i> ASSISTANT IA
+            </button>
+            <button class="btn-icon" title="Paramètres"><i class="ri-settings-3-line"></i></button>
+        </div>
     </div>
 
     <!-- TIMELINE VIEWPORT (Main scroll container) -->
@@ -734,7 +855,142 @@
 
         // --- SYNC SCROLLS (Approximation pour l'effet visuel) ---
         // On simplifie pour éviter les boucles infinies : seul le viewport pilote le rail via l'observer
-        
+
+        // --- AI ASSISTANT FUNCTIONS ---
+        const GPT_URL = 'https://chatgpt.com/g/g-692ca373fe108191a36c15ad1250a4a8-carry-it-ai';
+
+        function getCurrentObjectif() {
+            const allObjectifs = JSON.parse(localStorage.getItem('carryItAllObjectifs') || '[]');
+            if (allObjectifs.length === 0) return null;
+            return allObjectifs[allObjectifs.length - 1]; // Plus récent
+        }
+
+        function getActiveMilestoneIndex() {
+            const activeCard = document.querySelector('.card-slot.active');
+            if (!activeCard) return 0;
+
+            const activeId = activeCard.dataset.id;
+            const sortedMilestones = [...milestones].sort((a, b) => b.offset - a.offset);
+            return sortedMilestones.findIndex(m => m.id === activeId);
+        }
+
+        function generateMilestonePrompt() {
+            const objectif = getCurrentObjectif();
+            if (!objectif) {
+                alert("Aucun objectif SMART trouvé. Veuillez d'abord créer un objectif.");
+                return null;
+            }
+
+            const currentIndex = getActiveMilestoneIndex();
+            const sortedMilestones = [...milestones].sort((a, b) => b.offset - a.offset);
+            const currentMilestone = sortedMilestones[currentIndex];
+
+            // Contexte des jalons précédents
+            let previousContext = "";
+            if (currentIndex > 0) {
+                const filled = sortedMilestones.slice(0, currentIndex)
+                    .filter(m => m.title && m.title.trim())
+                    .map(m => `- ${m.title} (${formatDate(m.offset)}): ${m.desc || 'Non rempli'}`)
+                    .join('\n');
+                if (filled) previousContext = `\n\nJalons déjà définis:\n${filled}`;
+            }
+
+            const position = currentMilestone.offset === 0
+                ? 'FIN PROJET (Objectif Final)'
+                : formatDate(currentMilestone.offset);
+
+            const prompt = `Tu es l'assistant Carry It AI. Aide-moi à définir le jalon ${currentIndex + 1}/${sortedMilestones.length} de mon projet.
+
+## CONTEXTE SMART DE MON OBJECTIF:
+- **Objectif**: ${objectif.specifique}
+- **KPI**: ${objectif.mesurable} (mesuré ${objectif.frequence}, chaque ${objectif.jour})
+- **Faisabilité**: ${objectif.atteignable}
+- **Réalisme**: ${objectif.realiste}
+- **Échéance finale**: ${formatDate(0)} (${objectif.temporel})
+- **Nom du projet**: ${objectif.titre}${previousContext}
+
+## JALON À REMPLIR MAINTENANT:
+- **Position temporelle**: ${position}
+- **Progression attendue**: ${Math.round((currentIndex + 1) / sortedMilestones.length * 100)}%
+
+## TA MISSION:
+Pose-moi 3-4 questions ciblées pour m'aider à définir:
+
+1. **Nom du Jalon**: Un titre court et percutant (3-5 mots max)
+2. **KPI (Mesurable)**: Quelle valeur de mon KPI principal (${objectif.mesurable}) je devrais atteindre à cette date ?
+3. **Objectif Concret**: Description factuelle de ce qui sera accompli (2-3 phrases)
+
+Une fois que nous aurons terminé, formate ta réponse finale comme ceci:
+\`\`\`
+NOM: [Titre du jalon]
+KPI: [Valeur du KPI]
+DESCRIPTION: [Description détaillée]
+\`\`\`
+
+Commence par me poser la première question pour comprendre mon intention pour ce jalon.`;
+
+            return prompt;
+        }
+
+        function openAIAssistant() {
+            const prompt = generateMilestonePrompt();
+            if (!prompt) return; // Erreur déjà affichée
+
+            // Copier dans le clipboard
+            navigator.clipboard.writeText(prompt).then(() => {
+                document.getElementById('aiModal').classList.add('open');
+            }).catch(err => {
+                console.error('Clipboard error:', err);
+                // Fallback: ouvrir directement
+                proceedToAI();
+            });
+        }
+
+        function proceedToAI() {
+            window.open(GPT_URL, '_blank');
+            closeAIModal();
+        }
+
+        function closeAIModal() {
+            document.getElementById('aiModal').classList.remove('open');
+        }
+
+        // Smart Paste Detection
+        document.addEventListener('paste', (e) => {
+            const text = e.clipboardData.getData('text');
+
+            // Parser le format structuré
+            const nomMatch = text.match(/NOM:\s*(.+)/i);
+            const kpiMatch = text.match(/KPI:\s*(.+)/i);
+            const descMatch = text.match(/DESCRIPTION:\s*(.+?)(?=\n\n|$)/is);
+
+            if (nomMatch && kpiMatch && descMatch) {
+                e.preventDefault();
+
+                const activeCard = document.querySelector('.card-slot.active');
+                if (!activeCard) return;
+
+                // Remplir les champs
+                const titleInput = activeCard.querySelector('.input-title');
+                const kpiInput = activeCard.querySelector('.input-kpi');
+                const descTextarea = activeCard.querySelector('.input-area');
+
+                titleInput.value = nomMatch[1].trim();
+                kpiInput.value = kpiMatch[1].trim();
+                descTextarea.value = descMatch[1].trim();
+
+                // Update data
+                const milestoneId = activeCard.dataset.id;
+                updateData(milestoneId, 'title', titleInput.value);
+                updateData(milestoneId, 'kpiValue', kpiInput.value);
+                updateData(milestoneId, 'desc', descTextarea.value);
+
+                // Feedback visuel
+                activeCard.style.transform = 'scale(1.02)';
+                setTimeout(() => activeCard.style.transform = '', 300);
+            }
+        });
+
         // --- INIT ---
         function init() {
             renderAllCards();
@@ -750,5 +1006,19 @@
         init();
 
     </script>
+
+    <!-- Modal AI -->
+    <div class="modal-overlay" id="aiModal">
+        <div class="modal-box">
+            <div class="modal-title">Contexte copié !</div>
+            <div class="modal-text">
+                Le contexte de votre objectif et du jalon actuel est dans votre presse-papier.<br>
+                Collez-le dans le chat (Ctrl+V), puis copiez la réponse de l'IA pour remplir le jalon.
+            </div>
+            <button class="modal-btn btn-go" onclick="proceedToAI()">Ouvrir le chat</button>
+            <button class="modal-btn btn-close" onclick="closeAIModal()">Fermer</button>
+        </div>
+    </div>
+
 </body>
 </html>
