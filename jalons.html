@@ -199,10 +199,10 @@
         /* --- TIMELINE VIEWPORT (Main scroll container) --- */
         .timeline-viewport {
             flex: 1;
-            width: 100vw;
-            overflow-x: auto;
-            overflow-y: hidden;
-            scroll-snap-type: x mandatory;
+            height: 100vh;
+            overflow-x: hidden;
+            overflow-y: auto;
+            scroll-snap-type: y mandatory;
             scroll-behavior: smooth;
             scrollbar-width: none;
             position: relative;
@@ -211,28 +211,29 @@
         }
         .timeline-viewport::-webkit-scrollbar { display: none; }
 
-        /* Flex container pour le scroll horizontal */
+        /* Flex container pour le scroll vertical */
         .timeline-scroll {
             display: flex;
-            flex-direction: row; /* On garde ROW standard, c'est le tri JS qui fera le boulot */
-            width: fit-content;
-            height: 100%;
+            flex-direction: column; /* Vertical arrangement */
+            width: 100%;
+            height: fit-content;
             flex: 1;
-            padding: 0 10vw; /* Padding pour centrer les cartes extrêmes */
+            padding: 10vh 0; /* Padding pour centrer les cartes extrêmes */
         }
 
         /* --- CARD SLOTS --- */
         .card-slot {
-            flex: 0 0 85vw; /* 85vw pour voir un bout des voisines */
-            margin: 0 5px;  /* Espacement léger */
+            flex: 0 0 85vh; /* 85vh pour voir un bout des voisines */
+            margin: 5px 0;  /* Espacement léger */
             display: flex;
             align-items: center;
             justify-content: center;
             scroll-snap-align: center;
             scroll-snap-stop: always;
             position: relative;
-            padding-top: 20px;
-            padding-bottom: 200px;
+            padding-left: 20px;
+            padding-right: 200px;
+            width: 100%;
             opacity: 0.3;
             transform: scale(0.95);
             transition: opacity 0.4s ease-out, transform 0.4s ease-out;
@@ -248,12 +249,12 @@
         /* Visual flow connector between cards */
         .card-flow-line {
             position: absolute;
-            top: 50%;
-            right: -5px;
-            width: 10px;
-            height: 2px;
-            background: linear-gradient(to right, var(--accent), transparent);
-            transform: translateY(-50%);
+            left: 50%;
+            bottom: -5px;
+            width: 2px;
+            height: 10px;
+            background: linear-gradient(to bottom, var(--accent), transparent);
+            transform: translateX(-50%);
             pointer-events: none;
             z-index: 1;
             opacity: 0;
@@ -269,14 +270,14 @@
         .card-slot.active .card-flow-line::before {
             content: '';
             position: absolute;
-            right: -3px;
-            top: 50%;
-            transform: translateY(-50%);
+            bottom: -3px;
+            left: 50%;
+            transform: translateX(-50%);
             width: 0;
             height: 0;
-            border-left: 4px solid var(--accent);
-            border-top: 3px solid transparent;
-            border-bottom: 3px solid transparent;
+            border-top: 4px solid var(--accent);
+            border-left: 3px solid transparent;
+            border-right: 3px solid transparent;
             opacity: 0.8;
         }
 
@@ -440,13 +441,14 @@
         /* --- TIMELINE RAIL (Fixed at bottom) --- */
         .timeline-rail {
             position: fixed;
-            bottom: 80px;
-            left: 0;
-            width: 100%;
-            height: 80px;
-            border-top: 1px solid var(--border);
+            right: 0;
+            top: 0;
+            width: 80px;
+            height: 100vh;
+            border-left: 1px solid var(--border);
             background: var(--bg-deep);
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             z-index: 50;
@@ -454,60 +456,61 @@
 
         .timeline-indicator {
             position: absolute;
-            left: 50%;
-            top: 10px;
-            bottom: 10px;
-            width: 2px;
+            top: 50%;
+            left: 10px;
+            right: 10px;
+            height: 2px;
             background: var(--accent);
             z-index: 10;
-            transform: translateX(-50%);
+            transform: translateY(-50%);
             border-radius: 2px;
             box-shadow: 0 0 10px var(--accent-glow);
         }
 
         .timeline-track {
             display: flex;
+            flex-direction: column;
             align-items: center;
             gap: 0;
-            overflow-x: auto;
-            padding: 0 50vw;
+            overflow-y: auto;
+            padding: 50vh 0;
             scroll-behavior: smooth;
-            height: 100%;
+            width: 100%;
             scrollbar-width: none;
             cursor: grab;
-            width: 100%;
+            height: 100%;
         }
         .timeline-track:active { cursor: grabbing; }
         .timeline-track::-webkit-scrollbar { display: none; }
 
         .timeline-month {
             flex-shrink: 0;
-            width: 70px;
+            height: 70px;
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             align-items: center;
             justify-content: center;
             opacity: 0.3;
             transition: opacity 0.3s;
             position: relative;
-            height: 100%;
+            width: 100%;
             cursor: pointer;
-            padding: 0 5px;
+            padding: 5px 0;
         }
 
         .timeline-month:hover { opacity: 0.7; }
         .timeline-month.active { opacity: 1; }
 
         .tick {
-            width: 1px;
-            height: 12px;
+            height: 1px;
+            width: 12px;
             background: var(--text-secondary);
-            margin-bottom: 6px;
+            margin-right: 6px;
         }
         .timeline-month.active .tick {
-            height: 18px;
+            width: 18px;
             background: var(--text-primary);
-            width: 2px;
+            height: 2px;
         }
 
         .month-label {
@@ -1293,13 +1296,13 @@
         }
 
         btnForward.addEventListener('click', () => {
-            // Aller vers la Droite (Futur)
-            timelineViewport.scrollBy({ left: window.innerWidth * 0.85, behavior: 'smooth' });
+            // Aller vers le Bas (Futur)
+            timelineViewport.scrollBy({ top: window.innerHeight * 0.85, behavior: 'smooth' });
         });
 
         btnBackward.addEventListener('click', () => {
-            // Aller vers la Gauche (Passé)
-            timelineViewport.scrollBy({ left: -window.innerWidth * 0.85, behavior: 'smooth' });
+            // Aller vers le Haut (Passé)
+            timelineViewport.scrollBy({ top: -window.innerHeight * 0.85, behavior: 'smooth' });
         });
 
         // --- SYNC SCROLLS (Approximation pour l'effet visuel) ---
