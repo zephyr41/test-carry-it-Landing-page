@@ -138,6 +138,33 @@
             50% { opacity: 0.7; transform: scale(1.08) translateZ(0); }
         }
 
+        /* Inline AI button for form fields */
+        .btn-ai-inline {
+            background: transparent;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 4px 8px;
+            opacity: 0.6;
+            transition: opacity 0.2s, transform 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            animation: sparkle-mini 3s ease-in-out infinite;
+            will-change: opacity;
+            backface-visibility: hidden;
+        }
+
+        .btn-ai-inline:hover {
+            opacity: 1;
+            transform: scale(1.15);
+        }
+
+        @keyframes sparkle-mini {
+            0%, 100% { opacity: 0.6; transform: scale(1) translateZ(0); }
+            50% { opacity: 0.9; transform: scale(1.05) translateZ(0); }
+        }
+
         .ai-badge {
             background: #22c55e;
             color: white;
@@ -497,6 +524,13 @@
             position: absolute;
             bottom: 10px;
             box-shadow: 0 0 5px var(--accent-glow);
+            transition: opacity 0.3s ease;
+        }
+
+        /* Past milestone indicator (shown as ghost/faded) */
+        .has-milestone.past-milestone::after {
+            opacity: 0.4;
+            box-shadow: 0 0 3px rgba(238, 68, 8, 0.2);
         }
 
         /* --- CONTROLS --- */
@@ -960,8 +994,8 @@
     <div class="controls-bottom">
         <!-- BOUTON GAUCHE: Aller vers la GAUCHE (Passé/Aujourd'hui) -->
         <button class="btn-nav primary" id="btnBackward">
-            <i class="ri-arrow-left-line"></i> ÉTAPE SUIVANTE
-            <span class="btn-subtitle">Plus proche d'aujourd'hui</span>
+            <i class="ri-arrow-left-line"></i> JALON ANTÉCÉDENT
+            <span class="btn-subtitle">L'étape précédente</span>
         </button>
 
         <!-- BOUTON DROITE: Aller vers la DROITE (Futur/Objectif) -->
@@ -1030,7 +1064,7 @@
                         <span class="sentinel-date">${milestone.offset === 0 ? 'FIN PROJET' : formatDate(milestone.offset)}</span>
                     </div>
                     <div class="data-block">
-                        <div class="block-label">01 // Nom du Jalon</div>
+                        <div class="block-label">Jalon</div>
                         <input type="text" class="input-raw input-title"
                                value="${milestone.title}"
                                data-id="${milestone.id}"
@@ -1039,7 +1073,7 @@
                                oninput="updateData('${milestone.id}', 'title', this.value)">
                     </div>
                     <div class="data-block">
-                        <div class="block-label">02 // Le KPI (Mesurable)</div>
+                        <div class="block-label">📍 KPI Mesurable</div>
                         <div class="kpi-wrapper">
                             <i class="ri-flag-fill kpi-icon"></i>
                             <input type="text" class="input-kpi"
@@ -1051,7 +1085,15 @@
                         </div>
                     </div>
                     <div class="data-block">
-                        <div class="block-label">03 // Objectif Concret</div>
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <div class="block-label">🎯 Plan d'Action</div>
+                            <button class="btn-ai-inline"
+                                    onclick="openAIAssistant()"
+                                    title="Génère avec l'IA"
+                                    aria-label="Améliorer avec l'IA">
+                                ✨
+                            </button>
+                        </div>
                         <textarea class="input-area"
                                   data-id="${milestone.id}"
                                   placeholder="Description factuelle..."
@@ -1206,6 +1248,16 @@
 
                         // Update AI Button Label
                         updateAIButtonLabel();
+
+                        // Update timeline past milestone indicators
+                        document.querySelectorAll('.timeline-month.has-milestone').forEach(el => {
+                            const offset = parseInt(el.dataset.offset);
+                            if (offset > m.offset) {
+                                el.classList.add('past-milestone');
+                            } else {
+                                el.classList.remove('past-milestone');
+                            }
+                        });
                     }
                 });
             }, { threshold: 0.5, root: timelineViewport });
