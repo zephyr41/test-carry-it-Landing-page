@@ -54,7 +54,7 @@
     </section>
 
     <!-- Modal de confirmation de suppression -->
-    <div id="deleteConfirmModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.7); z-index: 10000; display: flex; align-items: center; justify-content: center;">
+    <div id="deleteConfirmModal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.7); z-index: 10000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;">
         <div style="background: #111113; border-radius: 16px; padding: 32px; max-width: 400px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8); border: 1px solid rgba(255, 255, 255, 0.1);">
             <h3 style="font-size: 20px; font-weight: 700; color: #FFFDF6; margin: 0 0 12px 0; font-family: 'Inter', sans-serif;">Supprimer ce projet ?</h3>
             <p style="font-size: 14px; color: #929292; margin: 0 0 24px 0; line-height: 1.5; font-family: 'Inter', sans-serif;" id="deleteConfirmMessage">Cette action est irréversible.</p>
@@ -660,6 +660,8 @@ Temporel : [JJ mois AAAA]`;
             const objectif = allObjectifs[index];
             if (!objectif) return;
 
+            console.log('deleteObjectif - index:', index);
+
             // Stocker l'index pour la confirmation
             pendingDeleteIndex = index;
 
@@ -667,21 +669,36 @@ Temporel : [JJ mois AAAA]`;
             const modal = document.getElementById('deleteConfirmModal');
             const message = document.getElementById('deleteConfirmMessage');
             message.textContent = `Êtes-vous sûr de vouloir supprimer "${objectif.titre}" ? Cette action est irréversible.`;
-            modal.style.display = 'flex';
+            modal.style.opacity = '1';
+            modal.style.pointerEvents = 'auto';
         }
 
         // Fonction pour confirmer la suppression
         function confirmDelete() {
-            if (pendingDeleteIndex === null) return;
+            console.log('confirmDelete - pendingDeleteIndex:', pendingDeleteIndex);
+            if (pendingDeleteIndex === null || pendingDeleteIndex === undefined) {
+                console.error('❌ pendingDeleteIndex est null ou undefined');
+                return;
+            }
 
             const index = pendingDeleteIndex;
+            console.log('Suppression de l\'index:', index);
+            console.log('allObjectifs length before:', allObjectifs.length);
+            console.log('Objectif à supprimer:', allObjectifs[index]);
+
             const objectif = allObjectifs[index];
+            if (!objectif) {
+                console.error('❌ Objectif non trouvé à l\'index', index);
+                return;
+            }
 
             // Supprimer l'objectif de la liste
             allObjectifs.splice(index, 1);
+            console.log('allObjectifs length after:', allObjectifs.length);
 
             // Sauvegarder les changements
             saveAllObjectifs();
+            console.log('✅ Sauvegardé');
 
             // Ajuster l'index du carrousel si nécessaire
             if (currentCarouselIndex >= allObjectifs.length && allObjectifs.length > 0) {
@@ -701,7 +718,8 @@ Temporel : [JJ mois AAAA]`;
         // Fonction pour annuler la suppression
         function cancelDelete() {
             const modal = document.getElementById('deleteConfirmModal');
-            modal.style.display = 'none';
+            modal.style.opacity = '0';
+            modal.style.pointerEvents = 'none';
             pendingDeleteIndex = null;
         }
 
