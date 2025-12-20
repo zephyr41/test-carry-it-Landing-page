@@ -77,6 +77,13 @@
             color: var(--text-secondary);
             text-transform: uppercase;
             letter-spacing: 1px;
+            line-height: 1.4;
+            max-width: 400px;
+        }
+
+        .hud-label strong {
+            color: var(--accent);
+            font-weight: 700;
         }
 
         .hud-value { color: var(--accent); font-weight: 700; }
@@ -198,6 +205,41 @@
         .card-slot.active {
             opacity: 1;
             transform: scale(1);
+        }
+
+        /* Visual flow connector between cards */
+        .card-flow-line {
+            position: absolute;
+            top: 50%;
+            right: -5px;
+            width: 10px;
+            height: 2px;
+            background: linear-gradient(to right, var(--accent), transparent);
+            transform: translateY(-50%);
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Show connector only on active card */
+        .card-slot.active .card-flow-line {
+            opacity: 0.6;
+        }
+
+        /* Arrow head for flow direction */
+        .card-slot.active .card-flow-line::before {
+            content: '';
+            position: absolute;
+            right: -3px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 4px solid var(--accent);
+            border-top: 3px solid transparent;
+            border-bottom: 3px solid transparent;
+            opacity: 0.8;
         }
 
         .card-wrapper {
@@ -508,6 +550,16 @@
         }
 
         .btn-nav.disabled { opacity: 0.3; pointer-events: none; }
+
+        .btn-subtitle {
+            display: block;
+            font-size: 9px;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.6;
+            margin-top: 2px;
+        }
 
         /* --- MODAL (AI Sheet) --- */
         .modal-overlay {
@@ -906,14 +958,16 @@
 
     <!-- CONTROLS -->
     <div class="controls-bottom">
-        <!-- BOUTON GAUCHE: Aller vers la DROITE (Futur) -->
-        <button class="btn-nav" id="btnForward">
-            VERS L'OBJECTIF <i class="ri-arrow-right-line"></i>
+        <!-- BOUTON GAUCHE: Aller vers la GAUCHE (Passé/Aujourd'hui) -->
+        <button class="btn-nav primary" id="btnBackward">
+            <i class="ri-arrow-left-line"></i> ÉTAPE SUIVANTE
+            <span class="btn-subtitle">Plus proche d'aujourd'hui</span>
         </button>
 
-        <!-- BOUTON DROITE: Aller vers la GAUCHE (Passé) -->
-        <button class="btn-nav primary" id="btnBackward">
-            <i class="ri-arrow-left-line"></i> JALON ANTÉCÉDENT
+        <!-- BOUTON DROITE: Aller vers la DROITE (Futur/Objectif) -->
+        <button class="btn-nav" id="btnForward">
+            <span class="btn-subtitle">Vers l'objectif final</span>
+            RETOUR VERS LE FUTUR <i class="ri-arrow-right-line"></i>
         </button>
     </div>
 
@@ -1012,6 +1066,14 @@
 
                 slot.appendChild(connector); // Le CSS le place à gauche
                 slot.appendChild(wrapper);
+
+                // Add flow connector line (only if not the last card/objective)
+                if (index < sortedMilestones.length - 1) {
+                    const flowLine = document.createElement('div');
+                    flowLine.className = 'card-flow-line';
+                    slot.appendChild(flowLine);
+                }
+
                 timelineScroll.appendChild(slot);
             });
 
@@ -1095,6 +1157,28 @@
             }
         }
 
+        // --- CONTEXTUAL TITLE GENERATION ---
+        function generateContextualTitle(visualIndex, total, milestone) {
+            // Special case: Final Objective (offset 0)
+            if (milestone.offset === 0) {
+                return `<strong>Objectif Final</strong> : ${formatDate(0)}`;
+            }
+
+            // Special case: First milestone (furthest in the past)
+            if (visualIndex === total) {
+                return `<strong>Étape ${visualIndex}</strong> : Que devez-vous commencer aujourd'hui ?`;
+            }
+
+            // Special case: Last milestone before objective
+            if (visualIndex === 1) {
+                return `<strong>Étape ${visualIndex}</strong> : Que devez-vous avoir accompli juste avant l'Objectif ?`;
+            }
+
+            // General case: intermediate milestones
+            const monthsUntilGoal = milestone.offset;
+            return `<strong>Étape ${visualIndex}</strong> : Dans ${monthsUntilGoal} mois, où devez-vous être ?`;
+        }
+
         // --- INTERSECTION OBSERVER ---
         function setupIntersectionObserver() {
             const cards = document.querySelectorAll('.card-slot');
@@ -1114,7 +1198,7 @@
                         // Index visuel (trié)
                         const sortedIds = [...milestones].sort((a, b) => b.offset - a.offset).map(m => m.id);
                         const visualIndex = sortedIds.indexOf(currentMilestoneId) + 1;
-                        stepIndicator.innerText = `JALON ${visualIndex}/${total}`;
+                        stepIndicator.innerHTML = generateContextualTitle(visualIndex, total, m);
 
                         // Sync Rail
                         syncRail(m.offset);
