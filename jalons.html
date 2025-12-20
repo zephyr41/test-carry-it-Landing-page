@@ -94,32 +94,57 @@
 
         /* --- AI ASSISTANT BUTTON --- */
         .btn-ai-assistant {
-            background: linear-gradient(135deg, rgba(238, 68, 8, 0.15), rgba(220, 176, 138, 0.15));
-            border: 1px solid rgba(238, 68, 8, 0.4);
-            color: #dcb08a;
-            padding: 6px 12px;
-            border-radius: 18px;
-            font-size: 10px;
-            font-weight: 600;
+            background: linear-gradient(135deg, rgba(238, 68, 8, 0.2), rgba(220, 176, 138, 0.15));
+            border: 1.5px solid rgba(238, 68, 8, 0.5);
+            color: #e8c9a3;
+            padding: 8px 16px;
+            border-radius: 24px;
+            font-size: 11px;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.8px;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 6px;
-            transition: all 0.2s;
+            gap: 8px;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             white-space: nowrap;
+            box-shadow: 0 2px 8px rgba(238, 68, 8, 0.2);
         }
 
         .btn-ai-assistant:hover {
-            background: rgba(238, 68, 8, 0.2);
+            background: linear-gradient(135deg, rgba(238, 68, 8, 0.3), rgba(220, 176, 138, 0.2));
             border-color: var(--accent);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px var(--accent-glow);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 6px 16px rgba(238, 68, 8, 0.4);
         }
 
         .btn-ai-assistant i {
-            font-size: 14px;
+            font-size: 16px;
+            animation: sparkle 2s ease-in-out infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+        }
+
+        .ai-badge {
+            background: #22c55e;
+            color: white;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-left: 8px;
+            animation: badgePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes badgePulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.85; transform: scale(1.05); }
         }
 
         /* --- TIMELINE VIEWPORT (Main scroll container) --- */
@@ -564,6 +589,272 @@
             color: var(--text-primary);
         }
 
+        /* --- MODAL IMPROVEMENTS --- */
+        .modal-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .modal-sparkle {
+            font-size: 48px;
+            color: var(--accent);
+            margin-bottom: 12px;
+            animation: sparkleRotate 3s ease-in-out infinite;
+        }
+
+        @keyframes sparkleRotate {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(-10deg) scale(1.1); }
+            75% { transform: rotate(10deg) scale(1.1); }
+        }
+
+        .modal-subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .modal-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .modal-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .modal-step:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(238, 68, 8, 0.2);
+        }
+
+        .modal-step.completed {
+            background: rgba(34, 197, 94, 0.1);
+            border-color: rgba(34, 197, 94, 0.3);
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .modal-step.completed .step-number {
+            background: #22c55e;
+        }
+
+        .step-content {
+            flex: 1;
+            padding-top: 2px;
+        }
+
+        .step-content strong {
+            display: block;
+            font-size: 15px;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .step-content span {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .modal-tip {
+            margin-top: 20px;
+            padding: 12px 16px;
+            background: rgba(238, 68, 8, 0.08);
+            border-radius: 10px;
+            border: 1px solid rgba(238, 68, 8, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .modal-tip i {
+            font-size: 18px;
+            color: var(--accent);
+        }
+
+        .modal-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* --- POPOVER STYLES --- */
+        .ai-prompt-popover {
+            position: absolute;
+            bottom: calc(100% + 12px);
+            left: 0;
+            right: 0;
+            background: var(--surface);
+            border: 1px solid var(--accent);
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            opacity: 0;
+            transform: translateY(10px);
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .ai-prompt-popover.show {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .popover-content {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .popover-icon {
+            font-size: 24px;
+            color: var(--accent);
+            flex-shrink: 0;
+        }
+
+        .popover-text {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .popover-text strong {
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+
+        .popover-text span {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .popover-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-popover {
+            flex: 1;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-popover.primary {
+            background: var(--accent);
+            color: white;
+            border: none;
+        }
+
+        .btn-popover.primary:hover {
+            background: rgba(255, 77, 0, 0.9);
+            transform: translateY(-2px);
+        }
+
+        .btn-popover.secondary {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-popover.secondary:hover {
+            border-color: var(--text-secondary);
+            color: var(--text-primary);
+        }
+
+        .popover-arrow {
+            position: absolute;
+            bottom: -8px;
+            left: 32px;
+            width: 16px;
+            height: 16px;
+            background: var(--surface);
+            border-right: 1px solid var(--accent);
+            border-bottom: 1px solid var(--accent);
+            transform: rotate(45deg);
+        }
+
+        /* --- SUCCESS TOAST STYLES --- */
+        .success-toast {
+            position: fixed;
+            top: 90px;
+            right: 20px;
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.95), rgba(22, 163, 74, 0.95));
+            color: white;
+            padding: 16px 20px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            box-shadow: 0 8px 24px rgba(34, 197, 94, 0.3);
+            opacity: 0;
+            transform: translateX(400px);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 1000;
+            max-width: 360px;
+        }
+
+        .success-toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .success-toast i {
+            font-size: 28px;
+            flex-shrink: 0;
+        }
+
+        .toast-content {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .toast-content strong {
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .toast-content span {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
     </style>
 </head>
 <body>
@@ -573,8 +864,14 @@
         <div class="hud-label">COCKPIT <span class="hud-value">CARRY IT</span></div>
         <div style="display: flex; gap: 12px; align-items: flex-end;">
             <div class="hud-label" id="stepIndicator">JALON --/--</div>
-            <button class="btn-ai-assistant" onclick="openAIAssistant()" title="Assistant IA">
-                <i class="ri-magic-line"></i> ASSISTANT IA
+            <button class="btn-ai-assistant"
+                    onclick="openAIAssistant()"
+                    id="aiAssistantBtn"
+                    data-tooltip="Génère ce jalon avec l'IA (Cmd+I)"
+                    aria-label="Utiliser l'assistant IA">
+                <i class="ri-sparkles-line"></i>
+                <span id="aiButtonLabel">REMPLIR CE JALON</span>
+                <span class="ai-badge">Recommandé</span>
             </button>
             <button class="btn-icon" title="Paramètres"><i class="ri-settings-3-line"></i></button>
         </div>
@@ -810,6 +1107,9 @@
                         // Sync Rail
                         syncRail(m.offset);
                         updateButtons(m);
+
+                        // Update AI Button Label
+                        updateAIButtonLabel();
                     }
                 });
             }, { threshold: 0.5, root: timelineViewport });
@@ -987,7 +1287,153 @@ Commence par me poser la première question pour comprendre mon intention pour c
 
                 // Feedback visuel
                 activeCard.style.transform = 'scale(1.02)';
-                setTimeout(() => activeCard.style.transform = '', 300);
+                activeCard.style.boxShadow = '0 0 30px rgba(34, 197, 94, 0.3)';
+                setTimeout(() => {
+                    activeCard.style.transform = '';
+                    activeCard.style.boxShadow = '';
+                }, 600);
+
+                // Update button label
+                updateAIButtonLabel();
+
+                // Toast de succès
+                showSuccessToast();
+            }
+        });
+
+        // --- DYNAMIC LABEL UPDATE ---
+        function updateAIButtonLabel() {
+            const activeCard = document.querySelector('.card-slot.active');
+            if (!activeCard) return;
+
+            const milestoneId = activeCard.dataset.id;
+            const milestone = milestones.find(m => m.id === milestoneId);
+            if (!milestone) return;
+
+            const btn = document.getElementById('aiButtonLabel');
+
+            // Déterminer l'état du jalon
+            const hasTitle = milestone.title && milestone.title.trim();
+            const hasKPI = milestone.kpiValue && milestone.kpiValue.trim();
+            const hasDesc = milestone.desc && milestone.desc.trim();
+
+            if (!hasTitle && !hasKPI && !hasDesc) {
+                btn.textContent = 'REMPLIR CE JALON';
+            } else if (hasTitle && hasKPI && hasDesc) {
+                btn.textContent = 'AMÉLIORER AVEC IA';
+            } else {
+                btn.textContent = 'COMPLÉTER AVEC IA';
+            }
+        }
+
+        // --- FIELD POPOVER LOGIC ---
+        const aiPopoverSeen = localStorage.getItem('carryIt_aiPopoverSeen');
+
+        function setupFieldPopover() {
+            if (aiPopoverSeen) return; // Ne montrer qu'une fois
+
+            const fields = document.querySelectorAll('.input-title, .input-kpi, .input-area');
+
+            fields.forEach(field => {
+                field.addEventListener('focus', (e) => {
+                    // Vérifier si le champ est vide
+                    if (field.value.trim() === '') {
+                        showAIPopover(field);
+                    }
+                });
+            });
+        }
+
+        function showAIPopover(field) {
+            // Ne pas montrer si déjà vu
+            if (localStorage.getItem('carryIt_aiPopoverSeen')) {
+                return;
+            }
+
+            let popover = document.getElementById('aiPromptPopover');
+
+            if (!popover) {
+                popover = document.createElement('div');
+                popover.className = 'ai-prompt-popover';
+                popover.id = 'aiPromptPopover';
+                popover.innerHTML = `
+                    <div class="popover-content">
+                        <i class="ri-lightbulb-line popover-icon"></i>
+                        <div class="popover-text">
+                            <strong>💡 Astuce</strong>
+                            <span>Utilise l'Assistant IA pour remplir ce jalon avec un contexte SMART complet</span>
+                        </div>
+                    </div>
+                    <div class="popover-actions">
+                        <button class="btn-popover primary" onclick="useAIFromPopover()">
+                            <i class="ri-sparkles-line"></i> Utiliser l'IA
+                        </button>
+                        <button class="btn-popover secondary" onclick="dismissPopover()">
+                            Écrire moi-même
+                        </button>
+                    </div>
+                    <div class="popover-arrow"></div>
+                `;
+            }
+
+            // Positionner le popover au-dessus du champ
+            const fieldParent = field.closest('.data-block');
+            if (fieldParent) {
+                fieldParent.style.position = 'relative';
+                fieldParent.appendChild(popover);
+
+                // Afficher avec animation
+                setTimeout(() => {
+                    popover.classList.add('show');
+                }, 100);
+            }
+        }
+
+        function useAIFromPopover() {
+            dismissPopover();
+            openAIAssistant();
+        }
+
+        function dismissPopover() {
+            const popover = document.getElementById('aiPromptPopover');
+            if (popover) {
+                popover.classList.remove('show');
+                setTimeout(() => {
+                    popover.remove();
+                }, 300);
+            }
+
+            // Marquer comme vu
+            localStorage.setItem('carryIt_aiPopoverSeen', 'true');
+        }
+
+        // --- SUCCESS TOAST ---
+        function showSuccessToast() {
+            const toast = document.createElement('div');
+            toast.className = 'success-toast';
+            toast.innerHTML = `
+                <i class="ri-check-double-line"></i>
+                <div class="toast-content">
+                    <strong>Jalon rempli avec succès !</strong>
+                    <span>Les 3 champs ont été complétés automatiquement</span>
+                </div>
+            `;
+
+            document.body.appendChild(toast);
+
+            setTimeout(() => toast.classList.add('show'), 10);
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        // --- KEYBOARD SHORTCUT (Cmd+I) ---
+        document.addEventListener('keydown', (e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'i') {
+                e.preventDefault();
+                openAIAssistant();
             }
         });
 
@@ -995,7 +1441,9 @@ Commence par me poser la première question pour comprendre mon intention pour c
         function init() {
             renderAllCards();
             renderTimeline();
-            
+            setupFieldPopover(); // Ajouter le popover
+            updateAIButtonLabel(); // Initialiser le label
+
             // DEMARRAGE : SCROLL TOUT A DROITE (Objectif Final)
             // On attend que le rendu soit fait
             setTimeout(() => {
@@ -1007,16 +1455,61 @@ Commence par me poser la première question pour comprendre mon intention pour c
 
     </script>
 
-    <!-- Modal AI -->
-    <div class="modal-overlay" id="aiModal">
+    <!-- Modal AI Amélioré -->
+    <div class="modal-overlay" id="aiModal" role="dialog" aria-modal="true">
         <div class="modal-box">
-            <div class="modal-title">Contexte copié !</div>
-            <div class="modal-text">
-                Le contexte de votre objectif et du jalon actuel est dans votre presse-papier.<br>
-                Collez-le dans le chat (Ctrl+V), puis copiez la réponse de l'IA pour remplir le jalon.
+            <!-- Header -->
+            <div class="modal-header">
+                <i class="ri-sparkles-fill modal-sparkle"></i>
+                <h2 class="modal-title">Assistant IA prêt à t'aider</h2>
+                <p class="modal-subtitle">Suis ces 3 étapes simples</p>
             </div>
-            <button class="modal-btn btn-go" onclick="proceedToAI()">Ouvrir le chat</button>
-            <button class="modal-btn btn-close" onclick="closeAIModal()">Fermer</button>
+
+            <!-- Steps -->
+            <div class="modal-steps">
+                <div class="modal-step completed">
+                    <div class="step-number">
+                        <i class="ri-check-line"></i>
+                    </div>
+                    <div class="step-content">
+                        <strong>Contexte copié</strong>
+                        <span>Ton objectif SMART et ce jalon sont prêts</span>
+                    </div>
+                </div>
+
+                <div class="modal-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <strong>Ouvre ChatGPT</strong>
+                        <span>Colle le prompt (Cmd+V) et réponds aux questions</span>
+                    </div>
+                </div>
+
+                <div class="modal-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <strong>Reviens ici</strong>
+                        <span>Colle la réponse → remplissage automatique ✨</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="modal-actions">
+                <button class="modal-btn btn-go" onclick="proceedToAI()">
+                    <i class="ri-external-link-line"></i>
+                    Ouvrir ChatGPT
+                </button>
+                <button class="modal-btn btn-close" onclick="closeAIModal()">
+                    Annuler
+                </button>
+            </div>
+
+            <!-- Pro Tip -->
+            <div class="modal-tip">
+                <i class="ri-lightbulb-flash-line"></i>
+                <span>La réponse sera automatiquement détectée quand tu la colleras</span>
+            </div>
         </div>
     </div>
 
