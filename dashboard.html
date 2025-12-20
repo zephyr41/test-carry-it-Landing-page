@@ -24,10 +24,7 @@
             <!-- Header du Dashboard -->
             <div class="dashboard-header">
                 <h1 class="dashboard-title">Mes Objectifs</h1>
-                <div style="display: flex; gap: 12px;">
-                    <a href="jalons.html" class="btn-create" style="background: rgba(238, 68, 8, 0.15); border: 1px solid rgba(238, 68, 8, 0.5); color: #EE4408;">📅 Gérer les jalons</a>
-                    <a href="objectif.html" class="btn-create">+ Créer un objectif</a>
-                </div>
+                <a href="objectif.html" class="btn-create">+ Créer un objectif</a>
             </div>
 
             <!-- Carrousel -->
@@ -566,11 +563,16 @@ Temporel : [JJ mois AAAA]`;
                         <!-- CARTE 3: JALONS -->
                         ${objectif.jalons && objectif.jalons.length > 0 ? `
                             <div style="background: #111113; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.35); min-height: 500px; padding: 24px; display: flex; flex-direction: column;">
-                                <div style="border-bottom: 1px solid rgba(255, 255, 255, 0.12); padding-bottom: 16px; margin-bottom: 24px;">
-                                    <h3 style="font-size: 16px; font-weight: 600; color: #FFFFFF; margin: 0 0 8px 0;">Plan d'Action</h3>
-                                    <p style="font-size: 13px; color: #A8A8A8; margin: 0;">
-                                        ${objectif.jalons.filter(j => j.statut === 'completed').length}/${objectif.jalons.length} jalons complétés
-                                    </p>
+                                <div style="border-bottom: 1px solid rgba(255, 255, 255, 0.12); padding-bottom: 16px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-start;">
+                                    <div>
+                                        <h3 style="font-size: 16px; font-weight: 600; color: #FFFFFF; margin: 0 0 8px 0;">Plan d'Action</h3>
+                                        <p style="font-size: 13px; color: #A8A8A8; margin: 0;">
+                                            ${objectif.jalons.filter(j => j.statut === 'completed').length}/${objectif.jalons.length} jalons complétés
+                                        </p>
+                                    </div>
+                                    <a href="jalons.html" style="background: rgba(238, 68, 8, 0.1); border: 1px solid rgba(238, 68, 8, 0.5); color: #EE4408; padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; text-decoration: none; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px; white-space: nowrap; flex-shrink: 0;" onmouseover="this.style.background='rgba(238, 68, 8, 0.2)'" onmouseout="this.style.background='rgba(238, 68, 8, 0.1)'">
+                                        ✏️ Gérer
+                                    </a>
                                 </div>
 
                                 <div style="flex: 1; overflow-y: auto;">
