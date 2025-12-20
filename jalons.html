@@ -968,9 +968,16 @@
 </head>
 <body>
 
-    <!-- HUD TOP -->
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="dashboard.html" class="navbar-logo">Carry It</a>
+        <div class="navbar-links">
+            <a href="dashboard.html" class="navbar-link">Projets</a>
+        </div>
+    </nav>
+
+    <!-- HUD TOP (Cockpit info & AI button) -->
     <div class="hud-top">
-        <div class="hud-label">COCKPIT <span class="hud-value">CARRY IT</span></div>
         <div style="display: flex; gap: 12px; align-items: flex-end;">
             <div class="hud-label" id="stepIndicator">JALON --/--</div>
             <button class="btn-ai-assistant"
@@ -982,7 +989,6 @@
                 <span id="aiButtonLabel">REMPLIR CE JALON</span>
                 <span class="ai-badge">Recommandé</span>
             </button>
-            <button class="btn-icon" title="Paramètres"><i class="ri-settings-3-line"></i></button>
         </div>
     </div>
 
