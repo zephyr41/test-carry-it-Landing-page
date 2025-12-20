@@ -52,6 +52,24 @@
             <div class="carousel-dots" id="carouselDots"></div>
         </div>
     </section>
+
+    <!-- Modal de confirmation de suppression -->
+    <div id="deleteConfirmModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.7); z-index: 10000; display: flex; align-items: center; justify-content: center;">
+        <div style="background: #111113; border-radius: 16px; padding: 32px; max-width: 400px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8); border: 1px solid rgba(255, 255, 255, 0.1);">
+            <h3 style="font-size: 20px; font-weight: 700; color: #FFFDF6; margin: 0 0 12px 0; font-family: 'Inter', sans-serif;">Supprimer ce projet ?</h3>
+            <p style="font-size: 14px; color: #929292; margin: 0 0 24px 0; line-height: 1.5; font-family: 'Inter', sans-serif;" id="deleteConfirmMessage">Cette action est irréversible.</p>
+
+            <div style="display: flex; gap: 12px;">
+                <button onclick="cancelDelete()" style="flex: 1; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); color: #FFFDF6; padding: 12px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: 'Inter', sans-serif;" onmouseover="this.style.background='rgba(255, 255, 255, 0.12)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.08)'">
+                    Annuler
+                </button>
+                <button onclick="confirmDelete()" style="flex: 1; background: #EE4408; border: 1px solid #EE4408; color: white; padding: 12px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: 'Inter', sans-serif;" onmouseover="this.style.background='rgba(238, 68, 8, 0.9)'" onmouseout="this.style.background='#EE4408'">
+                    Supprimer
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
         let currentStep = 1;
         const totalSteps = 6;
@@ -635,37 +653,56 @@ Temporel : [JJ mois AAAA]`;
 
         let editModeActive = {};
         let kpiCharts = {}; // Stocker les instances de graphiques
+        let pendingDeleteIndex = null; // Index du projet en attente de suppression
 
         // Fonction pour supprimer un objectif
         function deleteObjectif(index) {
             const objectif = allObjectifs[index];
             if (!objectif) return;
 
-            const confirmed = confirm(`Êtes-vous sûr de vouloir supprimer "${objectif.titre}" ? Cette action est irréversible.`);
+            // Stocker l'index pour la confirmation
+            pendingDeleteIndex = index;
 
-            if (confirmed) {
-                // Supprimer l'objectif de la liste
-                allObjectifs.splice(index, 1);
+            // Afficher le modal de confirmation
+            const modal = document.getElementById('deleteConfirmModal');
+            const message = document.getElementById('deleteConfirmMessage');
+            message.textContent = `Êtes-vous sûr de vouloir supprimer "${objectif.titre}" ? Cette action est irréversible.`;
+            modal.style.display = 'flex';
+        }
 
-                // Sauvegarder les changements
-                saveAllObjectifs();
+        // Fonction pour confirmer la suppression
+        function confirmDelete() {
+            if (pendingDeleteIndex === null) return;
 
-                // Ajuster l'index du carrousel si nécessaire
-                if (currentCarouselIndex >= allObjectifs.length && allObjectifs.length > 0) {
-                    currentCarouselIndex = allObjectifs.length - 1;
-                }
+            const index = pendingDeleteIndex;
+            const objectif = allObjectifs[index];
 
-                // Rafraîchir le carrousel
-                if (allObjectifs.length === 0) {
-                    // Afficher le message "aucun objectif"
-                    renderCarousel();
-                } else {
-                    renderCarousel();
-                }
+            // Supprimer l'objectif de la liste
+            allObjectifs.splice(index, 1);
 
-                // Toast de confirmation
-                showSuccessToastJalon(`"${objectif.titre}" a été supprimé`);
+            // Sauvegarder les changements
+            saveAllObjectifs();
+
+            // Ajuster l'index du carrousel si nécessaire
+            if (currentCarouselIndex >= allObjectifs.length && allObjectifs.length > 0) {
+                currentCarouselIndex = allObjectifs.length - 1;
             }
+
+            // Rafraîchir le carrousel
+            renderCarousel();
+
+            // Fermer le modal
+            cancelDelete();
+
+            // Toast de confirmation
+            showSuccessToastJalon(`"${objectif.titre}" a été supprimé`);
+        }
+
+        // Fonction pour annuler la suppression
+        function cancelDelete() {
+            const modal = document.getElementById('deleteConfirmModal');
+            modal.style.display = 'none';
+            pendingDeleteIndex = null;
         }
 
         // Fonction pour extraire la valeur cible du mesurable
