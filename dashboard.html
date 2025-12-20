@@ -477,7 +477,7 @@ Temporel : [JJ mois AAAA]`;
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                         </svg>
                                     </button>
-                                    <button onclick="deleteObjectif(${index})" title="Supprimer ce projet" style="background: transparent; border: none; color: #929292; padding: 4px 8px; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; font-family: 'Inter', sans-serif; flex-shrink: 0; display: flex; align-items: center; justify-content: center;" onmouseover="this.style.background='rgba(239, 68, 8, 0.2)'; this.style.color='#EE4408'" onmouseout="this.style.background='transparent'; this.style.color='#929292'">
+                                    <button onclick="deleteObjectif(${index})" id="deleteBtn-${index}" title="Supprimer ce projet" style="background: transparent; border: none; color: #929292; padding: 4px 8px; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; font-family: 'Inter', sans-serif; flex-shrink: 0; display: none; align-items: center; justify-content: center;" onmouseover="this.style.background='rgba(239, 68, 8, 0.2)'; this.style.color='#EE4408'" onmouseout="this.style.background='transparent'; this.style.color='#929292'">
                                         <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: block;">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                         </svg>
@@ -1034,6 +1034,12 @@ Temporel : [JJ mois AAAA]`;
             const btn = document.getElementById(`editBtn-${index}`);
             if (btn) {
                 btn.textContent = isEditing ? 'Terminer' : 'Modifier';
+            }
+
+            // Toggle delete button visibility
+            const deleteBtn = document.getElementById(`deleteBtn-${index}`);
+            if (deleteBtn) {
+                deleteBtn.style.display = isEditing ? 'flex' : 'none';
             }
         }
 
