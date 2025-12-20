@@ -140,29 +140,40 @@
 
         /* Inline AI button for form fields */
         .btn-ai-inline {
-            background: transparent;
-            border: none;
-            font-size: 16px;
+            background: rgba(238, 68, 8, 0.1);
+            border: 1px solid rgba(238, 68, 8, 0.3);
+            color: var(--accent);
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
             cursor: pointer;
-            padding: 4px 8px;
-            opacity: 0.6;
-            transition: opacity 0.2s, transform 0.2s;
+            padding: 6px 12px;
+            border-radius: 16px;
+            transition: all 0.2s ease;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            animation: sparkle-mini 3s ease-in-out infinite;
-            will-change: opacity;
+            gap: 6px;
+            white-space: nowrap;
+            will-change: transform, opacity;
             backface-visibility: hidden;
         }
 
         .btn-ai-inline:hover {
-            opacity: 1;
-            transform: scale(1.15);
+            background: rgba(238, 68, 8, 0.2);
+            border-color: var(--accent);
+            transform: translateY(-1px);
+        }
+
+        .btn-ai-inline i {
+            font-size: 13px;
+            animation: sparkle-mini 2.5s ease-in-out infinite;
         }
 
         @keyframes sparkle-mini {
-            0%, 100% { opacity: 0.6; transform: scale(1) translateZ(0); }
-            50% { opacity: 0.9; transform: scale(1.05) translateZ(0); }
+            0%, 100% { opacity: 0.8; transform: scale(1) translateZ(0); }
+            50% { opacity: 1; transform: scale(1.1) translateZ(0); }
         }
 
         .ai-badge {
@@ -1085,13 +1096,13 @@
                         </div>
                     </div>
                     <div class="data-block">
-                        <div style="display: flex; gap: 8px; align-items: center;">
+                        <div style="display: flex; gap: 12px; align-items: center;">
                             <div class="block-label">🎯 Plan d'Action</div>
                             <button class="btn-ai-inline"
                                     onclick="openAIAssistant()"
-                                    title="Génère avec l'IA"
-                                    aria-label="Améliorer avec l'IA">
-                                ✨
+                                    title="Générer avec l'IA">
+                                <i class="ri-sparkles-line"></i>
+                                Générer
                             </button>
                         </div>
                         <textarea class="input-area"
