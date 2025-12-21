@@ -756,6 +756,27 @@
             return Math.max(0, Math.min(projectDurationMonths, diffMonths));
         }
 
+        // Récupère les infos SMART depuis localStorage
+        function getSMARTData() {
+            try {
+                const smart = JSON.parse(localStorage.getItem('smart')) || {};
+                return {
+                    specifique: smart.specifique || '',
+                    mesurable: smart.mesurable || '',
+                    temporel: smart.temporel || ''
+                };
+            } catch (e) {
+                return { specifique: '', mesurable: '', temporel: '' };
+            }
+        }
+
+        // Vérifie si c'est le premier jalon (date finale du projet)
+        function isFirstMilestone(milestone) {
+            const milestoneDate = new Date(milestone.date);
+            const deadline = new Date(projectDeadline);
+            return Math.abs(milestoneDate - deadline) < 24 * 60 * 60 * 1000; // Même jour
+        }
+
         function formatDateDisplay(dateString) {
             const date = new Date(dateString + 'T00:00:00');
             return date.toLocaleDateString('fr-FR', { month: 'short', year: '2-digit' }).toUpperCase();
@@ -790,49 +811,86 @@
 
                 const dateMonth = formatDateDisplay(milestone.date);
                 const dateYear = formatDateYear(milestone.date);
+                const isFirst = isFirstMilestone(milestone);
+                const smartData = isFirst ? getSMARTData() : {};
 
-                wrapper.innerHTML = `
-                    <div class="sentinel-block">
-                        <i class="ri-calendar-line sentinel-icon"></i>
-                        <span class="sentinel-date">${dateMonth}</span>
-                        <span class="sentinel-year">${dateYear}</span>
-                    </div>
-                    <div class="data-block">
-                        <div class="block-label">Titre du Jalon</div>
-                        <input type="text" class="input-raw input-title"
-                               value="${milestone.title}"
-                               data-id="${milestone.id}"
-                               placeholder="Saisir le titre..."
-                               autocomplete="off"
-                               oninput="updateData('${milestone.id}', 'title', this.value)">
-                    </div>
-                    <div class="data-block">
-                        <div class="block-label">Description</div>
-                        <textarea class="input-area"
-                                  data-id="${milestone.id}"
-                                  placeholder="Décrire ce jalon..."
-                                  oninput="updateData('${milestone.id}', 'desc', this.value)">${milestone.desc}</textarea>
-                    </div>
-                    <div class="data-block">
-                        <div class="block-label">KPI Mesurable</div>
-                        <div class="kpi-wrapper">
-                            <i class="ri-flag-fill kpi-icon"></i>
-                            <input type="text" class="input-kpi"
-                                   value="${milestone.kpiValue}"
-                                   data-id="${milestone.id}"
-                                   placeholder="Objectif mesurable..."
-                                   autocomplete="off"
-                                   oninput="updateData('${milestone.id}', 'kpiValue', this.value)">
+                // Contenu différent pour le premier jalon (SMART)
+                if (isFirst) {
+                    wrapper.innerHTML = `
+                        <div class="sentinel-block">
+                            <i class="ri-calendar-line sentinel-icon"></i>
+                            <span class="sentinel-date">${dateMonth}</span>
+                            <span class="sentinel-year">${dateYear}</span>
                         </div>
-                    </div>
-                    <div class="data-block">
-                        <div class="block-label">Date du Jalon</div>
-                        <input type="date"
-                               value="${milestone.date}"
-                               data-id="${milestone.id}"
-                               oninput="updateData('${milestone.id}', 'date', this.value)">
-                    </div>
-                `;
+                        <div class="data-block">
+                            <div class="block-label">Spécifique</div>
+                            <input type="text" class="input-raw input-title"
+                                   value="${smartData.specifique || ''}"
+                                   data-id="${milestone.id}"
+                                   placeholder="Description spécifique de l'objectif..."
+                                   autocomplete="off"
+                                   oninput="updateData('${milestone.id}', 'title', this.value)">
+                        </div>
+                        <div class="data-block">
+                            <div class="block-label">Mesurable</div>
+                            <textarea class="input-area"
+                                      data-id="${milestone.id}"
+                                      placeholder="Critères de mesure..."
+                                      oninput="updateData('${milestone.id}', 'desc', this.value)">${smartData.mesurable || ''}</textarea>
+                        </div>
+                        <div class="data-block">
+                            <div class="block-label">Temporel</div>
+                            <input type="date"
+                                   value="${milestone.date}"
+                                   data-id="${milestone.id}"
+                                   oninput="updateData('${milestone.id}', 'date', this.value)">
+                        </div>
+                    `;
+                } else {
+                    // Contenu normal pour les autres jalons
+                    wrapper.innerHTML = `
+                        <div class="sentinel-block">
+                            <i class="ri-calendar-line sentinel-icon"></i>
+                            <span class="sentinel-date">${dateMonth}</span>
+                            <span class="sentinel-year">${dateYear}</span>
+                        </div>
+                        <div class="data-block">
+                            <div class="block-label">Titre du Jalon</div>
+                            <input type="text" class="input-raw input-title"
+                                   value="${milestone.title}"
+                                   data-id="${milestone.id}"
+                                   placeholder="Saisir le titre..."
+                                   autocomplete="off"
+                                   oninput="updateData('${milestone.id}', 'title', this.value)">
+                        </div>
+                        <div class="data-block">
+                            <div class="block-label">Description</div>
+                            <textarea class="input-area"
+                                      data-id="${milestone.id}"
+                                      placeholder="Décrire ce jalon..."
+                                      oninput="updateData('${milestone.id}', 'desc', this.value)">${milestone.desc}</textarea>
+                        </div>
+                        <div class="data-block">
+                            <div class="block-label">KPI Mesurable</div>
+                            <div class="kpi-wrapper">
+                                <i class="ri-flag-fill kpi-icon"></i>
+                                <input type="text" class="input-kpi"
+                                       value="${milestone.kpiValue}"
+                                       data-id="${milestone.id}"
+                                       placeholder="Objectif mesurable..."
+                                       autocomplete="off"
+                                       oninput="updateData('${milestone.id}', 'kpiValue', this.value)">
+                            </div>
+                        </div>
+                        <div class="data-block">
+                            <div class="block-label">Date du Jalon</div>
+                            <input type="date"
+                                   value="${milestone.date}"
+                                   data-id="${milestone.id}"
+                                   oninput="updateData('${milestone.id}', 'date', this.value)">
+                        </div>
+                    `;
+                }
 
                 // Connector (Add button) - Placé visuellement à GAUCHE via CSS (left: -20px)
                 const connector = document.createElement('div');
