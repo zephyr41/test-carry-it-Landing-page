@@ -2,421 +2,966 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Carry It - Cockpit Jalons</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carry It — Rétroplanning</title>
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
+        /* === DESIGN SYSTEM === */
         :root {
-            --bg-apple: #F5F5F7;
-            --card-bg: rgba(255, 255, 255, 0.7);
-            --text-main: #1D1D1F;
-            --text-secondary: #86868B;
-            --accent: #0071E3;
-            --border: rgba(0, 0, 0, 0.1);
-            --glass: blur(20px) saturate(180%);
+            --bg: #080809;
+            --surface: rgba(28, 28, 30, 0.6);
+            --surface-dark: #0D1D32;
+            --border: rgba(255, 255, 255, 0.1);
+            --text-primary: #FFFDF6;
+            --text-secondary: #A8A8A8;
+            --text-tertiary: #86868B;
+            --accent: #EE4408;
+
+            --space-xs: 8px;
+            --space-sm: 16px;
+            --space-md: 24px;
+            --space-lg: 32px;
+            --space-xl: 48px;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            background-color: var(--bg-apple);
-            color: var(--text-main);
-            font-family: 'Inter', -apple-system, sans-serif;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
+            background: var(--bg);
+            color: var(--text-primary);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 16px;
+            line-height: 1.5;
         }
 
-        .gradient-bg {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at 0% 0%, #e3f2fd 0%, transparent 50%),
-                        radial-gradient(circle at 100% 100%, #fce4ec 0%, transparent 50%);
-            z-index: -1;
+        /* === LAYOUT === */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: var(--space-lg) var(--space-md);
         }
 
-        .main-stage {
-            width: 100%;
-            max-width: 1000px;
-            display: flex;
-            flex-direction: column;
-            padding: 40px 20px;
-        }
-
-        .hud-header {
-            margin-bottom: 40px;
+        /* === HEADER === */
+        .header {
             display: flex;
             justify-content: space-between;
-            align-items: flex-end;
+            align-items: center;
+            margin-bottom: var(--space-xl);
+            padding-bottom: var(--space-lg);
+            border-bottom: 1px solid var(--border);
         }
 
-        .hud-label {
+        .header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .btn-back {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .btn-back:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* === FOUNDATION SECTION === */
+        .foundation-section {
+            margin-bottom: var(--space-xl);
+        }
+
+        .section-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            margin-bottom: var(--space-sm);
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-sm);
+        }
+
+        .section-date {
+            font-size: 14px;
+            color: var(--accent);
+            margin-bottom: var(--space-lg);
+        }
+
+        /* === CARD === */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 0;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            transition: border-color 0.3s, background-color 0.3s;
+        }
+
+        .card:focus-within {
+            border-color: rgba(255, 255, 255, 0.3);
+            background-color: rgba(35, 35, 37, 0.8);
+        }
+
+        .foundation-card {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        /* === FIELDS === */
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .field:last-child {
+            border-bottom: none;
+        }
+
+        .field-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-tertiary);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .field-value {
+            font-size: 16px;
+            color: var(--text-primary);
+            line-height: 1.6;
+            word-break: break-word;
+        }
+
+        /* === LOADING STATE === */
+        .loading {
+            opacity: 0.5;
+        }
+
+        .error {
+            background: rgba(255, 59, 48, 0.1);
+            border-color: rgba(255, 59, 48, 0.3);
+            color: #FF3B30;
+            padding: var(--space-md);
+            border-radius: 12px;
+            margin: var(--space-lg) 0;
+        }
+
+        /* === GPT CTA SECTION === */
+        .gpt-cta-section {
+            margin-top: var(--space-xl);
+            margin-bottom: var(--space-xl);
+        }
+
+        .gpt-cta-card {
+            background: linear-gradient(135deg, rgba(238, 68, 8, 0.08), rgba(238, 68, 8, 0.03));
+            border-color: rgba(238, 68, 8, 0.2);
+        }
+
+        .gpt-cta-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: var(--space-lg) var(--space-md);
+            gap: var(--space-md);
+        }
+
+        .gpt-icon {
+            font-size: 48px;
+            display: block;
+        }
+
+        .gpt-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .gpt-hint {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin: 0;
+            max-width: 400px;
+            line-height: 1.5;
+        }
+
+        .btn-cta {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            padding: 14px 32px;
+            border-radius: 100px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(238, 68, 8, 0.25);
+        }
+
+        .btn-cta:hover {
+            background-color: #ff5d1a;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(238, 68, 8, 0.35);
+        }
+
+        .btn-cta:active {
+            transform: translateY(0);
+        }
+
+        .btn-cta:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .gpt-cta-card.gpt-opened::after {
+            content: '✅ GPT ouvert';
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            font-size: 12px;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        /* === WIZARD SECTION === */
+        .wizard-section {
+            margin-top: var(--space-xl);
+        }
+
+        .btn-add-milestone {
+            display: block;
+            width: 100%;
+            background: transparent;
+            border: 1px dashed var(--border);
+            color: var(--text-secondary);
+            padding: var(--space-md) var(--space-lg);
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .btn-add-milestone:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(238, 68, 8, 0.05);
+        }
+
+        .wizard-container {
+            margin-top: var(--space-lg);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .wizard-card {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-lg);
+            padding: var(--space-lg) var(--space-md);
+        }
+
+        .wizard-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+
+        .wizard-step {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            min-width: 40px;
+        }
+
+        .wizard-progress {
+            flex: 1;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 1px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent);
+            width: 25%;
+            transition: width 0.3s ease;
+        }
+
+        .wizard-content {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+        }
+
+        .wizard-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .wizard-input {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 18px;
+            padding: var(--space-sm) 0;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .wizard-input:focus {
+            border-bottom-color: var(--accent);
+        }
+
+        .wizard-input::placeholder {
+            color: var(--text-tertiary);
+        }
+
+        .wizard-hint {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            min-height: 16px;
+        }
+
+        .wizard-actions {
+            display: flex;
+            gap: var(--space-sm);
+            justify-content: flex-end;
+            margin-top: var(--space-md);
+            border-top: 1px solid var(--border);
+            padding-top: var(--space-md);
+        }
+
+        .btn-wizard-back {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 10px 24px;
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-wizard-back:hover {
+            border-color: var(--text-secondary);
+            color: var(--text-primary);
+        }
+
+        .btn-wizard-next {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-wizard-next:hover:not(:disabled) {
+            background-color: #ff5d1a;
+            transform: translateY(-2px);
+        }
+
+        .btn-wizard-next:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* === TIMELINE SECTION === */
+        .timeline-section {
+            margin-top: var(--space-xl);
+            margin-bottom: var(--space-xl);
+        }
+
+        .timeline-container {
+            position: relative;
+            padding-left: 60px;
+        }
+
+        .timeline-container::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 8px;
+            bottom: 0;
+            width: 1px;
+            background: linear-gradient(180deg, var(--accent), rgba(238, 68, 8, 0.1));
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 48px;
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-lg);
+        }
+
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -53px;
+            top: 8px;
+            width: 10px;
+            height: 10px;
+            background: var(--accent);
+            border-radius: 50%;
+            box-shadow: 0 0 0 6px rgba(238, 68, 8, 0.2);
+            z-index: 2;
+        }
+
+        .timeline-item.timeline-today .timeline-dot {
+            width: 8px;
+            height: 8px;
+            left: -51px;
+            background: var(--text-secondary);
+            box-shadow: 0 0 0 6px rgba(168, 168, 168, 0.15);
+        }
+
+        .timeline-date {
+            position: absolute;
+            left: -180px;
+            top: 0;
+            font-size: 12px;
+            color: var(--text-tertiary);
+            text-align: right;
+            width: 120px;
+            font-weight: 500;
+        }
+
+        .timeline-content {
+            flex: 1;
+            padding-top: 2px;
+        }
+
+        .timeline-card {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .timeline-card.foundation-card {
+            opacity: 1;
+        }
+
+        .timeline-card.milestone-card {
+            opacity: 1;
+        }
+
+        .timeline-card.today-card {
+            min-height: auto;
+            padding: var(--space-lg) var(--space-md);
+        }
+
+        .today-label {
             font-size: 14px;
             font-weight: 600;
             color: var(--accent);
             text-transform: uppercase;
-            letter-spacing: -0.01em;
-            margin-bottom: 4px;
-        }
-
-        .hud-goal-title {
-            font-size: 34px;
-            font-weight: 700;
-            letter-spacing: -0.03em;
-        }
-
-        .btn-close {
-            width: 40px;
-            height: 40px;
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: 50%;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-main);
-            font-size: 20px;
-            transition: all 0.2s;
-            border: none;
-        }
-        .btn-close:hover { background: var(--bg-apple); }
-
-        .timeline-viewport {
-            flex: 1;
-            overflow-y: auto;
-            padding-right: 100px;
-            scrollbar-width: none;
-        }
-        .timeline-viewport::-webkit-scrollbar { display: none; }
-
-        .timeline-scroll {
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
-            padding-bottom: 100px;
-        }
-
-        .card-slot {
-            position: relative;
-            opacity: 0.4;
-            transition: opacity 0.4s cubic-bezier(0.2, 0, 0.2, 1);
-        }
-
-        .card-slot.active {
-            opacity: 1;
-        }
-
-        .card-wrapper {
-            background: var(--card-bg);
-            backdrop-filter: var(--glass);
-            -webkit-backdrop-filter: var(--glass);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 30px;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
-            transition: border-color 0.3s;
-        }
-
-        .card-slot.active .card-wrapper {
-            border-color: var(--accent);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
-        }
-
-        .sentinel-block {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(0, 113, 227, 0.1);
-            color: var(--accent);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 20px;
-        }
-
-        .sentinel-date {
-            font-weight: 700;
-        }
-
-        .sentinel-temp {
-            opacity: 0.8;
-            font-weight: 500;
-        }
-
-        .block-label {
-            font-size: 12px;
-            color: var(--text-secondary);
-            font-weight: 600;
-            text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-bottom: 8px;
-            margin-top: 20px;
         }
 
-        .block-label:first-of-type {
-            margin-top: 0;
-        }
-
-        .input-raw {
-            width: 100%;
-            background: transparent;
-            border: none;
-            font-size: 22px;
-            font-weight: 600;
-            color: var(--text-main);
-            margin-bottom: 20px;
-            outline: none;
-            placeholder-color: var(--text-secondary);
-        }
-
-        .input-area {
-            width: 100%;
-            background: rgba(0, 0, 0, 0.04);
-            border: 1px solid rgba(0, 0, 0, 0.06);
-            border-radius: 12px;
-            padding: 15px;
-            font-family: inherit;
-            font-size: 15px;
-            line-height: 1.5;
-            min-height: 100px;
-            resize: none;
-            outline: none;
-            transition: background 0.2s, border-color 0.2s;
-        }
-
-        .input-area:focus {
-            background: rgba(0, 0, 0, 0.06);
-            border-color: var(--accent);
-        }
-
-        .timeline-rail {
-            position: fixed;
-            right: 40px;
-            top: 50%;
-            transform: translateY(-50%);
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .dot {
-            width: 10px;
-            height: 10px;
-            background: var(--text-secondary);
-            border-radius: 50%;
-            opacity: 0.3;
-            transition: all 0.3s cubic-bezier(0.2, 0, 0.2, 1);
-            cursor: pointer;
-        }
-
-        .dot:hover {
-            opacity: 0.6;
-            transform: scale(1.2);
-        }
-
-        .dot.active {
-            background: var(--accent);
-            transform: scale(1.4);
-            opacity: 1;
-            box-shadow: 0 0 12px rgba(0, 113, 227, 0.3);
-        }
-
-        .timeline-label {
-            position: absolute;
-            right: 60px;
-            top: 50%;
-            transform: translateY(-50%);
-            text-align: right;
-            font-size: 12px;
+        .today-hint {
+            font-size: 13px;
             color: var(--text-secondary);
-            font-weight: 500;
-            white-space: nowrap;
-            opacity: 0;
-            transition: opacity 0.3s;
+            margin-top: 8px;
         }
 
-        .dot.active ~ .timeline-label,
-        .timeline-label:has(~ .dot.active) {
-            opacity: 1;
-        }
-
-        /* Mobile */
         @media (max-width: 768px) {
-            .timeline-rail { right: 20px; gap: 12px; }
-            .dot { width: 8px; height: 8px; }
-            .hud-goal-title { font-size: 28px; }
-            .card-wrapper { padding: 20px; }
-            .input-raw { font-size: 18px; }
+            .timeline-container {
+                padding-left: 40px;
+            }
+
+            .timeline-container::before {
+                left: 4px;
+            }
+
+            .timeline-dot {
+                left: -34px;
+                width: 8px;
+                height: 8px;
+                box-shadow: 0 0 0 4px rgba(238, 68, 8, 0.2);
+            }
+
+            .timeline-item.timeline-today .timeline-dot {
+                left: -32px;
+            }
+
+            .timeline-date {
+                position: relative;
+                left: 0;
+                top: 0;
+                text-align: left;
+                width: 100%;
+                margin-bottom: 8px;
+                font-size: 11px;
+            }
+
+            .timeline-item {
+                margin-bottom: 32px;
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 <body>
-
-<div class="gradient-bg"></div>
-
-<div class="main-stage">
-    <header class="hud-header">
-        <div>
-            <div class="hud-label">Étape 2 — Plan de route</div>
-            <div class="hud-goal-title" id="goalTitle">Posons vos jalons</div>
+    <div class="container">
+        <!-- HEADER -->
+        <div class="header">
+            <h1>Carry It — Rétroplanning</h1>
+            <button class="btn-back" onclick="location.href='dashboard.html'" title="Retour">
+                <i class="ri-arrow-left-line"></i>
+            </button>
         </div>
-        <button class="btn-close" onclick="location.href='dashboard.html'" title="Retour">
-            <i class="ri-close-line"></i>
-        </button>
-    </header>
 
-    <div class="timeline-viewport" id="timelineViewport">
-        <div class="timeline-scroll" id="timelineScroll">
-            <!-- Cards générées en JS -->
+        <!-- FOUNDATION SECTION -->
+        <div class="foundation-section" id="foundationSection">
+            <div class="section-label">🎯 Fondation — Objectif Final</div>
+            <div class="section-title" id="foundationTitle">...</div>
+            <div class="section-date" id="foundationDate">📅 ...</div>
+
+            <div class="card foundation-card">
+                <div class="field">
+                    <div class="field-label">Votre Objectif</div>
+                    <div class="field-value" id="fieldObjectif">...</div>
+                </div>
+                <div class="field">
+                    <div class="field-label">Domaine Spécifique</div>
+                    <div class="field-value" id="fieldSpecifique">...</div>
+                </div>
+                <div class="field">
+                    <div class="field-label">Cible Mesurable</div>
+                    <div class="field-value" id="fieldMesurable">...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ERROR STATE (hidden by default) -->
+        <div id="errorMessage" class="error" style="display: none;"></div>
+
+        <!-- GPT CTA SECTION -->
+        <div class="gpt-cta-section">
+            <div class="card gpt-cta-card">
+                <div class="gpt-cta-content">
+                    <div class="gpt-icon">🤖</div>
+                    <h3 class="gpt-title">Besoin d'aide pour définir vos jalons ?</h3>
+                    <p class="gpt-hint">Le GPT vous aidera à découper votre objectif en étapes claires et mesurables.</p>
+                    <button class="btn-cta" onclick="openGPT()" id="btnOpenGPT">
+                        Ouvrir le GPT Custom
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TIMELINE SECTION -->
+        <div class="timeline-section" id="timelineSection" style="display: none;">
+            <div class="timeline-container" id="timelineContainer">
+                <!-- Timeline items will be generated here by JavaScript -->
+            </div>
+        </div>
+
+        <!-- WIZARD SECTION -->
+        <div class="wizard-section" id="wizardSection" style="display: none;">
+            <button class="btn-add-milestone" id="btnAddMilestone" onclick="startWizard()">
+                + Ajouter un jalon intermédiaire
+            </button>
+
+            <div class="wizard-container" id="wizardContainer" style="display: none;">
+                <div class="card wizard-card">
+                    <div class="wizard-header">
+                        <div class="wizard-step" id="wizardStep">1/4</div>
+                        <div class="wizard-progress">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                    </div>
+
+                    <div class="wizard-content">
+                        <div class="wizard-label" id="wizardLabel">Titre du jalon</div>
+                        <input
+                            type="text"
+                            class="wizard-input"
+                            id="wizardInput"
+                            placeholder="Ex: Valider le MVP"
+                            onkeyup="checkWizardInput(event)"
+                        >
+                        <div class="wizard-hint" id="wizardHint"></div>
+                    </div>
+
+                    <div class="wizard-actions">
+                        <button class="btn-wizard-back" onclick="cancelWizard()" id="btnWizardCancel">
+                            Annuler
+                        </button>
+                        <button class="btn-wizard-next" id="btnWizardNext" onclick="nextWizardStep()" disabled>
+                            Continuer
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="timeline-rail" id="timelineRail">
-    <!-- Dots générés en JS -->
-</div>
+    <script>
+        const GPT_URL = 'https://chatgpt.com/g/g-692ca373fe108191a36c15ad1250a4a8-carry-it-ai';
 
-<script>
-    let milestones = [];
-    let currentObjectif = null;
-    let projectDeadline = new Date();
-
-    function loadData() {
-        const allObjectifs = JSON.parse(localStorage.getItem('carryItAllObjectifs') || '[]');
-        if (allObjectifs.length === 0) {
-            window.location.href = 'objectif.html';
-            return;
+        // Open GPT Custom
+        function openGPT() {
+            window.open(GPT_URL, '_blank');
+            const btn = document.getElementById('btnOpenGPT');
+            const card = document.querySelector('.gpt-cta-card');
+            if (card) {
+                card.classList.add('gpt-opened');
+            }
         }
 
-        currentObjectif = allObjectifs[allObjectifs.length - 1];
-        milestones = JSON.parse(localStorage.getItem('carryItMilestones') || '[]');
+        // Load data from localStorage
+        function initializeFoundation() {
+            try {
+                // Load objectifs and smart data
+                const allObjectifs = JSON.parse(localStorage.getItem('carryItAllObjectifs') || '[]');
+                if (allObjectifs.length === 0) {
+                    window.location.href = 'objectif.html';
+                    return;
+                }
 
-        if (milestones.length === 0) {
-            // Fallback
-            milestones = [
-                { id: 'm1', titre: "Objectif Final", progression: 100, date: currentObjectif.deadline, kpi: '', desc: '' }
+                const currentObjectif = allObjectifs[allObjectifs.length - 1];
+                const smartData = JSON.parse(localStorage.getItem('carryItObjectifSMART') || '{}');
+
+                // Validate required fields
+                if (!currentObjectif.titre || !smartData.temporel) {
+                    showError('Données SMART incomplètes. Veuillez retourner à l\'étape objectif.');
+                    return;
+                }
+
+                // Format deadline
+                const deadline = new Date(smartData.temporel);
+                const dateStr = deadline.toLocaleDateString('fr-FR', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                });
+
+                // Populate foundation section
+                document.getElementById('foundationTitle').textContent = currentObjectif.titre;
+                document.getElementById('foundationDate').textContent = `📅 ${dateStr}`;
+                document.getElementById('fieldObjectif').textContent = currentObjectif.titre;
+                document.getElementById('fieldSpecifique').textContent = smartData.specifique || '(Non défini)';
+                document.getElementById('fieldMesurable').textContent = smartData.mesurable || '(Non défini)';
+
+                // Remove loading state
+                document.getElementById('foundationSection').classList.remove('loading');
+
+            } catch (error) {
+                console.error('Erreur lors du chargement:', error);
+                showError('Une erreur est survenue. Veuillez rafraîchir la page.');
+            }
+        }
+
+        function showError(message) {
+            const errorEl = document.getElementById('errorMessage');
+            errorEl.textContent = message;
+            errorEl.style.display = 'block';
+            document.getElementById('foundationSection').style.display = 'none';
+        }
+
+        // ===== WIZARD FUNCTIONS =====
+        let wizardData = { titre: '', kpi: '', contexte: '', date: null };
+        let wizardCurrentStep = 0;
+
+        function startWizard() {
+            wizardData = { titre: '', kpi: '', contexte: '', date: null };
+            wizardCurrentStep = 0;
+            document.getElementById('btnAddMilestone').style.display = 'none';
+            document.getElementById('wizardContainer').style.display = 'block';
+            document.getElementById('wizardInput').focus();
+        }
+
+        function cancelWizard() {
+            document.getElementById('btnAddMilestone').style.display = 'block';
+            document.getElementById('wizardContainer').style.display = 'none';
+            document.getElementById('wizardInput').value = '';
+            wizardCurrentStep = 0;
+            wizardData = { titre: '', kpi: '', contexte: '', date: null };
+        }
+
+        function checkWizardInput(e) {
+            const input = e.target;
+            const btn = document.getElementById('btnWizardNext');
+            btn.disabled = input.value.trim() === '';
+
+            if (e.key === 'Enter' && !btn.disabled) {
+                nextWizardStep();
+            }
+        }
+
+        function nextWizardStep() {
+            const input = document.getElementById('wizardInput');
+            const value = input.value.trim();
+
+            if (!value) return;
+
+            // Save current step
+            if (wizardCurrentStep === 0) wizardData.titre = value;
+            else if (wizardCurrentStep === 1) wizardData.kpi = value;
+            else if (wizardCurrentStep === 2) wizardData.contexte = value;
+
+            wizardCurrentStep++;
+
+            if (wizardCurrentStep < 3) {
+                updateWizardStep();
+            } else if (wizardCurrentStep === 3) {
+                showDatePicker();
+            } else {
+                saveMilestone();
+            }
+        }
+
+        function updateWizardStep() {
+            const labels = ['Titre du jalon', 'KPI mesurable', 'Contexte / Spécifique'];
+            const placeholders = [
+                'Ex: Valider le MVP',
+                'Ex: 50 utilisateurs inscrits',
+                'Décris précisément ce que c\'est...'
             ];
+            const hints = [
+                'Donne un nom court à cette étape de ton projet',
+                'Quel est l\'indicateur qui mesure cette étape ?',
+                'Ajoute du contexte pour bien comprendre cette étape'
+            ];
+
+            const progressPercent = ((wizardCurrentStep + 1) / 4) * 100;
+            document.getElementById('progressFill').style.width = `${progressPercent}%`;
+            document.getElementById('wizardStep').textContent = `${wizardCurrentStep + 1}/4`;
+            document.getElementById('wizardLabel').textContent = labels[wizardCurrentStep];
+            document.getElementById('wizardInput').value = '';
+            document.getElementById('wizardInput').placeholder = placeholders[wizardCurrentStep];
+            document.getElementById('wizardHint').textContent = hints[wizardCurrentStep];
+            document.getElementById('btnWizardNext').disabled = true;
+            document.getElementById('wizardInput').focus();
         }
 
-        // Sort by progression ASC (passé -> futur)
-        milestones.sort((a, b) => a.progression - b.progression);
+        function showDatePicker() {
+            const progressPercent = 100;
+            document.getElementById('progressFill').style.width = `${progressPercent}%`;
+            document.getElementById('wizardStep').textContent = `4/4`;
+            document.getElementById('wizardLabel').textContent = 'Date cible';
+            document.getElementById('wizardHint').textContent = 'Quand veux-tu atteindre ce jalon ?';
 
-        if (currentObjectif.deadline) {
-            projectDeadline = new Date(currentObjectif.deadline);
+            const input = document.getElementById('wizardInput');
+            input.type = 'date';
+            input.value = '';
+            input.style.fontSize = '16px';
+            input.focus();
+
+            // Update button behavior for date
+            input.onchange = function() {
+                document.getElementById('btnWizardNext').disabled = !input.value;
+            };
         }
 
-        document.getElementById('goalTitle').innerText = currentObjectif.titre;
-        renderCards();
-        renderDots();
-        setupObserver();
-    }
+        function saveMilestone() {
+            const dateInput = document.getElementById('wizardInput');
+            wizardData.date = dateInput.value;
 
-    function getDateForMilestone(milestone) {
-        const today = new Date();
-        const endDate = new Date(projectDeadline);
-        const totalDays = (endDate - today) / (1000 * 60 * 60 * 24);
-        const daysFromNow = Math.round((milestone.progression / 100) * totalDays);
+            if (!wizardData.titre || !wizardData.kpi || !wizardData.contexte || !wizardData.date) {
+                alert('Tous les champs sont obligatoires');
+                return;
+            }
 
-        const mileDate = new Date(today);
-        mileDate.setDate(mileDate.getDate() + daysFromNow);
-
-        const dateStr = mileDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
-        const tempStr = `J+${Math.round(daysFromNow)}`;
-
-        return { dateStr, tempStr };
-    }
-
-    function renderCards() {
-        const scroll = document.getElementById('timelineScroll');
-        scroll.innerHTML = '';
-
-        milestones.forEach((m, idx) => {
-            const { dateStr, tempStr } = getDateForMilestone(m);
-
-            const slot = document.createElement('div');
-            slot.className = 'card-slot' + (idx === 0 ? ' active' : '');
-            slot.dataset.id = m.id;
-            slot.dataset.index = idx;
-
-            slot.innerHTML = `
-                <div class="card-wrapper">
-                    <div class="sentinel-block">
-                        <i class="ri-calendar-line"></i>
-                        <span class="sentinel-date">${dateStr}</span>
-                        <span class="sentinel-temp">${tempStr}</span>
-                    </div>
-                    <div class="block-label">Titre du jalon</div>
-                    <input type="text" class="input-raw" value="${m.titre || ''}"
-                           onchange="updateMilestone('${m.id}', 'titre', this.value)"
-                           placeholder="Ex: Lancer la version Beta">
-                    <div class="block-label">Plan d'action</div>
-                    <textarea class="input-area"
-                              onchange="updateMilestone('${m.id}', 'desc', this.value)"
-                              placeholder="Décrivez les étapes clés...">${m.desc || ''}</textarea>
-                </div>
-            `;
-
-            scroll.appendChild(slot);
-        });
-    }
-
-    function renderDots() {
-        const rail = document.getElementById('timelineRail');
-        rail.innerHTML = '';
-
-        milestones.forEach((m, idx) => {
-            const dot = document.createElement('div');
-            dot.className = 'dot' + (idx === 0 ? ' active' : '');
-            dot.onclick = () => {
-                const slot = document.querySelector(`[data-id="${m.id}"]`);
-                if (slot) slot.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            // Save to localStorage
+            const milestones = JSON.parse(localStorage.getItem('carryItMilestones') || '[]');
+            const newMilestone = {
+                id: Date.now().toString(),
+                titre: wizardData.titre,
+                kpi: wizardData.kpi,
+                contexte: wizardData.contexte,
+                dateCible: wizardData.date,
+                ordre: milestones.length + 1
             };
 
-            const label = document.createElement('div');
-            label.className = 'timeline-label';
-            const { dateStr } = getDateForMilestone(m);
-            label.innerText = dateStr;
-
-            rail.appendChild(dot);
-        });
-    }
-
-    function setupObserver() {
-        const observer = new IntersectionObserver(entries => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    // Update card active
-                    document.querySelectorAll('.card-slot').forEach(el => el.classList.remove('active'));
-                    entry.target.classList.add('active');
-
-                    // Update dot active
-                    const idx = parseInt(entry.target.dataset.index);
-                    document.querySelectorAll('.dot').forEach((el, i) => {
-                        el.classList.toggle('active', i === idx);
-                    });
-                }
-            });
-        }, { threshold: 0.5, root: document.getElementById('timelineViewport') });
-
-        document.querySelectorAll('.card-slot').forEach(el => observer.observe(el));
-    }
-
-    function updateMilestone(id, field, value) {
-        const m = milestones.find(x => x.id === id);
-        if (m) {
-            m[field] = value;
+            milestones.push(newMilestone);
             localStorage.setItem('carryItMilestones', JSON.stringify(milestones));
+
+            // Reset and show timeline
+            cancelWizard();
+            location.reload(); // Reload to display new milestone
         }
-    }
 
-    loadData();
-</script>
+        // ===== TIMELINE RENDERING =====
+        function renderTimeline() {
+            try {
+                const allObjectifs = JSON.parse(localStorage.getItem('carryItAllObjectifs') || '[]');
+                const smartData = JSON.parse(localStorage.getItem('carryItObjectifSMART') || '{}');
+                const milestones = JSON.parse(localStorage.getItem('carryItMilestones') || '[]');
 
+                if (allObjectifs.length === 0) return;
+
+                const currentObjectif = allObjectifs[allObjectifs.length - 1];
+                const timelineContainer = document.getElementById('timelineContainer');
+                timelineContainer.innerHTML = '';
+
+                // 1. Add Foundation (Objectif Final)
+                const foundationDeadline = new Date(smartData.temporel);
+                const foundationItem = createTimelineItem({
+                    titre: currentObjectif.titre,
+                    kpi: smartData.mesurable || '(Non défini)',
+                    contexte: smartData.specifique || '(Non défini)',
+                    dateCible: smartData.temporel,
+                    isFoundation: true
+                });
+                timelineContainer.appendChild(foundationItem);
+
+                // 2. Sort and add milestones (by date, descending - future to past)
+                const sortedMilestones = milestones.sort((a, b) => new Date(b.dateCible) - new Date(a.dateCible));
+                sortedMilestones.forEach(milestone => {
+                    const item = createTimelineItem({
+                        titre: milestone.titre,
+                        kpi: milestone.kpi,
+                        contexte: milestone.contexte,
+                        dateCible: milestone.dateCible,
+                        isMilestone: true
+                    });
+                    timelineContainer.appendChild(item);
+                });
+
+                // 3. Add "Aujourd'hui"
+                const today = new Date();
+                const todayItem = createTimelineItem({
+                    titre: 'Aujourd\'hui',
+                    dateCible: today.toISOString().split('T')[0],
+                    isToday: true
+                });
+                timelineContainer.appendChild(todayItem);
+
+                document.getElementById('timelineSection').style.display = 'block';
+
+            } catch (error) {
+                console.error('Erreur lors du rendu timeline:', error);
+            }
+        }
+
+        function createTimelineItem(data) {
+            const item = document.createElement('div');
+            item.className = 'timeline-item' + (data.isToday ? ' timeline-today' : '');
+
+            const dateObj = new Date(data.dateCible);
+            const dateStr = dateObj.toLocaleDateString('fr-FR', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric'
+            });
+
+            const dateEl = document.createElement('div');
+            dateEl.className = 'timeline-date';
+            dateEl.textContent = data.isToday ? 'Aujourd\'hui' : dateStr;
+
+            const dot = document.createElement('div');
+            dot.className = 'timeline-dot';
+
+            const content = document.createElement('div');
+            content.className = 'timeline-content';
+
+            if (data.isToday) {
+                const card = document.createElement('div');
+                card.className = 'card timeline-card today-card';
+                card.innerHTML = `
+                    <div class="today-label">🏁 Point de départ</div>
+                    <div class="today-hint">C'est maintenant que tu commences. À toi de jouer !</div>
+                `;
+                content.appendChild(card);
+            } else {
+                const card = document.createElement('div');
+                card.className = 'card timeline-card' + (data.isFoundation ? ' foundation-card' : ' milestone-card');
+
+                const titleEl = document.createElement('div');
+                titleEl.className = 'field';
+                titleEl.innerHTML = `
+                    <div class="field-label">${data.isFoundation ? '🎯 Objectif Final' : '📋 Jalon'}</div>
+                    <div class="field-value">${data.titre}</div>
+                `;
+
+                const kpiEl = document.createElement('div');
+                kpiEl.className = 'field';
+                kpiEl.innerHTML = `
+                    <div class="field-label">KPI / Mesurable</div>
+                    <div class="field-value">${data.kpi}</div>
+                `;
+
+                const contexteEl = document.createElement('div');
+                contexteEl.className = 'field';
+                contexteEl.innerHTML = `
+                    <div class="field-label">Contexte / Détails</div>
+                    <div class="field-value">${data.contexte}</div>
+                `;
+
+                card.appendChild(titleEl);
+                card.appendChild(kpiEl);
+                card.appendChild(contexteEl);
+                content.appendChild(card);
+            }
+
+            item.appendChild(dateEl);
+            item.appendChild(dot);
+            item.appendChild(content);
+            return item;
+        }
+
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            initializeFoundation();
+            renderTimeline();
+            document.getElementById('wizardSection').style.display = 'block';
+        });
+    </script>
 </body>
 </html>
