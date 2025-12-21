@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Carry It - Cockpit Jalons</title>
+    <title>Carry It - Timeline Stratégique</title>
 
     <!-- Icons -->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
@@ -12,21 +12,23 @@
 
     <style>
         :root {
-            /* --- PALETTE COCKPIT CARRY IT --- */
-            --bg-deep: #050505;        /* Noir Absolu */
-            --surface: #0F0F0F;        /* Surface Technique */
-            --surface-active: #1A1A1A;
+            /* --- PALETTE MINIMAL & ÉPURÉE --- */
+            --bg-primary: #FAFAFA;     /* Blanc gris très clair */
+            --bg-card: #FFFFFF;        /* Blanc pur pour les cartes */
 
-            --text-primary: #E0E0E0;   /* Blanc cassé technique */
-            --text-secondary: #666666; /* Gris neutre */
-            --text-dim: #333333;
+            --text-primary: #1A1A1A;   /* Presque noir */
+            --text-secondary: #6B7280; /* Gris moyen */
+            --text-muted: #9CA3AF;     /* Gris clair */
 
-            --accent: #FF4D00;         /* Orange Lave (Alerte/Action) */
-            --accent-dim: rgba(255, 77, 0, 0.1);
-            --accent-glow: rgba(255, 77, 0, 0.2);
+            --accent: #2563EB;         /* Bleu moderne */
+            --accent-light: rgba(37, 99, 235, 0.1);
+            --accent-glow: rgba(37, 99, 235, 0.2);
 
-            --border: #222222;         /* Limites strictes */
-            --border-active: #444444;
+            --border: #E5E7EB;         /* Gris très clair */
+            --border-hover: #D1D5DB;   /* Gris clair hover */
+
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 
             /* Safe Areas */
             --safe-top: env(safe-area-inset-top, 20px);
@@ -47,39 +49,42 @@
         input, textarea { user-select: text; }
 
         body {
-            background-color: var(--bg-deep);
+            background-color: var(--bg-primary);
             color: var(--text-primary);
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             height: 100vh;
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            font-weight: 400;
+            line-height: 1.6;
         }
 
-        /* --- HUD (HEAD UP DISPLAY) --- */
+        /* --- HEADER --- */
         .hud-top {
-            height: 50px;
+            height: 60px;
             padding-top: var(--safe-top);
-            padding-left: 20px;
+            padding-left: 120px;
             padding-right: 20px;
             display: flex;
-            align-items: flex-end;
+            align-items: center;
             justify-content: space-between;
             border-bottom: 1px solid var(--border);
-            background: var(--bg-deep);
+            background: var(--bg-card);
             z-index: 100;
             flex-shrink: 0;
+            box-shadow: var(--shadow-sm);
         }
 
         .hud-label {
             font-family: 'Inter', sans-serif;
-            font-size: 11px;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            font-size: 14px;
+            color: var(--text-primary);
+            font-weight: 500;
+            letter-spacing: 0px;
         }
 
-        .hud-value { color: var(--accent); font-weight: 700; }
+        .hud-value { color: var(--accent); font-weight: 600; }
 
         .btn-icon {
             background: transparent;
@@ -104,7 +109,8 @@
             position: relative;
             display: flex;
             flex-direction: column;
-            margin-left: 80px;
+            margin-left: 100px;
+            background-color: var(--bg-primary);
         }
         .timeline-viewport::-webkit-scrollbar { display: none; }
 
@@ -121,61 +127,67 @@
         /* --- CARD SLOTS --- */
         .card-slot {
             flex: 0 0 auto;
-            min-height: 90vh;
-            margin: 40px 0;  /* Espacement vertical */
+            min-height: 100vh;
+            margin: 0;
             display: flex;
             align-items: center;
             justify-content: center;
             scroll-snap-align: center;
             scroll-snap-stop: always;
             position: relative;
-            padding: 0 20px;
-            opacity: 0.3;
-            transform: scale(0.95);
-            transition: opacity 0.3s, transform 0.3s;
+            padding: 40px 20px;
+            opacity: 1;
+            transform: none;
+            transition: opacity 0.3s;
         }
 
         .card-slot.active {
             opacity: 1;
-            transform: scale(1);
         }
 
         .card-wrapper {
             width: 100%;
-            max-width: 460px;
+            max-width: 650px;
             display: flex;
             flex-direction: column;
-            gap: 24px;
+            gap: 32px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: var(--shadow-md);
         }
 
         /* SENTINEL BLOCK (DATE) */
         .sentinel-block {
             text-align: center;
-            border: 1px solid var(--border);
-            background: var(--surface);
-            padding: 12px;
-            border-radius: 4px;
-            display: inline-flex;
+            border: none;
+            background: transparent;
+            padding: 0;
+            border-radius: 0;
+            display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            align-self: center;
-            margin-bottom: 10px;
+            gap: 8px;
+            align-self: flex-start;
+            margin-bottom: 0;
         }
         .sentinel-date {
             font-family: 'Inter', sans-serif;
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--text-primary);
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         .sentinel-year {
             font-family: 'Inter', sans-serif;
-            font-size: 11px;
-            color: var(--text-secondary);
-            font-weight: 500;
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 400;
         }
-        .sentinel-icon { color: var(--accent); font-size: 14px; }
+        .sentinel-icon { color: var(--accent); font-size: 16px; }
 
         /* DATA BLOCKS */
         .data-block {
@@ -187,65 +199,82 @@
 
         .block-label {
             font-family: 'Inter', sans-serif;
-            font-size: 10px;
+            font-size: 12px;
             text-transform: uppercase;
-            color: var(--text-secondary);
-            letter-spacing: 1px;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+            font-weight: 500;
         }
 
         /* INPUTS */
         .input-raw {
             background: transparent;
             border: none;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 2px solid var(--border);
             color: var(--text-primary);
             font-family: 'Inter', sans-serif;
             padding: 12px 0;
             border-radius: 0;
             transition: border-color 0.2s;
             width: 100%;
+            font-size: 16px;
         }
         .input-raw:focus {
+            outline: none;
             border-bottom-color: var(--accent);
         }
-        .input-raw::placeholder { color: var(--text-dim); }
+        .input-raw:hover {
+            border-bottom-color: var(--border-hover);
+        }
+        .input-raw::placeholder { color: var(--text-muted); }
 
         .input-title {
-            font-size: 28px;
-            font-weight: 800;
+            font-size: 32px;
+            font-weight: 600;
             letter-spacing: -0.5px;
-            line-height: 1.1;
+            line-height: 1.3;
+            color: var(--text-primary);
         }
-        .input-title::placeholder { font-size: 16px; }
+        .input-title::placeholder { font-size: 18px; color: var(--text-muted); }
 
         .input-area {
             background: transparent;
             border: 1px solid var(--border);
             color: var(--text-primary);
             font-family: 'Inter', sans-serif;
-            font-size: 14px;
+            font-size: 15px;
             line-height: 1.6;
-            padding: 16px;
-            min-height: 120px;
+            padding: 12px 0;
+            min-height: 100px;
             resize: none;
-            border-radius: 4px;
+            border-radius: 0;
             transition: border-color 0.2s;
+            border-left: none;
+            border-right: none;
+            border-top: none;
+            border-bottom: 2px solid var(--border);
         }
-        .input-area:focus { border-color: var(--accent); }
-        .input-area::placeholder { color: var(--text-dim); }
+        .input-area:focus {
+            outline: none;
+            border-bottom-color: var(--accent);
+        }
+        .input-area:hover {
+            border-bottom-color: var(--border-hover);
+        }
+        .input-area::placeholder { color: var(--text-muted); }
 
         /* KPI WRAPPER */
         .kpi-wrapper {
             display: flex;
             align-items: baseline;
             gap: 12px;
-            border-bottom: 1px solid var(--border);
-            padding: 8px 0;
+            border-bottom: 2px solid var(--border);
+            padding: 12px 0;
             transition: border-color 0.2s;
         }
         .kpi-wrapper:focus-within { border-bottom-color: var(--accent); }
 
-        .kpi-icon { color: var(--accent); font-size: 16px; }
+        .kpi-icon { color: var(--accent); font-size: 18px; }
 
         .input-kpi {
             background: transparent;
@@ -253,11 +282,31 @@
             color: var(--accent);
             font-family: 'Inter', sans-serif;
             font-size: 16px;
-            font-weight: 700;
+            font-weight: 600;
             flex: 1;
             padding: 0;
         }
-        .input-kpi::placeholder { color: var(--text-dim); font-weight: 400; }
+        .input-kpi::placeholder { color: var(--text-muted); font-weight: 400; }
+
+        /* DATE INPUT */
+        input[type="date"] {
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid var(--border);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            padding: 12px 0;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        input[type="date"]:hover {
+            border-bottom-color: var(--border-hover);
+        }
+        input[type="date"]:focus {
+            outline: none;
+            border-bottom-color: var(--accent);
+        }
 
         /* CARD CONNECTOR (Add button) */
         /* IMPORTANT: Positionné AU-DESSUS visuellement (car on remonte le temps vers le haut) */
@@ -286,7 +335,7 @@
             width: 36px;
             height: 36px;
             border-radius: 50%;
-            background: var(--bg-deep);
+            background: var(--bg-card);
             border: 1px solid var(--accent);
             color: var(--accent);
             font-size: 18px;
@@ -295,7 +344,7 @@
             align-items: center;
             justify-content: center;
             transition: all 0.2s;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            box-shadow: var(--shadow-md);
         }
 
         .btn-add-jalon:hover {
@@ -309,29 +358,30 @@
         .timeline-rail {
             position: fixed;
             left: 0;
-            top: 50px;
+            top: 60px;
             bottom: 80px;
-            width: 80px;
+            width: 100px;
             border-right: 1px solid var(--border);
-            background: var(--bg-deep);
+            background: var(--bg-card);
             display: flex;
             align-items: flex-start;
             justify-content: center;
             z-index: 50;
             flex-direction: column;
+            box-shadow: var(--shadow-sm);
         }
 
         .timeline-indicator {
             position: absolute;
             top: 50%;
-            left: 10px;
-            right: 10px;
-            height: 2px;
+            left: 15px;
+            right: 15px;
+            height: 1px;
             background: var(--accent);
             z-index: 10;
             transform: translateY(-50%);
-            border-radius: 2px;
-            box-shadow: 0 0 10px var(--accent-glow);
+            border-radius: 0;
+            box-shadow: none;
         }
 
         .timeline-track {
@@ -351,48 +401,49 @@
 
         .timeline-month {
             flex-shrink: 0;
-            width: 70px;
-            height: 70px;
+            width: 100%;
+            height: 80px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            opacity: 0.3;
+            opacity: 0.7;
             transition: opacity 0.3s;
             position: relative;
             cursor: pointer;
-            padding: 5px 0;
+            padding: 0;
         }
 
-        .timeline-month:hover { opacity: 0.7; }
+        .timeline-month:hover { opacity: 0.85; }
         .timeline-month.active { opacity: 1; }
 
         .tick {
             order: 3;
-            width: 12px;
+            width: 14px;
             height: 1px;
-            background: var(--text-secondary);
-            margin-top: 4px;
+            background: var(--border);
+            margin-top: 6px;
         }
         .timeline-month.active .tick {
-            width: 18px;
+            width: 20px;
             height: 2px;
-            background: var(--text-primary);
+            background: var(--accent);
         }
 
         .month-label {
             order: 1;
-            font-size: 10px;
+            font-size: 11px;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             line-height: 1;
+            color: var(--text-primary);
         }
         .year-label {
             order: 2;
-            font-size: 9px;
-            color: var(--text-dim);
-            margin-top: 2px;
+            font-size: 10px;
+            color: var(--text-secondary);
+            margin-top: 3px;
             font-variant-numeric: tabular-nums;
             font-weight: 500;
         }
@@ -417,24 +468,26 @@
             right: 0;
             height: 80px;
             padding: 0 20px;
+            padding-left: 120px;
             padding-bottom: var(--safe-bottom);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: var(--bg-deep);
+            background: var(--bg-card);
             border-top: 1px solid var(--border);
             z-index: 100;
+            box-shadow: var(--shadow-sm);
         }
 
         .btn-nav {
             height: 40px;
-            padding: 0 24px;
-            background: var(--surface);
+            padding: 0 20px;
+            background: transparent;
             border: 1px solid var(--border);
-            color: var(--text-primary);
+            color: var(--accent);
             font-family: 'Inter', sans-serif;
-            font-size: 11px;
-            font-weight: 600;
+            font-size: 13px;
+            font-weight: 500;
             text-transform: uppercase;
             cursor: pointer;
             display: flex;
@@ -442,24 +495,182 @@
             gap: 8px;
             transition: all 0.2s;
             letter-spacing: 0.5px;
+            border-radius: 6px;
         }
         .btn-nav:hover {
-            border-color: var(--border-active);
-            background: var(--surface-active);
+            border-color: var(--accent);
+            background: var(--accent-light);
         }
         .btn-nav:active { transform: scale(0.98); }
 
         .btn-nav.primary {
-            background: var(--text-primary);
-            color: var(--bg-deep);
-            font-weight: 700;
-            border-color: var(--text-primary);
+            background: var(--accent);
+            color: white;
+            font-weight: 600;
+            border-color: var(--accent);
         }
         .btn-nav.primary:hover {
-            background: rgba(224, 224, 224, 0.9);
+            background: #1d4ed8;
+            border-color: #1d4ed8;
         }
 
-        .btn-nav.disabled { opacity: 0.3; pointer-events: none; }
+        .btn-nav.disabled { opacity: 0.4; pointer-events: none; }
+
+        /* --- RESPONSIVE DESIGN --- */
+        @media (max-width: 768px) {
+            .hud-top {
+                padding-left: 80px;
+                height: 56px;
+            }
+
+            .timeline-rail {
+                width: 80px;
+                bottom: 100px;
+            }
+
+            .timeline-viewport {
+                margin-left: 80px;
+            }
+
+            .controls-bottom {
+                height: 100px;
+                padding-left: 80px;
+                flex-direction: column;
+                gap: 8px;
+                justify-content: center;
+            }
+
+            .btn-nav {
+                width: 100%;
+                justify-content: center;
+                font-size: 12px;
+            }
+
+            .card-wrapper {
+                max-width: 100%;
+                padding: 32px 24px;
+                gap: 24px;
+            }
+
+            .input-title {
+                font-size: 24px;
+            }
+
+            .card-slot {
+                padding: 32px 16px;
+                min-height: 85vh;
+            }
+
+            .hud-label {
+                font-size: 12px;
+            }
+
+            .btn-icon {
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .timeline-rail {
+                width: 70px;
+            }
+
+            .timeline-viewport {
+                margin-left: 70px;
+            }
+
+            .hud-top {
+                padding-left: 70px;
+            }
+
+            .controls-bottom {
+                padding-left: 70px;
+            }
+
+            .timeline-month {
+                height: 60px;
+            }
+
+            .month-label {
+                font-size: 10px;
+            }
+
+            .year-label {
+                font-size: 9px;
+            }
+
+            .card-wrapper {
+                padding: 24px 16px;
+                gap: 20px;
+                border-radius: 8px;
+            }
+
+            .input-title {
+                font-size: 20px;
+            }
+
+            .data-block {
+                gap: 6px;
+            }
+
+            .block-label {
+                font-size: 11px;
+            }
+
+            .input-raw,
+            input[type="date"],
+            .input-area {
+                font-size: 14px;
+                padding: 10px 0;
+            }
+
+            .sentinel-date {
+                font-size: 12px;
+            }
+
+            .sentinel-year {
+                font-size: 11px;
+            }
+
+            .btn-add-jalon {
+                width: 32px;
+                height: 32px;
+                font-size: 16px;
+            }
+        }
+
+        /* --- FOCUS & KEYBOARD ACCESSIBILITY --- */
+        button:focus-visible,
+        input:focus-visible,
+        textarea:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        .btn-nav:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        .btn-icon:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+            border-radius: 4px;
+        }
+
+        /* --- SMOOTH ANIMATIONS --- */
+        * {
+            transition: background-color 0.2s ease-in-out,
+                        color 0.2s ease-in-out,
+                        border-color 0.2s ease-in-out;
+        }
+
+        /* Exemptions de transition pour éviter les flickers */
+        .timeline-scroll,
+        .card-slot,
+        .timeline-month {
+            transition: none;
+        }
 
     </style>
 </head>
@@ -467,7 +678,7 @@
 
     <!-- HUD TOP -->
     <div class="hud-top">
-        <div class="hud-label">COCKPIT <span class="hud-value">CARRY IT</span></div>
+        <div class="hud-label">Timeline Stratégique</div>
         <div class="hud-label" id="stepIndicator">JALON --/--</div>
         <button class="btn-icon" title="Paramètres"><i class="ri-settings-3-line"></i></button>
     </div>
@@ -503,15 +714,16 @@
     <script>
         // --- DATA & CONFIG ---
         const projectDurationMonths = 24;
-        const projectDeadline = new Date();
-        projectDeadline.setMonth(projectDeadline.getMonth() + projectDurationMonths);
+        const today = new Date();
+        const projectDeadline = new Date(today);
+        projectDeadline.setMonth(today.getMonth() + projectDurationMonths);
 
-        // DATA SOURCE (Ordre logique : 0 = Futur, N = Passé)
+        // DATA SOURCE - Utilise des dates ISO au lieu d'offsets
         let milestones = [
-            { id: 'm1', offset: 0, title: "Objectif Final", desc: "Le système est stable et autonome.", kpiValue: "300 Clients" },
-            { id: 'm2', offset: 3, title: "Optimisation", desc: "Maximisation de la conversion.", kpiValue: "" },
-            { id: 'm3', offset: 12, title: "MVP Validé", desc: "Première base d'utilisateurs.", kpiValue: "Oui" },
-            { id: 'm4', offset: 24, title: "Lancement", desc: "Démarrage du projet.", kpiValue: "" }
+            { id: 'm1', date: projectDeadline.toISOString().split('T')[0], title: "Objectif Final", desc: "Le système est stable et autonome.", kpiValue: "300 Clients" },
+            { id: 'm2', date: new Date(today.getFullYear(), today.getMonth() + 3, today.getDate()).toISOString().split('T')[0], title: "Optimisation", desc: "Maximisation de la conversion.", kpiValue: "" },
+            { id: 'm3', date: new Date(today.getFullYear(), today.getMonth() + 12, today.getDate()).toISOString().split('T')[0], title: "MVP Validé", desc: "Première base d'utilisateurs.", kpiValue: "Oui" },
+            { id: 'm4', date: today.toISOString().split('T')[0], title: "Lancement", desc: "Démarrage du projet.", kpiValue: "" }
         ];
 
         // --- DOM REFS ---
@@ -528,19 +740,34 @@
         let isScrollingTimeline = false;
 
         // --- UTILS ---
-        function formatDate(offset) {
-            const dateObj = new Date(projectDeadline);
-            dateObj.setMonth(projectDeadline.getMonth() - offset);
-            return dateObj.toLocaleDateString('fr-FR', { month: 'short', year: '2-digit' }).toUpperCase();
+        function calculateOffset(dateString) {
+            const targetDate = new Date(dateString + 'T00:00:00');
+            const diffTime = targetDate - today;
+            const diffMonths = Math.round(diffTime / (1000 * 60 * 60 * 24 * 30.44));
+            return diffMonths;
+        }
+
+        function formatDateDisplay(dateString) {
+            const date = new Date(dateString + 'T00:00:00');
+            return date.toLocaleDateString('fr-FR', { month: 'short', year: '2-digit' }).toUpperCase();
+        }
+
+        function formatDateYear(dateString) {
+            const date = new Date(dateString + 'T00:00:00');
+            return date.getFullYear();
         }
 
         // --- RENDER ALL CARDS ---
         function renderAllCards() {
             timelineScroll.innerHTML = '';
 
-            // Pour vertical: Futur (Offset 0) en haut -> Passé (Offset 24) en bas
-            // Donc on trie du Futur vers le Passé
-            const sortedMilestones = [...milestones].sort((a, b) => a.offset - b.offset);
+            // Trier du Futur (objectif) vers le Passé (aujourd'hui)
+            // Plus la date est loin dans le futur, plus elle est en haut
+            const sortedMilestones = [...milestones].sort((a, b) => {
+                const dateA = new Date(a.date);
+                const dateB = new Date(b.date);
+                return dateB - dateA; // Descendant: futur en premier
+            });
 
             sortedMilestones.forEach((milestone, index) => {
                 const slot = document.createElement('div');
@@ -552,49 +779,49 @@
                 const wrapper = document.createElement('div');
                 wrapper.className = 'card-wrapper';
 
-                // Calculer la date du jalon
-                let dateLabel = 'FIN PROJET';
-                let yearLabel = '';
-                if (milestone.offset !== 0) {
-                    const dateObj = new Date(projectDeadline);
-                    dateObj.setMonth(projectDeadline.getMonth() - milestone.offset);
-                    dateLabel = dateObj.toLocaleDateString('fr-FR', { month: 'short' }).toUpperCase();
-                    yearLabel = dateObj.getFullYear();
-                }
+                const dateMonth = formatDateDisplay(milestone.date);
+                const dateYear = formatDateYear(milestone.date);
 
                 wrapper.innerHTML = `
                     <div class="sentinel-block">
-                        <i class="ri-time-line sentinel-icon"></i>
-                        <span class="sentinel-date">${dateLabel}</span>
-                        ${yearLabel ? `<span class="sentinel-year">${yearLabel}</span>` : ''}
+                        <i class="ri-calendar-line sentinel-icon"></i>
+                        <span class="sentinel-date">${dateMonth}</span>
+                        <span class="sentinel-year">${dateYear}</span>
                     </div>
                     <div class="data-block">
-                        <div class="block-label">01 // Nom du Jalon</div>
+                        <div class="block-label">Titre du Jalon</div>
                         <input type="text" class="input-raw input-title"
                                value="${milestone.title}"
                                data-id="${milestone.id}"
-                               placeholder="Titre..."
+                               placeholder="Saisir le titre..."
                                autocomplete="off"
                                oninput="updateData('${milestone.id}', 'title', this.value)">
                     </div>
                     <div class="data-block">
-                        <div class="block-label">02 // Le KPI (Mesurable)</div>
+                        <div class="block-label">Description</div>
+                        <textarea class="input-area"
+                                  data-id="${milestone.id}"
+                                  placeholder="Décrire ce jalon..."
+                                  oninput="updateData('${milestone.id}', 'desc', this.value)">${milestone.desc}</textarea>
+                    </div>
+                    <div class="data-block">
+                        <div class="block-label">KPI Mesurable</div>
                         <div class="kpi-wrapper">
                             <i class="ri-flag-fill kpi-icon"></i>
                             <input type="text" class="input-kpi"
                                    value="${milestone.kpiValue}"
                                    data-id="${milestone.id}"
-                                   placeholder="Ex: 500 utilisateurs"
+                                   placeholder="Objectif mesurable..."
                                    autocomplete="off"
                                    oninput="updateData('${milestone.id}', 'kpiValue', this.value)">
                         </div>
                     </div>
                     <div class="data-block">
-                        <div class="block-label">03 // Objectif Concret</div>
-                        <textarea class="input-area"
-                                  data-id="${milestone.id}"
-                                  placeholder="Description factuelle..."
-                                  oninput="updateData('${milestone.id}', 'desc', this.value)">${milestone.desc}</textarea>
+                        <div class="block-label">Date du Jalon</div>
+                        <input type="date"
+                               value="${milestone.date}"
+                               data-id="${milestone.id}"
+                               oninput="updateData('${milestone.id}', 'date', this.value)">
                     </div>
                 `;
 
@@ -613,7 +840,14 @@
 
         function updateData(id, field, value) {
             const m = milestones.find(m => m.id === id);
-            if (m) m[field] = value;
+            if (m) {
+                m[field] = value;
+                // Si la date change, re-rendre pour réappliquer le tri
+                if (field === 'date') {
+                    renderAllCards();
+                    renderTimeline();
+                }
+            }
         }
 
         // --- ADD JALON INLINE ---
@@ -621,14 +855,18 @@
             const refMilestone = milestones.find(m => m.id === refId);
             if (!refMilestone) return;
 
-            // On ajoute un jalon avec un offset un peu plus grand (donc vers le passé)
-            // Pour simplifier, on prend l'offset actuel + 1 (ou moyenne si besoin)
-            const newOffset = refMilestone.offset + 1;
+            // Calculer une date intermédiaire : entre la référence et la précédente (vers le passé)
+            const refDate = new Date(refMilestone.date + 'T00:00:00');
+            const newOffsetMonths = Math.max(1, calculateOffset(refMilestone.date) - 1);
+            const newDate = new Date(today);
+            newDate.setMonth(today.getMonth() + newOffsetMonths);
+            const newDateStr = newDate.toISOString().split('T')[0];
+
             const newId = 'm_' + Date.now();
 
             milestones.push({
                 id: newId,
-                offset: newOffset,
+                date: newDateStr,
                 title: "",
                 desc: "",
                 kpiValue: ""
@@ -657,16 +895,17 @@
             // On boucle de 0 (Objectif) à 24 (Lancement)
             for (let i = 0; i <= projectDurationMonths; i++) {
                 const monthEl = document.createElement('div');
-                const isMilestone = milestones.some(m => Math.abs(m.offset - i) < 0.5);
-                
+                // Vérifier si un jalon a un offset proche (calculé depuis sa date)
+                const isMilestone = milestones.some(m => Math.abs(calculateOffset(m.date) - i) < 0.5);
+
                 monthEl.className = `timeline-month ${isMilestone ? 'has-milestone' : ''}`;
                 monthEl.dataset.offset = i;
-                
+
                 // Clic sur rail
                 monthEl.onclick = () => {
                    // Trouver le jalon le plus proche
-                   const target = milestones.reduce((prev, curr) => 
-                       Math.abs(curr.offset - i) < Math.abs(prev.offset - i) ? curr : prev
+                   const target = milestones.reduce((prev, curr) =>
+                       Math.abs(calculateOffset(curr.date) - i) < Math.abs(calculateOffset(prev.date) - i) ? curr : prev
                    );
                    const slot = document.getElementById(`card-${target.id}`);
                    if(slot) slot.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
@@ -713,13 +952,14 @@
 
                         // Update HUD
                         const total = milestones.length;
-                        // Index visuel (trié)
-                        const sortedIds = [...milestones].sort((a, b) => b.offset - a.offset).map(m => m.id);
+                        // Index visuel (trié par date descendante)
+                        const sortedIds = [...milestones].sort((a, b) => new Date(b.date) - new Date(a.date)).map(m => m.id);
                         const visualIndex = sortedIds.indexOf(currentMilestoneId) + 1;
                         stepIndicator.innerText = `JALON ${visualIndex}/${total}`;
 
-                        // Sync Rail
-                        syncRail(m.offset);
+                        // Sync Rail avec offset calculé
+                        const offset = calculateOffset(m.date);
+                        syncRail(offset);
                         updateButtons(m);
                     }
                 });
@@ -733,7 +973,7 @@
                 el.classList.toggle('active', parseInt(el.dataset.offset) === offset);
             });
 
-            // Synchroniser simplement: scroller le mois au centre du rail visible
+            // Synchroniser: le mois se centre automatiquement au milieu du rail
             const activeMonth = document.querySelector('.timeline-month.active');
             if (activeMonth) {
                 activeMonth.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -745,8 +985,11 @@
 
         // --- BUTTONS LOGIC ---
         function updateButtons(currentMilestone) {
+            // Calculer l'offset depuis la date
+            const offset = calculateOffset(currentMilestone.date);
+
             // Si on est à l'Objectif (Offset 0) -> Pas de bouton "Vers l'Objectif"
-            if (currentMilestone.offset === 0) {
+            if (offset === 0) {
                 btnForward.style.opacity = '0.3';
                 btnForward.style.pointerEvents = 'none';
             } else {
