@@ -759,7 +759,7 @@
         // Récupère les infos SMART depuis localStorage
         function getSMARTData() {
             try {
-                const smart = JSON.parse(localStorage.getItem('smart')) || {};
+                const smart = JSON.parse(localStorage.getItem('carryItObjectifSMART')) || {};
                 return {
                     specifique: smart.specifique || '',
                     mesurable: smart.mesurable || '',
