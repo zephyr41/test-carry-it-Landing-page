@@ -3,23 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Carry It - Cockpit Jalons Vertical</title>
+    <title>Carry It - Cockpit Jalons</title>
 
+    <!-- Icons -->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <!-- Font : Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --bg-deep: #050505;
-            --surface: #0F0F0F;
+            /* --- PALETTE COCKPIT CARRY IT --- */
+            --bg-deep: #050505;        /* Noir Absolu */
+            --surface: #0F0F0F;        /* Surface Technique */
             --surface-active: #1A1A1A;
-            --text-primary: #E0E0E0;
-            --text-secondary: #666666;
+
+            --text-primary: #E0E0E0;   /* Blanc cassé technique */
+            --text-secondary: #666666; /* Gris neutre */
             --text-dim: #333333;
-            --accent: #FF4D00;
+
+            --accent: #FF4D00;         /* Orange Lave (Alerte/Action) */
             --accent-dim: rgba(255, 77, 0, 0.1);
             --accent-glow: rgba(255, 77, 0, 0.2);
-            --border: #222222;
+
+            --border: #222222;         /* Limites strictes */
+            --border-active: #444444;
+
+            /* Safe Areas */
             --safe-top: env(safe-area-inset-top, 20px);
             --safe-bottom: env(safe-area-inset-bottom, 20px);
         }
@@ -29,33 +38,41 @@
             margin: 0;
             padding: 0;
             -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
+            outline: none;
         }
+
+        input, textarea { user-select: text; }
 
         body {
             background-color: var(--bg-deep);
             color: var(--text-primary);
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             height: 100vh;
             overflow: hidden;
             display: flex;
             flex-direction: column;
         }
 
-        /* --- HUD TOP --- */
+        /* --- HUD (HEAD UP DISPLAY) --- */
         .hud-top {
-            height: 60px;
-            padding: var(--safe-top) 20px 10px 20px;
+            height: 50px;
+            padding-top: var(--safe-top);
+            padding-left: 20px;
+            padding-right: 20px;
             display: flex;
-            align-items: center;
+            align-items: flex-end;
             justify-content: space-between;
             border-bottom: 1px solid var(--border);
             background: var(--bg-deep);
             z-index: 100;
+            flex-shrink: 0;
         }
 
         .hud-label {
+            font-family: 'Inter', sans-serif;
             font-size: 11px;
             color: var(--text-secondary);
             text-transform: uppercase;
@@ -64,330 +81,680 @@
 
         .hud-value { color: var(--accent); font-weight: 700; }
 
-        /* --- LAYOUT PRINCIPAL --- */
-        .main-container {
+        .btn-icon {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 18px;
+            cursor: pointer;
+            padding: 4px;
+            transition: color 0.2s;
+        }
+        .btn-icon:hover { color: var(--text-primary); }
+
+        /* --- TIMELINE VIEWPORT (Main scroll container) --- */
+        .timeline-viewport {
             flex: 1;
+            width: 100vw;
+            overflow-x: hidden;
+            overflow-y: auto;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+            scrollbar-width: none;
+            position: relative;
             display: flex;
-            flex-direction: row;
-            overflow: hidden;
+            flex-direction: column;
+            margin-left: 80px;
+        }
+        .timeline-viewport::-webkit-scrollbar { display: none; }
+
+        /* Flex container pour le scroll vertical */
+        .timeline-scroll {
+            display: flex;
+            flex-direction: column; /* Empilage vertical */
+            width: 100%;
+            height: fit-content;
+            flex: 0 0 auto;
+            padding: 0 20px; /* Padding horizontal pour centrer */
+        }
+
+        /* --- CARD SLOTS --- */
+        .card-slot {
+            flex: 0 0 auto;
+            min-height: 90vh;
+            margin: 40px 0;  /* Espacement vertical */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            scroll-snap-align: center;
+            scroll-snap-stop: always;
+            position: relative;
+            padding: 0 20px;
+            opacity: 0.3;
+            transform: scale(0.95);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+
+        .card-slot.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .card-wrapper {
+            width: 100%;
+            max-width: 460px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* SENTINEL BLOCK (DATE) */
+        .sentinel-block {
+            text-align: center;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            padding: 12px;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            align-self: center;
+            margin-bottom: 10px;
+        }
+        .sentinel-date {
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-transform: uppercase;
+        }
+        .sentinel-icon { color: var(--accent); font-size: 14px; }
+
+        /* DATA BLOCKS */
+        .data-block {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
             position: relative;
         }
 
-        /* --- SIDEBAR RAIL (Vertical) --- */
-        .timeline-rail {
-            width: 60px;
-            border-right: 1px solid var(--border);
+        .block-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 10px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            letter-spacing: 1px;
+        }
+
+        /* INPUTS */
+        .input-raw {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            padding: 12px 0;
+            border-radius: 0;
+            transition: border-color 0.2s;
+            width: 100%;
+        }
+        .input-raw:focus {
+            border-bottom-color: var(--accent);
+        }
+        .input-raw::placeholder { color: var(--text-dim); }
+
+        .input-title {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            line-height: 1.1;
+        }
+        .input-title::placeholder { font-size: 16px; }
+
+        .input-area {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+            padding: 16px;
+            min-height: 120px;
+            resize: none;
+            border-radius: 4px;
+            transition: border-color 0.2s;
+        }
+        .input-area:focus { border-color: var(--accent); }
+        .input-area::placeholder { color: var(--text-dim); }
+
+        /* KPI WRAPPER */
+        .kpi-wrapper {
             display: flex;
-            flex-direction: column;
-            position: relative;
+            align-items: baseline;
+            gap: 12px;
+            border-bottom: 1px solid var(--border);
+            padding: 8px 0;
+            transition: border-color 0.2s;
+        }
+        .kpi-wrapper:focus-within { border-bottom-color: var(--accent); }
+
+        .kpi-icon { color: var(--accent); font-size: 16px; }
+
+        .input-kpi {
+            background: transparent;
+            border: none;
+            color: var(--accent);
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            flex: 1;
+            padding: 0;
+        }
+        .input-kpi::placeholder { color: var(--text-dim); font-weight: 400; }
+
+        /* CARD CONNECTOR (Add button) */
+        /* IMPORTANT: Positionné AU-DESSUS visuellement (car on remonte le temps vers le haut) */
+        .card-connector {
+            position: absolute;
+            top: -20px; /* Au-dessus de la carte */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 50;
+            pointer-events: none;
+        }
+
+        .card-slot.active .card-connector {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .btn-add-jalon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
             background: var(--bg-deep);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .btn-add-jalon:hover {
+            transform: scale(1.1);
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 0 12px var(--accent-glow);
+        }
+
+        /* --- TIMELINE RAIL (Fixed at left) --- */
+        .timeline-rail {
+            position: fixed;
+            left: 0;
+            top: 50px;
+            bottom: 80px;
+            width: 80px;
+            border-right: 1px solid var(--border);
+            background: var(--bg-deep);
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            z-index: 50;
+            flex-direction: column;
+        }
+
+        .timeline-indicator {
+            position: absolute;
+            top: 50%;
+            left: 10px;
+            right: 10px;
+            height: 2px;
+            background: var(--accent);
+            z-index: 10;
+            transform: translateY(-50%);
+            border-radius: 2px;
+            box-shadow: 0 0 10px var(--accent-glow);
         }
 
         .timeline-track {
-            overflow-y: auto;
             display: flex;
             flex-direction: column;
-            padding: 50vh 0; /* Centrage vertical */
+            align-items: center;
+            gap: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 10vh 0;
+            scroll-behavior: smooth;
+            width: 100%;
+            height: 100%;
             scrollbar-width: none;
+            cursor: grab;
         }
+        .timeline-track:active { cursor: grabbing; }
         .timeline-track::-webkit-scrollbar { display: none; }
 
         .timeline-month {
+            flex-shrink: 0;
             height: 60px;
+            width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            opacity: 0.2;
-            transition: all 0.3s;
+            opacity: 0.3;
+            transition: opacity 0.3s;
+            position: relative;
             cursor: pointer;
+            padding: 5px 0;
         }
 
+        .timeline-month:hover { opacity: 0.7; }
         .timeline-month.active { opacity: 1; }
 
         .tick {
             width: 12px;
             height: 1px;
             background: var(--text-secondary);
-            margin-bottom: 4px;
+            margin-right: 6px;
         }
         .timeline-month.active .tick {
-            width: 20px;
+            width: 18px;
             height: 2px;
-            background: var(--accent);
+            background: var(--text-primary);
         }
 
-        .month-label { font-size: 9px; font-weight: 700; }
-
-        /* --- VIEWPORT DES CARTES --- */
-        .timeline-viewport {
-            flex: 1;
-            overflow-y: auto;
-            scroll-snap-type: y mandatory;
-            scroll-behavior: smooth;
-            scrollbar-width: none;
-            padding: 0 20px;
-        }
-        .timeline-viewport::-webkit-scrollbar { display: none; }
-
-        .timeline-scroll {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px 0 300px 0;
-            position: relative;
-        }
-
-        /* Ligne verticale de fond */
-        .timeline-scroll::before {
-            content: '';
-            position: absolute;
-            left: 20px;
-            top: 0;
-            bottom: 0;
-            width: 1px;
-            background: linear-gradient(to bottom, transparent, var(--border) 10%, var(--border) 90%, transparent);
-        }
-
-        .card-slot {
-            width: 100%;
-            max-width: 400px;
-            min-height: 80vh; /* On force une hauteur pour le snap */
-            display: flex;
-            align-items: center;
-            scroll-snap-align: center;
-            opacity: 0.2;
-            transform: scale(0.95);
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative;
-        }
-
-        .card-slot.active { opacity: 1; transform: scale(1); }
-
-        .card-wrapper {
-            width: 100%;
-            background: var(--surface);
-            padding: 24px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            margin-left: 20px; /* Espace pour la ligne */
-            position: relative;
-        }
-
-        /* Indicateur de connexion sur la ligne */
-        .card-wrapper::before {
-            content: '';
-            position: absolute;
-            left: -25px;
-            top: 50%;
-            width: 10px;
-            height: 10px;
-            background: var(--bg-deep);
-            border: 2px solid var(--accent);
-            border-radius: 50%;
-            transform: translateY(-50%);
-            z-index: 2;
-        }
-
-        .sentinel-block {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 12px;
-            font-weight: 800;
-            color: var(--accent);
-        }
-
-        .block-label {
-            font-size: 9px;
-            color: var(--text-secondary);
+        .month-label {
+            font-size: 10px;
+            font-weight: 600;
             text-transform: uppercase;
-            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+            line-height: 1;
         }
-
-        .input-title {
-            background: transparent; border: none;
-            color: var(--text-primary); font-size: 24px; font-weight: 800;
-            width: 100%; border-bottom: 1px solid var(--border);
-            padding-bottom: 8px;
+        .year-label {
+            font-size: 9px;
+            color: var(--text-dim);
+            margin-top: 4px;
+            font-variant-numeric: tabular-nums;
+            font-weight: 500;
         }
+        .timeline-month.active .year-label { color: var(--text-primary); }
 
-        .input-area {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid var(--border);
-            color: var(--text-primary);
-            padding: 12px; border-radius: 4px;
-            min-height: 80px; font-family: inherit; resize: none;
-        }
-
-        /* --- ADD BUTTON --- */
-        .card-connector {
+        .has-milestone::after {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
             position: absolute;
-            bottom: -40vh; /* Entre deux cartes */
-            left: -5px;
-            z-index: 10;
-        }
-        .btn-add-jalon {
-            width: 30px; height: 30px; border-radius: 50%;
-            background: var(--bg-deep); border: 1px solid var(--accent);
-            color: var(--accent); cursor: pointer;
+            bottom: 10px;
+            box-shadow: 0 0 5px var(--accent-glow);
         }
 
         /* --- CONTROLS --- */
         .controls-bottom {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
             height: 80px;
-            padding: 0 20px var(--safe-bottom);
+            padding: 0 20px;
+            padding-bottom: var(--safe-bottom);
             display: flex;
-            gap: 10px;
+            align-items: center;
+            justify-content: space-between;
             background: var(--bg-deep);
             border-top: 1px solid var(--border);
+            z-index: 100;
         }
 
         .btn-nav {
-            flex: 1; height: 44px;
-            background: var(--surface); border: 1px solid var(--border);
-            color: var(--text-primary); font-size: 11px; font-weight: 700;
-            text-transform: uppercase; cursor: pointer;
+            height: 40px;
+            padding: 0 24px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+            letter-spacing: 0.5px;
         }
-        .btn-nav.primary { background: var(--text-primary); color: var(--bg-deep); }
+        .btn-nav:hover {
+            border-color: var(--border-active);
+            background: var(--surface-active);
+        }
+        .btn-nav:active { transform: scale(0.98); }
+
+        .btn-nav.primary {
+            background: var(--text-primary);
+            color: var(--bg-deep);
+            font-weight: 700;
+            border-color: var(--text-primary);
+        }
+        .btn-nav.primary:hover {
+            background: rgba(224, 224, 224, 0.9);
+        }
+
+        .btn-nav.disabled { opacity: 0.3; pointer-events: none; }
 
     </style>
 </head>
 <body>
 
+    <!-- HUD TOP -->
     <div class="hud-top">
         <div class="hud-label">COCKPIT <span class="hud-value">CARRY IT</span></div>
         <div class="hud-label" id="stepIndicator">JALON --/--</div>
-        <i class="ri-settings-3-line" style="color: var(--text-secondary)"></i>
+        <button class="btn-icon" title="Paramètres"><i class="ri-settings-3-line"></i></button>
     </div>
 
-    <div class="main-container">
-        <div class="timeline-rail">
-            <div class="timeline-track" id="timelineTrack"></div>
+    <!-- TIMELINE VIEWPORT (Main scroll container) -->
+    <div class="timeline-viewport" id="timelineViewport">
+        <div class="timeline-scroll" id="timelineScroll">
+            <!-- Cartes générées par JS -->
         </div>
 
-        <div class="timeline-viewport" id="timelineViewport">
-            <div class="timeline-scroll" id="timelineScroll"></div>
+        <!-- TIMELINE RAIL (Fixed) -->
+        <div class="timeline-rail" id="timelineRail">
+            <div class="timeline-indicator"></div>
+            <div class="timeline-track" id="timelineTrack">
+                <!-- Timeline mois générée par JS -->
+            </div>
         </div>
     </div>
 
+    <!-- CONTROLS -->
     <div class="controls-bottom">
-        <button class="btn-nav" id="btnForward">PRÉCÉDENT</button>
-        <button class="btn-nav primary" id="btnBackward">JALON SUIVANT</button>
+        <!-- BOUTON GAUCHE: Aller vers le HAUT (Futur) -->
+        <button class="btn-nav" id="btnForward">
+            <i class="ri-arrow-up-line"></i> VERS L'OBJECTIF
+        </button>
+
+        <!-- BOUTON DROITE: Aller vers le BAS (Passé) -->
+        <button class="btn-nav primary" id="btnBackward">
+            JALON ANTÉCÉDENT <i class="ri-arrow-down-line"></i>
+        </button>
     </div>
 
     <script>
+        // --- DATA & CONFIG ---
         const projectDurationMonths = 24;
         const projectDeadline = new Date();
         projectDeadline.setMonth(projectDeadline.getMonth() + projectDurationMonths);
 
+        // DATA SOURCE (Ordre logique : 0 = Futur, N = Passé)
         let milestones = [
-            { id: 'm1', offset: 0, title: "Objectif Final", desc: "Le système est stable.", kpiValue: "300 Clients" },
-            { id: 'm2', offset: 6, title: "Optimisation", desc: "Maximisation conversion.", kpiValue: "" },
-            { id: 'm3', offset: 12, title: "MVP Validé", desc: "Première base.", kpiValue: "Oui" },
+            { id: 'm1', offset: 0, title: "Objectif Final", desc: "Le système est stable et autonome.", kpiValue: "300 Clients" },
+            { id: 'm2', offset: 3, title: "Optimisation", desc: "Maximisation de la conversion.", kpiValue: "" },
+            { id: 'm3', offset: 12, title: "MVP Validé", desc: "Première base d'utilisateurs.", kpiValue: "Oui" },
             { id: 'm4', offset: 24, title: "Lancement", desc: "Démarrage du projet.", kpiValue: "" }
         ];
 
+        // --- DOM REFS ---
         const timelineViewport = document.getElementById('timelineViewport');
         const timelineScroll = document.getElementById('timelineScroll');
         const timelineTrack = document.getElementById('timelineTrack');
         const stepIndicator = document.getElementById('stepIndicator');
+        const btnForward = document.getElementById('btnForward');
+        const btnBackward = document.getElementById('btnBackward');
 
+        // --- STATE ---
+        let currentMilestoneId = null;
+        let isScrollingViewport = false;
+        let isScrollingTimeline = false;
+
+        // --- UTILS ---
         function formatDate(offset) {
-            const d = new Date(projectDeadline);
-            d.setMonth(projectDeadline.getMonth() - offset);
-            return d.toLocaleDateString('fr-FR', { month: 'short', year: '2-digit' }).toUpperCase();
+            const dateObj = new Date(projectDeadline);
+            dateObj.setMonth(projectDeadline.getMonth() - offset);
+            return dateObj.toLocaleDateString('fr-FR', { month: 'short', year: '2-digit' }).toUpperCase();
         }
 
+        // --- RENDER ALL CARDS ---
         function renderAllCards() {
             timelineScroll.innerHTML = '';
-            // Tri : Du plus récent (en haut) au plus ancien (en bas)
-            const sorted = [...milestones].sort((a, b) => a.offset - b.offset);
 
-            sorted.forEach((m, idx) => {
+            // LOGIQUE INVERSÉE : On trie du Passé (Offset Max) vers le Futur (Offset 0)
+            // Ainsi, dans le DOM Flex ROW :
+            // Gauche = Passé (Offset 24)
+            // Droite = Futur (Offset 0)
+            const sortedMilestones = [...milestones].sort((a, b) => b.offset - a.offset);
+
+            sortedMilestones.forEach((milestone, index) => {
                 const slot = document.createElement('div');
                 slot.className = 'card-slot';
-                slot.dataset.id = m.id;
-                slot.id = `card-${m.id}`;
+                slot.dataset.id = milestone.id;
+                slot.id = `card-${milestone.id}`;
 
-                slot.innerHTML = `
-                    <div class="card-wrapper">
-                        <div class="sentinel-block">
-                            <i class="ri-calendar-event-line"></i>
-                            <span>${m.offset === 0 ? 'FIN PROJET' : formatDate(m.offset)}</span>
-                        </div>
-                        <div>
-                            <div class="block-label">01 // Titre</div>
-                            <input type="text" class="input-title" value="${m.title}">
-                        </div>
-                        <div>
-                            <div class="block-label">02 // Objectif</div>
-                            <textarea class="input-area">${m.desc}</textarea>
+                // Card wrapper
+                const wrapper = document.createElement('div');
+                wrapper.className = 'card-wrapper';
+                wrapper.innerHTML = `
+                    <div class="sentinel-block">
+                        <i class="ri-time-line sentinel-icon"></i>
+                        <span class="sentinel-date">${milestone.offset === 0 ? 'FIN PROJET' : formatDate(milestone.offset)}</span>
+                    </div>
+                    <div class="data-block">
+                        <div class="block-label">01 // Nom du Jalon</div>
+                        <input type="text" class="input-raw input-title"
+                               value="${milestone.title}"
+                               data-id="${milestone.id}"
+                               placeholder="Titre..."
+                               autocomplete="off"
+                               oninput="updateData('${milestone.id}', 'title', this.value)">
+                    </div>
+                    <div class="data-block">
+                        <div class="block-label">02 // Le KPI (Mesurable)</div>
+                        <div class="kpi-wrapper">
+                            <i class="ri-flag-fill kpi-icon"></i>
+                            <input type="text" class="input-kpi"
+                                   value="${milestone.kpiValue}"
+                                   data-id="${milestone.id}"
+                                   placeholder="Ex: 500 utilisateurs"
+                                   autocomplete="off"
+                                   oninput="updateData('${milestone.id}', 'kpiValue', this.value)">
                         </div>
                     </div>
-                    ${idx < sorted.length - 1 ? `<div class="card-connector"><button class="btn-add-jalon">+</button></div>` : ''}
+                    <div class="data-block">
+                        <div class="block-label">03 // Objectif Concret</div>
+                        <textarea class="input-area"
+                                  data-id="${milestone.id}"
+                                  placeholder="Description factuelle..."
+                                  oninput="updateData('${milestone.id}', 'desc', this.value)">${milestone.desc}</textarea>
+                    </div>
                 `;
+
+                // Connector (Add button) - Placé visuellement à GAUCHE via CSS (left: -20px)
+                const connector = document.createElement('div');
+                connector.className = 'card-connector';
+                connector.innerHTML = `<button class="btn-add-jalon" onclick="addJalonInline('${milestone.id}')" title="Ajouter une étape avant">+</button>`;
+
+                slot.appendChild(connector); // Le CSS le place à gauche
+                slot.appendChild(wrapper);
                 timelineScroll.appendChild(slot);
             });
-            setupObserver();
+
+            setupIntersectionObserver();
         }
 
-        function renderRail() {
+        function updateData(id, field, value) {
+            const m = milestones.find(m => m.id === id);
+            if (m) m[field] = value;
+        }
+
+        // --- ADD JALON INLINE ---
+        function addJalonInline(refId) {
+            const refMilestone = milestones.find(m => m.id === refId);
+            if (!refMilestone) return;
+
+            // On ajoute un jalon avec un offset un peu plus grand (donc vers le passé)
+            // Pour simplifier, on prend l'offset actuel + 1 (ou moyenne si besoin)
+            const newOffset = refMilestone.offset + 1;
+            const newId = 'm_' + Date.now();
+
+            milestones.push({
+                id: newId,
+                offset: newOffset,
+                title: "",
+                desc: "",
+                kpiValue: ""
+            });
+
+            // Re-render (le tri automatique placera la carte à gauche)
+            renderAllCards();
+            renderTimeline();
+
+            // Scroll vers la nouvelle carte
+            setTimeout(() => {
+                const newSlot = document.getElementById(`card-${newId}`);
+                if (newSlot) {
+                    newSlot.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+                    // Focus titre
+                    newSlot.querySelector('.input-title').focus();
+                }
+            }, 100);
+        }
+
+        // --- RENDER TIMELINE RAIL ---
+        function renderTimeline() {
             timelineTrack.innerHTML = '';
-            for (let i = 0; i <= projectDurationMonths; i++) {
-                const isM = milestones.some(m => m.offset === i);
-                const el = document.createElement('div');
-                el.className = `timeline-month ${isM ? 'active' : ''}`;
-                el.dataset.offset = i;
+
+            // Timeline: Passé (24) à gauche -> Futur (0) à droite
+            // On boucle de 24 (Start) à 0 (End)
+            for (let i = projectDurationMonths; i >= 0; i--) {
+                const monthEl = document.createElement('div');
+                const isMilestone = milestones.some(m => Math.abs(m.offset - i) < 0.5);
                 
-                const d = new Date(projectDeadline);
-                d.setMonth(projectDeadline.getMonth() - i);
+                monthEl.className = `timeline-month ${isMilestone ? 'has-milestone' : ''}`;
+                monthEl.dataset.offset = i;
                 
-                el.innerHTML = `
-                    <div class="tick"></div>
-                    <span class="month-label">${d.toLocaleDateString('fr-FR', {month: 'short'}).toUpperCase()}</span>
-                `;
-                el.onclick = () => {
-                    const target = milestones.reduce((prev, curr) => Math.abs(curr.offset - i) < Math.abs(prev.offset - i) ? curr : prev);
-                    document.getElementById(`card-${target.id}`).scrollIntoView({behavior:'smooth'});
+                // Clic sur rail
+                monthEl.onclick = () => {
+                   // Trouver le jalon le plus proche
+                   const target = milestones.reduce((prev, curr) => 
+                       Math.abs(curr.offset - i) < Math.abs(prev.offset - i) ? curr : prev
+                   );
+                   const slot = document.getElementById(`card-${target.id}`);
+                   if(slot) slot.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
                 };
-                timelineTrack.appendChild(el);
+
+                const dateObj = new Date(projectDeadline);
+                dateObj.setMonth(projectDeadline.getMonth() - i);
+                
+                const label = i === 0 ? 'FIN' : dateObj.toLocaleDateString('fr-FR', { month: 'short' }).toUpperCase();
+                const year = dateObj.getFullYear();
+
+                monthEl.innerHTML = `
+                    <div class="tick"></div>
+                    <span class="month-label">${label}</span>
+                    <span class="year-label">${year}</span>
+                `;
+
+                timelineTrack.appendChild(monthEl);
             }
         }
 
-        function setupObserver() {
+        // --- INTERSECTION OBSERVER ---
+        function setupIntersectionObserver() {
+            const cards = document.querySelectorAll('.card-slot');
             const observer = new IntersectionObserver(entries => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
+                        // Highlight Card
                         document.querySelectorAll('.card-slot').forEach(c => c.classList.remove('active'));
                         entry.target.classList.add('active');
-                        
-                        const mid = entry.target.dataset.id;
-                        const m = milestones.find(ms => ms.id === mid);
-                        
-                        // Sync Rail
-                        document.querySelectorAll('.timeline-month').forEach(el => {
-                            el.classList.toggle('active', parseInt(el.dataset.offset) === m.offset);
-                            if(parseInt(el.dataset.offset) === m.offset) el.scrollIntoView({block:'center', behavior:'smooth'});
-                        });
 
-                        const sortedIds = [...milestones].sort((a,b)=>a.offset-b.offset).map(ms=>ms.id);
-                        stepIndicator.innerText = `JALON ${sortedIds.indexOf(mid)+1}/${milestones.length}`;
+                        // Update State
+                        currentMilestoneId = entry.target.dataset.id;
+                        const m = milestones.find(m => m.id === currentMilestoneId);
+
+                        // Update HUD
+                        const total = milestones.length;
+                        // Index visuel (trié)
+                        const sortedIds = [...milestones].sort((a, b) => b.offset - a.offset).map(m => m.id);
+                        const visualIndex = sortedIds.indexOf(currentMilestoneId) + 1;
+                        stepIndicator.innerText = `JALON ${visualIndex}/${total}`;
+
+                        // Sync Rail
+                        syncRail(m.offset);
+                        updateButtons(m);
                     }
                 });
-            }, { threshold: 0.6, root: timelineViewport });
+            }, { threshold: 0.5, root: timelineViewport });
 
-            document.querySelectorAll('.card-slot').forEach(s => observer.observe(s));
+            cards.forEach(card => observer.observe(card));
         }
 
-        document.getElementById('btnBackward').onclick = () => timelineViewport.scrollBy({top: window.innerHeight * 0.8, behavior:'smooth'});
-        document.getElementById('btnForward').onclick = () => timelineViewport.scrollBy({top: -window.innerHeight * 0.8, behavior:'smooth'});
+        function syncRail(offset) {
+            document.querySelectorAll('.timeline-month').forEach(el => {
+                el.classList.toggle('active', parseInt(el.dataset.offset) === offset);
+            });
+            const activeMonth = document.querySelector('.timeline-month.active');
+            if (activeMonth && !isScrollingTimeline) {
+                activeMonth.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
 
-        renderAllCards();
-        renderRail();
+        // --- BUTTONS LOGIC ---
+        function updateButtons(currentMilestone) {
+            // Si on est à l'Objectif (Offset 0) -> Pas de bouton "Vers l'Objectif"
+            if (currentMilestone.offset === 0) {
+                btnForward.style.opacity = '0.3';
+                btnForward.style.pointerEvents = 'none';
+            } else {
+                btnForward.style.opacity = '1';
+                btnForward.style.pointerEvents = 'auto';
+            }
+
+            // Bouton Action Principale (Antécédent)
+            // Si on est au tout début du projet (Offset Max), ça devient "Terminer" ?
+            // Ici on garde simple.
+        }
+
+        btnForward.addEventListener('click', () => {
+            // Aller vers le HAUT (Futur/Objectif)
+            timelineViewport.scrollBy({ top: -window.innerHeight * 0.85, behavior: 'smooth' });
+        });
+
+        btnBackward.addEventListener('click', () => {
+            // Aller vers le BAS (Passé)
+            timelineViewport.scrollBy({ top: window.innerHeight * 0.85, behavior: 'smooth' });
+        });
+
+        // --- SYNC SCROLLS (Approximation pour l'effet visuel) ---
+        // On simplifie pour éviter les boucles infinies : seul le viewport pilote le rail via l'observer
+        
+        // --- INIT ---
+        function init() {
+            renderAllCards();
+            renderTimeline();
+
+            // DEMARRAGE : SCROLL TOUT EN HAUT (Objectif Final)
+            // On attend que le rendu soit fait
+            setTimeout(() => {
+                timelineViewport.scrollTop = 0;
+            }, 100);
+        }
+
+        init();
+
     </script>
 </body>
 </html>
