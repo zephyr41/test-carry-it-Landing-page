@@ -1,382 +1,266 @@
 <!DOCTYPE html>
-<html lang="fr" class="dark-mode">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Carry It - Jalons</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carry It — Focus Trajectoire</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        /* Système de couleurs CarryIT */
         :root {
-            --bg-base: #050505;
-            --text-primary: #FFFDF6;
-            --text-info: #929292;
-            --accent-action: #EE4408;
+            --bg: #080809;
+            --text: #FFFDF6;
+            --dim: #929292;
+            --accent: #EE4408;
             --confirm: #0A2A53;
             --secondary: #F34C0A;
-            --tracker: #404025;
-            --glass: rgba(255, 253, 246, 0.03);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            background-color: var(--bg-base);
-            color: var(--text-primary);
+            background: var(--bg);
+            color: var(--text);
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            padding: 20px;
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
             min-height: 100vh;
         }
 
-        .app-container {
-            width: 100%;
-            max-width: 600px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-        }
+        .container { width: 100%; max-width: 500px; }
 
         /* Navbar */
-        .navbar {
-            margin-bottom: 40px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        .navbar-top {
+            margin-bottom: 60px;
         }
 
-        .navbar-logo {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--text-primary);
+        .navbar-back {
+            color: var(--text);
             text-decoration: none;
-        }
-
-        /* Onboarding */
-        .ai-onboarding {
-            background: var(--glass);
-            border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 40px;
-            border-left: 4px solid var(--accent-action);
-        }
-
-        .ai-onboarding h2 {
             font-size: 0.9rem;
-            color: var(--accent-action);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .ai-onboarding p {
-            font-size: 1rem;
-            color: var(--text-primary);
-            line-height: 1.5;
-        }
-
-        .ai-onboarding strong { color: var(--secondary); }
-
-        /* Goal Summary */
-        .goal-summary {
-            margin-bottom: 40px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding-bottom: 20px;
-            position: relative;
-        }
-
-        .goal-title {
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: var(--text-primary);
-            margin-bottom: 8px;
-        }
-
-        .goal-date {
-            color: var(--secondary);
-            font-size: 0.8rem;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        .time-tag {
-            position: absolute;
-            right: 0;
-            top: 0;
-            background: var(--tracker);
-            padding: 4px 10px;
-            font-size: 0.7rem;
-            border-radius: 4px;
-            color: var(--text-primary);
-        }
-
-        /* Chat Bubble */
-        .chat-bubble {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 15px 20px;
-            border-radius: 18px 18px 18px 4px;
-            margin-bottom: 40px;
-            font-size: 0.95rem;
-            line-height: 1.5;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        /* Milestones */
-        .milestones-wrapper {
-            position: relative;
-            padding-left: 40px;
-        }
-
-        .time-marker {
-            position: absolute;
-            left: -10px;
-            font-size: 0.65rem;
-            color: var(--text-info);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transform: rotate(-90deg) translateX(-20px);
-            transform-origin: left;
-        }
-
-        .milestone {
+        /* Victoire : Le point de départ (Haut) */
+        .victory-node {
+            border-left: 2px solid var(--secondary);
+            padding: 0 0 40px 24px;
             position: relative;
             margin-bottom: 40px;
-            opacity: 0.3;
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .milestone.active { opacity: 1; }
-        .milestone.validated { opacity: 0.7; }
-
-        .milestone::before {
+        .victory-node::before {
             content: '';
             position: absolute;
-            left: -40px;
-            top: 12px;
-            width: 14px;
-            height: 14px;
+            left: -9px;
+            top: 0;
+            width: 16px;
+            height: 16px;
             border-radius: 50%;
-            background: var(--text-info);
-            z-index: 2;
-            border: 3px solid var(--bg-base);
+            background: var(--secondary);
+            box-shadow: 0 0 15px var(--secondary);
         }
 
-        .milestone.active::before {
-            background: var(--accent-action);
-            box-shadow: 0 0 15px var(--accent-action);
-        }
-
-        .milestone.validated::before {
-            background: var(--confirm);
-            content: '✓';
-            color: white;
-            font-size: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            line-height: 14px;
-        }
-
-        .milestone-line {
-            position: absolute;
-            left: -34px;
-            top: 25px;
-            bottom: -25px;
-            width: 2px;
-            background: linear-gradient(to bottom, var(--accent-action), var(--tracker));
-            opacity: 0.2;
-        }
-
-        .card {
-            background: var(--glass);
-            border-radius: 16px;
-            padding: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .status-badge {
+        .victory-label {
+            color: var(--secondary);
             font-size: 0.7rem;
+            font-weight: 800;
             text-transform: uppercase;
-            font-weight: 700;
-            padding: 3px 10px;
-            border-radius: 4px;
-            margin-bottom: 15px;
-            display: inline-block;
+            letter-spacing: 1px;
         }
 
-        .status-active { background: var(--accent-action); color: white; }
-        .status-validated { background: var(--confirm); color: white; }
+        .victory-title {
+            font-size: 1.5rem;
+            font-weight: 900;
+            margin-top: 4px;
+            line-height: 1.3;
+        }
 
-        .question-label {
-            display: block;
-            font-size: 0.9rem;
-            color: var(--text-info);
-            margin-bottom: 12px;
+        /* Chat IA : Le guide */
+        .ai-guide {
+            margin: 40px 0;
+            font-size: 1.1rem;
+            line-height: 1.6;
             font-weight: 500;
-            line-height: 1.4;
+            color: var(--text);
         }
 
-        .smart-input {
-            width: 100%;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--text-primary);
-            padding: 14px;
-            border-radius: 10px;
-            font-size: 1rem;
-            margin-bottom: 20px;
-            transition: all 0.3s;
-            font-family: inherit;
-        }
-
-        .smart-input:focus {
-            border-color: var(--accent-action);
-            background: rgba(0, 0, 0, 0.6);
-            outline: none;
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 12px;
-            margin-top: 10px;
-        }
-
-        .btn {
-            padding: 14px 24px;
+        /* La carte active : Focus unique */
+        .step-card {
+            background: rgba(255, 255, 255, 0.03);
             border-radius: 12px;
-            font-weight: 700;
-            font-size: 0.95rem;
-            cursor: pointer;
-            border: none;
-            transition: all 0.2s;
-            text-align: center;
-            font-family: inherit;
+            padding: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            margin-bottom: 24px;
         }
 
-        .btn-primary {
-            background: var(--accent-action);
-            color: white;
-            flex: 2;
-        }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--text-primary);
-            flex: 1;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            filter: brightness(1.2);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.15);
-        }
-
-        .summary-overlay {
-            display: none;
-            text-align: center;
-            padding: 40px 0;
-            animation: fadeIn 0.8s ease;
-        }
-
-        .footer-note {
-            margin-top: 60px;
+        .input-label {
+            display: block;
+            color: var(--dim);
             font-size: 0.75rem;
-            color: var(--text-info);
-            text-align: center;
-            padding: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        input, textarea {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #333;
+            color: var(--text);
+            padding: 12px 0;
+            font-size: 1rem;
+            margin-bottom: 24px;
+            outline: none;
+            font-family: inherit;
+            resize: none;
         }
 
-        .ai-pulse {
-            display: none;
-            color: var(--accent-action);
-            font-size: 0.8rem;
-            font-weight: bold;
+        input:focus, textarea:focus {
+            border-bottom-color: var(--accent);
+        }
+
+        .btn-main {
+            background: var(--accent);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 16px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
             margin-bottom: 12px;
-            animation: pulse 1.5s infinite;
+            font-size: 0.95rem;
+            transition: all 0.2s;
         }
 
-        @keyframes pulse {
-            0% { opacity: 0.5; }
-            50% { opacity: 1; }
-            100% { opacity: 0.5; }
+        .btn-main:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+        .btn-ai {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-ai:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Timeline discrète */
+        .steps-left {
+            margin-top: 40px;
+            text-align: center;
+            color: var(--dim);
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
 
         .hidden { display: none !important; }
 
+        .ai-typing {
+            color: var(--accent);
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            animation: pulse 1s infinite;
+            display: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .final-screen {
+            text-align: center;
+            padding-top: 40px;
+        }
+
+        .final-screen h2 {
+            color: var(--confirm);
+            font-size: 2rem;
+            margin-bottom: 20px;
+            font-weight: 900;
+        }
+
+        .final-screen p {
+            color: var(--dim);
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
         @media (max-width: 600px) {
-            .app-container { max-width: 100%; }
-            .goal-title { font-size: 1.4rem; }
-            .btn-group { flex-direction: column; }
-            .btn-primary, .btn-secondary { flex: 1; }
+            body { padding: 20px; }
+            .victory-title { font-size: 1.2rem; }
+            .ai-guide { font-size: 0.95rem; }
         }
     </style>
 </head>
 <body>
 
-<div class="app-container" id="main-flow">
+<div class="container" id="app">
     <!-- Navbar -->
-    <nav class="navbar">
-        <a href="dashboard.html" class="navbar-logo">← Carry It</a>
-    </nav>
-
-    <!-- Onboarding -->
-    <div class="ai-onboarding">
-        <h2>Méthode : Rétroplanning</h2>
-        <p>Pour ne rien oublier, nous allons <strong>remonter le temps</strong>. Nous partons de votre succès final pour identifier, étape par étape, ce qui doit être accompli juste avant.</p>
+    <div class="navbar-top">
+        <a href="dashboard.html" class="navbar-back">← Retour</a>
     </div>
 
-    <!-- Goal Summary -->
-    <div class="goal-summary" id="goalSummary">
-        <div class="time-tag" id="goalTimeTag">Vision</div>
-        <span class="goal-date" id="goalDate">Cible : --</span>
-        <h1 class="goal-title" id="goalTitle">--</h1>
+    <!-- 1. La Victoire (Objectif Final) -->
+    <div class="victory-node">
+        <div class="victory-label">Objectif Atteint</div>
+        <div class="victory-title" id="goal-title">Chargement...</div>
     </div>
 
-    <!-- Chat Bubble -->
-    <div class="chat-bubble" id="chatBubble">
-        Imaginons que nous sommes à la date cible et que vous avez réussi. <br><br>
-        <strong>Quelle est la toute dernière barrière que vous avez dû franchir juste avant ce succès ?</strong>
+    <!-- 2. Guide IA -->
+    <div class="ai-guide" id="ai-question">
+        Analyse de votre objectif...
     </div>
 
-    <!-- Milestones -->
-    <div class="milestones-wrapper" id="milestonesContainer">
-        <div class="time-marker" style="top: 0;">FUTUR</div>
-        <!-- Jalons générés par JS -->
-        <div class="time-marker" style="bottom: -20px;">AUJOURD'HUI</div>
+    <!-- 3. Formulaire Minimaliste -->
+    <div class="step-card">
+        <div class="ai-typing" id="ai-loading">✨ L'IA déconstruit votre succès...</div>
+
+        <label class="input-label">Titre de cette étape</label>
+        <input type="text" id="input-titre" placeholder="Ex: Finaliser mon offre">
+
+        <label class="input-label">Preuve de succès (KPI)</label>
+        <input type="text" id="input-kpi" placeholder="Ex: 10 clients satisfaits">
+
+        <label class="input-label">Plan d'action</label>
+        <textarea id="input-desc" placeholder="Détails de ce qui doit être fait" rows="3"></textarea>
+
+        <button class="btn-main" onclick="nextStep()">Valider cette étape</button>
+        <button class="btn-ai" onclick="askAI()">✨ Laisser l'IA suggérer</button>
     </div>
 
-    <div id="final-cta" style="display: none; margin-top: 40px;">
-        <button class="btn btn-primary" style="width: 100%; padding: 20px; font-size: 1.1rem; box-shadow: 0 10px 30px rgba(238, 68, 8, 0.2);" onclick="showSummary()">
-            Confirmer ma trajectoire
-        </button>
-    </div>
-
-    <div class="footer-note">
-        Carry It — Planification par rétro-ingénierie assistée par IA.
+    <!-- 4. Footer progression -->
+    <div class="steps-left" id="progression">
+        ÉTAPE 1 SUR 3
     </div>
 </div>
 
-<!-- Summary Screen -->
-<div class="app-container summary-overlay" id="summary-screen">
-    <div class="card" style="border: 2px solid var(--confirm);">
-        <h2 style="color: var(--confirm); font-size: 1.8rem; margin-bottom: 15px;">Trajectoire Confirmée</h2>
-        <p style="margin-bottom: 40px; color: var(--text-info); line-height: 1.6;">
-            En partant de votre succès, nous avons sécurisé chaque étape nécessaire. Le chemin est désormais clair.
-        </p>
-
-        <div style="text-align: left; margin-bottom: 40px; background: rgba(10, 42, 83, 0.1); padding: 20px; border-radius: 12px;">
-            <strong style="color: var(--confirm); font-size: 0.8rem; text-transform: uppercase;">PREMIÈRE ACTION</strong><br>
-            <p style="margin-top: 10px; font-size: 1.1rem; font-weight: 600;" id="firstActionText">--</p>
-        </div>
-
-        <button class="btn btn-primary" style="width: 100%" onclick="location.href='dashboard.html'">Retour au tableau de bord</button>
+<!-- Écran Final -->
+<div class="container hidden" id="final">
+    <div class="final-screen">
+        <h2>Trajectoire Prête</h2>
+        <p>Votre ambition est découpée.<br>Le chemin est sécurisé.</p>
+        <button class="btn-main" onclick="location.href='dashboard.html'">Retour au tableau de bord</button>
     </div>
 </div>
 
@@ -385,8 +269,19 @@
     let currentObjectif = null;
     let currentStepIndex = 0;
 
+    const questions = [
+        "Pour réussir {objectif}, quelle est la toute dernière étape juste avant la ligne d'arrivée ?",
+        "Pour que cette étape soit possible, que devez-vous avoir accompli au milieu du projet ?",
+        "Pour ne pas rester dans le rêve, quelle est la première action concrète à valider ce mois-ci ?"
+    ];
+
+    const aiSuggestions = [
+        { titre: "Validation finale", kpi: "100% prêt et approuvé", desc: "Vérifier tous les détails et obtenir les validations finales" },
+        { titre: "Point de contrôle majeur", kpi: "50% des objectifs atteints", desc: "Évaluer la progression et ajuster la stratégie si nécessaire" },
+        { titre: "Lancer le projet", kpi: "Première étape validée", desc: "Commencer immédiatement avec la première action" }
+    ];
+
     function loadData() {
-        // Charger l'objectif
         const allObjectifs = JSON.parse(localStorage.getItem('carryItAllObjectifs') || '[]');
         if (allObjectifs.length === 0) {
             window.location.href = 'objectif.html';
@@ -394,137 +289,79 @@
         }
 
         currentObjectif = allObjectifs[allObjectifs.length - 1];
-
-        // Charger les jalons
         milestones = JSON.parse(localStorage.getItem('carryItMilestones') || '[]');
+
         if (milestones.length === 0) {
-            milestones = [{ id: 'm_' + Date.now(), titre: '', kpi: '', desc: '', progression: 0 }];
+            milestones = [{ id: 'm_' + Date.now(), titre: '', kpi: '', desc: '', progression: 100 }];
         }
 
-        // Trier par progression DÉCROISSANTE (futur 100% → passé 0%)
+        // Trier par progression DÉCROISSANTE (du futur au passé)
         milestones.sort((a, b) => (b.progression || 0) - (a.progression || 0));
 
-        renderGoalSummary();
-        renderMilestones();
+        init();
     }
 
-    function renderGoalSummary() {
-        const deadline = new Date(currentObjectif.deadline);
-        const month = deadline.toLocaleString('fr-FR', { month: 'long', year: 'numeric' });
-
-        document.getElementById('goalTitle').textContent = currentObjectif.titre;
-        document.getElementById('goalDate').textContent = `Cible : ${month.charAt(0).toUpperCase() + month.slice(1)}`;
-        document.getElementById('goalTimeTag').textContent = `Vision ${Math.ceil(currentObjectif.months)} mois`;
-        document.getElementById('firstActionText').textContent = milestones[milestones.length - 1]?.desc || 'Commencer votre projet';
+    function init() {
+        document.getElementById('goal-title').innerText = currentObjectif.titre;
+        updateAIQuestion();
+        loadMilestoneData();
     }
 
-    function renderMilestones() {
-        const container = document.getElementById('milestonesContainer');
+    function updateAIQuestion() {
+        const question = questions[currentStepIndex]
+            .replace('{objectif}', currentObjectif.titre);
+        document.getElementById('ai-question').innerText = question;
+        document.getElementById('progression').innerText = `ÉTAPE ${currentStepIndex + 1} SUR ${milestones.length}`;
+    }
 
-        // Vider (garder les time-markers)
-        const timeMarkers = container.querySelectorAll('.time-marker');
-        container.innerHTML = '';
-        container.appendChild(timeMarkers[0]);
-
-        milestones.forEach((milestone, index) => {
-            const isActive = index === currentStepIndex;
-            const isValidated = index < currentStepIndex;
-
-            const milestoneEl = document.createElement('div');
-            milestoneEl.className = `milestone ${isActive ? 'active' : ''} ${isValidated ? 'validated' : ''}`;
-            milestoneEl.id = `ms-${milestone.id}`;
-
-            if (!isValidated && !isActive) {
-                milestoneEl.innerHTML = `
-                    <div class="milestone-line"></div>
-                    <div class="status-badge" style="background: rgba(255, 255, 255, 0.1);">À venir</div>
-                `;
-            } else {
-                const badgeClass = isValidated ? 'status-validated' : 'status-active';
-                const badgeText = isValidated ? '✓ Validée' : '◆ Étape actuelle';
-
-                milestoneEl.innerHTML = `
-                    <div class="milestone-line"></div>
-                    <div class="status-badge ${badgeClass}">${badgeText}</div>
-                    <div class="card">
-                        <div id="ai-thinking-${milestone.id}" class="ai-pulse">✨ L'IA déconstruit votre succès...</div>
-                        ${isActive ? `
-                            <div class="input-block">
-                                <label class="question-label">Titre de cette étape</label>
-                                <input type="text" class="smart-input" id="titre-${milestone.id}" placeholder="Ex: Finaliser mon offre" value="${milestone.titre || ''}">
-
-                                <label class="question-label">Comment saurez-vous que c'est réussi ? (KPI)</label>
-                                <input type="text" class="smart-input" id="kpi-${milestone.id}" placeholder="Ex: 3 clients satisfaits" value="${milestone.kpi || ''}">
-
-                                <label class="question-label">Description / Plan d'action</label>
-                                <input type="text" class="smart-input" id="desc-${milestone.id}" placeholder="Détails de ce qui doit être fait" value="${milestone.desc || ''}">
-
-                                <div class="btn-group">
-                                    <button class="btn btn-primary" onclick="validateMilestone('${milestone.id}')">Valider cette étape</button>
-                                    <button class="btn btn-secondary" onclick="simulateAI('${milestone.id}')">IA</button>
-                                </div>
-                            </div>
-                        ` : `
-                            <div style="color: var(--text-info);">
-                                <p><strong>${milestone.titre}</strong></p>
-                                ${milestone.kpi ? `<p style="font-size: 0.9rem; margin-top: 8px;">KPI: ${milestone.kpi}</p>` : ''}
-                            </div>
-                        `}
-                    </div>
-                `;
-            }
-
-            container.appendChild(milestoneEl);
-        });
-
-        container.appendChild(timeMarkers[1]);
-
-        if (currentStepIndex === milestones.length) {
-            document.getElementById('final-cta').style.display = 'block';
+    function loadMilestoneData() {
+        const milestone = milestones[currentStepIndex];
+        if (milestone) {
+            document.getElementById('input-titre').value = milestone.titre || '';
+            document.getElementById('input-kpi').value = milestone.kpi || '';
+            document.getElementById('input-desc').value = milestone.desc || '';
         }
     }
 
-    function validateMilestone(milestoneId) {
-        const milestone = milestones.find(m => m.id === milestoneId);
-        if (!milestone) return;
-
-        milestone.titre = document.getElementById(`titre-${milestoneId}`).value;
-        milestone.kpi = document.getElementById(`kpi-${milestoneId}`).value;
-        milestone.desc = document.getElementById(`desc-${milestoneId}`).value;
-
-        saveMilestones();
-
-        currentStepIndex++;
-        renderMilestones();
-        window.scrollTo({ top: document.querySelector(`#ms-${milestoneId}`).offsetTop - 200, behavior: 'smooth' });
-    }
-
-    function simulateAI(milestoneId) {
-        const thinking = document.getElementById(`ai-thinking-${milestoneId}`);
-        thinking.style.display = 'block';
+    function askAI() {
+        const loading = document.getElementById('ai-loading');
+        loading.style.display = 'block';
 
         setTimeout(() => {
-            // Suggestions IA
-            const suggestions = {
-                titre: "Étape clé de préparation",
-                kpi: "100% prêt et validé",
-                desc: "Vérifier que tous les éléments sont en place et testés"
-            };
-
-            document.getElementById(`titre-${milestoneId}`).value = suggestions.titre;
-            document.getElementById(`kpi-${milestoneId}`).value = suggestions.kpi;
-            document.getElementById(`desc-${milestoneId}`).value = suggestions.desc;
-            thinking.style.display = 'none';
+            const suggestion = aiSuggestions[Math.min(currentStepIndex, aiSuggestions.length - 1)];
+            document.getElementById('input-titre').value = suggestion.titre;
+            document.getElementById('input-kpi').value = suggestion.kpi;
+            document.getElementById('input-desc').value = suggestion.desc;
+            loading.style.display = 'none';
         }, 1200);
     }
 
-    function saveMilestones() {
+    function nextStep() {
+        // Sauvegarder les données
+        const milestone = milestones[currentStepIndex];
+        if (milestone) {
+            milestone.titre = document.getElementById('input-titre').value;
+            milestone.kpi = document.getElementById('input-kpi').value;
+            milestone.desc = document.getElementById('input-desc').value;
+        }
         localStorage.setItem('carryItMilestones', JSON.stringify(milestones));
-    }
 
-    function showSummary() {
-        document.getElementById('main-flow').style.display = 'none';
-        document.getElementById('summary-screen').style.display = 'block';
+        currentStepIndex++;
+
+        if (currentStepIndex >= milestones.length) {
+            // Montrer l'écran final
+            document.getElementById('app').classList.add('hidden');
+            document.getElementById('final').classList.remove('hidden');
+        } else {
+            // Charger l'étape suivante
+            updateAIQuestion();
+            loadMilestoneData();
+            // Reset inputs pour animation
+            document.getElementById('input-titre').value = '';
+            document.getElementById('input-kpi').value = '';
+            document.getElementById('input-desc').value = '';
+            setTimeout(() => loadMilestoneData(), 100);
+        }
     }
 
     // Init
