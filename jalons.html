@@ -761,12 +761,12 @@
         function renderAllCards() {
             timelineScroll.innerHTML = '';
 
-            // Trier du Futur (objectif) vers le Passé (aujourd'hui)
-            // Plus la date est loin dans le futur, plus elle est en haut
+            // Trier du Passé (aujourd'hui) vers le Futur (objectif)
+            // Plus la date est proche du passé, plus elle est en haut
             const sortedMilestones = [...milestones].sort((a, b) => {
                 const dateA = new Date(a.date);
                 const dateB = new Date(b.date);
-                return dateB - dateA; // Descendant: futur en premier
+                return dateA - dateB; // Ascendant: passé en premier
             });
 
             sortedMilestones.forEach((milestone, index) => {
@@ -952,8 +952,8 @@
 
                         // Update HUD
                         const total = milestones.length;
-                        // Index visuel (trié par date descendante)
-                        const sortedIds = [...milestones].sort((a, b) => new Date(b.date) - new Date(a.date)).map(m => m.id);
+                        // Index visuel (trié par date ascendante - passé en premier)
+                        const sortedIds = [...milestones].sort((a, b) => new Date(a.date) - new Date(b.date)).map(m => m.id);
                         const visualIndex = sortedIds.indexOf(currentMilestoneId) + 1;
                         stepIndicator.innerText = `JALON ${visualIndex}/${total}`;
 
