@@ -1030,13 +1030,6 @@
                         currentMilestoneId = entry.target.dataset.id;
                         const m = milestones.find(m => m.id === currentMilestoneId);
 
-                        // Update HUD
-                        const total = milestones.length;
-                        // Index visuel (trié par date descendante - futur en premier)
-                        const sortedIds = [...milestones].sort((a, b) => new Date(b.date) - new Date(a.date)).map(m => m.id);
-                        const visualIndex = sortedIds.indexOf(currentMilestoneId) + 1;
-                        stepIndicator.innerText = `JALON ${visualIndex}/${total}`;
-
                         // Sync Rail avec offset par rapport à la deadline
                         const railOffset = calculateRailOffset(m.date);
                         syncRail(railOffset);
