@@ -761,12 +761,12 @@
         function renderAllCards() {
             timelineScroll.innerHTML = '';
 
-            // Trier du Passé (aujourd'hui) vers le Futur (objectif)
-            // Plus la date est proche du passé, plus elle est en haut
+            // Trier du Futur (objectif) vers le Passé (aujourd'hui) - RÉTROPLANNING
+            // L'Objectif Final en haut, Lancement en bas
             const sortedMilestones = [...milestones].sort((a, b) => {
                 const dateA = new Date(a.date);
                 const dateB = new Date(b.date);
-                return dateA - dateB; // Ascendant: passé en premier
+                return dateB - dateA; // Descendant: futur en premier
             });
 
             sortedMilestones.forEach((milestone, index) => {
@@ -891,9 +891,9 @@
         function renderTimeline() {
             timelineTrack.innerHTML = '';
 
-            // Timeline verticale: Futur (0) en haut -> Passé (24) en bas
-            // On boucle de 0 (Objectif) à 24 (Lancement)
-            for (let i = 0; i <= projectDurationMonths; i++) {
+            // Timeline verticale: Passé (24) en haut -> Futur (0) en bas (RÉTROPLANNING)
+            // On boucle de 24 (Lancement/Aujourd'hui) à 0 (Objectif Final)
+            for (let i = projectDurationMonths; i >= 0; i--) {
                 const monthEl = document.createElement('div');
                 // Vérifier si un jalon a un offset proche (calculé depuis sa date)
                 const isMilestone = milestones.some(m => Math.abs(calculateOffset(m.date) - i) < 0.5);
@@ -952,8 +952,8 @@
 
                         // Update HUD
                         const total = milestones.length;
-                        // Index visuel (trié par date ascendante - passé en premier)
-                        const sortedIds = [...milestones].sort((a, b) => new Date(a.date) - new Date(b.date)).map(m => m.id);
+                        // Index visuel (trié par date descendante - futur en premier)
+                        const sortedIds = [...milestones].sort((a, b) => new Date(b.date) - new Date(a.date)).map(m => m.id);
                         const visualIndex = sortedIds.indexOf(currentMilestoneId) + 1;
                         stepIndicator.innerText = `JALON ${visualIndex}/${total}`;
 
