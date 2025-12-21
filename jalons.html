@@ -891,9 +891,9 @@
         function renderTimeline() {
             timelineTrack.innerHTML = '';
 
-            // Timeline verticale: Passé (24) en haut -> Futur (0) en bas (RÉTROPLANNING)
-            // On boucle de 24 (Lancement/Aujourd'hui) à 0 (Objectif Final)
-            for (let i = projectDurationMonths; i >= 0; i--) {
+            // Timeline verticale: Futur (0) en haut -> Passé (24) en bas (RÉTROPLANNING)
+            // On boucle de 0 (Objectif Final) à 24 (Lancement/Aujourd'hui)
+            for (let i = 0; i <= projectDurationMonths; i++) {
                 const monthEl = document.createElement('div');
                 // Vérifier si un jalon a un offset proche (calculé depuis sa date)
                 const isMilestone = milestones.some(m => Math.abs(calculateOffset(m.date) - i) < 0.5);
