@@ -747,6 +747,15 @@
             return diffMonths;
         }
 
+        // Calcule l'offset par rapport à la DEADLINE du projet (pour le rail)
+        function calculateRailOffset(dateString) {
+            const targetDate = new Date(dateString + 'T00:00:00');
+            const deadline = new Date(projectDeadline);
+            const diffTime = deadline - targetDate;
+            const diffMonths = Math.round(diffTime / (1000 * 60 * 60 * 24 * 30.44));
+            return Math.max(0, Math.min(projectDurationMonths, diffMonths));
+        }
+
         function formatDateDisplay(dateString) {
             const date = new Date(dateString + 'T00:00:00');
             return date.toLocaleDateString('fr-FR', { month: 'short', year: '2-digit' }).toUpperCase();
@@ -957,9 +966,9 @@
                         const visualIndex = sortedIds.indexOf(currentMilestoneId) + 1;
                         stepIndicator.innerText = `JALON ${visualIndex}/${total}`;
 
-                        // Sync Rail avec offset calculé
-                        const offset = calculateOffset(m.date);
-                        syncRail(offset);
+                        // Sync Rail avec offset par rapport à la deadline
+                        const railOffset = calculateRailOffset(m.date);
+                        syncRail(railOffset);
                         updateButtons(m);
                     }
                 });
@@ -985,11 +994,11 @@
 
         // --- BUTTONS LOGIC ---
         function updateButtons(currentMilestone) {
-            // Calculer l'offset depuis la date
-            const offset = calculateOffset(currentMilestone.date);
+            // Calculer l'offset depuis la deadline
+            const railOffset = calculateRailOffset(currentMilestone.date);
 
             // Si on est à l'Objectif (Offset 0) -> Pas de bouton "Vers l'Objectif"
-            if (offset === 0) {
+            if (railOffset === 0) {
                 btnForward.style.opacity = '0.3';
                 btnForward.style.pointerEvents = 'none';
             } else {
