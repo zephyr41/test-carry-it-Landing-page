@@ -756,7 +756,9 @@
                 jalons: jalons  // NOUVEAU
             });
             localStorage.setItem('carryItAllObjectifs', JSON.stringify(all));
-            window.location.href = 'jalon.html';
+            // Sauvegarder aussi les jalons directement pour jalons.html
+            localStorage.setItem('carryItMilestones', JSON.stringify(jalons));
+            window.location.href = 'jalons.html';
         }
 
         function goBackFromObjectif() {
@@ -882,6 +884,9 @@
                     type: isProche ? 'proche' : 'lointain',
                     progression: config.progression,
                     statut: index === 0 ? 'in_progress' : 'pending',
+                    // Propriétés pour jalons.html
+                    kpi: `${config.progression}% de progression`,
+                    desc: `Atteindre ${config.progression}% de votre objectif d'ici ${jalonDate.toLocaleDateString('fr-FR')}`,
                     miniSmart: {
                         specifique: '',
                         mesurable: '',

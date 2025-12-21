@@ -398,11 +398,11 @@
         // Charger les jalons
         milestones = JSON.parse(localStorage.getItem('carryItMilestones') || '[]');
         if (milestones.length === 0) {
-            milestones = [{ id: 'm_0', titre: '', kpi: '', desc: '', step: 1 }];
+            milestones = [{ id: 'm_' + Date.now(), titre: '', kpi: '', desc: '', progression: 0 }];
         }
 
-        // Trier par ordre inversé (du futur vers le passé)
-        milestones.sort((a, b) => (b.step || 0) - (a.step || 0));
+        // Trier par progression DÉCROISSANTE (futur 100% → passé 0%)
+        milestones.sort((a, b) => (b.progression || 0) - (a.progression || 0));
 
         renderGoalSummary();
         renderMilestones();
