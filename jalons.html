@@ -98,7 +98,7 @@
             width: 100vw;
             overflow-x: hidden;
             overflow-y: auto;
-            scroll-snap-type: y mandatory;
+            scroll-snap-type: y proximity;
             scroll-behavior: smooth;
             scrollbar-width: none;
             position: relative;
@@ -168,6 +168,12 @@
             font-weight: 700;
             color: var(--text-primary);
             text-transform: uppercase;
+        }
+        .sentinel-year {
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-weight: 500;
         }
         .sentinel-icon { color: var(--accent); font-size: 14px; }
 
@@ -335,20 +341,18 @@
             gap: 0;
             overflow-y: auto;
             overflow-x: hidden;
-            padding: 10vh 0;
-            scroll-behavior: smooth;
+            padding: 0;
             width: 100%;
             height: 100%;
             scrollbar-width: none;
-            cursor: grab;
+            scroll-behavior: smooth;
         }
-        .timeline-track:active { cursor: grabbing; }
         .timeline-track::-webkit-scrollbar { display: none; }
 
         .timeline-month {
             flex-shrink: 0;
-            height: 60px;
-            width: 100%;
+            width: 70px;
+            height: 70px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -364,10 +368,11 @@
         .timeline-month.active { opacity: 1; }
 
         .tick {
+            order: 3;
             width: 12px;
             height: 1px;
             background: var(--text-secondary);
-            margin-right: 6px;
+            margin-top: 4px;
         }
         .timeline-month.active .tick {
             width: 18px;
@@ -376,6 +381,7 @@
         }
 
         .month-label {
+            order: 1;
             font-size: 10px;
             font-weight: 600;
             text-transform: uppercase;
@@ -383,9 +389,10 @@
             line-height: 1;
         }
         .year-label {
+            order: 2;
             font-size: 9px;
             color: var(--text-dim);
-            margin-top: 4px;
+            margin-top: 2px;
             font-variant-numeric: tabular-nums;
             font-weight: 500;
         }
@@ -531,11 +538,9 @@
         function renderAllCards() {
             timelineScroll.innerHTML = '';
 
-            // LOGIQUE INVERSÉE : On trie du Passé (Offset Max) vers le Futur (Offset 0)
-            // Ainsi, dans le DOM Flex ROW :
-            // Gauche = Passé (Offset 24)
-            // Droite = Futur (Offset 0)
-            const sortedMilestones = [...milestones].sort((a, b) => b.offset - a.offset);
+            // Pour vertical: Futur (Offset 0) en haut -> Passé (Offset 24) en bas
+            // Donc on trie du Futur vers le Passé
+            const sortedMilestones = [...milestones].sort((a, b) => a.offset - b.offset);
 
             sortedMilestones.forEach((milestone, index) => {
                 const slot = document.createElement('div');
@@ -546,10 +551,22 @@
                 // Card wrapper
                 const wrapper = document.createElement('div');
                 wrapper.className = 'card-wrapper';
+
+                // Calculer la date du jalon
+                let dateLabel = 'FIN PROJET';
+                let yearLabel = '';
+                if (milestone.offset !== 0) {
+                    const dateObj = new Date(projectDeadline);
+                    dateObj.setMonth(projectDeadline.getMonth() - milestone.offset);
+                    dateLabel = dateObj.toLocaleDateString('fr-FR', { month: 'short' }).toUpperCase();
+                    yearLabel = dateObj.getFullYear();
+                }
+
                 wrapper.innerHTML = `
                     <div class="sentinel-block">
                         <i class="ri-time-line sentinel-icon"></i>
-                        <span class="sentinel-date">${milestone.offset === 0 ? 'FIN PROJET' : formatDate(milestone.offset)}</span>
+                        <span class="sentinel-date">${dateLabel}</span>
+                        ${yearLabel ? `<span class="sentinel-year">${yearLabel}</span>` : ''}
                     </div>
                     <div class="data-block">
                         <div class="block-label">01 // Nom du Jalon</div>
@@ -636,9 +653,9 @@
         function renderTimeline() {
             timelineTrack.innerHTML = '';
 
-            // Timeline: Passé (24) à gauche -> Futur (0) à droite
-            // On boucle de 24 (Start) à 0 (End)
-            for (let i = projectDurationMonths; i >= 0; i--) {
+            // Timeline verticale: Futur (0) en haut -> Passé (24) en bas
+            // On boucle de 0 (Objectif) à 24 (Lancement)
+            for (let i = 0; i <= projectDurationMonths; i++) {
                 const monthEl = document.createElement('div');
                 const isMilestone = milestones.some(m => Math.abs(m.offset - i) < 0.5);
                 
@@ -657,9 +674,18 @@
 
                 const dateObj = new Date(projectDeadline);
                 dateObj.setMonth(projectDeadline.getMonth() - i);
-                
-                const label = i === 0 ? 'FIN' : dateObj.toLocaleDateString('fr-FR', { month: 'short' }).toUpperCase();
-                const year = dateObj.getFullYear();
+
+                let label, year;
+                if (i === 0) {
+                    label = 'FIN';
+                    year = dateObj.getFullYear();
+                } else if (i === projectDurationMonths) {
+                    label = 'AUJOURD\'HUI';
+                    year = dateObj.getFullYear();
+                } else {
+                    label = dateObj.toLocaleDateString('fr-FR', { month: 'short' }).toUpperCase();
+                    year = dateObj.getFullYear();
+                }
 
                 monthEl.innerHTML = `
                     <div class="tick"></div>
@@ -706,10 +732,15 @@
             document.querySelectorAll('.timeline-month').forEach(el => {
                 el.classList.toggle('active', parseInt(el.dataset.offset) === offset);
             });
+
+            // Synchroniser simplement: scroller le mois au centre du rail visible
             const activeMonth = document.querySelector('.timeline-month.active');
-            if (activeMonth && !isScrollingTimeline) {
+            if (activeMonth) {
                 activeMonth.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
+
+            // Synchroniser l'indicateur orange avec le mois actif
+            syncIndicator(offset);
         }
 
         // --- BUTTONS LOGIC ---
@@ -738,9 +769,20 @@
             timelineViewport.scrollBy({ top: window.innerHeight * 0.85, behavior: 'smooth' });
         });
 
-        // --- SYNC SCROLLS (Approximation pour l'effet visuel) ---
-        // On simplifie pour éviter les boucles infinies : seul le viewport pilote le rail via l'observer
-        
+        // --- SYNC INDICATOR WITH ACTIVE MONTH ---
+        // L'indicateur suit le mois actif de la timeline rail
+        function syncIndicator(offset) {
+            const activeMonth = document.querySelector(`.timeline-month[data-offset="${offset}"]`);
+            if (activeMonth) {
+                const indicator = document.querySelector('.timeline-indicator');
+                const monthTop = activeMonth.offsetTop;
+                const monthHeight = activeMonth.offsetHeight;
+                const centerPos = monthTop + (monthHeight / 2);
+
+                indicator.style.top = `${centerPos}px`;
+            }
+        }
+
         // --- INIT ---
         function init() {
             renderAllCards();
