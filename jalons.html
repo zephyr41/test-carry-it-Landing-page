@@ -2,284 +2,290 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carry It — Focus Trajectoire</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Carry It - Cockpit Jalons</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
     <style>
         :root {
-            --bg: #080809;
-            --text: #FFFDF6;
-            --dim: #929292;
-            --accent: #EE4408;
-            --confirm: #0A2A53;
-            --secondary: #F34C0A;
+            --bg-apple: #F5F5F7;
+            --card-bg: rgba(255, 255, 255, 0.7);
+            --text-main: #1D1D1F;
+            --text-secondary: #86868B;
+            --accent: #0071E3;
+            --border: rgba(0, 0, 0, 0.1);
+            --glass: blur(20px) saturate(180%);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
 
         body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-apple);
+            color: var(--text-main);
+            font-family: 'Inter', -apple-system, sans-serif;
+            height: 100vh;
             display: flex;
             justify-content: center;
+        }
+
+        .gradient-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 0% 0%, #e3f2fd 0%, transparent 50%),
+                        radial-gradient(circle at 100% 100%, #fce4ec 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        .main-stage {
+            width: 100%;
+            max-width: 1000px;
+            display: flex;
+            flex-direction: column;
             padding: 40px 20px;
-            min-height: 100vh;
         }
 
-        .container { width: 100%; max-width: 500px; }
-
-        /* Navbar */
-        .navbar-top {
-            margin-bottom: 60px;
+        .hud-header {
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
         }
 
-        .navbar-back {
-            color: var(--text);
-            text-decoration: none;
-            font-size: 0.9rem;
+        .hud-label {
+            font-size: 14px;
             font-weight: 600;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: -0.01em;
+            margin-bottom: 4px;
+        }
+
+        .hud-goal-title {
+            font-size: 34px;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+        }
+
+        .btn-close {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-main);
+            font-size: 20px;
+            transition: all 0.2s;
+            border: none;
+        }
+        .btn-close:hover { background: var(--bg-apple); }
+
+        .timeline-viewport {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 100px;
+            scrollbar-width: none;
+        }
+        .timeline-viewport::-webkit-scrollbar { display: none; }
+
+        .timeline-scroll {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            padding-bottom: 100px;
+        }
+
+        .card-slot {
+            position: relative;
+            opacity: 0.4;
+            transition: opacity 0.4s cubic-bezier(0.2, 0, 0.2, 1);
+        }
+
+        .card-slot.active {
+            opacity: 1;
+        }
+
+        .card-wrapper {
+            background: var(--card-bg);
+            backdrop-filter: var(--glass);
+            -webkit-backdrop-filter: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
+            transition: border-color 0.3s;
+        }
+
+        .card-slot.active .card-wrapper {
+            border-color: var(--accent);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        .sentinel-block {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-        }
-
-        /* Victoire : Le point de départ (Haut) */
-        .victory-node {
-            border-left: 2px solid var(--secondary);
-            padding: 0 0 40px 24px;
-            position: relative;
-            margin-bottom: 40px;
-        }
-
-        .victory-node::before {
-            content: '';
-            position: absolute;
-            left: -9px;
-            top: 0;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: var(--secondary);
-            box-shadow: 0 0 15px var(--secondary);
-        }
-
-        .victory-label {
-            color: var(--secondary);
-            font-size: 0.7rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .victory-title {
-            font-size: 1.5rem;
-            font-weight: 900;
-            margin-top: 4px;
-            line-height: 1.3;
-        }
-
-        /* Chat IA : Le guide */
-        .ai-guide {
-            margin: 40px 0;
-            font-size: 1.1rem;
-            line-height: 1.6;
-            font-weight: 500;
-            color: var(--text);
-        }
-
-        /* La carte active : Focus unique */
-        .step-card {
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 12px;
-            padding: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            margin-bottom: 24px;
-        }
-
-        .input-label {
-            display: block;
-            color: var(--dim);
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            margin-bottom: 8px;
+            background: rgba(0, 113, 227, 0.1);
+            color: var(--accent);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
             font-weight: 600;
-            letter-spacing: 0.5px;
+            margin-bottom: 20px;
         }
 
-        input, textarea {
+        .sentinel-date {
+            font-weight: 700;
+        }
+
+        .sentinel-temp {
+            opacity: 0.8;
+            font-weight: 500;
+        }
+
+        .block-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            margin-top: 20px;
+        }
+
+        .block-label:first-of-type {
+            margin-top: 0;
+        }
+
+        .input-raw {
             width: 100%;
             background: transparent;
             border: none;
-            border-bottom: 1px solid #333;
-            color: var(--text);
-            padding: 12px 0;
-            font-size: 1rem;
-            margin-bottom: 24px;
-            outline: none;
-            font-family: inherit;
-            resize: none;
-        }
-
-        input:focus, textarea:focus {
-            border-bottom-color: var(--accent);
-        }
-
-        .btn-main {
-            background: var(--accent);
-            color: white;
-            border: none;
-            width: 100%;
-            padding: 16px;
-            border-radius: 8px;
-            font-weight: 700;
-            cursor: pointer;
-            margin-bottom: 12px;
-            font-size: 0.95rem;
-            transition: all 0.2s;
-        }
-
-        .btn-main:hover {
-            transform: translateY(-2px);
-            filter: brightness(1.1);
-        }
-
-        .btn-ai {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            width: 100%;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            cursor: pointer;
+            font-size: 22px;
             font-weight: 600;
-            transition: all 0.2s;
-        }
-
-        .btn-ai:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(255, 255, 255, 0.2);
-        }
-
-        /* Timeline discrète */
-        .steps-left {
-            margin-top: 40px;
-            text-align: center;
-            color: var(--dim);
-            font-size: 0.7rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        .hidden { display: none !important; }
-
-        .ai-typing {
-            color: var(--accent);
-            font-size: 0.8rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            animation: pulse 1s infinite;
-            display: none;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; }
-        }
-
-        .final-screen {
-            text-align: center;
-            padding-top: 40px;
-        }
-
-        .final-screen h2 {
-            color: var(--confirm);
-            font-size: 2rem;
+            color: var(--text-main);
             margin-bottom: 20px;
-            font-weight: 900;
+            outline: none;
+            placeholder-color: var(--text-secondary);
         }
 
-        .final-screen p {
-            color: var(--dim);
-            margin-bottom: 40px;
-            line-height: 1.6;
+        .input-area {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            border-radius: 12px;
+            padding: 15px;
+            font-family: inherit;
+            font-size: 15px;
+            line-height: 1.5;
+            min-height: 100px;
+            resize: none;
+            outline: none;
+            transition: background 0.2s, border-color 0.2s;
         }
 
-        @media (max-width: 600px) {
-            body { padding: 20px; }
-            .victory-title { font-size: 1.2rem; }
-            .ai-guide { font-size: 0.95rem; }
+        .input-area:focus {
+            background: rgba(0, 0, 0, 0.06);
+            border-color: var(--accent);
+        }
+
+        .timeline-rail {
+            position: fixed;
+            right: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            background: var(--text-secondary);
+            border-radius: 50%;
+            opacity: 0.3;
+            transition: all 0.3s cubic-bezier(0.2, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .dot:hover {
+            opacity: 0.6;
+            transform: scale(1.2);
+        }
+
+        .dot.active {
+            background: var(--accent);
+            transform: scale(1.4);
+            opacity: 1;
+            box-shadow: 0 0 12px rgba(0, 113, 227, 0.3);
+        }
+
+        .timeline-label {
+            position: absolute;
+            right: 60px;
+            top: 50%;
+            transform: translateY(-50%);
+            text-align: right;
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .dot.active ~ .timeline-label,
+        .timeline-label:has(~ .dot.active) {
+            opacity: 1;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .timeline-rail { right: 20px; gap: 12px; }
+            .dot { width: 8px; height: 8px; }
+            .hud-goal-title { font-size: 28px; }
+            .card-wrapper { padding: 20px; }
+            .input-raw { font-size: 18px; }
         }
     </style>
 </head>
 <body>
 
-<div class="container" id="app">
-    <!-- Navbar -->
-    <div class="navbar-top">
-        <a href="dashboard.html" class="navbar-back">← Retour</a>
-    </div>
+<div class="gradient-bg"></div>
 
-    <!-- 1. La Victoire (Objectif Final) -->
-    <div class="victory-node">
-        <div class="victory-label">Objectif Atteint</div>
-        <div class="victory-title" id="goal-title">Chargement...</div>
-    </div>
+<div class="main-stage">
+    <header class="hud-header">
+        <div>
+            <div class="hud-label">Étape 2 — Plan de route</div>
+            <div class="hud-goal-title" id="goalTitle">Posons vos jalons</div>
+        </div>
+        <button class="btn-close" onclick="location.href='dashboard.html'" title="Retour">
+            <i class="ri-close-line"></i>
+        </button>
+    </header>
 
-    <!-- 2. Guide IA -->
-    <div class="ai-guide" id="ai-question">
-        Analyse de votre objectif...
-    </div>
-
-    <!-- 3. Formulaire Minimaliste -->
-    <div class="step-card">
-        <div class="ai-typing" id="ai-loading">✨ L'IA déconstruit votre succès...</div>
-
-        <label class="input-label">Titre de cette étape</label>
-        <input type="text" id="input-titre" placeholder="Ex: Finaliser mon offre">
-
-        <label class="input-label">Preuve de succès (KPI)</label>
-        <input type="text" id="input-kpi" placeholder="Ex: 10 clients satisfaits">
-
-        <label class="input-label">Plan d'action</label>
-        <textarea id="input-desc" placeholder="Détails de ce qui doit être fait" rows="3"></textarea>
-
-        <button class="btn-main" onclick="nextStep()">Valider cette étape</button>
-        <button class="btn-ai" onclick="askAI()">✨ Laisser l'IA suggérer</button>
-    </div>
-
-    <!-- 4. Footer progression -->
-    <div class="steps-left" id="progression">
-        ÉTAPE 1 SUR 3
+    <div class="timeline-viewport" id="timelineViewport">
+        <div class="timeline-scroll" id="timelineScroll">
+            <!-- Cards générées en JS -->
+        </div>
     </div>
 </div>
 
-<!-- Écran Final -->
-<div class="container hidden" id="final">
-    <div class="final-screen">
-        <h2>Trajectoire Prête</h2>
-        <p>Votre ambition est découpée.<br>Le chemin est sécurisé.</p>
-        <button class="btn-main" onclick="location.href='dashboard.html'">Retour au tableau de bord</button>
-    </div>
+<div class="timeline-rail" id="timelineRail">
+    <!-- Dots générés en JS -->
 </div>
 
 <script>
     let milestones = [];
     let currentObjectif = null;
-    let currentStepIndex = 0;
-
-    const questions = [
-        "Pour réussir {objectif}, quelle est la toute dernière étape juste avant la ligne d'arrivée ?",
-        "Pour que cette étape soit possible, que devez-vous avoir accompli au milieu du projet ?",
-        "Pour ne pas rester dans le rêve, quelle est la première action concrète à valider ce mois-ci ?"
-    ];
-
-    const aiSuggestions = [
-        { titre: "Validation finale", kpi: "100% prêt et approuvé", desc: "Vérifier tous les détails et obtenir les validations finales" },
-        { titre: "Point de contrôle majeur", kpi: "50% des objectifs atteints", desc: "Évaluer la progression et ajuster la stratégie si nécessaire" },
-        { titre: "Lancer le projet", kpi: "Première étape validée", desc: "Commencer immédiatement avec la première action" }
-    ];
+    let projectDeadline = new Date();
 
     function loadData() {
         const allObjectifs = JSON.parse(localStorage.getItem('carryItAllObjectifs') || '[]');
@@ -292,79 +298,123 @@
         milestones = JSON.parse(localStorage.getItem('carryItMilestones') || '[]');
 
         if (milestones.length === 0) {
-            milestones = [{ id: 'm_' + Date.now(), titre: '', kpi: '', desc: '', progression: 100 }];
+            // Fallback
+            milestones = [
+                { id: 'm1', titre: "Objectif Final", progression: 100, date: currentObjectif.deadline, kpi: '', desc: '' }
+            ];
         }
 
-        // Trier par progression DÉCROISSANTE (du futur au passé)
-        milestones.sort((a, b) => (b.progression || 0) - (a.progression || 0));
+        // Sort by progression ASC (passé -> futur)
+        milestones.sort((a, b) => a.progression - b.progression);
 
-        init();
+        if (currentObjectif.deadline) {
+            projectDeadline = new Date(currentObjectif.deadline);
+        }
+
+        document.getElementById('goalTitle').innerText = currentObjectif.titre;
+        renderCards();
+        renderDots();
+        setupObserver();
     }
 
-    function init() {
-        document.getElementById('goal-title').innerText = currentObjectif.titre;
-        updateAIQuestion();
-        loadMilestoneData();
+    function getDateForMilestone(milestone) {
+        const today = new Date();
+        const endDate = new Date(projectDeadline);
+        const totalDays = (endDate - today) / (1000 * 60 * 60 * 24);
+        const daysFromNow = Math.round((milestone.progression / 100) * totalDays);
+
+        const mileDate = new Date(today);
+        mileDate.setDate(mileDate.getDate() + daysFromNow);
+
+        const dateStr = mileDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+        const tempStr = `J+${Math.round(daysFromNow)}`;
+
+        return { dateStr, tempStr };
     }
 
-    function updateAIQuestion() {
-        const question = questions[currentStepIndex]
-            .replace('{objectif}', currentObjectif.titre);
-        document.getElementById('ai-question').innerText = question;
-        document.getElementById('progression').innerText = `ÉTAPE ${currentStepIndex + 1} SUR ${milestones.length}`;
+    function renderCards() {
+        const scroll = document.getElementById('timelineScroll');
+        scroll.innerHTML = '';
+
+        milestones.forEach((m, idx) => {
+            const { dateStr, tempStr } = getDateForMilestone(m);
+
+            const slot = document.createElement('div');
+            slot.className = 'card-slot' + (idx === 0 ? ' active' : '');
+            slot.dataset.id = m.id;
+            slot.dataset.index = idx;
+
+            slot.innerHTML = `
+                <div class="card-wrapper">
+                    <div class="sentinel-block">
+                        <i class="ri-calendar-line"></i>
+                        <span class="sentinel-date">${dateStr}</span>
+                        <span class="sentinel-temp">${tempStr}</span>
+                    </div>
+                    <div class="block-label">Titre du jalon</div>
+                    <input type="text" class="input-raw" value="${m.titre || ''}"
+                           onchange="updateMilestone('${m.id}', 'titre', this.value)"
+                           placeholder="Ex: Lancer la version Beta">
+                    <div class="block-label">Plan d'action</div>
+                    <textarea class="input-area"
+                              onchange="updateMilestone('${m.id}', 'desc', this.value)"
+                              placeholder="Décrivez les étapes clés...">${m.desc || ''}</textarea>
+                </div>
+            `;
+
+            scroll.appendChild(slot);
+        });
     }
 
-    function loadMilestoneData() {
-        const milestone = milestones[currentStepIndex];
-        if (milestone) {
-            document.getElementById('input-titre').value = milestone.titre || '';
-            document.getElementById('input-kpi').value = milestone.kpi || '';
-            document.getElementById('input-desc').value = milestone.desc || '';
+    function renderDots() {
+        const rail = document.getElementById('timelineRail');
+        rail.innerHTML = '';
+
+        milestones.forEach((m, idx) => {
+            const dot = document.createElement('div');
+            dot.className = 'dot' + (idx === 0 ? ' active' : '');
+            dot.onclick = () => {
+                const slot = document.querySelector(`[data-id="${m.id}"]`);
+                if (slot) slot.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            };
+
+            const label = document.createElement('div');
+            label.className = 'timeline-label';
+            const { dateStr } = getDateForMilestone(m);
+            label.innerText = dateStr;
+
+            rail.appendChild(dot);
+        });
+    }
+
+    function setupObserver() {
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Update card active
+                    document.querySelectorAll('.card-slot').forEach(el => el.classList.remove('active'));
+                    entry.target.classList.add('active');
+
+                    // Update dot active
+                    const idx = parseInt(entry.target.dataset.index);
+                    document.querySelectorAll('.dot').forEach((el, i) => {
+                        el.classList.toggle('active', i === idx);
+                    });
+                }
+            });
+        }, { threshold: 0.5, root: document.getElementById('timelineViewport') });
+
+        document.querySelectorAll('.card-slot').forEach(el => observer.observe(el));
+    }
+
+    function updateMilestone(id, field, value) {
+        const m = milestones.find(x => x.id === id);
+        if (m) {
+            m[field] = value;
+            localStorage.setItem('carryItMilestones', JSON.stringify(milestones));
         }
     }
 
-    function askAI() {
-        const loading = document.getElementById('ai-loading');
-        loading.style.display = 'block';
-
-        setTimeout(() => {
-            const suggestion = aiSuggestions[Math.min(currentStepIndex, aiSuggestions.length - 1)];
-            document.getElementById('input-titre').value = suggestion.titre;
-            document.getElementById('input-kpi').value = suggestion.kpi;
-            document.getElementById('input-desc').value = suggestion.desc;
-            loading.style.display = 'none';
-        }, 1200);
-    }
-
-    function nextStep() {
-        // Sauvegarder les données
-        const milestone = milestones[currentStepIndex];
-        if (milestone) {
-            milestone.titre = document.getElementById('input-titre').value;
-            milestone.kpi = document.getElementById('input-kpi').value;
-            milestone.desc = document.getElementById('input-desc').value;
-        }
-        localStorage.setItem('carryItMilestones', JSON.stringify(milestones));
-
-        currentStepIndex++;
-
-        if (currentStepIndex >= milestones.length) {
-            // Montrer l'écran final
-            document.getElementById('app').classList.add('hidden');
-            document.getElementById('final').classList.remove('hidden');
-        } else {
-            // Charger l'étape suivante
-            updateAIQuestion();
-            loadMilestoneData();
-            // Reset inputs pour animation
-            document.getElementById('input-titre').value = '';
-            document.getElementById('input-kpi').value = '';
-            document.getElementById('input-desc').value = '';
-            setTimeout(() => loadMilestoneData(), 100);
-        }
-    }
-
-    // Init
     loadData();
 </script>
 
