@@ -110,17 +110,14 @@
         /* --- TIMELINE VIEWPORT (Main scroll container) --- */
         .timeline-viewport {
             flex: 1;
-            width: 100vw;
+            width: 100%;
             overflow-x: hidden;
             overflow-y: auto;
-            scroll-snap-type: y proximity;
             scroll-behavior: smooth;
             scrollbar-width: none;
             position: relative;
             display: flex;
-            flex-direction: column;
-            margin-left: 100px;
-            margin-top: 72px;
+            flex-direction: row;
             background-color: var(--bg-primary);
         }
         .timeline-viewport::-webkit-scrollbar { display: none; }
@@ -128,11 +125,10 @@
         /* Flex container pour le scroll vertical */
         .timeline-scroll {
             display: flex;
-            flex-direction: column; /* Empilage vertical */
+            flex-direction: column;
+            flex: 1;
             width: 100%;
-            height: fit-content;
-            flex: 0 0 auto;
-            padding: 0 20px; /* Padding horizontal pour centrer */
+            padding: 0 20px 120px 0;
         }
 
         /* --- CARD SLOTS --- */
@@ -142,11 +138,9 @@
             margin: 0;
             display: flex;
             align-items: center;
-            justify-content: center;
-            scroll-snap-align: center;
-            scroll-snap-stop: always;
+            justify-content: flex-start;
             position: relative;
-            padding: 40px 20px;
+            padding: 40px 20px 40px 0;
             opacity: 1;
             transform: none;
             transition: opacity 0.3s;
@@ -365,55 +359,41 @@
             box-shadow: 0 0 12px var(--accent-glow);
         }
 
-        /* --- TIMELINE RAIL (Fixed at left) --- */
+        /* --- TIMELINE RAIL (Scrollable with content) --- */
         .timeline-rail {
-            position: fixed;
-            left: 0;
-            top: 72px;
-            bottom: 80px;
-            width: 100px;
+            position: relative;
+            width: 80px;
             border-right: 1px solid var(--border);
-            background: var(--bg-card);
+            background: transparent;
             display: flex;
-            align-items: flex-start;
-            justify-content: center;
-            z-index: 50;
             flex-direction: column;
-            box-shadow: var(--shadow-sm);
+            z-index: 50;
+            box-shadow: none;
+            flex-shrink: 0;
         }
 
         .timeline-indicator {
-            position: absolute;
+            position: sticky;
             top: 50%;
             left: 15px;
             right: 15px;
-            height: 1px;
+            height: 2px;
             background: var(--accent);
-            z-index: 10;
-            transform: translateY(-50%);
-            border-radius: 0;
-            box-shadow: none;
+            z-index: 100;
+            box-shadow: 0 0 10px var(--accent-glow);
         }
 
         .timeline-track {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            gap: 0;
-            overflow-y: auto;
-            overflow-x: hidden;
-            padding: 0;
             width: 100%;
             height: 100%;
-            scrollbar-width: none;
-            scroll-behavior: smooth;
         }
-        .timeline-track::-webkit-scrollbar { display: none; }
 
         .timeline-month {
-            flex-shrink: 0;
+            flex: 1;
             width: 100%;
-            height: 80px;
+            min-height: 80px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -479,7 +459,6 @@
             right: 0;
             height: 80px;
             padding: 0 20px;
-            padding-left: 120px;
             padding-bottom: var(--safe-bottom);
             display: flex;
             align-items: center;
@@ -529,23 +508,16 @@
 
         /* --- RESPONSIVE DESIGN --- */
         @media (max-width: 768px) {
-            .hud-top {
-                padding-left: 80px;
-                height: 56px;
-            }
-
             .timeline-rail {
-                width: 80px;
-                bottom: 100px;
+                width: 70px;
             }
 
-            .timeline-viewport {
-                margin-left: 80px;
+            .timeline-scroll {
+                padding: 0 20px 150px 0;
             }
 
             .controls-bottom {
                 height: 100px;
-                padding-left: 80px;
                 flex-direction: column;
                 gap: 8px;
                 justify-content: center;
@@ -583,19 +555,11 @@
 
         @media (max-width: 480px) {
             .timeline-rail {
-                width: 70px;
+                width: 60px;
             }
 
-            .timeline-viewport {
-                margin-left: 70px;
-            }
-
-            .hud-top {
-                padding-left: 70px;
-            }
-
-            .controls-bottom {
-                padding-left: 70px;
+            .timeline-scroll {
+                padding: 0 20px 150px 0;
             }
 
             .timeline-month {
@@ -696,18 +660,32 @@
         </div>
     </nav>
 
+    <!-- INTRO TEXT -->
+    <div style="margin-top: 72px; padding: 60px 40px; border-bottom: 1px solid var(--border); background: linear-gradient(135deg, rgba(255, 77, 0, 0.05) 0%, rgba(5, 6, 8, 0) 100%); text-align: center; display: flex; flex-direction: column; align-items: center; gap: 24px;">
+        <div>
+            <h2 style="font-size: 28px; font-weight: 700; color: var(--text-primary); margin: 0 0 16px 0;">Le Rétroplanifiage</h2>
+            <p style="font-size: 15px; color: var(--text-secondary); margin: 0; font-weight: 400; max-width: 600px;">
+                Partez de votre objectif final et découpez-le en jalons concrets jusqu'à aujourd'hui — éditez inline, insérez des étapes, et utilisez le GPT Custom pour vous guider.
+            </p>
+        </div>
+        <button onclick="window.open('https://chatgpt.com/g/g-692ca373fe108191a36c15ad1250a4a8-carry-it-ai', '_blank')" style="background: var(--accent); color: white; border: none; padding: 12px 28px; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+            💬 Ouvrir le GPT Custom
+        </button>
+    </div>
+
     <!-- TIMELINE VIEWPORT (Main scroll container) -->
     <div class="timeline-viewport" id="timelineViewport">
-        <div class="timeline-scroll" id="timelineScroll">
-            <!-- Cartes générées par JS -->
-        </div>
-
-        <!-- TIMELINE RAIL (Fixed) -->
+        <!-- TIMELINE RAIL (Scrollable with content) -->
         <div class="timeline-rail" id="timelineRail">
             <div class="timeline-indicator"></div>
             <div class="timeline-track" id="timelineTrack">
                 <!-- Timeline mois générée par JS -->
             </div>
+        </div>
+
+        <!-- TIMELINE SCROLL (Cards) -->
+        <div class="timeline-scroll" id="timelineScroll">
+            <!-- Cartes générées par JS -->
         </div>
     </div>
 
@@ -726,10 +704,27 @@
 
     <script>
         // --- DATA & CONFIG ---
-        const projectDurationMonths = 24;
         const today = new Date();
-        const projectDeadline = new Date(today);
-        projectDeadline.setMonth(today.getMonth() + projectDurationMonths);
+
+        // Récupère la date temporelle du SMART (obligatoire)
+        function getProjectDeadline() {
+            const smart = JSON.parse(localStorage.getItem('carryItObjectifSMART')) || {};
+            if (!smart.temporel) {
+                console.error('Erreur: La date temporelle (T du SMART) doit être définie dans le localStorage');
+                throw new Error('Date temporelle du SMART non définie');
+            }
+            return new Date(smart.temporel + 'T00:00:00');
+        }
+
+        const projectDeadline = getProjectDeadline();
+
+        // Calcule la durée en mois
+        function calculateProjectDuration() {
+            const diffTime = projectDeadline - today;
+            const diffMonths = Math.round(diffTime / (1000 * 60 * 60 * 24 * 30.44));
+            return Math.max(1, diffMonths);
+        }
+        const projectDurationMonths = calculateProjectDuration();
 
         // DATA SOURCE - Utilise des dates ISO au lieu d'offsets
         let milestones = [
@@ -751,6 +746,7 @@
         let currentMilestoneId = null;
         let isScrollingViewport = false;
         let isScrollingTimeline = false;
+        let isSyncingRail = false;
 
         // --- UTILS ---
         function calculateOffset(dateString) {
@@ -830,6 +826,9 @@
                 // Contenu différent pour le premier jalon (SMART)
                 if (isFirst) {
                     wrapper.innerHTML = `
+                        <div style="padding-bottom: 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 24px;">
+                            <span style="font-size: 11px; color: var(--accent); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Votre Objectif Final</span>
+                        </div>
                         <div class="sentinel-block">
                             <i class="ri-calendar-line sentinel-icon"></i>
                             <span class="sentinel-date">${dateMonth}</span>
@@ -906,11 +905,14 @@
                 }
 
                 // Connector (Add button) - Placé visuellement à GAUCHE via CSS (left: -20px)
-                const connector = document.createElement('div');
-                connector.className = 'card-connector';
-                connector.innerHTML = `<button class="btn-add-jalon" onclick="addJalonInline('${milestone.id}')" title="Ajouter une étape avant">+</button>`;
+                // Ne pas afficher le bouton "+" pour la première carte (l'objectif final)
+                if (!isFirst) {
+                    const connector = document.createElement('div');
+                    connector.className = 'card-connector';
+                    connector.innerHTML = `<button class="btn-add-jalon" onclick="addJalonInline('${milestone.id}')" title="Ajouter une étape avant">+</button>`;
+                    slot.appendChild(connector); // Le CSS le place à gauche
+                }
 
-                slot.appendChild(connector); // Le CSS le place à gauche
                 slot.appendChild(wrapper);
                 timelineScroll.appendChild(slot);
             });
@@ -1017,11 +1019,17 @@
         }
 
         // --- INTERSECTION OBSERVER ---
+        let lastSyncTime = 0;
         function setupIntersectionObserver() {
             const cards = document.querySelectorAll('.card-slot');
             const observer = new IntersectionObserver(entries => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
+                        // Debounce: éviter les updates en cascade
+                        const now = Date.now();
+                        if (now - lastSyncTime < 300) return;
+                        lastSyncTime = now;
+
                         // Highlight Card
                         document.querySelectorAll('.card-slot').forEach(c => c.classList.remove('active'));
                         entry.target.classList.add('active');
@@ -1042,18 +1050,13 @@
         }
 
         function syncRail(offset) {
+            // Marquer le mois actif
             document.querySelectorAll('.timeline-month').forEach(el => {
                 el.classList.toggle('active', parseInt(el.dataset.offset) === offset);
             });
 
-            // Synchroniser: le mois se centre automatiquement au milieu du rail
-            const activeMonth = document.querySelector('.timeline-month.active');
-            if (activeMonth) {
-                activeMonth.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-
-            // Synchroniser l'indicateur orange avec le mois actif
-            syncIndicator(offset);
+            // L'indicateur étant en position: sticky, il se place
+            // naturellement en face du mois actif lors du scroll
         }
 
         // --- BUTTONS LOGIC ---
