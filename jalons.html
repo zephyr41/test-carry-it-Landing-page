@@ -33,6 +33,24 @@
             /* Safe Areas */
             --safe-top: env(safe-area-inset-top, 20px);
             --safe-bottom: env(safe-area-inset-bottom, 20px);
+
+            /* --- APPLE-LEVEL DESIGN --- */
+            /* Micro-Contrastes */
+            --bg-card-base: #1a1a1a;
+            --bg-card-elevated: rgba(255, 255, 255, 0.02);
+            --bg-card-hover: rgba(255, 255, 255, 0.04);
+            --bg-module: rgba(255, 255, 255, 0.03);
+
+            /* Border Radius Constants */
+            --radius-sm: 6px;   /* Petits éléments */
+            --radius-md: 10px;  /* Modules */
+            --radius-lg: 12px;  /* Cartes */
+            --radius-xl: 16px;  /* Containers */
+
+            /* Shadows - Soft & Directional */
+            --shadow-subtle: 0 1px 2px rgba(0, 0, 0, 0.15);
+            --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.08);
+            --shadow-elevated: 0 4px 16px rgba(0, 0, 0, 0.16), 0 2px 4px rgba(0, 0, 0, 0.08);
         }
 
         * {
@@ -52,8 +70,8 @@
             background-color: var(--bg-primary);
             color: var(--text-primary);
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            height: 100vh;
-            overflow: hidden;
+            min-height: 100vh;
+            overflow-y: auto;
             display: flex;
             flex-direction: column;
             font-weight: 400;
@@ -107,6 +125,48 @@
             transform: translateY(-1px);
         }
 
+        /* --- INTRO TEXT --- */
+        .intro-section {
+            margin-top: 72px;
+            padding: 40px 20px;
+            background: transparent;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .intro-section h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            max-width: 600px;
+        }
+
+        .intro-section p {
+            font-size: 15px;
+            color: var(--text-secondary);
+            font-weight: 400;
+            max-width: 600px;
+        }
+
+        .btn-gpt {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-gpt:hover {
+            opacity: 0.9;
+        }
+
         /* --- TIMELINE VIEWPORT (Main scroll container) --- */
         .timeline-viewport {
             flex: 1;
@@ -154,15 +214,29 @@
 
         .card-wrapper {
             width: 100%;
-            max-width: 650px;
+            max-width: 500px;
             display: flex;
             flex-direction: column;
-            gap: 32px;
+            gap: 24px;
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 40px;
+            padding: 32px;
             box-shadow: var(--shadow-md);
+            margin-left: 40px;
+            position: relative;
+        }
+
+        .card-wrapper::before {
+            content: '';
+            position: absolute;
+            left: -40px;
+            top: var(--line-top, 50%);
+            transform: translateY(-50%);
+            width: 40px;
+            height: 2px;
+            background: var(--accent);
+            box-shadow: 0 0 8px var(--accent-glow);
         }
 
         /* SENTINEL BLOCK (DATE) */
@@ -315,50 +389,332 @@
             border-bottom-color: var(--accent);
         }
 
-        /* CARD CONNECTOR (Add button) */
-        /* IMPORTANT: Positionné AU-DESSUS visuellement (car on remonte le temps vers le haut) */
-        .card-connector {
-            position: absolute;
-            top: -20px; /* Au-dessus de la carte */
-            left: 50%;
-            transform: translateX(-50%);
-            width: 40px;
-            height: 40px;
+        /* --- APPLE-LEVEL COMPONENTS --- */
+
+        /* DATE ANCHOR */
+        .date-anchor {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.2s;
-            z-index: 50;
-            pointer-events: none;
+            gap: 2px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            align-self: flex-start;
         }
 
-        .card-slot.active .card-connector {
-            opacity: 1;
-            pointer-events: auto;
+        .date-day {
+            font-size: 28px;
+            font-weight: 700;
+            line-height: 1;
+            letter-spacing: -0.02em;
         }
 
-        .btn-add-jalon {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: var(--bg-card);
-            border: 1px solid var(--accent);
-            color: var(--accent);
-            font-size: 18px;
+        .date-month {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            opacity: 0.6;
+        }
+
+        .date-year {
+            font-size: 10px;
+            font-weight: 500;
+            color: var(--text-muted);
+            opacity: 0.5;
+        }
+
+        /* JALON HEADER */
+        .jalon-header {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .jalon-title {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            line-height: 1.2;
+            color: var(--text-primary);
+        }
+
+        .jalon-meta {
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            opacity: 0.6;
+            color: var(--text-muted);
+        }
+
+        /* MODULE CARD */
+        .module-card {
+            background: var(--bg-module);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            transition: all 250ms ease-out;
+            position: relative;
+        }
+
+        .module-card:hover {
+            background: rgba(255, 255, 255, 0.03);
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .module-card:focus-within {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(255, 77, 0, 0.08);
+        }
+
+        .module-label {
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            opacity: 0.6;
+            margin-bottom: 4px;
+        }
+
+        .module-content {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            line-height: 1.6;
+            font-weight: 400;
+            cursor: text;
+            transition: all 250ms ease-out;
+            min-height: 80px;
+            resize: none;
+            padding: 0;
+        }
+
+        .module-content:hover {
+            color: var(--text-primary);
+        }
+
+        .module-content:focus {
+            outline: none;
+            color: var(--text-primary);
+        }
+
+        .module-content::placeholder {
+            font-style: italic;
+            opacity: 0.4;
+            color: var(--text-muted);
+        }
+
+        .edit-icon {
+            width: 16px;
+            height: 16px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-            box-shadow: var(--shadow-md);
+            opacity: 0;
+            transition: opacity 200ms ease-out;
+            position: absolute;
+            right: 16px;
+            top: 16px;
+            color: var(--text-secondary);
         }
 
-        .btn-add-jalon:hover {
-            transform: scale(1.1);
+        .module-card:hover .edit-icon {
+            opacity: 0.4;
+        }
+
+        /* VALIDATION CHECK */
+        .validation-check {
+            position: absolute;
+            right: 16px;
+            top: 16px;
+            color: #34C759;
+            font-size: 16px;
+            opacity: 0;
+            transition: opacity 300ms ease-out;
+        }
+
+        .card-wrapper.completed .validation-check {
+            opacity: 1;
+        }
+
+        /* RAIL DOT */
+        .rail-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
             background: var(--accent);
-            color: white;
             box-shadow: 0 0 12px var(--accent-glow);
+            position: absolute;
+            left: 36px;
+            top: 50%;
+            transform: translateY(-50%);
+            transition: all 250ms ease-out;
+        }
+
+        .rail-dot[data-status="futur"] {
+            background: #808080;
+            box-shadow: 0 0 8px rgba(128, 128, 128, 0.3);
+        }
+
+        .rail-dot[data-status="en-cours"] {
+            background: #FFFFFF;
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
+        }
+
+        .rail-dot[data-status="critique"] {
+            background: #FF4D00;
+            animation: pulse 2s infinite;
+        }
+
+        .rail-dot[data-status="validé"] {
+            background: #34C759;
+            box-shadow: 0 0 12px rgba(52, 199, 89, 0.4);
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 12px rgba(255, 77, 0, 0.4); }
+            50% { box-shadow: 0 0 20px rgba(255, 77, 0, 0.8); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(10px); }
+        }
+
+        /* RAIL TOOLTIP */
+        .rail-tooltip {
+            position: absolute;
+            left: 100%;
+            top: 50%;
+            transform: translateY(-50%) translateX(0);
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(20px);
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 11px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 250ms ease-out;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            margin-left: 8px;
+        }
+
+        .timeline-month:hover .rail-tooltip {
+            opacity: 1;
+            transform: translateY(-50%) translateX(10px);
+        }
+
+        /* KPI MODULE */
+        .kpi-module {
+            background: var(--bg-module);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: all 250ms ease-out;
+        }
+
+        .kpi-module:hover {
+            background: rgba(255, 255, 255, 0.035);
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .kpi-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .kpi-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            opacity: 0.6;
+        }
+
+        .kpi-status {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: var(--radius-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+        }
+
+        .kpi-status[data-status="atteint"] {
+            background: rgba(52, 199, 89, 0.15);
+            color: #34C759;
+        }
+
+        .kpi-status[data-status="non-atteint"] {
+            background: rgba(255, 77, 0, 0.15);
+            color: #FF4D00;
+        }
+
+        .kpi-status[data-status="incertain"] {
+            background: rgba(255, 149, 0, 0.15);
+            color: #FF9500;
+        }
+
+        .kpi-target {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .kpi-value {
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            color: var(--accent);
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            padding: 8px 0;
+            cursor: text;
+            transition: all 250ms ease-out;
+            width: 100%;
+        }
+
+        .kpi-value:hover {
+            border-bottom-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .kpi-value:focus {
+            outline: none;
+            border-bottom-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .kpi-value::placeholder {
+            color: var(--text-muted);
+            font-weight: 400;
+            font-size: 14px;
+        }
+
+        .kpi-description {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .kpi-date {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 400;
         }
 
         /* --- TIMELINE RAIL (Scrollable with content) --- */
@@ -372,11 +728,12 @@
             z-index: 50;
             box-shadow: none;
             flex-shrink: 0;
+            height: 100%;
+            min-height: 100vh;
         }
 
         .timeline-indicator {
-            position: sticky;
-            top: 50%;
+            position: absolute;
             left: 15px;
             right: 15px;
             height: 2px;
@@ -390,6 +747,7 @@
             flex-direction: column;
             width: 100%;
             height: 100%;
+            flex: 1;
         }
 
         .timeline-month {
@@ -608,12 +966,6 @@
             .sentinel-year {
                 font-size: 11px;
             }
-
-            .btn-add-jalon {
-                width: 32px;
-                height: 32px;
-                font-size: 16px;
-            }
         }
 
         /* --- FOCUS & KEYBOARD ACCESSIBILITY --- */
@@ -627,12 +979,6 @@
         .btn-nav:focus-visible {
             outline: 2px solid var(--accent);
             outline-offset: 2px;
-        }
-
-        .btn-icon:focus-visible {
-            outline: 2px solid var(--accent);
-            outline-offset: 2px;
-            border-radius: 4px;
         }
 
         /* --- SMOOTH ANIMATIONS --- */
@@ -662,15 +1008,13 @@
         </div>
     </nav>
 
-    <!-- INTRO TEXT -->
-    <div style="margin-top: 72px; padding: 60px 40px; border-bottom: 1px solid var(--border); background: linear-gradient(135deg, rgba(255, 77, 0, 0.05) 0%, rgba(5, 6, 8, 0) 100%); text-align: center; display: flex; flex-direction: column; align-items: center; gap: 24px;">
+    <!-- INTRO TEXT - Normal section -->
+    <div class="intro-section">
         <div>
-            <h2 style="font-size: 28px; font-weight: 700; color: var(--text-primary); margin: 0 0 16px 0;">Le Rétroplanifiage</h2>
-            <p style="font-size: 15px; color: var(--text-secondary); margin: 0; font-weight: 400; max-width: 600px;">
-                Partez de votre objectif final et découpez-le en jalons concrets jusqu'à aujourd'hui — éditez inline, insérez des étapes, et utilisez le GPT Custom pour vous guider.
-            </p>
+            <h2>Le Rétroplanifiage</h2>
+            <p>Partez de votre objectif final et découpez-le en jalons concrets jusqu'à aujourd'hui — éditez inline, insérez des étapes, et utilisez le GPT Custom pour vous guider.</p>
         </div>
-        <button onclick="window.open('https://chatgpt.com/g/g-692ca373fe108191a36c15ad1250a4a8-carry-it-ai', '_blank')" style="background: var(--accent); color: white; border: none; padding: 12px 28px; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+        <button onclick="window.open('https://chatgpt.com/g/g-692ca373fe108191a36c15ad1250a4a8-carry-it-ai', '_blank')" class="btn-gpt">
             💬 Ouvrir le GPT Custom
         </button>
     </div>
@@ -691,18 +1035,6 @@
         </div>
     </div>
 
-    <!-- CONTROLS -->
-    <div class="controls-bottom">
-        <!-- BOUTON GAUCHE: Aller vers le HAUT (Futur) -->
-        <button class="btn-nav" id="btnForward">
-            <i class="ri-arrow-up-line"></i> VERS L'OBJECTIF
-        </button>
-
-        <!-- BOUTON DROITE: Aller vers le BAS (Passé) -->
-        <button class="btn-nav primary" id="btnBackward">
-            JALON ANTÉCÉDENT <i class="ri-arrow-down-line"></i>
-        </button>
-    </div>
 
     <script>
         // --- DATA & CONFIG ---
@@ -730,19 +1062,16 @@
 
         // DATA SOURCE - Utilise des dates ISO au lieu d'offsets
         let milestones = [
-            { id: 'm1', date: projectDeadline.toISOString().split('T')[0], title: "Objectif Final", desc: "Le système est stable et autonome.", kpiValue: "300 Clients" },
-            { id: 'm2', date: new Date(today.getFullYear(), today.getMonth() + 3, today.getDate()).toISOString().split('T')[0], title: "Optimisation", desc: "Maximisation de la conversion.", kpiValue: "" },
-            { id: 'm3', date: new Date(today.getFullYear(), today.getMonth() + 12, today.getDate()).toISOString().split('T')[0], title: "MVP Validé", desc: "Première base d'utilisateurs.", kpiValue: "Oui" },
-            { id: 'm4', date: today.toISOString().split('T')[0], title: "Lancement", desc: "Démarrage du projet.", kpiValue: "" }
+            { id: 'm1', date: projectDeadline.toISOString().split('T')[0], title: "Objectif Final", desc: "Le système est stable et autonome.", specifique: "", kpiValue: "300 Clients" },
+            { id: 'm2', date: new Date(today.getFullYear(), today.getMonth() + 3, today.getDate()).toISOString().split('T')[0], title: "Optimisation", desc: "Maximisation de la conversion.", specifique: "", kpiValue: "" },
+            { id: 'm3', date: new Date(today.getFullYear(), today.getMonth() + 12, today.getDate()).toISOString().split('T')[0], title: "MVP Validé", desc: "Première base d'utilisateurs.", specifique: "", kpiValue: "Oui" },
+            { id: 'm4', date: today.toISOString().split('T')[0], title: "Lancement", desc: "Démarrage du projet.", specifique: "", kpiValue: "" }
         ];
 
         // --- DOM REFS ---
         const timelineViewport = document.getElementById('timelineViewport');
         const timelineScroll = document.getElementById('timelineScroll');
         const timelineTrack = document.getElementById('timelineTrack');
-        const stepIndicator = document.getElementById('stepIndicator');
-        const btnForward = document.getElementById('btnForward');
-        const btnBackward = document.getElementById('btnBackward');
 
         // --- STATE ---
         let currentMilestoneId = null;
@@ -773,11 +1102,10 @@
                 const smart = JSON.parse(localStorage.getItem('carryItObjectifSMART')) || {};
                 return {
                     specifique: smart.specifique || '',
-                    mesurable: smart.mesurable || '',
                     temporel: smart.temporel || ''
                 };
             } catch (e) {
-                return { specifique: '', mesurable: '', temporel: '' };
+                return { specifique: '', temporel: '' };
             }
         }
 
@@ -798,9 +1126,59 @@
             return date.getFullYear();
         }
 
+        // --- HELPER FUNCTIONS FOR APPLE-LEVEL DESIGN ---
+
+        function calculateCardStatus(milestone) {
+            const milestoneDate = new Date(milestone.date);
+            const todayDate = new Date(today);
+            const deadlineDate = new Date(projectDeadline);
+
+            // Normalize dates to compare only dates, not times
+            milestoneDate.setHours(0, 0, 0, 0);
+            todayDate.setHours(0, 0, 0, 0);
+
+            if (milestoneDate > todayDate) {
+                return 'futur';
+            } else if (milestoneDate.getTime() === todayDate.getTime()) {
+                return 'en-cours';
+            } else {
+                // Check if it's in the past and has KPI defined
+                if (milestone.kpiValue && milestone.kpiValue.trim()) {
+                    return 'validé';
+                }
+                return 'en-cours';
+            }
+        }
+
+        function formatDateForDisplay(dateString) {
+            const date = new Date(dateString + 'T00:00:00');
+            const day = date.getDate();
+            const month = date.toLocaleDateString('fr-FR', { month: 'short' }).toUpperCase();
+            const year = date.getFullYear();
+            return { day, month, year };
+        }
+
+        function calculateKPIProgress(milestone) {
+            // Progress is based on whether KPI value is filled (0% if empty, 100% if filled)
+            if (milestone.kpiValue && milestone.kpiValue.trim()) {
+                return 100;
+            }
+            return 0;
+        }
+
+        function getKPIStatus(milestone) {
+            // Only show status if KPI is not defined
+            if (!milestone.kpiValue || !milestone.kpiValue.trim()) {
+                return 'non-atteint';
+            }
+            // If KPI is filled, no status badge shown
+            return null;
+        }
+
         // --- RENDER ALL CARDS ---
         function renderAllCards() {
-            timelineScroll.innerHTML = '';
+            // Remove old cards
+            document.querySelectorAll('.card-slot').forEach(card => card.remove());
 
             // Trier du Futur (objectif) vers le Passé (aujourd'hui) - RÉTROPLANNING
             // L'Objectif Final en haut, Lancement en bas
@@ -815,161 +1193,181 @@
                 slot.className = 'card-slot';
                 slot.dataset.id = milestone.id;
                 slot.id = `card-${milestone.id}`;
+                slot.style.minHeight = '120vh';
 
-                // Card wrapper
+                // Calculer l'offset pour positionner la ligne
+                const railOffset = calculateRailOffset(milestone.date);
+                const cardStatus = calculateCardStatus(milestone);
+
+                // Card wrapper with Apple-level design
                 const wrapper = document.createElement('div');
                 wrapper.className = 'card-wrapper';
+                wrapper.dataset.railOffset = railOffset;
+                wrapper.dataset.status = cardStatus;
 
-                const dateMonth = formatDateDisplay(milestone.date);
-                const dateYear = formatDateYear(milestone.date);
+                const { day: dateDay, month: dateMonth, year: dateYear } = formatDateForDisplay(milestone.date);
                 const isFirst = isFirstMilestone(milestone);
                 const smartData = isFirst ? getSMARTData() : {};
 
-                // Contenu différent pour le premier jalon (SMART)
-                if (isFirst) {
-                    wrapper.innerHTML = `
-                        <div style="padding-bottom: 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 24px;">
-                            <span style="font-size: 11px; color: var(--accent); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Votre Objectif Final</span>
-                        </div>
-                        <div class="sentinel-block">
-                            <i class="ri-calendar-line sentinel-icon"></i>
-                            <span class="sentinel-date">${dateMonth}</span>
-                            <span class="sentinel-year">${dateYear}</span>
-                        </div>
-                        <div class="data-block">
-                            <div class="block-label">Spécifique</div>
-                            <input type="text" class="input-raw input-title"
-                                   value="${smartData.specifique || ''}"
-                                   data-id="${milestone.id}"
-                                   placeholder="Description spécifique de l'objectif..."
-                                   autocomplete="off"
-                                   oninput="updateData('${milestone.id}', 'title', this.value)">
-                        </div>
-                        <div class="data-block">
-                            <div class="block-label">Mesurable</div>
-                            <textarea class="input-area"
-                                      data-id="${milestone.id}"
-                                      placeholder="Critères de mesure..."
-                                      oninput="updateData('${milestone.id}', 'desc', this.value)">${smartData.mesurable || ''}</textarea>
-                        </div>
-                        <div class="data-block">
-                            <div class="block-label">Temporel</div>
-                            <input type="date"
-                                   value="${milestone.date}"
-                                   data-id="${milestone.id}"
-                                   oninput="updateData('${milestone.id}', 'date', this.value)">
-                        </div>
-                    `;
-                } else {
-                    // Contenu normal pour les autres jalons
-                    wrapper.innerHTML = `
-                        <div class="sentinel-block">
-                            <i class="ri-calendar-line sentinel-icon"></i>
-                            <span class="sentinel-date">${dateMonth}</span>
-                            <span class="sentinel-year">${dateYear}</span>
-                        </div>
-                        <div class="data-block">
-                            <div class="block-label">Titre du Jalon</div>
-                            <input type="text" class="input-raw input-title"
-                                   value="${milestone.title}"
-                                   data-id="${milestone.id}"
-                                   placeholder="Saisir le titre..."
-                                   autocomplete="off"
-                                   oninput="updateData('${milestone.id}', 'title', this.value)">
-                        </div>
-                        <div class="data-block">
-                            <div class="block-label">Description</div>
-                            <textarea class="input-area"
-                                      data-id="${milestone.id}"
-                                      placeholder="Décrire ce jalon..."
-                                      oninput="updateData('${milestone.id}', 'desc', this.value)">${milestone.desc}</textarea>
-                        </div>
-                        <div class="data-block">
-                            <div class="block-label">KPI Mesurable</div>
-                            <div class="kpi-wrapper">
-                                <i class="ri-flag-fill kpi-icon"></i>
-                                <input type="text" class="input-kpi"
-                                       value="${milestone.kpiValue}"
-                                       data-id="${milestone.id}"
-                                       placeholder="Objectif mesurable..."
-                                       autocomplete="off"
-                                       oninput="updateData('${milestone.id}', 'kpiValue', this.value)">
-                            </div>
-                        </div>
-                        <div class="data-block">
-                            <div class="block-label">Date du Jalon</div>
-                            <input type="date"
-                                   value="${milestone.date}"
-                                   data-id="${milestone.id}"
-                                   oninput="updateData('${milestone.id}', 'date', this.value)">
-                        </div>
-                    `;
-                }
+                // Rail dot
+                const railDot = document.createElement('div');
+                railDot.className = 'rail-dot';
+                railDot.dataset.status = cardStatus;
+                wrapper.appendChild(railDot);
 
-                // Connector (Add button) - Placé visuellement à GAUCHE via CSS (left: -20px)
-                // Ne pas afficher le bouton "+" pour la première carte (l'objectif final)
-                if (!isFirst) {
-                    const connector = document.createElement('div');
-                    connector.className = 'card-connector';
-                    connector.innerHTML = `<button class="btn-add-jalon" onclick="addJalonInline('${milestone.id}')" title="Ajouter une étape avant">+</button>`;
-                    slot.appendChild(connector); // Le CSS le place à gauche
-                }
+                // Date anchor
+                const dateAnchor = document.createElement('div');
+                dateAnchor.className = 'date-anchor';
+                dateAnchor.innerHTML = `
+                    <span class="date-day">${dateDay}</span>
+                    <span class="date-month">${dateMonth}</span>
+                    <span class="date-year">${dateYear}</span>
+                `;
+                wrapper.appendChild(dateAnchor);
+
+                // Jalon header with progress
+                const jalonHeader = document.createElement('div');
+                jalonHeader.className = 'jalon-header';
+                const totalJalons = sortedMilestones.length;
+                const jalonNumber = index + 1;
+                const phaseNumber = Math.floor((index + 1) / 1);
+                jalonHeader.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                        <span style="font-size: 12px; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Jalon ${jalonNumber}/${totalJalons}</span>
+                    </div>
+                    <h3 class="jalon-title">${isFirst ? 'Objectif Final' : (milestone.title || 'Jalon')}</h3>
+                    <span class="jalon-meta">${isFirst ? 'Votre Ambition' : `Jalon · Phase ${phaseNumber}`}</span>
+                `;
+                wrapper.appendChild(jalonHeader);
+
+                // Module card for Spécifique
+                const moduleCard = document.createElement('div');
+                moduleCard.className = 'module-card';
+                moduleCard.innerHTML = `
+                    <div class="module-label">Spécifique</div>
+                    <textarea class="module-content"
+                              data-id="${milestone.id}"
+                              placeholder="Description spécifique..."
+                              oninput="updateData('${milestone.id}', 'specifique', this.value)">${milestone.specifique || ''}</textarea>
+                    <i class="ri-pencil-line edit-icon"></i>
+                `;
+                wrapper.appendChild(moduleCard);
+
+                // KPI Module with progress bar
+                const kpiModule = document.createElement('div');
+                kpiModule.className = 'kpi-module';
+                const kpiStatus = getKPIStatus(milestone);
+                const kpiStatusLabel = kpiStatus === 'non-atteint' ? 'Non atteint' : '';
+
+                const kpiDate = new Date(milestone.date + 'T00:00:00');
+                const formattedKpiDate = kpiDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+
+                const statusBadge = kpiStatus ? `<span class="kpi-status" data-status="${kpiStatus}">${kpiStatusLabel}</span>` : '';
+
+                kpiModule.innerHTML = `
+                    <div class="kpi-header">
+                        <span class="kpi-label">KPI Mesurable</span>
+                        ${statusBadge}
+                    </div>
+                    <input type="text" class="kpi-value"
+                           value="${milestone.kpiValue || ''}"
+                           data-id="${milestone.id}"
+                           placeholder="Entrez votre KPI mesurable (ex: 300 clients, ≥ 95%, etc.)"
+                           autocomplete="off"
+                           oninput="updateData('${milestone.id}', 'kpiValue', this.value)">
+                    <div class="kpi-date">au ${formattedKpiDate}</div>
+                `;
+                wrapper.appendChild(kpiModule);
+
+                // Validation check
+                const validationCheck = document.createElement('i');
+                validationCheck.className = 'ri-check-line validation-check';
+                wrapper.appendChild(validationCheck);
 
                 slot.appendChild(wrapper);
                 timelineScroll.appendChild(slot);
+
+                // Update line position after DOM insertion
+                setTimeout(() => updateLinePosition(slot, wrapper), 0);
             });
 
+            // Add TERMINER button at the end
+            const buttonContainer = document.createElement('div');
+            buttonContainer.style.display = 'flex';
+            buttonContainer.style.flexDirection = 'column';
+            buttonContainer.style.alignItems = 'center';
+            buttonContainer.style.padding = '40px 20px 60px';
+            buttonContainer.style.gap = '20px';
+            buttonContainer.innerHTML = `
+                <i class="ri-arrow-down-line" style="font-size: 24px; color: var(--accent); animation: bounce 2s infinite;"></i>
+                <p style="color: var(--text-secondary); font-size: 14px; text-align: center; margin: 0;">Tous tes jalons sont prêts. Continue vers ton tableau de bord!</p>
+                <a href="dashboard.html" style="padding: 16px 48px; background: var(--accent); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 8px;">
+                    <i class="ri-check-double-line"></i> TERMINER
+                </a>
+            `;
+            timelineScroll.appendChild(buttonContainer);
+
             setupIntersectionObserver();
+
+            // Update all line positions after rendering
+            setTimeout(() => updateAllLinePositions(), 50);
         }
 
         function updateData(id, field, value) {
             const m = milestones.find(m => m.id === id);
             if (m) {
                 m[field] = value;
+
+                // Auto-save to localStorage
+                saveMilestones();
+
                 // Si la date change, re-rendre pour réappliquer le tri
                 if (field === 'date') {
                     renderAllCards();
                     renderTimeline();
+                } else {
+                    // Update card styling (e.g., progress bar, status badge)
+                    const wrapper = document.querySelector(`#card-${id} .card-wrapper`);
+                    if (wrapper) {
+                        // Update KPI status badge
+                        const status = getKPIStatus(m);
+                        const kpiHeader = wrapper.querySelector('.kpi-header');
+                        const existingBadge = kpiHeader.querySelector('.kpi-status');
+
+                        // Remove existing badge
+                        if (existingBadge) {
+                            existingBadge.remove();
+                        }
+
+                        // Add badge only if status is not null
+                        if (status) {
+                            const statusLabel = status === 'non-atteint' ? 'Non atteint' : '';
+                            const newBadge = document.createElement('span');
+                            newBadge.className = 'kpi-status';
+                            newBadge.dataset.status = status;
+                            newBadge.textContent = statusLabel;
+                            kpiHeader.appendChild(newBadge);
+                        }
+
+                        // Update validation check visibility (show when KPI is filled)
+                        if (status === null) {
+                            wrapper.classList.add('completed');
+                        } else {
+                            wrapper.classList.remove('completed');
+                        }
+                    }
                 }
             }
         }
 
-        // --- ADD JALON INLINE ---
-        function addJalonInline(refId) {
-            const refMilestone = milestones.find(m => m.id === refId);
-            if (!refMilestone) return;
-
-            // Calculer une date intermédiaire : entre la référence et la précédente (vers le passé)
-            const refDate = new Date(refMilestone.date + 'T00:00:00');
-            const newOffsetMonths = Math.max(1, calculateOffset(refMilestone.date) - 1);
-            const newDate = new Date(today);
-            newDate.setMonth(today.getMonth() + newOffsetMonths);
-            const newDateStr = newDate.toISOString().split('T')[0];
-
-            const newId = 'm_' + Date.now();
-
-            milestones.push({
-                id: newId,
-                date: newDateStr,
-                title: "",
-                desc: "",
-                kpiValue: ""
-            });
-
-            // Re-render (le tri automatique placera la carte à gauche)
-            renderAllCards();
-            renderTimeline();
-
-            // Scroll vers la nouvelle carte
-            setTimeout(() => {
-                const newSlot = document.getElementById(`card-${newId}`);
-                if (newSlot) {
-                    newSlot.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
-                    // Focus titre
-                    newSlot.querySelector('.input-title').focus();
-                }
-            }, 100);
+        function saveMilestones() {
+            try {
+                localStorage.setItem('carryItMilestones', JSON.stringify(milestones));
+            } catch (e) {
+                console.warn('Error saving milestones to localStorage:', e);
+            }
         }
+
 
         // --- RENDER TIMELINE RAIL ---
         function renderTimeline() {
@@ -1080,14 +1478,78 @@
             // Ici on garde simple.
         }
 
-        btnForward.addEventListener('click', () => {
-            // Aller vers le HAUT (Futur/Objectif)
-            timelineViewport.scrollBy({ top: -window.innerHeight * 0.85, behavior: 'smooth' });
-        });
+        // Update line position to align with center of card
+        function updateLinePosition(slot, wrapper) {
+            if (!wrapper || !slot) return;
 
-        btnBackward.addEventListener('click', () => {
-            // Aller vers le BAS (Passé)
-            timelineViewport.scrollBy({ top: window.innerHeight * 0.85, behavior: 'smooth' });
+            try {
+                // Le trait doit être au centre vertical de la carte
+                // 50% du viewport container (timelineViewport)
+                const viewportRect = timelineViewport.getBoundingClientRect();
+                const slotRect = slot.getBoundingClientRect();
+                const slotCenterInViewport = slotRect.top - viewportRect.top + slotRect.height / 2;
+
+                // Position du haut du wrapper
+                const wrapperRect = wrapper.getBoundingClientRect();
+                const wrapperTopInViewport = wrapperRect.top - viewportRect.top;
+
+                // Le trait doit pointer vers le centre du slot
+                const lineTop = slotCenterInViewport - wrapperTopInViewport;
+
+                wrapper.style.setProperty('--line-top', `${lineTop}px`);
+            } catch (e) {
+                console.error('Error updating line position:', e);
+            }
+        }
+
+        // Update all line positions dynamically
+        function updateAllLinePositions() {
+            document.querySelectorAll('.card-slot').forEach(slot => {
+                const wrapper = slot.querySelector('.card-wrapper');
+                updateLinePosition(slot, wrapper);
+            });
+        }
+
+        // Update connector lines and indicator on scroll
+        timelineViewport.addEventListener('scroll', () => {
+            // Update line positions
+            document.querySelectorAll('.card-slot').forEach(slot => {
+                const wrapper = slot.querySelector('.card-wrapper');
+                updateLinePosition(slot, wrapper);
+            });
+
+            // Update indicator position to follow scroll
+            const indicator = document.querySelector('.timeline-indicator');
+            if (indicator) {
+                const viewportScrollTop = timelineViewport.scrollTop;
+                const viewportHeight = timelineViewport.clientHeight;
+                const scrollCenter = viewportScrollTop + (viewportHeight / 2);
+
+                // Trouver le mois au centre du viewport
+                const months = document.querySelectorAll('.timeline-month');
+                let closestMonth = null;
+                let closestDistance = Infinity;
+
+                months.forEach(month => {
+                    const monthTop = month.offsetTop;  // Position relative au rail
+                    const monthHeight = month.offsetHeight;
+                    const monthCenter = monthTop + (monthHeight / 2);
+                    const distance = Math.abs(monthCenter - scrollCenter);
+
+                    if (distance < closestDistance) {
+                        closestDistance = distance;
+                        closestMonth = month;
+                    }
+                });
+
+                // Positionner l'indicateur au centre du mois le plus proche
+                if (closestMonth) {
+                    const monthTop = closestMonth.offsetTop;
+                    const monthHeight = closestMonth.offsetHeight;
+                    const centerPos = monthTop + (monthHeight / 2);
+                    indicator.style.top = `${centerPos}px`;
+                }
+            }
         });
 
         // --- SYNC INDICATOR WITH ACTIVE MONTH ---
@@ -1109,11 +1571,13 @@
             renderAllCards();
             renderTimeline();
 
-            // DEMARRAGE : SCROLL TOUT EN HAUT (Objectif Final)
-            // On attend que le rendu soit fait
+            // Force scroll to top to show intro
             setTimeout(() => {
                 timelineViewport.scrollTop = 0;
-            }, 100);
+                window.scrollTo(0, 0);
+                // Trigger alignment on first load
+                timelineViewport.dispatchEvent(new Event('scroll'));
+            }, 200);
         }
 
         init();
