@@ -191,12 +191,13 @@
             flex: 1;
             width: 100%;
             padding: 0 20px 120px 0;
+            position: relative;
         }
 
         /* --- CARD SLOTS --- */
         .card-slot {
             flex: 0 0 auto;
-            min-height: 100vh;
+            min-height: auto;
             margin: 0;
             display: flex;
             align-items: center;
@@ -1096,6 +1097,99 @@
             return Math.max(0, Math.min(projectDurationMonths, diffMonths));
         }
 
+        // Calcule les positions Y des centres de chaque mois sur le rail
+        function getMonthCenterPositions() {
+            const monthPositions = new Map();
+            const months = document.querySelectorAll('.timeline-month');
+
+            // Vérifier que les mois ont des hauteurs valides
+            if (months.length === 0) {
+                console.warn('No months found in rail');
+                return null;
+            }
+
+            const firstMonth = months[0];
+            if (firstMonth.offsetHeight === 0) {
+                console.warn('Rail not fully rendered yet, offsetHeight is 0');
+                return null;
+            }
+
+            months.forEach(month => {
+                const offset = parseInt(month.dataset.offset);
+                const monthTop = month.offsetTop;
+                const monthHeight = month.offsetHeight;
+                const centerY = monthTop + (monthHeight / 2);
+                monthPositions.set(offset, centerY);
+            });
+
+            return monthPositions;
+        }
+
+        // Positionne les cartes pour aligner leurs centres avec les mois du rail
+        function applyCardPositioning(sortedMilestones) {
+            const monthPositions = getMonthCenterPositions();
+
+            // Vérifier que le rail est rendu
+            if (!monthPositions || monthPositions.size === 0) {
+                console.warn('Rail not ready, retrying...');
+                setTimeout(() => applyCardPositioning(sortedMilestones), 50);
+                return;
+            }
+
+            // Rendre timelineScroll un conteneur de positionnement absolu
+            const timelineScroll = document.getElementById('timelineScroll');
+            timelineScroll.style.position = 'relative';
+
+            // Calculer la hauteur totale nécessaire
+            let maxBottom = 0;
+
+            sortedMilestones.forEach((milestone, index) => {
+                const slot = document.getElementById(`card-${milestone.id}`);
+                const wrapper = slot?.querySelector('.card-wrapper');
+
+                if (!slot || !wrapper) return;
+
+                // Calculer l'offset de ce jalon
+                const railOffset = calculateRailOffset(milestone.date);
+                const monthCenterY = monthPositions.get(railOffset);
+
+                if (monthCenterY === undefined) {
+                    console.warn(`No position found for offset ${railOffset}`);
+                    return;
+                }
+
+                // Obtenir la hauteur réelle du wrapper
+                const wrapperHeight = wrapper.offsetHeight || 600;
+                const slotHeight = wrapperHeight + 100; // Buffer pour l'IntersectionObserver
+
+                // Position absolue: centrer le slot sur le mois
+                // Le centre du slot doit être à monthCenterY
+                const slotTop = monthCenterY - (slotHeight / 2);
+
+                // Appliquer le positionnement absolu
+                slot.style.position = 'absolute';
+                slot.style.top = `${slotTop}px`;
+                slot.style.left = '0';
+                slot.style.right = '0';
+                slot.style.minHeight = `${slotHeight}px`;
+
+                // Suivre la position la plus basse
+                const slotBottom = slotTop + slotHeight;
+                if (slotBottom > maxBottom) {
+                    maxBottom = slotBottom;
+                }
+
+                // Log pour debug
+                console.log(`Card ${milestone.id}: date=${milestone.date}, offset=${railOffset}, monthY=${monthCenterY}, slotTop=${slotTop}`);
+
+                // Mettre à jour la position du trait
+                updateLinePosition(slot, wrapper);
+            });
+
+            // Définir la hauteur totale du conteneur pour permettre le scroll
+            timelineScroll.style.minHeight = `${maxBottom + 200}px`;
+        }
+
         // Récupère les infos SMART depuis localStorage
         function getSMARTData() {
             try {
@@ -1193,7 +1287,7 @@
                 slot.className = 'card-slot';
                 slot.dataset.id = milestone.id;
                 slot.id = `card-${milestone.id}`;
-                slot.style.minHeight = '120vh';
+                slot.style.minHeight = 'auto';
 
                 // Calculer l'offset pour positionner la ligne
                 const railOffset = calculateRailOffset(milestone.date);
@@ -1309,8 +1403,12 @@
 
             setupIntersectionObserver();
 
-            // Update all line positions after rendering
-            setTimeout(() => updateAllLinePositions(), 50);
+            // Appliquer le positionnement pour aligner avec le rail
+            // Délai augmenté pour s'assurer que le rail est complètement rendu
+            setTimeout(() => {
+                applyCardPositioning(sortedMilestones);
+                updateAllLinePositions();
+            }, 300);
         }
 
         function updateData(id, field, value) {
@@ -1464,18 +1562,18 @@
             // Calculer l'offset depuis la deadline
             const railOffset = calculateRailOffset(currentMilestone.date);
 
-            // Si on est à l'Objectif (Offset 0) -> Pas de bouton "Vers l'Objectif"
-            if (railOffset === 0) {
-                btnForward.style.opacity = '0.3';
-                btnForward.style.pointerEvents = 'none';
-            } else {
-                btnForward.style.opacity = '1';
-                btnForward.style.pointerEvents = 'auto';
+            // Boutons de navigation (s'ils existent)
+            const btnForward = document.querySelector('.btn-forward');
+            if (btnForward) {
+                // Si on est à l'Objectif (Offset 0) -> Pas de bouton "Vers l'Objectif"
+                if (railOffset === 0) {
+                    btnForward.style.opacity = '0.3';
+                    btnForward.style.pointerEvents = 'none';
+                } else {
+                    btnForward.style.opacity = '1';
+                    btnForward.style.pointerEvents = 'auto';
+                }
             }
-
-            // Bouton Action Principale (Antécédent)
-            // Si on est au tout début du projet (Offset Max), ça devient "Terminer" ?
-            // Ici on garde simple.
         }
 
         // Update line position to align with center of card
@@ -1483,18 +1581,11 @@
             if (!wrapper || !slot) return;
 
             try {
-                // Le trait doit être au centre vertical de la carte
-                // 50% du viewport container (timelineViewport)
-                const viewportRect = timelineViewport.getBoundingClientRect();
-                const slotRect = slot.getBoundingClientRect();
-                const slotCenterInViewport = slotRect.top - viewportRect.top + slotRect.height / 2;
-
-                // Position du haut du wrapper
-                const wrapperRect = wrapper.getBoundingClientRect();
-                const wrapperTopInViewport = wrapperRect.top - viewportRect.top;
-
-                // Le trait doit pointer vers le centre du slot
-                const lineTop = slotCenterInViewport - wrapperTopInViewport;
+                // Le wrapper est centré dans le slot grâce à align-items: center
+                // Et le slot est positionné pour que ce centre soit au niveau du mois
+                // Donc le trait doit simplement pointer vers le centre du wrapper
+                const wrapperHeight = wrapper.offsetHeight;
+                const lineTop = wrapperHeight / 2;
 
                 wrapper.style.setProperty('--line-top', `${lineTop}px`);
             } catch (e) {
@@ -1551,6 +1642,34 @@
                 }
             }
         });
+
+        // Debounce helper
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Recalculer les positions lors du resize
+        window.addEventListener('resize', debounce(() => {
+            renderTimeline();
+
+            setTimeout(() => {
+                const sortedMilestones = [...milestones].sort((a, b) => {
+                    const dateA = new Date(a.date);
+                    const dateB = new Date(b.date);
+                    return dateB - dateA;
+                });
+                applyCardPositioning(sortedMilestones);
+                updateAllLinePositions();
+            }, 300);
+        }, 300));
 
         // --- SYNC INDICATOR WITH ACTIVE MONTH ---
         // L'indicateur suit le mois actif de la timeline rail
