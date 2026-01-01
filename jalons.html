@@ -533,6 +533,14 @@
             letter-spacing: -0.03em;
             line-height: 1.2;
             color: var(--text-primary);
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .jalon-title:hover {
+            opacity: 0.7;
         }
 
         .jalon-meta {
@@ -1164,13 +1172,28 @@
         }
         const projectDurationMonths = calculateProjectDuration();
 
-        // DATA SOURCE - Utilise des dates ISO au lieu d'offsets
-        let milestones = [
-            { id: 'm1', date: projectDeadline.toISOString().split('T')[0], title: "Objectif Final", desc: "Le système est stable et autonome.", specifique: "", kpiValue: "300 Clients" },
-            { id: 'm2', date: new Date(today.getFullYear(), today.getMonth() + 3, today.getDate()).toISOString().split('T')[0], title: "Optimisation", desc: "Maximisation de la conversion.", specifique: "", kpiValue: "" },
-            { id: 'm3', date: new Date(today.getFullYear(), today.getMonth() + 12, today.getDate()).toISOString().split('T')[0], title: "MVP Validé", desc: "Première base d'utilisateurs.", specifique: "", kpiValue: "Oui" },
-            { id: 'm4', date: today.toISOString().split('T')[0], title: "Lancement", desc: "Démarrage du projet.", specifique: "", kpiValue: "" }
-        ];
+        // DATA SOURCE - Charger depuis localStorage ou utiliser les valeurs par défaut
+        let milestones = (() => {
+            const saved = localStorage.getItem('carryItMilestones');
+            console.log('📦 localStorage.getItem("carryItMilestones"):', saved ? 'EXISTS' : 'EMPTY');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    console.log('✅ Loaded from localStorage:', parsed);
+                    return parsed;
+                } catch (e) {
+                    console.error('❌ Error parsing localStorage:', e);
+                }
+            }
+            // Valeurs par défaut
+            console.log('⚙️ Using default values');
+            return [
+                { id: 'm1', date: projectDeadline.toISOString().split('T')[0], title: "Objectif Final", desc: "Le système est stable et autonome.", specifique: "", kpiValue: "300 Clients" },
+                { id: 'm2', date: new Date(today.getFullYear(), today.getMonth() + 3, today.getDate()).toISOString().split('T')[0], title: "Optimisation", desc: "Maximisation de la conversion.", specifique: "", kpiValue: "" },
+                { id: 'm3', date: new Date(today.getFullYear(), today.getMonth() + 12, today.getDate()).toISOString().split('T')[0], title: "MVP Validé", desc: "Première base d'utilisateurs.", specifique: "", kpiValue: "Oui" },
+                { id: 'm4', date: today.toISOString().split('T')[0], title: "Lancement", desc: "Démarrage du projet.", specifique: "", kpiValue: "" }
+            ];
+        })();
 
         // --- DOM REFS ---
         const timelineViewport = document.getElementById('timelineViewport');
@@ -1476,7 +1499,7 @@
                     <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
                         <span style="font-size: 12px; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Jalon ${jalonNumber}/${totalJalons}</span>
                     </div>
-                    <h3 class="jalon-title">${isFirst ? 'Objectif Final' : (milestone.title || 'Jalon')}</h3>
+                    <h3 class="jalon-title" data-id="${milestone.id}" onclick="editTitle(this)" title="Cliquez pour éditer">${milestone.title || 'Jalon'}</h3>
                     <span class="jalon-meta">${isFirst ? 'Votre Ambition' : `Jalon · Phase ${phaseNumber}`}</span>
                 `;
                 wrapper.appendChild(jalonHeader);
@@ -1625,11 +1648,67 @@
             }
         }
 
+        function editTitle(titleElement) {
+            const milestoneId = titleElement.dataset.id;
+            const currentTitle = titleElement.textContent;
+
+            // Créer un input pour éditer
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = currentTitle;
+            input.style.cssText = `
+                font-size: 28px;
+                font-weight: 700;
+                letter-spacing: -0.03em;
+                line-height: 1.2;
+                color: var(--text-primary);
+                border: 2px solid var(--accent);
+                border-radius: 4px;
+                padding: 4px 8px;
+                font-family: 'Inter', sans-serif;
+                background: transparent;
+                width: 100%;
+                box-sizing: border-box;
+            `;
+
+            // Remplacer le titre par l'input
+            titleElement.replaceWith(input);
+            input.focus();
+            input.select();
+
+            // Sauvegarder quand on clique ailleurs (blur)
+            input.addEventListener('blur', () => {
+                const newTitle = input.value.trim() || currentTitle;
+                const milestone = milestones.find(m => m.id === milestoneId);
+                console.log('Blur event:', { milestoneId, newTitle, milestone });
+                if (milestone) {
+                    milestone.title = newTitle;
+                    saveMilestones();
+                    console.log('Milestone saved:', milestone);
+                }
+            });
+
+            // Escape = annuler sans sauvegarder
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    const titleEl = document.createElement('h3');
+                    titleEl.className = 'jalon-title';
+                    titleEl.dataset.id = milestoneId;
+                    titleEl.onclick = function() { editTitle(this); };
+                    titleEl.title = 'Cliquez pour éditer';
+                    titleEl.textContent = currentTitle;
+                    input.replaceWith(titleEl);
+                }
+            });
+        }
+
         function saveMilestones() {
             try {
-                localStorage.setItem('carryItMilestones', JSON.stringify(milestones));
+                const json = JSON.stringify(milestones);
+                localStorage.setItem('carryItMilestones', json);
+                console.log('✅ Saved to localStorage:', json.length, 'chars');
             } catch (e) {
-                console.warn('Error saving milestones to localStorage:', e);
+                console.error('❌ Error saving milestones:', e);
             }
         }
 
