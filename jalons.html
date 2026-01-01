@@ -240,13 +240,15 @@
             width: 100%;
             padding: 200px 20px 120px 0;
             position: relative;
+            --center-x: calc(40px + (min(100%, 500px) / 2));
         }
 
         /* Fil d'Ariane pointillé vertical */
         .timeline-scroll::after {
             content: '';
             position: absolute;
-            left: calc(40px + (min(100%, 500px) / 2));
+            left: var(--center-x);
+            transform: translateX(-50%);
             top: 0;
             bottom: 0;
             width: 2px;
@@ -279,7 +281,7 @@
         /* Bouton "+" pour ajouter un jalon */
         .add-milestone-btn {
             position: absolute;
-            left: 50%;
+            left: var(--center-x);
             transform: translateX(-50%);
             width: 40px;
             height: 40px;
