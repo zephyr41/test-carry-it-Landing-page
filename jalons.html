@@ -128,7 +128,7 @@
         /* --- INTRO TEXT --- */
         .intro-section {
             margin-top: 72px;
-            padding: 40px 20px;
+            padding: 120px 20px 150px 20px;
             background: transparent;
             text-align: center;
             display: flex;
@@ -167,6 +167,53 @@
             opacity: 0.9;
         }
 
+        /* --- COMPLETION SECTION --- */
+        .completion-section {
+            background: var(--bg-primary);
+            padding: 100px 20px 120px;
+            text-align: center;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .completion-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+            max-width: 600px;
+        }
+
+        .completion-content p {
+            color: var(--text-secondary);
+            font-size: 16px;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .btn-complete {
+            padding: 16px 48px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-complete:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
         /* --- TIMELINE VIEWPORT (Main scroll container) --- */
         .timeline-viewport {
             flex: 1;
@@ -181,6 +228,7 @@
             background-color: var(--bg-primary);
             max-width: 900px;
             margin: 0 auto;
+            margin-top: 100px;
         }
         .timeline-viewport::-webkit-scrollbar { display: none; }
 
@@ -190,8 +238,22 @@
             flex-direction: column;
             flex: 1;
             width: 100%;
-            padding: 0 20px 120px 0;
+            padding: 200px 20px 120px 0;
             position: relative;
+        }
+
+        /* Fil d'Ariane pointillé vertical */
+        .timeline-scroll::after {
+            content: '';
+            position: absolute;
+            left: calc(40px + (min(100%, 500px) / 2));
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            border-left: 2px dashed var(--text-muted);
+            opacity: 0.3;
+            pointer-events: none;
+            z-index: 0;
         }
 
         /* --- CARD SLOTS --- */
@@ -207,10 +269,39 @@
             opacity: 1;
             transform: none;
             transition: opacity 0.3s;
+            z-index: 1;
         }
 
         .card-slot.active {
             opacity: 1;
+        }
+
+        /* Bouton "+" pour ajouter un jalon */
+        .add-milestone-btn {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 40px;
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            color: var(--text-secondary);
+            font-size: 20px;
+            transition: all 0.2s;
+            padding: 0;
+        }
+
+        .add-milestone-btn:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+            transform: translateX(-50%) scale(1.1);
         }
 
         .card-wrapper {
@@ -1036,6 +1127,16 @@
         </div>
     </div>
 
+    <!-- COMPLETION SECTION -->
+    <section class="completion-section">
+        <div class="completion-content">
+            <i class="ri-arrow-down-line" style="font-size: 24px; color: var(--accent); animation: bounce 2s infinite;"></i>
+            <p>Tous tes jalons sont prêts. Continue vers ton tableau de bord!</p>
+            <a href="dashboard.html" class="btn-complete">
+                <i class="ri-check-double-line"></i> TERMINER
+            </a>
+        </div>
+    </section>
 
     <script>
         // --- DATA & CONFIG ---
@@ -1140,16 +1241,14 @@
             const timelineScroll = document.getElementById('timelineScroll');
             timelineScroll.style.position = 'relative';
 
-            // Calculer la hauteur totale nécessaire
-            let maxBottom = 0;
-
+            // Première passe: calculer les positions idéales et les hauteurs
+            const cardData = [];
             sortedMilestones.forEach((milestone, index) => {
                 const slot = document.getElementById(`card-${milestone.id}`);
                 const wrapper = slot?.querySelector('.card-wrapper');
 
                 if (!slot || !wrapper) return;
 
-                // Calculer l'offset de ce jalon
                 const railOffset = calculateRailOffset(milestone.date);
                 const monthCenterY = monthPositions.get(railOffset);
 
@@ -1158,32 +1257,78 @@
                     return;
                 }
 
-                // Obtenir la hauteur réelle du wrapper
                 const wrapperHeight = wrapper.offsetHeight || 600;
-                const slotHeight = wrapperHeight + 100; // Buffer pour l'IntersectionObserver
+                const slotHeight = wrapperHeight + 100;
+                const idealSlotTop = monthCenterY - (slotHeight / 2);
 
-                // Position absolue: centrer le slot sur le mois
-                // Le centre du slot doit être à monthCenterY
-                const slotTop = monthCenterY - (slotHeight / 2);
+                cardData.push({
+                    milestone,
+                    slot,
+                    wrapper,
+                    railOffset,
+                    monthCenterY,
+                    wrapperHeight,
+                    slotHeight,
+                    idealSlotTop,
+                    actualSlotTop: idealSlotTop
+                });
+            });
 
-                // Appliquer le positionnement absolu
-                slot.style.position = 'absolute';
-                slot.style.top = `${slotTop}px`;
-                slot.style.left = '0';
-                slot.style.right = '0';
-                slot.style.minHeight = `${slotHeight}px`;
+            // Deuxième passe: ajuster les positions pour éviter les chevauchements
+            let maxBottom = 0;
+            for (let i = 0; i < cardData.length; i++) {
+                const card = cardData[i];
 
-                // Suivre la position la plus basse
-                const slotBottom = slotTop + slotHeight;
+                if (i > 0) {
+                    const prevCard = cardData[i - 1];
+                    const prevCardBottom = prevCard.actualSlotTop + prevCard.slotHeight;
+                    const minGap = 20; // Espacement minimum entre cartes
+
+                    // Si cette carte chevauche la précédente, la décaler vers le bas
+                    if (card.idealSlotTop < prevCardBottom + minGap) {
+                        card.actualSlotTop = prevCardBottom + minGap;
+                    } else {
+                        card.actualSlotTop = card.idealSlotTop;
+                    }
+                }
+
+                // S'assurer que la carte ne sort pas du viewport en haut
+                card.actualSlotTop = Math.max(0, card.actualSlotTop);
+
+                // Appliquer le positionnement
+                card.slot.style.position = 'absolute';
+                card.slot.style.top = `${card.actualSlotTop}px`;
+                card.slot.style.left = '0';
+                card.slot.style.right = '0';
+                card.slot.style.minHeight = `${card.slotHeight}px`;
+
+                const slotBottom = card.actualSlotTop + card.slotHeight;
                 if (slotBottom > maxBottom) {
                     maxBottom = slotBottom;
                 }
 
                 // Log pour debug
-                console.log(`Card ${milestone.id}: date=${milestone.date}, offset=${railOffset}, monthY=${monthCenterY}, slotTop=${slotTop}`);
+                console.log(`Card ${card.milestone.id}: offset=${card.railOffset}, ideal=${Math.round(card.idealSlotTop)}px, actual=${Math.round(card.actualSlotTop)}px`);
 
                 // Mettre à jour la position du trait
-                updateLinePosition(slot, wrapper);
+                updateLinePosition(card.slot, card.wrapper);
+            }
+
+            // Positionner les boutons "+" entre les cartes
+            document.querySelectorAll('.add-milestone-btn').forEach(btn => {
+                const afterId = btn.dataset.afterId;
+                const currentCardData = cardData.find(c => c.milestone.id === afterId);
+                const currentIndex = cardData.findIndex(c => c.milestone.id === afterId);
+                const nextCardData = currentIndex < cardData.length - 1 ? cardData[currentIndex + 1] : null;
+
+                if (currentCardData && nextCardData) {
+                    const currentBottom = currentCardData.actualSlotTop + currentCardData.slotHeight;
+                    const nextTop = nextCardData.actualSlotTop;
+                    const btnTop = (currentBottom + nextTop) / 2 - 20; // Centré entre les deux, -20 pour centrer le bouton
+
+                    btn.style.position = 'absolute';
+                    btn.style.top = `${btnTop}px`;
+                }
             });
 
             // Définir la hauteur totale du conteneur pour permettre le scroll
@@ -1383,23 +1528,17 @@
 
                 // Update line position after DOM insertion
                 setTimeout(() => updateLinePosition(slot, wrapper), 0);
-            });
 
-            // Add TERMINER button at the end
-            const buttonContainer = document.createElement('div');
-            buttonContainer.style.display = 'flex';
-            buttonContainer.style.flexDirection = 'column';
-            buttonContainer.style.alignItems = 'center';
-            buttonContainer.style.padding = '40px 20px 60px';
-            buttonContainer.style.gap = '20px';
-            buttonContainer.innerHTML = `
-                <i class="ri-arrow-down-line" style="font-size: 24px; color: var(--accent); animation: bounce 2s infinite;"></i>
-                <p style="color: var(--text-secondary); font-size: 14px; text-align: center; margin: 0;">Tous tes jalons sont prêts. Continue vers ton tableau de bord!</p>
-                <a href="dashboard.html" style="padding: 16px 48px; background: var(--accent); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 8px;">
-                    <i class="ri-check-double-line"></i> TERMINER
-                </a>
-            `;
-            timelineScroll.appendChild(buttonContainer);
+                // Ajouter bouton "+" entre les cartes (sauf après la dernière)
+                if (index < sortedMilestones.length - 1) {
+                    const addBtn = document.createElement('button');
+                    addBtn.className = 'add-milestone-btn';
+                    addBtn.innerHTML = '<i class="ri-add-line"></i>';
+                    addBtn.dataset.afterId = milestone.id;
+                    addBtn.onclick = () => addMilestoneAfter(milestone.id);
+                    timelineScroll.appendChild(addBtn);
+                }
+            });
 
             setupIntersectionObserver();
 
@@ -1409,6 +1548,32 @@
                 applyCardPositioning(sortedMilestones);
                 updateAllLinePositions();
             }, 300);
+        }
+
+        function addMilestoneAfter(afterId) {
+            // Générer un ID unique
+            const newId = 'm' + Date.now();
+
+            // Trouver l'index du jalon après lequel ajouter
+            const afterIndex = milestones.findIndex(m => m.id === afterId);
+
+            // Créer le nouveau jalon vide
+            const newMilestone = {
+                id: newId,
+                date: new Date().toISOString().split('T')[0], // Date d'aujourd'hui par défaut
+                title: "Nouveau Jalon",
+                desc: "Description...",
+                specifique: "",
+                kpiValue: ""
+            };
+
+            // Insérer le nouveau jalon après le jalon actuel
+            milestones.splice(afterIndex + 1, 0, newMilestone);
+
+            // Sauvegarder et re-render
+            saveMilestones();
+            renderAllCards();
+            renderTimeline();
         }
 
         function updateData(id, field, value) {
