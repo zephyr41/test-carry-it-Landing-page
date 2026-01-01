@@ -1358,6 +1358,15 @@
 
             // Définir la hauteur totale du conteneur pour permettre le scroll
             timelineScroll.style.minHeight = `${maxBottom + 200}px`;
+
+            // Fade-in des cartes une fois qu'elles sont toutes positionnées
+            // Cela élimine l'effet de "téléportation" des cartes
+            requestAnimationFrame(() => {
+                document.querySelectorAll('.card-slot').forEach(slot => {
+                    slot.style.transition = 'opacity 0.3s ease';
+                    slot.style.opacity = '1';
+                });
+            });
         }
 
         // Récupère les infos SMART depuis localStorage
@@ -1455,6 +1464,7 @@
             sortedMilestones.forEach((milestone, index) => {
                 const slot = document.createElement('div');
                 slot.className = 'card-slot';
+                slot.style.opacity = '0';  // Carte invisible au départ, sera visible après positionnement
                 slot.dataset.id = milestone.id;
                 slot.id = `card-${milestone.id}`;
                 slot.style.minHeight = 'auto';
@@ -1560,7 +1570,7 @@
                     addBtn.className = 'add-milestone-btn';
                     addBtn.innerHTML = '<i class="ri-add-line"></i>';
                     addBtn.dataset.afterId = milestone.id;
-                    addBtn.onclick = () => addMilestoneAfter(milestone.id);
+                    addBtn.onclick = (event) => addMilestoneAfter(milestone.id, event.currentTarget);
                     timelineScroll.appendChild(addBtn);
                 }
             });
@@ -1568,24 +1578,58 @@
             setupIntersectionObserver();
 
             // Appliquer le positionnement pour aligner avec le rail
-            // Délai augmenté pour s'assurer que le rail est complètement rendu
-            setTimeout(() => {
-                applyCardPositioning(sortedMilestones);
-                updateAllLinePositions();
-            }, 300);
+            applyCardPositioning(sortedMilestones);
+            updateAllLinePositions();
         }
 
-        function addMilestoneAfter(afterId) {
+        function getClosestRailOffsetForButton(buttonEl) {
+            if (!buttonEl) return null;
+
+            const months = document.querySelectorAll('.timeline-month');
+            if (!months.length) return null;
+
+            const buttonRect = buttonEl.getBoundingClientRect();
+            const buttonCenterY = buttonRect.top + (buttonRect.height / 2);
+
+            let closestMonth = null;
+            let closestDistance = Infinity;
+
+            months.forEach(month => {
+                const rect = month.getBoundingClientRect();
+                const monthCenterY = rect.top + (rect.height / 2);
+                const distance = Math.abs(monthCenterY - buttonCenterY);
+
+                if (distance < closestDistance) {
+                    closestDistance = distance;
+                    closestMonth = month;
+                }
+            });
+
+            return closestMonth ? parseInt(closestMonth.dataset.offset, 10) : null;
+        }
+
+        function getDateFromRailOffset(offset) {
+            const dateObj = new Date(projectDeadline);
+            dateObj.setMonth(projectDeadline.getMonth() - offset);
+            return dateObj.toISOString().split('T')[0];
+        }
+
+        function addMilestoneAfter(afterId, buttonEl) {
             // Générer un ID unique
             const newId = 'm' + Date.now();
 
             // Trouver l'index du jalon après lequel ajouter
             const afterIndex = milestones.findIndex(m => m.id === afterId);
 
+            const railOffset = getClosestRailOffsetForButton(buttonEl);
+            const inferredDate = railOffset !== null
+                ? getDateFromRailOffset(railOffset)
+                : new Date().toISOString().split('T')[0];
+
             // Créer le nouveau jalon vide
             const newMilestone = {
                 id: newId,
-                date: new Date().toISOString().split('T')[0], // Date d'aujourd'hui par défaut
+                date: inferredDate, // Date alignée au rail
                 title: "Nouveau Jalon",
                 desc: "Description...",
                 specifique: "",
@@ -1721,8 +1765,8 @@
             // On boucle de 0 (Objectif Final) à 24 (Lancement/Aujourd'hui)
             for (let i = 0; i <= projectDurationMonths; i++) {
                 const monthEl = document.createElement('div');
-                // Vérifier si un jalon a un offset proche (calculé depuis sa date)
-                const isMilestone = milestones.some(m => Math.abs(calculateOffset(m.date) - i) < 0.5);
+                // Vérifier si un jalon a un offset proche (calculé depuis la deadline)
+                const isMilestone = milestones.some(m => Math.abs(calculateRailOffset(m.date) - i) < 0.5);
 
                 monthEl.className = `timeline-month ${isMilestone ? 'has-milestone' : ''}`;
                 monthEl.dataset.offset = i;
@@ -1731,7 +1775,7 @@
                 monthEl.onclick = () => {
                    // Trouver le jalon le plus proche
                    const target = milestones.reduce((prev, curr) =>
-                       Math.abs(calculateOffset(curr.date) - i) < Math.abs(calculateOffset(prev.date) - i) ? curr : prev
+                       Math.abs(calculateRailOffset(curr.date) - i) < Math.abs(calculateRailOffset(prev.date) - i) ? curr : prev
                    );
                    const slot = document.getElementById(`card-${target.id}`);
                    if(slot) slot.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
