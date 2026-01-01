@@ -11,6 +11,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
+        @font-face {
+            font-family: 'Rifton';
+            src: url('Rifton Font/rifton-regular.otf') format('opentype');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+
         :root {
             /* --- PALETTE DARK MODE --- */
             --bg-primary: #050505;     /* Noir très sombre */
@@ -1108,6 +1116,29 @@
             outline-offset: 2px;
         }
 
+        /* RESET BUTTON (hidden) */
+        .reset-btn {
+            position: fixed;
+            bottom: 12px;
+            right: 12px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 11px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            opacity: 0.85;
+            cursor: pointer;
+            z-index: 1001;
+            transition: opacity 0.2s, color 0.2s, border-color 0.2s;
+        }
+
+        .reset-btn:hover {
+            opacity: 1;
+            color: var(--text-primary);
+            border-color: var(--border-hover);
+        }
+
         /* --- SMOOTH ANIMATIONS --- */
         * {
             transition: background-color 0.2s ease-in-out,
@@ -1173,6 +1204,8 @@
         </div>
     </section>
 
+    <button class="reset-btn" type="button" onclick="resetMilestones()">Réinitialiser les jalons</button>
+
     <script>
         // --- DATA & CONFIG ---
         const today = new Date();
@@ -1212,10 +1245,28 @@
             }
             // Valeurs par défaut
             console.log('⚙️ Using default values');
+
+            const datePlusMonths = (months) => {
+                const d = new Date(today);
+                d.setMonth(d.getMonth() + months);
+                return d.toISOString().split('T')[0];
+            };
+
+            if (projectDurationMonths > 12) {
+                const halfMonths = Math.max(1, Math.round(projectDurationMonths / 2));
+                return [
+                    { id: 'm1', date: projectDeadline.toISOString().split('T')[0], title: "Jalon Final", desc: "KPI SMART (100%).", specifique: "", kpiValue: "KPI SMART" },
+                    { id: 'm2', date: datePlusMonths(halfMonths), title: "Jalon 50%", desc: "Mi-parcours du plan.", specifique: "", kpiValue: "50%" },
+                    { id: 'm3', date: datePlusMonths(12), title: "Jalon année 1", desc: "Intermédiaire année 1.", specifique: "", kpiValue: "" },
+                    { id: 'm4', date: datePlusMonths(3), title: "Jalon Trimestriel", desc: "Première validation concrète.", specifique: "", kpiValue: "" },
+                    { id: 'm5', date: datePlusMonths(1), title: "Jalon Décollage", desc: "Première action.", specifique: "", kpiValue: "" }
+                ];
+            }
+
             return [
                 { id: 'm1', date: projectDeadline.toISOString().split('T')[0], title: "Objectif Final", desc: "Le système est stable et autonome.", specifique: "", kpiValue: "300 Clients" },
-                { id: 'm2', date: new Date(today.getFullYear(), today.getMonth() + 3, today.getDate()).toISOString().split('T')[0], title: "Optimisation", desc: "Maximisation de la conversion.", specifique: "", kpiValue: "" },
-                { id: 'm3', date: new Date(today.getFullYear(), today.getMonth() + 12, today.getDate()).toISOString().split('T')[0], title: "MVP Validé", desc: "Première base d'utilisateurs.", specifique: "", kpiValue: "Oui" },
+                { id: 'm2', date: datePlusMonths(3), title: "Optimisation", desc: "Maximisation de la conversion.", specifique: "", kpiValue: "" },
+                { id: 'm3', date: datePlusMonths(12), title: "MVP Validé", desc: "Première base d'utilisateurs.", specifique: "", kpiValue: "Oui" },
                 { id: 'm4', date: today.toISOString().split('T')[0], title: "Lancement", desc: "Démarrage du projet.", specifique: "", kpiValue: "" }
             ];
         })();
@@ -1749,6 +1800,13 @@
             saveMilestones();
             renderAllCards();
             renderTimeline();
+        }
+
+        function resetMilestones() {
+            const shouldReset = window.confirm('Réinitialiser tous les jalons ? Cette action est irréversible.');
+            if (!shouldReset) return;
+            localStorage.removeItem('carryItMilestones');
+            window.location.reload();
         }
 
         function editTitle(titleElement) {
