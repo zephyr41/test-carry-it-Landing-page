@@ -646,6 +646,31 @@
             opacity: 1;
         }
 
+        /* DELETE BUTTON */
+        .delete-btn {
+            position: absolute;
+            right: 44px;
+            top: 14px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 16px;
+            padding: 6px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .delete-btn:hover {
+            color: var(--accent);
+            background: var(--bg-card-hover);
+        }
+
+        .delete-btn:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
         /* RAIL DOT */
         .rail-dot {
             width: 8px;
@@ -1499,6 +1524,15 @@
                 `;
                 wrapper.appendChild(dateAnchor);
 
+                const dateInput = document.createElement('input');
+                dateInput.type = 'date';
+                dateInput.value = milestone.date;
+                dateInput.setAttribute('aria-label', 'Date du jalon');
+                dateInput.oninput = function() {
+                    updateData(milestone.id, 'date', this.value);
+                };
+                wrapper.appendChild(dateInput);
+
                 // Jalon header with progress
                 const jalonHeader = document.createElement('div');
                 jalonHeader.className = 'jalon-header';
@@ -1557,6 +1591,15 @@
                 const validationCheck = document.createElement('i');
                 validationCheck.className = 'ri-check-line validation-check';
                 wrapper.appendChild(validationCheck);
+
+                // Delete button
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-btn';
+                deleteBtn.type = 'button';
+                deleteBtn.title = 'Supprimer le jalon';
+                deleteBtn.innerHTML = '<i class="ri-delete-bin-6-line"></i>';
+                deleteBtn.onclick = () => confirmDeleteMilestone(milestone.id);
+                wrapper.appendChild(deleteBtn);
 
                 slot.appendChild(wrapper);
                 timelineScroll.appendChild(slot);
@@ -1690,6 +1733,22 @@
                     }
                 }
             }
+        }
+
+        function confirmDeleteMilestone(id) {
+            const shouldDelete = window.confirm('Supprimer ce jalon ? Cette action est irréversible.');
+            if (!shouldDelete) return;
+
+            const nextMilestones = milestones.filter(m => m.id !== id);
+            if (nextMilestones.length === 0) {
+                alert('Impossible de supprimer le dernier jalon.');
+                return;
+            }
+
+            milestones = nextMilestones;
+            saveMilestones();
+            renderAllCards();
+            renderTimeline();
         }
 
         function editTitle(titleElement) {
