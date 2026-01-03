@@ -567,43 +567,169 @@
         }
         .input-kpi::placeholder { color: var(--text-muted); font-weight: 400; }
 
-        /* --- APPLE-LEVEL COMPONENTS --- */
+        /* --- SIMPLIFIED CARD COMPONENTS --- */
 
-        /* DATE ANCHOR */
-        .date-anchor {
+        /* CARD META TOP (Number + Date) */
+        .card-meta-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 8px;
+        }
+
+        .card-number {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .card-date-input {
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            padding: 6px 8px;
+            cursor: pointer;
+            transition: border-color 0.2s;
+            flex-shrink: 0;
+        }
+
+        .card-date-input:hover {
+            border-color: var(--border-hover);
+        }
+
+        .card-date-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        /* CARD HEADER (Title) */
+        .card-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 4px;
+        }
+
+        .input-title {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+            color: var(--text-primary);
+            cursor: pointer;
+            flex: 1;
+            padding: 2px 0;
+            transition: opacity 0.2s;
+        }
+
+        .input-title:hover {
+            opacity: 0.8;
+        }
+
+        .card-tag {
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        /* DESCRIPTION INPUT (Spécifique) */
+        .input-desc {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+            padding: 12px;
+            min-height: 80px;
+            resize: none;
+            transition: all 0.2s;
+        }
+
+        .input-desc:hover {
+            border-color: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .input-desc:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .input-desc::placeholder {
+            color: var(--text-muted);
+            opacity: 0.5;
+        }
+
+        /* KPI ROW */
+        .kpi-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-top: 8px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .kpi-input-group {
+            flex: 1;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            gap: 2px;
-            padding: 12px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: var(--radius-sm);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            align-self: flex-start;
-            position: relative;
-            cursor: pointer;
+            gap: 4px;
         }
 
-        .date-anchor input[type="date"] {
-            position: absolute;
-            inset: 0;
-            opacity: 0;
-            cursor: pointer;
+        .kpi-label {
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+        }
+
+        .input-kpi {
+            background: transparent;
             border: none;
-            padding: 0;
-            margin: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: all;
+            border-bottom: 1px solid var(--border);
+            color: var(--accent);
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 4px 0;
+            transition: border-color 0.2s;
         }
 
-        .date-day {
-            font-size: 28px;
-            font-weight: 700;
-            line-height: 1;
-            letter-spacing: -0.02em;
+        .input-kpi:hover {
+            border-bottom-color: var(--border-hover);
         }
 
+        .input-kpi:focus {
+            outline: none;
+            border-bottom-color: var(--accent);
+        }
+
+        .input-kpi::placeholder {
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .kpi-date {
+            font-size: 12px;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        /* Legacy date styling for timeline column */
         .date-month {
             font-size: 11px;
             font-weight: 600;
@@ -617,132 +743,6 @@
             font-weight: 500;
             color: var(--text-muted);
             opacity: 0.5;
-        }
-
-        /* JALON HEADER */
-        .jalon-header {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .jalon-title {
-            font-size: 28px;
-            font-weight: 700;
-            letter-spacing: -0.03em;
-            line-height: 1.2;
-            color: var(--text-primary);
-            cursor: pointer;
-            padding: 4px 8px;
-            border-radius: 4px;
-            transition: all 0.2s;
-        }
-
-        .jalon-title:hover {
-            opacity: 0.7;
-        }
-
-        .jalon-meta {
-            font-size: 11px;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            opacity: 0.6;
-            color: var(--text-muted);
-        }
-
-        /* MODULE CARD */
-        .module-card {
-            background: var(--bg-module);
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            border-radius: var(--radius-md);
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            transition: all 250ms ease-out;
-            position: relative;
-        }
-
-        .module-card:hover {
-            background: rgba(255, 255, 255, 0.03);
-            border-color: rgba(255, 255, 255, 0.08);
-        }
-
-        .module-card:focus-within {
-            background: rgba(255, 255, 255, 0.04);
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(255, 77, 0, 0.08);
-        }
-
-        .module-label {
-            font-size: 11px;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            opacity: 0.6;
-            margin-bottom: 4px;
-        }
-
-        .module-content {
-            background: transparent;
-            border: none;
-            color: var(--text-primary);
-            font-family: 'Inter', sans-serif;
-            font-size: 15px;
-            line-height: 1.6;
-            font-weight: 400;
-            cursor: text;
-            transition: all 250ms ease-out;
-            min-height: 80px;
-            resize: none;
-            padding: 0;
-        }
-
-        .module-content:hover {
-            color: var(--text-primary);
-        }
-
-        .module-content:focus {
-            outline: none;
-            color: var(--text-primary);
-        }
-
-        .module-content::placeholder {
-            font-style: italic;
-            opacity: 0.4;
-            color: var(--text-muted);
-        }
-
-        .edit-icon {
-            width: 16px;
-            height: 16px;
-            cursor: pointer;
-            opacity: 0;
-            transition: opacity 200ms ease-out;
-            position: absolute;
-            right: 16px;
-            top: 16px;
-            color: var(--text-secondary);
-        }
-
-        .module-card:hover .edit-icon {
-            opacity: 0.4;
-        }
-
-        /* VALIDATION CHECK */
-        .validation-check {
-            position: absolute;
-            right: 16px;
-            top: 16px;
-            color: #34C759;
-            font-size: 16px;
-            opacity: 0;
-            transition: opacity 300ms ease-out;
-        }
-
-        .card-wrapper.completed .validation-check {
-            opacity: 1;
         }
 
         /* DELETE BUTTON */
@@ -1241,7 +1241,7 @@
                 const statusBadge = kpiStatus ?
                     `<span class="kpi-status" data-status="${kpiStatus}">Non atteint</span>` : '';
 
-                // Build HTML
+                // Build HTML - Simplified card design
                 item.innerHTML = `
                     <!-- Date Column (Left of rail) -->
                     <div class="item-date">
@@ -1256,63 +1256,48 @@
                     <div class="item-card">
                         <div class="card-wrapper" data-status="${status}">
 
-                            <!-- Date Anchor (clickable) -->
-                            <div class="date-anchor">
-                                <span class="date-day">${day}</span>
-                                <span class="date-month">${month}</span>
-                                <span class="date-year">${year}</span>
+                            <!-- Card Top Meta -->
+                            <div class="card-meta-top">
+                                <span class="card-number">Jalon ${milestoneNumber}/${total}</span>
                                 <input type="date"
+                                       class="card-date-input"
                                        value="${milestone.date}"
                                        aria-label="Date du jalon"
                                        oninput="updateData('${milestone.id}', 'date', this.value)">
                             </div>
 
-                            <!-- Header with numbering -->
-                            <div class="jalon-header">
-                                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
-                                    <span style="font-size: 12px; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">
-                                        Jalon ${milestoneNumber}/${total}
-                                    </span>
-                                </div>
-                                <h3 class="jalon-title"
+                            <!-- Card Header (Title) -->
+                            <div class="card-header">
+                                <h3 class="input-title"
                                     data-id="${milestone.id}"
                                     onclick="editTitle(this)"
                                     title="Cliquez pour éditer">
                                     ${milestone.title || 'Jalon'}
                                 </h3>
-                                <span class="jalon-meta">
-                                    ${isFinal ? 'Votre Ambition' : `Jalon · Phase ${Math.floor(index + 1)}`}
-                                </span>
+                                <span class="card-tag">${isFinal ? 'Votre Ambition' : `Phase ${Math.floor(index + 1)}`}</span>
                             </div>
 
-                            <!-- Spécifique Module -->
-                            <div class="module-card">
-                                <div class="module-label">Spécifique</div>
-                                <textarea class="module-content"
-                                          data-id="${milestone.id}"
-                                          placeholder="Description spécifique..."
-                                          oninput="updateData('${milestone.id}', 'specifique', this.value); autoResize(this)"
-                                          >${milestone.specifique || ''}</textarea>
-                                <i class="ri-pencil-line edit-icon"></i>
-                            </div>
+                            <!-- Description Input -->
+                            <textarea class="input-desc"
+                                      data-id="${milestone.id}"
+                                      placeholder="Description spécifique..."
+                                      oninput="updateData('${milestone.id}', 'specifique', this.value); autoResize(this)"
+                                      >${milestone.specifique || ''}</textarea>
 
-                            <!-- KPI Module -->
-                            <div class="kpi-module">
-                                <div class="kpi-header">
-                                    <span class="kpi-label">KPI Mesurable</span>
-                                    ${statusBadge}
+                            <!-- KPI Input Row -->
+                            <div class="kpi-row">
+                                <div class="kpi-input-group">
+                                    <label class="kpi-label">KPI Mesurable</label>
+                                    <input type="text" class="input-kpi"
+                                           value="${milestone.kpiValue || ''}"
+                                           data-id="${milestone.id}"
+                                           placeholder="Ex: 300 clients"
+                                           autocomplete="off"
+                                           oninput="updateData('${milestone.id}', 'kpiValue', this.value)">
                                 </div>
-                                <input type="text" class="kpi-value"
-                                       value="${milestone.kpiValue || ''}"
-                                       data-id="${milestone.id}"
-                                       placeholder="Entrez votre KPI mesurable (ex: 300 clients)"
-                                       autocomplete="off"
-                                       oninput="updateData('${milestone.id}', 'kpiValue', this.value)">
-                                <div class="kpi-date">au ${formattedKpiDate}</div>
+                                <span class="kpi-date">au ${formattedKpiDate}</span>
+                                ${statusBadge ? `<span class="kpi-status" data-status="${kpiStatus}">Non atteint</span>` : ''}
                             </div>
-
-                            <!-- Validation Check -->
-                            <i class="ri-check-line validation-check"></i>
 
                             <!-- Delete Button -->
                             ${!isFinal ? `
@@ -1330,7 +1315,7 @@
                 timelineList.appendChild(item);
 
                 // Auto-resize textarea
-                const textarea = item.querySelector('textarea.module-content');
+                const textarea = item.querySelector('textarea.input-desc');
                 if (textarea) autoResize(textarea);
 
                 // Add + button between items (except after last one)
