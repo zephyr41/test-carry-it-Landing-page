@@ -51,16 +51,23 @@
 
         /* CONTAINER */
         .main-container {
-            margin-top: 60px;
+            margin-top: -40px;
             padding: 0 20px 100px 20px;
-            display: flex; flex-direction: column;
+            display: flex;
+            flex-direction: column;
             align-items: center;
+            justify-content: center;
+            width: 100%;
         }
 
         .timeline-list {
             position: relative;
-            width: 100%; max-width: 650px;
-            display: flex; flex-direction: column;
+            width: auto;
+            max-width: 650px;
+            display: flex;
+            flex-direction: column;
+            margin: 0 auto;
+            align-self: center;
         }
 
         /* LE RAIL (AMÉLIORÉ) */
@@ -337,7 +344,7 @@
         /* INTRO SECTION */
         .intro-section {
             margin-top: 60px;
-            padding: 220px 20px 220px;
+            padding: 140px 20px 100px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -346,8 +353,8 @@
             width: 100vw;
             margin-left: calc(-50vw + 50%);
             position: relative;
-            overflow: hidden;
-            min-height: 900px;
+            overflow: visible;
+            min-height: 480px;
         }
 
         .intro-section::before {
