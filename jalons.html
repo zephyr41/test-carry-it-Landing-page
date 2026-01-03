@@ -178,27 +178,47 @@
         /* --- COMPLETION SECTION --- */
         .completion-section {
             background: var(--bg-primary);
-            padding: 100px 20px 120px;
+            padding: 80px 20px 60px;
             text-align: center;
-            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            border-top: 1px solid var(--border);
         }
 
         .completion-content {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 24px;
-            max-width: 600px;
+            gap: 40px;
+            max-width: 700px;
         }
 
-        .completion-content p {
+        /* Reality Check Message */
+        .reality-check {
+            opacity: 0.85;
+            transition: opacity 0.3s;
+        }
+
+        .reality-check:hover {
+            opacity: 1;
+        }
+
+        .reality-check p {
+            font-family: 'Inter', sans-serif;
+            font-style: italic;
             color: var(--text-secondary);
-            font-size: 16px;
-            margin: 0;
-            line-height: 1.6;
+            font-size: 15px;
+            line-height: 1.7;
+            margin-bottom: 12px;
+        }
+
+        .reality-check strong {
+            color: var(--text-primary);
+            font-weight: 600;
+            font-style: normal;
+            display: block;
+            margin-top: 8px;
         }
 
         .btn-complete {
@@ -222,123 +242,199 @@
             transform: translateY(-2px);
         }
 
-        /* --- TIMELINE VIEWPORT (Main scroll container) --- */
-        .timeline-viewport {
-            flex: 1;
-            width: 100%;
-            overflow-x: hidden;
-            overflow-y: auto;
-            scroll-behavior: smooth;
-            scrollbar-width: none;
-            position: relative;
-            display: flex;
-            flex-direction: row;
-            background-color: var(--bg-primary);
-            max-width: 900px;
-            margin: 0 auto;
-            margin-top: 100px;
-        }
-        .timeline-viewport::-webkit-scrollbar { display: none; }
-
-        /* Flex container pour le scroll vertical */
-        .timeline-scroll {
+        /* --- MAIN CONTAINER & TIMELINE LIST --- */
+        .main-container {
+            margin-top: 60px;
+            padding: 40px 20px 100px 20px;
             display: flex;
             flex-direction: column;
-            flex: 1;
-            width: 100%;
-            padding: 200px 20px 120px 0;
-            position: relative;
-            --center-x: calc(40px + (min(100%, 500px) / 2));
+            align-items: center;
         }
 
-        /* Fil d'Ariane pointillé vertical */
-        .timeline-scroll::after {
-            content: '';
+        .timeline-list {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* VERTICAL TIMELINE LINE */
+        .timeline-line {
             position: absolute;
-            left: var(--center-x);
-            transform: translateX(-50%);
-            top: 0;
+            left: 100px;
+            top: 20px;
             bottom: 0;
             width: 2px;
-            border-left: 2px dashed var(--text-muted);
-            opacity: 0.3;
-            pointer-events: none;
+            background: var(--border);
             z-index: 0;
         }
 
-        /* --- CARD SLOTS --- */
-        .card-slot {
-            flex: 0 0 auto;
-            min-height: auto;
-            margin: 0;
+        /* TIMELINE ITEM */
+        .timeline-item {
             display: flex;
-            align-items: center;
-            justify-content: flex-start;
             position: relative;
-            padding: 40px 20px 40px 0;
-            opacity: 1;
-            transform: none;
-            transition: opacity 0.3s;
+            margin-bottom: 80px;
             z-index: 1;
         }
 
-        .card-slot.active {
-            opacity: 1;
+        /* DATE COLUMN (Left of rail) */
+        .item-date {
+            width: 100px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            padding-right: 20px;
+            text-align: right;
+            padding-top: 30px;
         }
 
-        /* Bouton "+" pour ajouter un jalon */
-        .add-milestone-btn {
+        .date-year {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+
+        .date-month {
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* DOT ON RAIL */
+        .timeline-dot {
             position: absolute;
-            left: var(--center-x);
+            left: 101px;
+            top: 40px;
             transform: translateX(-50%);
-            width: 40px;
-            height: 40px;
-            background: var(--bg-card);
-            border: 2px solid var(--border);
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
+            background: var(--bg-primary);
+            border: 2px solid var(--accent);
+            z-index: 2;
+            box-shadow: 0 0 0 4px var(--bg-primary);
+            transition: all 250ms ease-out;
+        }
+
+        .timeline-dot[data-status="futur"] {
+            background: #808080;
+            border-color: #808080;
+            box-shadow: 0 0 8px rgba(128, 128, 128, 0.3);
+        }
+
+        .timeline-dot[data-status="en-cours"] {
+            background: #FFFFFF;
+            border-color: #FFFFFF;
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
+        }
+
+        .timeline-dot[data-status="validé"] {
+            background: #34C759;
+            border-color: #34C759;
+            box-shadow: 0 0 12px rgba(52, 199, 89, 0.4);
+        }
+
+        .timeline-dot.final {
+            background: var(--accent);
+            box-shadow: 0 0 16px var(--accent-glow);
+            width: 16px;
+            height: 16px;
+        }
+
+        /* CARD (Right of rail) */
+        .item-card {
+            flex: 1;
+            margin-left: 30px;
+        }
+
+        /* ADD ZONE BETWEEN ITEMS */
+        .inter-add-zone {
+            position: relative;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            margin: -40px 0 40px 0;
+        }
+
+        .btn-mini-plus {
+            position: absolute;
+            left: 101px;
+            transform: translateX(-50%);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--bg-primary);
+            border: 2px solid var(--border);
+            color: var(--text-secondary);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             z-index: 10;
-            color: var(--text-secondary);
-            font-size: 20px;
-            transition: all 0.2s;
+            transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+            font-size: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
             padding: 0;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
         }
 
-        .add-milestone-btn:hover {
+        .btn-mini-plus:hover {
             background: var(--accent);
             border-color: var(--accent);
             color: white;
-            transform: translateX(-50%) scale(1.1);
+            transform: translateX(-50%) scale(1.15);
+            box-shadow: 0 0 12px var(--accent-glow);
+        }
+
+        .btn-mini-plus::after {
+            content: 'Ajouter un jalon';
+            position: absolute;
+            left: calc(100% + 12px);
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 11px;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+            color: var(--text-primary);
+            background: rgba(5, 5, 5, 0.95);
+            padding: 6px 10px;
+            border-radius: 6px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            white-space: nowrap;
+            border: 1px solid var(--border);
+        }
+
+        .btn-mini-plus:hover::after {
+            opacity: 1;
         }
 
         .card-wrapper {
             width: 100%;
-            max-width: 500px;
+            max-width: 600px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            box-shadow: var(--shadow-md);
             display: flex;
             flex-direction: column;
             gap: 24px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 32px;
-            box-shadow: var(--shadow-md);
-            margin-left: 40px;
             position: relative;
+            transition: border-color 0.2s;
         }
 
-        .card-wrapper::before {
-            content: '';
-            position: absolute;
-            left: -40px;
-            top: var(--line-top, 50%);
-            transform: translateY(-50%);
-            width: 40px;
-            height: 2px;
-            background: var(--accent);
-            box-shadow: 0 0 8px var(--accent-glow);
+        .card-wrapper:focus-within {
+            border-color: var(--accent);
         }
 
         /* SENTINEL BLOCK (DATE) */
@@ -471,26 +567,6 @@
         }
         .input-kpi::placeholder { color: var(--text-muted); font-weight: 400; }
 
-        /* DATE INPUT */
-        input[type="date"] {
-            background: transparent;
-            border: none;
-            border-bottom: 2px solid var(--border);
-            color: var(--text-primary);
-            font-family: 'Inter', sans-serif;
-            font-size: 16px;
-            padding: 12px 0;
-            cursor: pointer;
-            transition: border-color 0.2s;
-        }
-        input[type="date"]:hover {
-            border-bottom-color: var(--border-hover);
-        }
-        input[type="date"]:focus {
-            outline: none;
-            border-bottom-color: var(--accent);
-        }
-
         /* --- APPLE-LEVEL COMPONENTS --- */
 
         /* DATE ANCHOR */
@@ -504,6 +580,21 @@
             border-radius: var(--radius-sm);
             border: 1px solid rgba(255, 255, 255, 0.06);
             align-self: flex-start;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .date-anchor input[type="date"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+            border: none;
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: all;
         }
 
         .date-day {
@@ -723,29 +814,6 @@
             50% { transform: translateY(10px); }
         }
 
-        /* RAIL TOOLTIP */
-        .rail-tooltip {
-            position: absolute;
-            left: 100%;
-            top: 50%;
-            transform: translateY(-50%) translateX(0);
-            background: rgba(0, 0, 0, 0.9);
-            backdrop-filter: blur(20px);
-            padding: 8px 12px;
-            border-radius: var(--radius-sm);
-            font-size: 11px;
-            white-space: nowrap;
-            opacity: 0;
-            pointer-events: none;
-            transition: all 250ms ease-out;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-            margin-left: 8px;
-        }
-
-        .timeline-month:hover .rail-tooltip {
-            opacity: 1;
-            transform: translateY(-50%) translateX(10px);
-        }
 
         /* KPI MODULE */
         .kpi-module {
@@ -852,255 +920,27 @@
             font-weight: 400;
         }
 
-        /* --- TIMELINE RAIL (Scrollable with content) --- */
-        .timeline-rail {
-            position: relative;
-            width: 80px;
-            border-right: 1px solid var(--border);
-            background: transparent;
-            display: flex;
-            flex-direction: column;
-            z-index: 50;
-            box-shadow: none;
-            flex-shrink: 0;
-            height: 100%;
-            min-height: 100vh;
-        }
-
-        .timeline-indicator {
-            position: absolute;
-            left: 15px;
-            right: 15px;
-            height: 2px;
-            background: var(--accent);
-            z-index: 100;
-            box-shadow: 0 0 10px var(--accent-glow);
-        }
-
-        .timeline-track {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            height: 100%;
-            flex: 1;
-        }
-
-        .timeline-month {
-            flex: 1;
-            width: 100%;
-            min-height: 80px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            opacity: 0.7;
-            transition: opacity 0.3s;
-            position: relative;
-            cursor: pointer;
-            padding: 0;
-        }
-
-        .timeline-month:hover { opacity: 0.85; }
-        .timeline-month.active { opacity: 1; }
-
-        .tick {
-            order: 3;
-            width: 14px;
-            height: 1px;
-            background: var(--border);
-            margin-top: 6px;
-        }
-        .timeline-month.active .tick {
-            width: 20px;
-            height: 2px;
-            background: var(--accent);
-        }
-
-        .month-label {
-            order: 1;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            line-height: 1;
-            color: var(--text-primary);
-        }
-        .year-label {
-            order: 2;
-            font-size: 10px;
-            color: var(--text-secondary);
-            margin-top: 3px;
-            font-variant-numeric: tabular-nums;
-            font-weight: 500;
-        }
-        .timeline-month.active .year-label { color: var(--text-primary); }
-
-        .has-milestone::after {
-            content: '';
-            width: 6px;
-            height: 6px;
-            background: var(--accent);
-            border-radius: 50%;
-            position: absolute;
-            bottom: 10px;
-            box-shadow: 0 0 5px var(--accent-glow);
-        }
-
-        /* --- CONTROLS --- */
-        .controls-bottom {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 80px;
-            padding: 0 20px;
-            padding-bottom: var(--safe-bottom);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: var(--bg-card);
-            border-top: 1px solid var(--border);
-            z-index: 100;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .btn-nav {
-            height: 40px;
-            padding: 0 20px;
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--accent);
-            font-family: 'Inter', sans-serif;
-            font-size: 13px;
-            font-weight: 500;
-            text-transform: uppercase;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.2s;
-            letter-spacing: 0.5px;
-            border-radius: 6px;
-        }
-        .btn-nav:hover {
-            border-color: var(--accent);
-            background: var(--accent-light);
-        }
-        .btn-nav:active { transform: scale(0.98); }
-
-        .btn-nav.primary {
-            background: var(--accent);
-            color: white;
-            font-weight: 600;
-            border-color: var(--accent);
-        }
-        .btn-nav.primary:hover {
-            background: #1d4ed8;
-            border-color: #1d4ed8;
-        }
-
-        .btn-nav.disabled { opacity: 0.4; pointer-events: none; }
 
         /* --- RESPONSIVE DESIGN --- */
         @media (max-width: 768px) {
-            .timeline-rail {
-                width: 70px;
-            }
-
-            .timeline-scroll {
-                padding: 0 20px 150px 0;
-            }
-
-            .controls-bottom {
-                height: 100px;
-                flex-direction: column;
-                gap: 8px;
-                justify-content: center;
-            }
-
-            .btn-nav {
-                width: 100%;
-                justify-content: center;
-                font-size: 12px;
-            }
-
-            .card-wrapper {
-                max-width: 100%;
-                padding: 32px 24px;
-                gap: 24px;
-            }
-
-            .input-title {
-                font-size: 24px;
-            }
-
-            .card-slot {
-                padding: 32px 16px;
-                min-height: 85vh;
-            }
-
-            .hud-label {
-                font-size: 12px;
-            }
-
-            .btn-icon {
-                font-size: 16px;
-            }
+            .timeline-line { left: 60px; }
+            .item-date { width: 60px; padding-right: 12px; }
+            .timeline-dot, .btn-mini-plus { left: 61px; }
+            .item-card { margin-left: 20px; }
+            .card-wrapper { padding: 24px; }
+            .date-month { font-size: 12px; }
+            .date-year { font-size: 10px; }
         }
 
         @media (max-width: 480px) {
-            .timeline-rail {
-                width: 60px;
-            }
-
-            .timeline-scroll {
-                padding: 0 20px 150px 0;
-            }
-
-            .timeline-month {
-                height: 60px;
-            }
-
-            .month-label {
-                font-size: 10px;
-            }
-
-            .year-label {
-                font-size: 9px;
-            }
-
-            .card-wrapper {
-                padding: 24px 16px;
-                gap: 20px;
-                border-radius: 8px;
-            }
-
-            .input-title {
-                font-size: 20px;
-            }
-
-            .data-block {
-                gap: 6px;
-            }
-
-            .block-label {
-                font-size: 11px;
-            }
-
-            .input-raw,
-            input[type="date"],
-            .input-area {
-                font-size: 14px;
-                padding: 10px 0;
-            }
-
-            .sentinel-date {
-                font-size: 12px;
-            }
-
-            .sentinel-year {
-                font-size: 11px;
-            }
+            .timeline-line { left: 50px; }
+            .item-date { width: 50px; padding-right: 10px; }
+            .timeline-dot, .btn-mini-plus { left: 51px; }
+            .item-card { margin-left: 16px; }
+            .card-wrapper { padding: 20px 16px; }
+            .date-month { font-size: 11px; }
+            .date-year { font-size: 9px; }
+            .timeline-item { margin-bottom: 60px; }
         }
 
         /* --- FOCUS & KEYBOARD ACCESSIBILITY --- */
@@ -1177,30 +1017,32 @@
         </button>
     </div>
 
-    <!-- TIMELINE VIEWPORT (Main scroll container) -->
-    <div class="timeline-viewport" id="timelineViewport">
-        <!-- TIMELINE RAIL (Scrollable with content) -->
-        <div class="timeline-rail" id="timelineRail">
-            <div class="timeline-indicator"></div>
-            <div class="timeline-track" id="timelineTrack">
-                <!-- Timeline mois générée par JS -->
-            </div>
-        </div>
-
-        <!-- TIMELINE SCROLL (Cards) -->
-        <div class="timeline-scroll" id="timelineScroll">
-            <!-- Cartes générées par JS -->
+    <!-- MAIN CONTAINER (Simplified Timeline) -->
+    <div class="main-container">
+        <div class="timeline-list" id="timelineList">
+            <!-- Timeline items générés par JS -->
         </div>
     </div>
 
-    <!-- COMPLETION SECTION -->
+    <!-- COMPLETION SECTION (Merged with Reality Check) -->
     <section class="completion-section">
         <div class="completion-content">
-            <i class="ri-arrow-down-line" style="font-size: 24px; color: var(--accent); animation: bounce 2s infinite;"></i>
-            <p>Tous tes jalons sont prêts. Continue vers ton tableau de bord!</p>
+
+            <!-- Reality Check Message -->
+            <div class="reality-check">
+                <p>
+                    "Personnellement, j'avais mis comme 1er jalon de faire une V0 en 3 mois.
+                    Avec tout ce que j'avais à faire, j'en ai mis 6.<br>
+                    Mais regarde, je suis encore là, j'en ai rien à foutre du temps que ça prendra.<br>
+                    <strong>Ça fait juste partie du jeu.</strong>"
+                </p>
+            </div>
+
+            <!-- Complete Button -->
             <a href="dashboard.html" class="btn-complete">
                 <i class="ri-check-double-line"></i> TERMINER
             </a>
+
         </div>
     </section>
 
@@ -1272,178 +1114,8 @@
         })();
 
         // --- DOM REFS ---
-        const timelineViewport = document.getElementById('timelineViewport');
-        const timelineScroll = document.getElementById('timelineScroll');
-        const timelineTrack = document.getElementById('timelineTrack');
+        const timelineList = document.getElementById('timelineList');
 
-        // --- STATE ---
-        let currentMilestoneId = null;
-        let isScrollingViewport = false;
-        let isScrollingTimeline = false;
-        let isSyncingRail = false;
-
-        // --- UTILS ---
-        function calculateOffset(dateString) {
-            const targetDate = new Date(dateString + 'T00:00:00');
-            const diffTime = targetDate - today;
-            const diffMonths = Math.round(diffTime / (1000 * 60 * 60 * 24 * 30.44));
-            return diffMonths;
-        }
-
-        // Calcule l'offset par rapport à la DEADLINE du projet (pour le rail)
-        function calculateRailOffset(dateString) {
-            const targetDate = new Date(dateString + 'T00:00:00');
-            const deadline = new Date(projectDeadline);
-            const diffTime = deadline - targetDate;
-            const diffMonths = Math.round(diffTime / (1000 * 60 * 60 * 24 * 30.44));
-            return Math.max(0, Math.min(projectDurationMonths, diffMonths));
-        }
-
-        // Calcule les positions Y des centres de chaque mois sur le rail
-        function getMonthCenterPositions() {
-            const monthPositions = new Map();
-            const months = document.querySelectorAll('.timeline-month');
-
-            // Vérifier que les mois ont des hauteurs valides
-            if (months.length === 0) {
-                console.warn('No months found in rail');
-                return null;
-            }
-
-            const firstMonth = months[0];
-            if (firstMonth.offsetHeight === 0) {
-                console.warn('Rail not fully rendered yet, offsetHeight is 0');
-                return null;
-            }
-
-            months.forEach(month => {
-                const offset = parseInt(month.dataset.offset);
-                const monthTop = month.offsetTop;
-                const monthHeight = month.offsetHeight;
-                const centerY = monthTop + (monthHeight / 2);
-                monthPositions.set(offset, centerY);
-            });
-
-            return monthPositions;
-        }
-
-        // Positionne les cartes pour aligner leurs centres avec les mois du rail
-        function applyCardPositioning(sortedMilestones) {
-            const monthPositions = getMonthCenterPositions();
-
-            // Vérifier que le rail est rendu
-            if (!monthPositions || monthPositions.size === 0) {
-                console.warn('Rail not ready, retrying...');
-                setTimeout(() => applyCardPositioning(sortedMilestones), 50);
-                return;
-            }
-
-            // Rendre timelineScroll un conteneur de positionnement absolu
-            const timelineScroll = document.getElementById('timelineScroll');
-            timelineScroll.style.position = 'relative';
-
-            // Première passe: calculer les positions idéales et les hauteurs
-            const cardData = [];
-            sortedMilestones.forEach((milestone, index) => {
-                const slot = document.getElementById(`card-${milestone.id}`);
-                const wrapper = slot?.querySelector('.card-wrapper');
-
-                if (!slot || !wrapper) return;
-
-                const railOffset = calculateRailOffset(milestone.date);
-                const monthCenterY = monthPositions.get(railOffset);
-
-                if (monthCenterY === undefined) {
-                    console.warn(`No position found for offset ${railOffset}`);
-                    return;
-                }
-
-                const wrapperHeight = wrapper.offsetHeight || 600;
-                const slotHeight = wrapperHeight + 100;
-                const idealSlotTop = monthCenterY - (slotHeight / 2);
-
-                cardData.push({
-                    milestone,
-                    slot,
-                    wrapper,
-                    railOffset,
-                    monthCenterY,
-                    wrapperHeight,
-                    slotHeight,
-                    idealSlotTop,
-                    actualSlotTop: idealSlotTop
-                });
-            });
-
-            // Deuxième passe: ajuster les positions pour éviter les chevauchements
-            let maxBottom = 0;
-            for (let i = 0; i < cardData.length; i++) {
-                const card = cardData[i];
-
-                if (i > 0) {
-                    const prevCard = cardData[i - 1];
-                    const prevCardBottom = prevCard.actualSlotTop + prevCard.slotHeight;
-                    const minGap = 20; // Espacement minimum entre cartes
-
-                    // Si cette carte chevauche la précédente, la décaler vers le bas
-                    if (card.idealSlotTop < prevCardBottom + minGap) {
-                        card.actualSlotTop = prevCardBottom + minGap;
-                    } else {
-                        card.actualSlotTop = card.idealSlotTop;
-                    }
-                }
-
-                // S'assurer que la carte ne sort pas du viewport en haut
-                card.actualSlotTop = Math.max(0, card.actualSlotTop);
-
-                // Appliquer le positionnement
-                card.slot.style.position = 'absolute';
-                card.slot.style.top = `${card.actualSlotTop}px`;
-                card.slot.style.left = '0';
-                card.slot.style.right = '0';
-                card.slot.style.minHeight = `${card.slotHeight}px`;
-
-                const slotBottom = card.actualSlotTop + card.slotHeight;
-                if (slotBottom > maxBottom) {
-                    maxBottom = slotBottom;
-                }
-
-                // Log pour debug
-                console.log(`Card ${card.milestone.id}: offset=${card.railOffset}, ideal=${Math.round(card.idealSlotTop)}px, actual=${Math.round(card.actualSlotTop)}px`);
-
-                // Mettre à jour la position du trait
-                updateLinePosition(card.slot, card.wrapper);
-            }
-
-            // Positionner les boutons "+" entre les cartes
-            document.querySelectorAll('.add-milestone-btn').forEach(btn => {
-                const afterId = btn.dataset.afterId;
-                const currentCardData = cardData.find(c => c.milestone.id === afterId);
-                const currentIndex = cardData.findIndex(c => c.milestone.id === afterId);
-                const nextCardData = currentIndex < cardData.length - 1 ? cardData[currentIndex + 1] : null;
-
-                if (currentCardData && nextCardData) {
-                    const currentBottom = currentCardData.actualSlotTop + currentCardData.slotHeight;
-                    const nextTop = nextCardData.actualSlotTop;
-                    const btnTop = (currentBottom + nextTop) / 2 - 20; // Centré entre les deux, -20 pour centrer le bouton
-
-                    btn.style.position = 'absolute';
-                    btn.style.top = `${btnTop}px`;
-                }
-            });
-
-            // Définir la hauteur totale du conteneur pour permettre le scroll
-            timelineScroll.style.minHeight = `${maxBottom + 200}px`;
-
-            // Fade-in des cartes une fois qu'elles sont toutes positionnées
-            // Cela élimine l'effet de "téléportation" des cartes
-            requestAnimationFrame(() => {
-                document.querySelectorAll('.card-slot').forEach(slot => {
-                    slot.style.transition = 'opacity 0.3s ease';
-                    slot.style.opacity = '1';
-                });
-            });
-        }
 
         // Récupère les infos SMART depuis localStorage
         function getSMARTData() {
@@ -1507,6 +1179,15 @@
             return { day, month, year };
         }
 
+        function formatLongDateFr(dateObj) {
+            const formatted = dateObj.toLocaleDateString('fr-FR', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+            return formatted.replace(/(^|\\s)([a-zà-ÿ])/g, (m, p1, p2) => p1 + p2.toUpperCase());
+        }
+
         function calculateKPIProgress(milestone) {
             // Progress is based on whether KPI value is filled (0% if empty, 100% if filled)
             if (milestone.kpiValue && milestone.kpiValue.trim()) {
@@ -1524,282 +1205,224 @@
             return null;
         }
 
-        // --- RENDER ALL CARDS ---
+        // --- RENDER ALL CARDS (Simplified flex layout) ---
         function renderAllCards() {
-            // Remove old cards
-            document.querySelectorAll('.card-slot').forEach(card => card.remove());
+            // Clear timeline list
+            timelineList.innerHTML = '<div class="timeline-line"></div>';
 
-            // Trier du Futur (objectif) vers le Passé (aujourd'hui) - RÉTROPLANNING
-            // L'Objectif Final en haut, Lancement en bas
+            // Sort descending (future → past)
             const sortedMilestones = [...milestones].sort((a, b) => {
                 const dateA = new Date(a.date);
                 const dateB = new Date(b.date);
-                return dateB - dateA; // Descendant: futur en premier
+                return dateB - dateA;
             });
+
+            const total = sortedMilestones.length;
 
             sortedMilestones.forEach((milestone, index) => {
-                const slot = document.createElement('div');
-                slot.className = 'card-slot';
-                slot.style.opacity = '0';  // Carte invisible au départ, sera visible après positionnement
-                slot.dataset.id = milestone.id;
-                slot.id = `card-${milestone.id}`;
-                slot.style.minHeight = 'auto';
-
-                // Calculer l'offset pour positionner la ligne
-                const railOffset = calculateRailOffset(milestone.date);
-                const cardStatus = calculateCardStatus(milestone);
-
-                // Card wrapper with Apple-level design
-                const wrapper = document.createElement('div');
-                wrapper.className = 'card-wrapper';
-                wrapper.dataset.railOffset = railOffset;
-                wrapper.dataset.status = cardStatus;
-
-                const { day: dateDay, month: dateMonth, year: dateYear } = formatDateForDisplay(milestone.date);
-                const isFirst = isFirstMilestone(milestone);
-                const smartData = isFirst ? getSMARTData() : {};
-
-                // Rail dot
-                const railDot = document.createElement('div');
-                railDot.className = 'rail-dot';
-                railDot.dataset.status = cardStatus;
-                wrapper.appendChild(railDot);
-
-                // Date anchor
-                const dateAnchor = document.createElement('div');
-                dateAnchor.className = 'date-anchor';
-                dateAnchor.innerHTML = `
-                    <span class="date-day">${dateDay}</span>
-                    <span class="date-month">${dateMonth}</span>
-                    <span class="date-year">${dateYear}</span>
-                `;
-                wrapper.appendChild(dateAnchor);
-
-                const dateInput = document.createElement('input');
-                dateInput.type = 'date';
-                dateInput.value = milestone.date;
-                dateInput.setAttribute('aria-label', 'Date du jalon');
-                dateInput.oninput = function() {
-                    updateData(milestone.id, 'date', this.value);
-                };
-                wrapper.appendChild(dateInput);
-
-                // Jalon header with progress
-                const jalonHeader = document.createElement('div');
-                jalonHeader.className = 'jalon-header';
-                const totalJalons = sortedMilestones.length;
-                const jalonNumber = index + 1;
-                const phaseNumber = Math.floor((index + 1) / 1);
-                jalonHeader.innerHTML = `
-                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
-                        <span style="font-size: 12px; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Jalon ${jalonNumber}/${totalJalons}</span>
-                    </div>
-                    <h3 class="jalon-title" data-id="${milestone.id}" onclick="editTitle(this)" title="Cliquez pour éditer">${milestone.title || 'Jalon'}</h3>
-                    <span class="jalon-meta">${isFirst ? 'Votre Ambition' : `Jalon · Phase ${phaseNumber}`}</span>
-                `;
-                wrapper.appendChild(jalonHeader);
-
-                // Module card for Spécifique
-                const moduleCard = document.createElement('div');
-                moduleCard.className = 'module-card';
-                moduleCard.innerHTML = `
-                    <div class="module-label">Spécifique</div>
-                    <textarea class="module-content"
-                              data-id="${milestone.id}"
-                              placeholder="Description spécifique..."
-                              oninput="updateData('${milestone.id}', 'specifique', this.value)">${milestone.specifique || ''}</textarea>
-                    <i class="ri-pencil-line edit-icon"></i>
-                `;
-                wrapper.appendChild(moduleCard);
-
-                // KPI Module with progress bar
-                const kpiModule = document.createElement('div');
-                kpiModule.className = 'kpi-module';
+                const { day, month, year } = formatDateForDisplay(milestone.date);
+                const status = calculateCardStatus(milestone);
+                const isFinal = isFirstMilestone(milestone);
+                const smartData = isFinal ? getSMARTData() : {};
                 const kpiStatus = getKPIStatus(milestone);
-                const kpiStatusLabel = kpiStatus === 'non-atteint' ? 'Non atteint' : '';
+                const milestoneNumber = index + 1;
+
+                // Create timeline-item (date | dot | card)
+                const item = document.createElement('div');
+                item.className = 'timeline-item';
+                item.dataset.id = milestone.id;
+                item.id = `card-${milestone.id}`;
 
                 const kpiDate = new Date(milestone.date + 'T00:00:00');
-                const formattedKpiDate = kpiDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+                const formattedKpiDate = kpiDate.toLocaleDateString('fr-FR', {
+                    day: 'numeric', month: 'long', year: 'numeric'
+                });
 
-                const statusBadge = kpiStatus ? `<span class="kpi-status" data-status="${kpiStatus}">${kpiStatusLabel}</span>` : '';
+                const statusBadge = kpiStatus ?
+                    `<span class="kpi-status" data-status="${kpiStatus}">Non atteint</span>` : '';
 
-                kpiModule.innerHTML = `
-                    <div class="kpi-header">
-                        <span class="kpi-label">KPI Mesurable</span>
-                        ${statusBadge}
+                // Build HTML
+                item.innerHTML = `
+                    <!-- Date Column (Left of rail) -->
+                    <div class="item-date">
+                        <span class="date-year">${year}</span>
+                        <span class="date-month">${month}</span>
                     </div>
-                    <input type="text" class="kpi-value"
-                           value="${milestone.kpiValue || ''}"
-                           data-id="${milestone.id}"
-                           placeholder="Entrez votre KPI mesurable (ex: 300 clients, ≥ 95%, etc.)"
-                           autocomplete="off"
-                           oninput="updateData('${milestone.id}', 'kpiValue', this.value)">
-                    <div class="kpi-date">au ${formattedKpiDate}</div>
+
+                    <!-- Dot on Rail -->
+                    <div class="timeline-dot ${isFinal ? 'final' : ''}" data-status="${status}"></div>
+
+                    <!-- Card (Right) -->
+                    <div class="item-card">
+                        <div class="card-wrapper" data-status="${status}">
+
+                            <!-- Date Anchor (clickable) -->
+                            <div class="date-anchor">
+                                <span class="date-day">${day}</span>
+                                <span class="date-month">${month}</span>
+                                <span class="date-year">${year}</span>
+                                <input type="date"
+                                       value="${milestone.date}"
+                                       aria-label="Date du jalon"
+                                       oninput="updateData('${milestone.id}', 'date', this.value)">
+                            </div>
+
+                            <!-- Header with numbering -->
+                            <div class="jalon-header">
+                                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                                    <span style="font-size: 12px; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">
+                                        Jalon ${milestoneNumber}/${total}
+                                    </span>
+                                </div>
+                                <h3 class="jalon-title"
+                                    data-id="${milestone.id}"
+                                    onclick="editTitle(this)"
+                                    title="Cliquez pour éditer">
+                                    ${milestone.title || 'Jalon'}
+                                </h3>
+                                <span class="jalon-meta">
+                                    ${isFinal ? 'Votre Ambition' : `Jalon · Phase ${Math.floor(index + 1)}`}
+                                </span>
+                            </div>
+
+                            <!-- Spécifique Module -->
+                            <div class="module-card">
+                                <div class="module-label">Spécifique</div>
+                                <textarea class="module-content"
+                                          data-id="${milestone.id}"
+                                          placeholder="Description spécifique..."
+                                          oninput="updateData('${milestone.id}', 'specifique', this.value); autoResize(this)"
+                                          >${milestone.specifique || ''}</textarea>
+                                <i class="ri-pencil-line edit-icon"></i>
+                            </div>
+
+                            <!-- KPI Module -->
+                            <div class="kpi-module">
+                                <div class="kpi-header">
+                                    <span class="kpi-label">KPI Mesurable</span>
+                                    ${statusBadge}
+                                </div>
+                                <input type="text" class="kpi-value"
+                                       value="${milestone.kpiValue || ''}"
+                                       data-id="${milestone.id}"
+                                       placeholder="Entrez votre KPI mesurable (ex: 300 clients)"
+                                       autocomplete="off"
+                                       oninput="updateData('${milestone.id}', 'kpiValue', this.value)">
+                                <div class="kpi-date">au ${formattedKpiDate}</div>
+                            </div>
+
+                            <!-- Validation Check -->
+                            <i class="ri-check-line validation-check"></i>
+
+                            <!-- Delete Button -->
+                            ${!isFinal ? `
+                                <button class="delete-btn" type="button"
+                                        title="Supprimer le jalon"
+                                        onclick="confirmDeleteMilestone('${milestone.id}')">
+                                    <i class="ri-delete-bin-6-line"></i>
+                                </button>
+                            ` : ''}
+
+                        </div>
+                    </div>
                 `;
-                wrapper.appendChild(kpiModule);
 
-                // Validation check
-                const validationCheck = document.createElement('i');
-                validationCheck.className = 'ri-check-line validation-check';
-                wrapper.appendChild(validationCheck);
+                timelineList.appendChild(item);
 
-                // Delete button
-                const deleteBtn = document.createElement('button');
-                deleteBtn.className = 'delete-btn';
-                deleteBtn.type = 'button';
-                deleteBtn.title = 'Supprimer le jalon';
-                deleteBtn.innerHTML = '<i class="ri-delete-bin-6-line"></i>';
-                deleteBtn.onclick = () => confirmDeleteMilestone(milestone.id);
-                wrapper.appendChild(deleteBtn);
+                // Auto-resize textarea
+                const textarea = item.querySelector('textarea.module-content');
+                if (textarea) autoResize(textarea);
 
-                slot.appendChild(wrapper);
-                timelineScroll.appendChild(slot);
-
-                // Update line position after DOM insertion
-                setTimeout(() => updateLinePosition(slot, wrapper), 0);
-
-                // Ajouter bouton "+" entre les cartes (sauf après la dernière)
+                // Add + button between items (except after last one)
                 if (index < sortedMilestones.length - 1) {
-                    const addBtn = document.createElement('button');
-                    addBtn.className = 'add-milestone-btn';
-                    addBtn.innerHTML = '<i class="ri-add-line"></i>';
-                    addBtn.dataset.afterId = milestone.id;
-                    addBtn.onclick = (event) => addMilestoneAfter(milestone.id, event.currentTarget);
-                    timelineScroll.appendChild(addBtn);
+                    const nextMilestone = sortedMilestones[index + 1];
+                    const addZone = document.createElement('div');
+                    addZone.className = 'inter-add-zone';
+                    addZone.innerHTML = `
+                        <button class="btn-mini-plus"
+                                type="button"
+                                title="Ajouter un jalon"
+                                onclick="addMilestoneBetween('${milestone.date}', '${nextMilestone.date}')">
+                            <i class="ri-add-line"></i>
+                        </button>
+                    `;
+                    timelineList.appendChild(addZone);
                 }
             });
-
-            setupIntersectionObserver();
-
-            // Appliquer le positionnement pour aligner avec le rail
-            applyCardPositioning(sortedMilestones);
-            updateAllLinePositions();
         }
 
-        function getClosestRailOffsetForButton(buttonEl) {
-            if (!buttonEl) return null;
-
-            const months = document.querySelectorAll('.timeline-month');
-            if (!months.length) return null;
-
-            const buttonRect = buttonEl.getBoundingClientRect();
-            const buttonCenterY = buttonRect.top + (buttonRect.height / 2);
-
-            let closestMonth = null;
-            let closestDistance = Infinity;
-
-            months.forEach(month => {
-                const rect = month.getBoundingClientRect();
-                const monthCenterY = rect.top + (rect.height / 2);
-                const distance = Math.abs(monthCenterY - buttonCenterY);
-
-                if (distance < closestDistance) {
-                    closestDistance = distance;
-                    closestMonth = month;
-                }
-            });
-
-            return closestMonth ? parseInt(closestMonth.dataset.offset, 10) : null;
+        // Helper: Auto-resize textarea
+        function autoResize(textarea) {
+            if (!textarea) return;
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
         }
 
-        function getDateFromRailOffset(offset) {
-            const dateObj = new Date(projectDeadline);
-            dateObj.setMonth(projectDeadline.getMonth() - offset);
-            return dateObj.toISOString().split('T')[0];
-        }
+        function addMilestoneBetween(dateStrA, dateStrB) {
+            // Calculate median date
+            const timeA = new Date(dateStrA).getTime();
+            const timeB = new Date(dateStrB).getTime();
+            const midTime = (timeA + timeB) / 2;
+            const newDate = new Date(midTime);
 
-        function addMilestoneAfter(afterId, buttonEl) {
-            // Générer un ID unique
-            const newId = 'm' + Date.now();
-
-            // Trouver l'index du jalon après lequel ajouter
-            const afterIndex = milestones.findIndex(m => m.id === afterId);
-
-            const railOffset = getClosestRailOffsetForButton(buttonEl);
-            const inferredDate = railOffset !== null
-                ? getDateFromRailOffset(railOffset)
-                : new Date().toISOString().split('T')[0];
-
-            // Créer le nouveau jalon vide
+            // Create new milestone
             const newMilestone = {
-                id: newId,
-                date: inferredDate, // Date alignée au rail
+                id: 'm' + Date.now(),
+                date: newDate.toISOString().split('T')[0],
                 title: "Nouveau Jalon",
-                desc: "Description...",
                 specifique: "",
                 kpiValue: ""
             };
 
-            // Insérer le nouveau jalon après le jalon actuel
-            milestones.splice(afterIndex + 1, 0, newMilestone);
-
-            // Sauvegarder et re-render
+            milestones.push(newMilestone);
             saveMilestones();
             renderAllCards();
-            renderTimeline();
         }
 
         function updateData(id, field, value) {
             const m = milestones.find(m => m.id === id);
             if (m) {
                 m[field] = value;
-
-                // Auto-save to localStorage
                 saveMilestones();
 
-                // Si la date change, re-rendre pour réappliquer le tri
+                // Re-render if date changes (affects sort order)
                 if (field === 'date') {
                     renderAllCards();
-                    renderTimeline();
                 } else {
-                    // Update card styling (e.g., progress bar, status badge)
+                    // Update KPI status badge
+                    const status = getKPIStatus(m);
+                    const kpiHeader = document.querySelector(`#card-${id} .kpi-header`);
+                    if (kpiHeader) {
+                        const existingBadge = kpiHeader.querySelector('.kpi-status');
+                        if (existingBadge) existingBadge.remove();
+                        if (status) {
+                            const badge = document.createElement('span');
+                            badge.className = 'kpi-status';
+                            badge.dataset.status = status;
+                            badge.textContent = status === 'non-atteint' ? 'Non atteint' : '';
+                            kpiHeader.appendChild(badge);
+                        }
+                    }
+                    // Update completion state
                     const wrapper = document.querySelector(`#card-${id} .card-wrapper`);
                     if (wrapper) {
-                        // Update KPI status badge
-                        const status = getKPIStatus(m);
-                        const kpiHeader = wrapper.querySelector('.kpi-header');
-                        const existingBadge = kpiHeader.querySelector('.kpi-status');
-
-                        // Remove existing badge
-                        if (existingBadge) {
-                            existingBadge.remove();
-                        }
-
-                        // Add badge only if status is not null
-                        if (status) {
-                            const statusLabel = status === 'non-atteint' ? 'Non atteint' : '';
-                            const newBadge = document.createElement('span');
-                            newBadge.className = 'kpi-status';
-                            newBadge.dataset.status = status;
-                            newBadge.textContent = statusLabel;
-                            kpiHeader.appendChild(newBadge);
-                        }
-
-                        // Update validation check visibility (show when KPI is filled)
-                        if (status === null) {
-                            wrapper.classList.add('completed');
-                        } else {
-                            wrapper.classList.remove('completed');
-                        }
+                        if (status === null) wrapper.classList.add('completed');
+                        else wrapper.classList.remove('completed');
                     }
                 }
             }
         }
 
         function confirmDeleteMilestone(id) {
-            const shouldDelete = window.confirm('Supprimer ce jalon ? Cette action est irréversible.');
-            if (!shouldDelete) return;
-
+            if (!window.confirm('Supprimer ce jalon ? Cette action est irréversible.')) return;
             const nextMilestones = milestones.filter(m => m.id !== id);
             if (nextMilestones.length === 0) {
                 alert('Impossible de supprimer le dernier jalon.');
                 return;
             }
-
             milestones = nextMilestones;
             saveMilestones();
             renderAllCards();
-            renderTimeline();
         }
 
         function resetMilestones() {
@@ -1867,243 +1490,15 @@
             try {
                 const json = JSON.stringify(milestones);
                 localStorage.setItem('carryItMilestones', json);
-                console.log('✅ Saved to localStorage:', json.length, 'chars');
             } catch (e) {
-                console.error('❌ Error saving milestones:', e);
-            }
-        }
-
-
-        // --- RENDER TIMELINE RAIL ---
-        function renderTimeline() {
-            timelineTrack.innerHTML = '';
-
-            // Timeline verticale: Futur (0) en haut -> Passé (24) en bas (RÉTROPLANNING)
-            // On boucle de 0 (Objectif Final) à 24 (Lancement/Aujourd'hui)
-            for (let i = 0; i <= projectDurationMonths; i++) {
-                const monthEl = document.createElement('div');
-                // Vérifier si un jalon a un offset proche (calculé depuis la deadline)
-                const isMilestone = milestones.some(m => Math.abs(calculateRailOffset(m.date) - i) < 0.5);
-
-                monthEl.className = `timeline-month ${isMilestone ? 'has-milestone' : ''}`;
-                monthEl.dataset.offset = i;
-
-                // Clic sur rail
-                monthEl.onclick = () => {
-                   // Trouver le jalon le plus proche
-                   const target = milestones.reduce((prev, curr) =>
-                       Math.abs(calculateRailOffset(curr.date) - i) < Math.abs(calculateRailOffset(prev.date) - i) ? curr : prev
-                   );
-                   const slot = document.getElementById(`card-${target.id}`);
-                   if(slot) slot.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
-                };
-
-                const dateObj = new Date(projectDeadline);
-                dateObj.setMonth(projectDeadline.getMonth() - i);
-
-                let label, year;
-                if (i === 0) {
-                    label = 'FIN';
-                    year = dateObj.getFullYear();
-                } else if (i === projectDurationMonths) {
-                    label = 'AUJOURD\'HUI';
-                    year = dateObj.getFullYear();
-                } else {
-                    label = dateObj.toLocaleDateString('fr-FR', { month: 'short' }).toUpperCase();
-                    year = dateObj.getFullYear();
-                }
-
-                monthEl.innerHTML = `
-                    <div class="tick"></div>
-                    <span class="month-label">${label}</span>
-                    <span class="year-label">${year}</span>
-                `;
-
-                timelineTrack.appendChild(monthEl);
-            }
-        }
-
-        // --- INTERSECTION OBSERVER ---
-        let lastSyncTime = 0;
-        function setupIntersectionObserver() {
-            const cards = document.querySelectorAll('.card-slot');
-            const observer = new IntersectionObserver(entries => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        // Debounce: éviter les updates en cascade
-                        const now = Date.now();
-                        if (now - lastSyncTime < 300) return;
-                        lastSyncTime = now;
-
-                        // Highlight Card
-                        document.querySelectorAll('.card-slot').forEach(c => c.classList.remove('active'));
-                        entry.target.classList.add('active');
-
-                        // Update State
-                        currentMilestoneId = entry.target.dataset.id;
-                        const m = milestones.find(m => m.id === currentMilestoneId);
-
-                        // Sync Rail avec offset par rapport à la deadline
-                        const railOffset = calculateRailOffset(m.date);
-                        syncRail(railOffset);
-                        updateButtons(m);
-                    }
-                });
-            }, { threshold: 0.5, root: timelineViewport });
-
-            cards.forEach(card => observer.observe(card));
-        }
-
-        function syncRail(offset) {
-            // Marquer le mois actif
-            document.querySelectorAll('.timeline-month').forEach(el => {
-                el.classList.toggle('active', parseInt(el.dataset.offset) === offset);
-            });
-
-            // L'indicateur étant en position: sticky, il se place
-            // naturellement en face du mois actif lors du scroll
-        }
-
-        // --- BUTTONS LOGIC ---
-        function updateButtons(currentMilestone) {
-            // Calculer l'offset depuis la deadline
-            const railOffset = calculateRailOffset(currentMilestone.date);
-
-            // Boutons de navigation (s'ils existent)
-            const btnForward = document.querySelector('.btn-forward');
-            if (btnForward) {
-                // Si on est à l'Objectif (Offset 0) -> Pas de bouton "Vers l'Objectif"
-                if (railOffset === 0) {
-                    btnForward.style.opacity = '0.3';
-                    btnForward.style.pointerEvents = 'none';
-                } else {
-                    btnForward.style.opacity = '1';
-                    btnForward.style.pointerEvents = 'auto';
-                }
-            }
-        }
-
-        // Update line position to align with center of card
-        function updateLinePosition(slot, wrapper) {
-            if (!wrapper || !slot) return;
-
-            try {
-                // Le wrapper est centré dans le slot grâce à align-items: center
-                // Et le slot est positionné pour que ce centre soit au niveau du mois
-                // Donc le trait doit simplement pointer vers le centre du wrapper
-                const wrapperHeight = wrapper.offsetHeight;
-                const lineTop = wrapperHeight / 2;
-
-                wrapper.style.setProperty('--line-top', `${lineTop}px`);
-            } catch (e) {
-                console.error('Error updating line position:', e);
-            }
-        }
-
-        // Update all line positions dynamically
-        function updateAllLinePositions() {
-            document.querySelectorAll('.card-slot').forEach(slot => {
-                const wrapper = slot.querySelector('.card-wrapper');
-                updateLinePosition(slot, wrapper);
-            });
-        }
-
-        // Update connector lines and indicator on scroll
-        timelineViewport.addEventListener('scroll', () => {
-            // Update line positions
-            document.querySelectorAll('.card-slot').forEach(slot => {
-                const wrapper = slot.querySelector('.card-wrapper');
-                updateLinePosition(slot, wrapper);
-            });
-
-            // Update indicator position to follow scroll
-            const indicator = document.querySelector('.timeline-indicator');
-            if (indicator) {
-                const viewportScrollTop = timelineViewport.scrollTop;
-                const viewportHeight = timelineViewport.clientHeight;
-                const scrollCenter = viewportScrollTop + (viewportHeight / 2);
-
-                // Trouver le mois au centre du viewport
-                const months = document.querySelectorAll('.timeline-month');
-                let closestMonth = null;
-                let closestDistance = Infinity;
-
-                months.forEach(month => {
-                    const monthTop = month.offsetTop;  // Position relative au rail
-                    const monthHeight = month.offsetHeight;
-                    const monthCenter = monthTop + (monthHeight / 2);
-                    const distance = Math.abs(monthCenter - scrollCenter);
-
-                    if (distance < closestDistance) {
-                        closestDistance = distance;
-                        closestMonth = month;
-                    }
-                });
-
-                // Positionner l'indicateur au centre du mois le plus proche
-                if (closestMonth) {
-                    const monthTop = closestMonth.offsetTop;
-                    const monthHeight = closestMonth.offsetHeight;
-                    const centerPos = monthTop + (monthHeight / 2);
-                    indicator.style.top = `${centerPos}px`;
-                }
-            }
-        });
-
-        // Debounce helper
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        }
-
-        // Recalculer les positions lors du resize
-        window.addEventListener('resize', debounce(() => {
-            renderTimeline();
-
-            setTimeout(() => {
-                const sortedMilestones = [...milestones].sort((a, b) => {
-                    const dateA = new Date(a.date);
-                    const dateB = new Date(b.date);
-                    return dateB - dateA;
-                });
-                applyCardPositioning(sortedMilestones);
-                updateAllLinePositions();
-            }, 300);
-        }, 300));
-
-        // --- SYNC INDICATOR WITH ACTIVE MONTH ---
-        // L'indicateur suit le mois actif de la timeline rail
-        function syncIndicator(offset) {
-            const activeMonth = document.querySelector(`.timeline-month[data-offset="${offset}"]`);
-            if (activeMonth) {
-                const indicator = document.querySelector('.timeline-indicator');
-                const monthTop = activeMonth.offsetTop;
-                const monthHeight = activeMonth.offsetHeight;
-                const centerPos = monthTop + (monthHeight / 2);
-
-                indicator.style.top = `${centerPos}px`;
+                console.error('Error saving milestones:', e);
             }
         }
 
         // --- INIT ---
         function init() {
             renderAllCards();
-            renderTimeline();
-
-            // Force scroll to top to show intro
-            setTimeout(() => {
-                timelineViewport.scrollTop = 0;
-                window.scrollTo(0, 0);
-                // Trigger alignment on first load
-                timelineViewport.dispatchEvent(new Event('scroll'));
-            }, 200);
+            window.scrollTo(0, 0);
         }
 
         init();
