@@ -62,18 +62,20 @@
 
         .timeline-list {
             position: relative;
-            width: auto;
+            width: 100%;
             max-width: 650px;
             display: flex;
             flex-direction: column;
             margin: 0 auto;
             align-self: center;
+            --rail-offset: 80px;
+            --card-gap: 30px;
         }
 
         /* LE RAIL (AMÉLIORÉ) */
         .timeline-line {
             position: absolute;
-            left: 80px;
+            left: var(--rail-offset);
             top: 36px;
             bottom: 0;
             width: 3px;
@@ -97,7 +99,7 @@
 
         /* COLONNE DATE */
         .item-rail-date {
-            width: 80px;
+            width: var(--rail-offset);
             flex-shrink: 0;
             display: flex; flex-direction: column; align-items: flex-end;
             padding-right: 20px;
@@ -118,7 +120,7 @@
         /* LE POINT SUR LE RAIL */
         .dot {
             position: absolute;
-            left: 81.5px;
+            left: calc(var(--rail-offset) + 1.5px);
             top: 30px;
             transform: translateX(-50%);
             width: 14px; height: 14px;
@@ -144,7 +146,7 @@
         /* CARTE (DROITE DU RAIL) */
         .item-card {
             flex: 1;
-            margin-left: 30px;
+            margin-left: var(--card-gap);
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: var(--radius);
@@ -160,9 +162,9 @@
         .item-card::before {
             content: '';
             position: absolute;
-            left: -30px;
+            left: calc(var(--card-gap) * -1);
             top: 36px;
-            width: 30px;
+            width: var(--card-gap);
             height: 2px;
             background: linear-gradient(90deg, var(--accent) 0%, var(--border) 100%);
             opacity: 0.5;
@@ -273,7 +275,7 @@
             justify-content: center;
             margin-top: -40px;
             margin-bottom: 40px;
-            padding-left: 110px;
+            padding-left: calc(var(--rail-offset) + var(--card-gap));
         }
 
         /* LIGNE POINTILLÉE CENTRALE VERTICALE */
@@ -281,7 +283,7 @@
             content: '';
             position: absolute;
             top: -20px; bottom: -20px;
-            left: calc(50% + 55px);
+            left: calc(50% + ((var(--rail-offset) + var(--card-gap)) / 2));
             width: 1px;
             background: repeating-linear-gradient(
                 to bottom,
@@ -449,33 +451,6 @@
                 0 0 0 8px rgba(255, 77, 0, 0.25);
         }
 
-        /* SCROLL INDICATOR */
-        .scroll-indicator {
-            position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            animation: bounce 2s infinite;
-        }
-
-        .scroll-indicator i {
-            font-size: 24px;
-            color: var(--accent);
-        }
-
-        .scroll-indicator span {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
         @keyframes bounce {
             0%, 100% {
                 transform: translateX(-50%) translateY(0);
@@ -498,8 +473,14 @@
                 justify-content: center;
             }
 
-            .scroll-indicator {
-                display: none;
+            .timeline-list {
+                transform: none;
+            }
+        }
+
+        @media (min-width: 900px) {
+            .timeline-list {
+                transform: translateX(calc((var(--rail-offset) + var(--card-gap)) / -2));
             }
         }
 
@@ -522,7 +503,7 @@
         </div>
     </div>
 
-    <div class="main-container">
+    <div class="main-container" id="timelineStart">
         <div class="timeline-list" id="timelineContainer">
             <!-- Injecté par JS -->
         </div>
