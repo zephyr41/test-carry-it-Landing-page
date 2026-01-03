@@ -51,13 +51,15 @@
 
         /* CONTAINER */
         .main-container {
-            margin-top: -40px;
+            margin-top: 25px;
             padding: 0 20px 100px 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             width: 100%;
+            position: relative;
+            z-index: 1;
         }
 
         .timeline-list {
@@ -356,6 +358,7 @@
             position: relative;
             overflow: visible;
             min-height: 480px;
+            z-index: 2;
         }
 
         .intro-section::before {
@@ -450,13 +453,38 @@
                 0 0 0 8px rgba(255, 77, 0, 0.25);
         }
 
-        @keyframes bounce {
-            0%, 100% {
-                transform: translateX(-50%) translateY(0);
-            }
-            50% {
-                transform: translateX(-50%) translateY(6px);
-            }
+        .scroll-hint {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            opacity: 0.85;
+            animation: float 2.2s ease-in-out infinite;
+            cursor: pointer;
+            user-select: none;
+            z-index: 5;
+        }
+
+        .scroll-hint span {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .scroll-hint i {
+            font-size: 18px;
+            color: white;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(4px); }
         }
 
         @media (max-width: 768px) {
@@ -470,6 +498,10 @@
             .btn-gpt {
                 width: 100%;
                 justify-content: center;
+            }
+
+            .scroll-hint {
+                bottom: 20px;
             }
 
             .timeline-list {
@@ -499,6 +531,10 @@
             <button onclick="window.open('https://chatgpt.com/g/g-692ca373fe108191a36c15ad1250a4a8-carry-it-ai', '_blank')" class="btn-gpt">
                 <i class="ri-openai-fill"></i> Lancer l'Assistant Stratégique
             </button>
+        </div>
+        <div class="scroll-hint" onclick="document.getElementById('timelineStart').scrollIntoView({behavior:'smooth'})">
+            <span>Pose tes jalons</span>
+            <i class="ri-arrow-down-line"></i>
         </div>
     </div>
 
@@ -742,6 +778,15 @@
         }
 
         render();
+
+        const scrollHint = document.querySelector('.scroll-hint');
+        if (scrollHint) {
+            const updateHint = () => {
+                scrollHint.style.opacity = window.scrollY > 60 ? '0' : '0.75';
+            };
+            updateHint();
+            window.addEventListener('scroll', updateHint, { passive: true });
+        }
     </script>
 </body>
 </html>
