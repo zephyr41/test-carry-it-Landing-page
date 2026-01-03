@@ -354,44 +354,43 @@
             margin-left: 30px;
         }
 
-        /* ADD ZONE BETWEEN ITEMS (Fil d'Ariane) */
+        /* ADD ZONE BETWEEN ITEMS (Fil d'Ariane Horizontal) */
         .inter-add-zone {
             position: relative;
-            height: 50px;
+            height: 40px;
             display: flex;
             align-items: center;
-            margin: -25px 0 25px 0;
+            justify-content: center;
+            margin: -20px 0 20px 0;
             z-index: 5;
         }
 
-        /* Fil d'Ariane: ligne pointillée entre jalons */
+        /* Fil d'Ariane: ligne horizontale reliant les + */
         .inter-add-zone::before {
             content: '';
             position: absolute;
-            left: 100px;
-            top: -25px;
-            bottom: -25px;
-            width: 2px;
+            left: 130px;
+            right: 20px;
+            top: 50%;
+            height: 2px;
             background: repeating-linear-gradient(
-                to bottom,
+                to right,
                 var(--border) 0px,
                 var(--border) 4px,
                 transparent 4px,
                 transparent 10px
             );
             z-index: 1;
+            transform: translateY(-50%);
         }
 
         .btn-mini-plus {
-            position: absolute;
-            left: 100px;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            width: 32px;
-            height: 32px;
+            position: relative;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             background: var(--bg-primary);
-            border: 3px solid var(--border);
+            border: 2px solid var(--border);
             color: var(--text-secondary);
             display: flex;
             align-items: center;
@@ -404,22 +403,23 @@
             padding: 0;
             font-family: 'Inter', sans-serif;
             font-weight: 600;
+            margin: 0 auto;
         }
 
         .btn-mini-plus:hover {
             background: var(--accent);
             border-color: var(--accent);
             color: white;
-            transform: translate(-50%, -50%) scale(1.2);
+            transform: scale(1.25);
             box-shadow: 0 0 0 4px var(--bg-primary), 0 0 16px var(--accent-glow);
         }
 
         .btn-mini-plus::after {
             content: 'Ajouter un jalon';
             position: absolute;
-            left: calc(100% + 16px);
-            top: 50%;
-            transform: translateY(-50%);
+            left: 50%;
+            top: -28px;
+            transform: translateX(-50%);
             font-size: 11px;
             letter-spacing: 0.03em;
             text-transform: uppercase;
@@ -947,8 +947,7 @@
             .timeline-line { left: 60px; }
             .item-date { width: 60px; padding-right: 12px; }
             .timeline-dot { left: 61px; }
-            .btn-mini-plus { left: 60px; }
-            .inter-add-zone::before { left: 60px; }
+            .inter-add-zone::before { left: 90px; right: 20px; }
             .item-card { margin-left: 20px; }
             .card-wrapper { padding: 24px; }
             .date-month { font-size: 12px; }
@@ -959,13 +958,13 @@
             .timeline-line { left: 50px; }
             .item-date { width: 50px; padding-right: 10px; }
             .timeline-dot { left: 51px; }
-            .btn-mini-plus { left: 50px; }
-            .inter-add-zone::before { left: 50px; }
+            .inter-add-zone::before { left: 80px; right: 16px; }
             .item-card { margin-left: 16px; }
             .card-wrapper { padding: 20px 16px; }
             .date-month { font-size: 11px; }
             .date-year { font-size: 9px; }
             .timeline-item { margin-bottom: 60px; }
+            .btn-mini-plus { width: 32px; height: 32px; font-size: 16px; }
         }
 
         /* --- FOCUS & KEYBOARD ACCESSIBILITY --- */
