@@ -354,33 +354,53 @@
             margin-left: 30px;
         }
 
-        /* ADD ZONE BETWEEN ITEMS */
+        /* ADD ZONE BETWEEN ITEMS (Fil d'Ariane) */
         .inter-add-zone {
             position: relative;
-            height: 40px;
+            height: 50px;
             display: flex;
             align-items: center;
-            margin: -40px 0 40px 0;
+            margin: -25px 0 25px 0;
+            z-index: 5;
+        }
+
+        /* Fil d'Ariane: ligne pointillée entre jalons */
+        .inter-add-zone::before {
+            content: '';
+            position: absolute;
+            left: 100px;
+            top: -25px;
+            bottom: -25px;
+            width: 2px;
+            background: repeating-linear-gradient(
+                to bottom,
+                var(--border) 0px,
+                var(--border) 4px,
+                transparent 4px,
+                transparent 10px
+            );
+            z-index: 1;
         }
 
         .btn-mini-plus {
             position: absolute;
-            left: 101px;
-            transform: translateX(-50%);
-            width: 28px;
-            height: 28px;
+            left: 100px;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             background: var(--bg-primary);
-            border: 2px solid var(--border);
+            border: 3px solid var(--border);
             color: var(--text-secondary);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            z-index: 10;
-            transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
-            font-size: 16px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+            z-index: 20;
+            transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+            font-size: 18px;
+            box-shadow: 0 0 0 4px var(--bg-primary), 0 2px 8px rgba(0, 0, 0, 0.5);
             padding: 0;
             font-family: 'Inter', sans-serif;
             font-weight: 600;
@@ -390,14 +410,14 @@
             background: var(--accent);
             border-color: var(--accent);
             color: white;
-            transform: translateX(-50%) scale(1.15);
-            box-shadow: 0 0 12px var(--accent-glow);
+            transform: translate(-50%, -50%) scale(1.2);
+            box-shadow: 0 0 0 4px var(--bg-primary), 0 0 16px var(--accent-glow);
         }
 
         .btn-mini-plus::after {
             content: 'Ajouter un jalon';
             position: absolute;
-            left: calc(100% + 12px);
+            left: calc(100% + 16px);
             top: 50%;
             transform: translateY(-50%);
             font-size: 11px;
@@ -409,9 +429,10 @@
             border-radius: 6px;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.2s ease;
+            transition: opacity 0.25s ease;
             white-space: nowrap;
             border: 1px solid var(--border);
+            font-weight: 500;
         }
 
         .btn-mini-plus:hover::after {
@@ -925,7 +946,9 @@
         @media (max-width: 768px) {
             .timeline-line { left: 60px; }
             .item-date { width: 60px; padding-right: 12px; }
-            .timeline-dot, .btn-mini-plus { left: 61px; }
+            .timeline-dot { left: 61px; }
+            .btn-mini-plus { left: 60px; }
+            .inter-add-zone::before { left: 60px; }
             .item-card { margin-left: 20px; }
             .card-wrapper { padding: 24px; }
             .date-month { font-size: 12px; }
@@ -935,7 +958,9 @@
         @media (max-width: 480px) {
             .timeline-line { left: 50px; }
             .item-date { width: 50px; padding-right: 10px; }
-            .timeline-dot, .btn-mini-plus { left: 51px; }
+            .timeline-dot { left: 51px; }
+            .btn-mini-plus { left: 50px; }
+            .inter-add-zone::before { left: 50px; }
             .item-card { margin-left: 16px; }
             .card-wrapper { padding: 20px 16px; }
             .date-month { font-size: 11px; }
