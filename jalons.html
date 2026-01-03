@@ -72,7 +72,11 @@
             bottom: 0;
             width: 3px; /* Plus épais */
             /* Dégradé pour donner une direction et de la profondeur */
-            background: linear-gradient(180deg, var(--accent) 0%, var(--border) 100%);
+            background: linear-gradient(180deg,
+                var(--accent) 0%,
+                rgba(255, 77, 0, 0.6) 40%,
+                rgba(255, 77, 0, 0.3) 70%,
+                var(--border) 100%);
             z-index: 0;
             border-radius: 2px;
             /* Lueur subtile */
@@ -83,7 +87,7 @@
         .timeline-item {
             display: flex;
             position: relative;
-            margin-bottom: 80px;
+            margin-bottom: 105px;
             z-index: 1;
         }
 
@@ -98,13 +102,13 @@
         }
 
         .rail-year {
-            font-size: 11px; font-weight: 500; color: var(--text-secondary);
-            margin-bottom: 2px; letter-spacing: 0.5px;
+            font-size: 18px; font-weight: 700; color: var(--accent);
+            margin-bottom: 4px; letter-spacing: 1px;
         }
 
         .rail-month {
-            font-size: 14px; font-weight: 800; color: var(--text-primary);
-            text-transform: uppercase; letter-spacing: 1px;
+            font-size: 13px; font-weight: 600; color: var(--text-secondary);
+            text-transform: uppercase; letter-spacing: 1.5px;
         }
 
         /* LE POINT SUR LE RAIL */
@@ -125,6 +129,12 @@
             background: var(--accent);
             box-shadow: 0 0 15px var(--accent), 0 0 0 6px var(--bg-primary);
             border-color: white;
+        }
+
+        .dot.cap {
+            background: var(--accent);
+            border-color: var(--accent);
+            box-shadow: 0 0 10px var(--accent-glow), 0 0 0 6px var(--bg-primary);
         }
 
         /* CARTE (DROITE DU RAIL) */
@@ -327,6 +337,68 @@
         }
         .reality-check strong { color: var(--text-primary); font-weight: 600; display: block; margin-top: 8px; }
 
+        /* INTRO SECTION */
+        .intro-section {
+            margin-top: 60px;
+            padding: 40px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .intro-section > div {
+            flex: 1;
+        }
+
+        .intro-section h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+
+        .intro-section p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .btn-gpt {
+            flex-shrink: 0;
+            background: rgba(255, 77, 0, 0.15);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 12px 24px;
+            border-radius: var(--radius);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            font-family: var(--font-stack);
+        }
+
+        .btn-gpt:hover {
+            background: rgba(255, 77, 0, 0.25);
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        @media (max-width: 768px) {
+            .intro-section {
+                flex-direction: column;
+                gap: 20px;
+                padding: 30px 20px;
+            }
+
+            .btn-gpt {
+                width: 100%;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -335,6 +407,16 @@
         <div class="navbar-logo">Carry It</div>
         <button class="btn-reset" onclick="resetMilestones()">Réinitialiser tout</button>
     </nav>
+
+    <div class="intro-section">
+        <div>
+            <h2>Le Rétroplanifiage</h2>
+            <p>Partez de votre objectif final et découpez-le en jalons concrets jusqu'à aujourd'hui — éditez inline, insérez des étapes, et utilisez le GPT Custom pour vous guider.</p>
+        </div>
+        <button onclick="window.open('https://chatgpt.com/g/g-692ca373fe108191a36c15ad1250a4a8-carry-it-ai', '_blank')" class="btn-gpt">
+            💬 Ouvrir le GPT Custom
+        </button>
+    </div>
 
     <div class="main-container">
         <div class="timeline-list" id="timelineContainer">
@@ -382,10 +464,10 @@
             dates.push({ label: "À 1 An", tag: "ANNÉE 1", date: (d1y < deadline ? d1y : deadline) });
 
             const d9m = new Date(today); d9m.setMonth(d9m.getMonth() + 9);
-            dates.push({ label: "À 9 Mois", tag: "T3", date: d9m });
+            dates.push({ label: "À 9 Mois", tag: "TRIMESTRE 3", date: d9m });
 
             const d6m = new Date(today); d6m.setMonth(d6m.getMonth() + 6);
-            dates.push({ label: "À 6 Mois", tag: "SEMESTRE 1", date: d6m });
+            dates.push({ label: "À 6 Mois", tag: "TRIMESTRE 2", date: d6m });
 
             const d3m = new Date(today); d3m.setMonth(d3m.getMonth() + 3);
             dates.push({ label: "À 3 Mois", tag: "TRIMESTRE 1", date: d3m });
@@ -396,7 +478,9 @@
         // --- DATA ---
         let milestones = JSON.parse(localStorage.getItem('carryItMilestones'));
 
-        if (!milestones || milestones.length < 1) {
+        // Valider les jalons (vérifier qu'ils ont tous les champs ET que le CAP 50% existe)
+        const hasCap = milestones && milestones.some(m => m.tag === 'CAP 50%');
+        if (!milestones || milestones.length < 1 || !milestones.every(m => m.title && m.date && m.tag) || !hasCap) {
             initMilestones();
         }
 
@@ -488,7 +572,7 @@
                         <span class="rail-month">${month}</span>
                     </div>
 
-                    <div class="dot ${isFinal ? 'final' : ''}"></div>
+                    <div class="dot ${isFinal ? 'final' : m.tag === 'CAP 50%' ? 'cap' : ''}"></div>
 
                     <div class="item-card">
                         <div class="card-meta-top">
@@ -505,21 +589,18 @@
                                 <span class="card-tag">${m.tag}</span>
                                 <input class="input-title" value="${m.title}"
                                        placeholder="Titre..."
-                                       ${isFinal ? 'disabled' : ''}
-                                       oninput="update('${m.id}', 'title', this.value)">
+                                       disabled>
                             </div>
-                            <div class="date-input-wrapper ${isFinal ? 'disabled' : ''}">
+                            <div class="date-input-wrapper">
                                 <i class="ri-calendar-line" style="font-size:12px; color:var(--text-secondary)"></i>
                                 <input type="date" class="input-date-native"
                                        value="${dateInputValue}"
-                                       ${isFinal ? 'disabled' : ''}
                                        onchange="updateDate('${m.id}', this.value)">
                             </div>
                         </div>
 
                         <textarea class="input-desc"
                                   placeholder="Spécifique : Que doit-il se passer ?"
-                                  ${isFinal ? 'readonly' : ''}
                                   oninput="autoResize(this); update('${m.id}', 'desc', this.value)">${m.desc || ''}</textarea>
 
                         <div class="kpi-container">
@@ -527,7 +608,6 @@
                             <input class="input-kpi"
                                    value="${m.kpi || ''}"
                                    placeholder="Définir un chiffre clé..."
-                                   ${isFinal ? 'readonly' : ''}
                                    oninput="update('${m.id}', 'kpi', this.value)">
                         </div>
                     </div>
