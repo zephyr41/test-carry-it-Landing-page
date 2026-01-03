@@ -52,7 +52,7 @@
         /* CONTAINER */
         .main-container {
             margin-top: 60px;
-            padding: 40px 20px 100px 20px;
+            padding: 0 20px 100px 20px;
             display: flex; flex-direction: column;
             align-items: center;
         }
@@ -67,11 +67,9 @@
         .timeline-line {
             position: absolute;
             left: 80px;
-            /* Le top commence au niveau du premier point (approx 36px) pour ne pas dépasser au dessus */
             top: 36px;
             bottom: 0;
-            width: 3px; /* Plus épais */
-            /* Dégradé pour donner une direction et de la profondeur */
+            width: 3px;
             background: linear-gradient(180deg,
                 var(--accent) 0%,
                 rgba(255, 77, 0, 0.6) 40%,
@@ -79,7 +77,6 @@
                 var(--border) 100%);
             z-index: 0;
             border-radius: 2px;
-            /* Lueur subtile */
             box-shadow: 0 0 15px var(--accent-glow);
         }
 
@@ -96,7 +93,7 @@
             width: 80px;
             flex-shrink: 0;
             display: flex; flex-direction: column; align-items: flex-end;
-            padding-right: 20px; /* Plus d'espace pour le gros point */
+            padding-right: 20px;
             text-align: right;
             padding-top: 20px;
         }
@@ -114,15 +111,15 @@
         /* LE POINT SUR LE RAIL */
         .dot {
             position: absolute;
-            left: 81.5px; /* Centré sur la ligne de 3px */
+            left: 81.5px;
             top: 30px;
             transform: translateX(-50%);
             width: 14px; height: 14px;
             background: var(--bg-primary);
-            border: 3px solid var(--accent); /* Bordure plus épaisse */
+            border: 3px solid var(--accent);
             border-radius: 50%;
             z-index: 2;
-            box-shadow: 0 0 0 6px var(--bg-primary); /* Halo pour couper le rail proprement */
+            box-shadow: 0 0 0 6px var(--bg-primary);
         }
 
         .dot.final {
@@ -140,7 +137,7 @@
         /* CARTE (DROITE DU RAIL) */
         .item-card {
             flex: 1;
-            margin-left: 30px; /* Plus d'espace pour le connecteur */
+            margin-left: 30px;
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: var(--radius);
@@ -156,8 +153,8 @@
         .item-card::before {
             content: '';
             position: absolute;
-            left: -30px; /* Va chercher le rail */
-            top: 36px; /* Doit s'aligner avec le point */
+            left: -30px;
+            top: 36px;
             width: 30px;
             height: 2px;
             background: linear-gradient(90deg, var(--accent) 0%, var(--border) 100%);
@@ -269,7 +266,7 @@
             justify-content: center;
             margin-top: -40px;
             margin-bottom: 40px;
-            padding-left: 110px; /* Alignement ajusté */
+            padding-left: 110px;
         }
 
         /* LIGNE POINTILLÉE CENTRALE VERTICALE */
@@ -277,7 +274,7 @@
             content: '';
             position: absolute;
             top: -20px; bottom: -20px;
-            left: calc(50% + 55px); /* Ajusté pour centrer sous la carte */
+            left: calc(50% + 55px);
             width: 1px;
             background: repeating-linear-gradient(
                 to bottom,
@@ -340,62 +337,162 @@
         /* INTRO SECTION */
         .intro-section {
             margin-top: 60px;
-            padding: 40px 20px;
+            padding: 220px 20px 220px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            gap: 40px;
-            max-width: 900px;
-            margin-left: auto;
-            margin-right: auto;
+            justify-content: center;
+            text-align: center;
+            gap: 28px;
+            width: 100vw;
+            margin-left: calc(-50vw + 50%);
+            position: relative;
+            overflow: hidden;
+            min-height: 900px;
+        }
+
+        .intro-section::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            transform: translateX(-50%);
+            width: 100vw;
+            height: 320px;
+            background:
+                radial-gradient(420px 280px at 20% 0%, rgba(255, 77, 0, 0.28), transparent 65%),
+                radial-gradient(520px 320px at 80% 0%, rgba(255, 77, 0, 0.16), transparent 70%);
+            opacity: 1;
+            z-index: -2;
+        }
+
+        .intro-section::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 10px;
+            transform: translateX(-50%);
+            width: 100vw;
+            height: 220px;
+            background:
+                linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px),
+                linear-gradient(0deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+            background-size: 42px 42px;
+            opacity: 0.12;
+            z-index: -1;
         }
 
         .intro-section > div {
-            flex: 1;
+            max-width: 760px;
         }
 
         .intro-section h2 {
-            font-size: 28px;
-            font-weight: 700;
+            font-size: clamp(36px, 6vw, 64px);
+            font-weight: 800;
             color: var(--text-primary);
-            margin-bottom: 12px;
+            margin-bottom: 16px;
+            letter-spacing: 0.8px;
+            line-height: 1.05;
+            position: relative;
+        }
+
+        .intro-section h2::after {
+            content: '';
+            display: block;
+            width: 64px;
+            height: 3px;
+            margin: 14px auto 0;
+            background: var(--accent);
+            border-radius: 3px;
         }
 
         .intro-section p {
-            font-size: 14px;
-            color: var(--text-secondary);
-            line-height: 1.6;
+            font-size: 18px;
+            color: rgba(255,255,255,0.78);
+            line-height: 1.75;
+            margin: 0 auto;
         }
 
         .btn-gpt {
+            margin-top: 32px;
             flex-shrink: 0;
-            background: rgba(255, 77, 0, 0.15);
-            border: 1px solid var(--accent);
-            color: var(--accent);
-            padding: 12px 24px;
-            border-radius: var(--radius);
-            font-size: 14px;
-            font-weight: 600;
+            background: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: #111111;
+            padding: 16px 30px;
+            border-radius: 999px;
+            font-size: 15px;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.2s;
             white-space: nowrap;
             font-family: var(--font-stack);
+            box-shadow:
+                0 10px 24px rgba(0,0,0,0.25),
+                0 0 0 6px rgba(255, 77, 0, 0.18);
+            letter-spacing: 0.2px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .btn-gpt:hover {
-            background: rgba(255, 77, 0, 0.25);
-            box-shadow: 0 0 15px var(--accent-glow);
+            transform: translateY(-1px);
+            box-shadow:
+                0 12px 28px rgba(0,0,0,0.3),
+                0 0 0 8px rgba(255, 77, 0, 0.25);
+        }
+
+        /* SCROLL INDICATOR */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            animation: bounce 2s infinite;
+        }
+
+        .scroll-indicator i {
+            font-size: 24px;
+            color: var(--accent);
+        }
+
+        .scroll-indicator span {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            50% {
+                transform: translateX(-50%) translateY(6px);
+            }
         }
 
         @media (max-width: 768px) {
             .intro-section {
                 flex-direction: column;
                 gap: 20px;
-                padding: 30px 20px;
+                padding: 80px 18px 40px;
+                min-height: auto;
             }
 
             .btn-gpt {
                 width: 100%;
+                justify-content: center;
+            }
+
+            .scroll-indicator {
+                display: none;
             }
         }
 
@@ -410,12 +507,12 @@
 
     <div class="intro-section">
         <div>
-            <h2>Le Rétroplanifiage</h2>
-            <p>Partez de votre objectif final et découpez-le en jalons concrets jusqu'à aujourd'hui — éditez inline, insérez des étapes, et utilisez le GPT Custom pour vous guider.</p>
+            <h2>Planifier l'impossible.</h2>
+            <p>Ne laissez pas le chaos dicter votre rythme. Utilisez l'IA pour transformer votre vision abstraite en une séquence tactique précise.</p>
+            <button onclick="window.open('https://chatgpt.com/g/g-692ca373fe108191a36c15ad1250a4a8-carry-it-ai', '_blank')" class="btn-gpt">
+                <i class="ri-openai-fill"></i> Lancer l'Assistant Stratégique
+            </button>
         </div>
-        <button onclick="window.open('https://chatgpt.com/g/g-692ca373fe108191a36c15ad1250a4a8-carry-it-ai', '_blank')" class="btn-gpt">
-            💬 Ouvrir le GPT Custom
-        </button>
     </div>
 
     <div class="main-container">
