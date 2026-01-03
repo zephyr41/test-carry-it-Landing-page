@@ -3,274 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Carry It - Timeline Stratégique</title>
+    <title>Carry It - Timeline Finale</title>
 
-    <!-- Icons -->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-    <!-- Font : Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        @font-face {
-            font-family: 'Rifton';
-            src: url('Rifton Font/rifton-regular.otf') format('opentype');
-            font-weight: 400;
-            font-style: normal;
-            font-display: swap;
-        }
-
         :root {
-            /* --- PALETTE DARK MODE --- */
-            --bg-primary: #050505;     /* Noir très sombre */
-            --bg-card: #1a1a1a;        /* Gris très sombre pour les cartes */
-
-            --text-primary: #FFFFFF;   /* Blanc pur */
-            --text-secondary: #A3A3A3; /* Gris clair */
-            --text-muted: #808080;     /* Gris moyen */
-
-            --accent: #FF4D00;         /* Orange moderne */
-            --accent-light: rgba(255, 77, 0, 0.1);
-            --accent-glow: rgba(255, 77, 0, 0.2);
-
-            --border: #333333;         /* Gris très sombre */
-            --border-hover: #4a4a4a;   /* Gris sombre hover */
-
-            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.7);
-
-            /* Safe Areas */
-            --safe-top: env(safe-area-inset-top, 20px);
-            --safe-bottom: env(safe-area-inset-bottom, 20px);
-
-            /* --- APPLE-LEVEL DESIGN --- */
-            /* Micro-Contrastes */
-            --bg-card-base: #1a1a1a;
-            --bg-card-elevated: rgba(255, 255, 255, 0.02);
-            --bg-card-hover: rgba(255, 255, 255, 0.04);
-            --bg-module: rgba(255, 255, 255, 0.03);
-
-            /* Border Radius Constants */
-            --radius-sm: 6px;   /* Petits éléments */
-            --radius-md: 10px;  /* Modules */
-            --radius-lg: 12px;  /* Cartes */
-            --radius-xl: 16px;  /* Containers */
-
-            /* Shadows - Soft & Directional */
-            --shadow-subtle: 0 1px 2px rgba(0, 0, 0, 0.15);
-            --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.08);
-            --shadow-elevated: 0 4px 16px rgba(0, 0, 0, 0.16), 0 2px 4px rgba(0, 0, 0, 0.08);
+            --bg-primary: #050505;
+            --bg-card: #1a1a1a;
+            --text-primary: #FFFFFF;
+            --text-secondary: #A3A3A3;
+            --accent: #FF4D00;
+            --accent-glow: rgba(255, 77, 0, 0.3);
+            --border: #333333;
+            --radius: 16px;
+            --font-stack: 'Inter', sans-serif;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
-            outline: none;
-        }
-
-        input, textarea { user-select: text; }
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
 
         body {
             background-color: var(--bg-primary);
             color: var(--text-primary);
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: var(--font-stack);
             min-height: 100vh;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            font-weight: 400;
-            line-height: 1.6;
+            display: flex; flex-direction: column;
         }
 
-        /* --- NAVBAR --- */
+        /* NAVBAR */
         .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 72px;
-            background: rgba(5, 6, 8, 0.95);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            position: fixed; top: 0; left: 0; right: 0;
+            height: 60px;
+            background: rgba(5,5,5,0.95);
+            backdrop-filter: blur(10px);
             border-bottom: 1px solid var(--border);
-            padding: 0 48px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 1000;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 20px; z-index: 100;
         }
-
-        .navbar-logo {
-            font-family: 'Rifton', serif;
-            font-size: 20px;
-            color: var(--text-primary);
-            text-decoration: none;
-            font-weight: normal;
-        }
-
-        .navbar-links {
-            display: flex;
-            gap: 32px;
-            align-items: center;
-        }
-
-        .navbar-link {
-            font-family: 'Inter', sans-serif;
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: all 0.2s ease;
-            position: relative;
-        }
-
-        .navbar-link:hover {
-            color: var(--text-primary);
-            transform: translateY(-1px);
-        }
-
-        /* --- INTRO TEXT --- */
-        .intro-section {
-            margin-top: 72px;
-            padding: 120px 20px 150px 20px;
-            background: transparent;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 24px;
-        }
-
-        .intro-section h2 {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--text-primary);
-            max-width: 600px;
-        }
-
-        .intro-section p {
-            font-size: 15px;
-            color: var(--text-secondary);
-            font-weight: 400;
-            max-width: 600px;
-        }
-
-        .btn-gpt {
-            background: var(--accent);
-            color: white;
-            border: none;
-            padding: 12px 28px;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
+        .navbar-logo { font-weight: 700; font-size: 18px; color: white; }
+        .btn-reset {
+            font-size: 12px; color: var(--text-secondary); background: rgba(255,255,255,0.05);
+            padding: 8px 16px; border-radius: 20px; border: 1px solid var(--border); cursor: pointer;
             transition: all 0.2s;
         }
+        .btn-reset:hover { border-color: #ff3b30; color: #ff3b30; background: rgba(255, 59, 48, 0.1); }
 
-        .btn-gpt:hover {
-            opacity: 0.9;
-        }
-
-        /* --- COMPLETION SECTION --- */
-        .completion-section {
-            background: var(--bg-primary);
-            padding: 80px 20px 60px;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-top: 1px solid var(--border);
-        }
-
-        .completion-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 40px;
-            max-width: 700px;
-        }
-
-        /* Reality Check Message */
-        .reality-check {
-            opacity: 0.85;
-            transition: opacity 0.3s;
-        }
-
-        .reality-check:hover {
-            opacity: 1;
-        }
-
-        .reality-check p {
-            font-family: 'Inter', sans-serif;
-            font-style: italic;
-            color: var(--text-secondary);
-            font-size: 15px;
-            line-height: 1.7;
-            margin-bottom: 12px;
-        }
-
-        .reality-check strong {
-            color: var(--text-primary);
-            font-weight: 600;
-            font-style: normal;
-            display: block;
-            margin-top: 8px;
-        }
-
-        .btn-complete {
-            padding: 16px 48px;
-            background: var(--accent);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.2s;
-        }
-
-        .btn-complete:hover {
-            opacity: 0.9;
-            transform: translateY(-2px);
-        }
-
-        /* --- MAIN CONTAINER & TIMELINE LIST --- */
+        /* CONTAINER */
         .main-container {
             margin-top: 60px;
             padding: 40px 20px 100px 20px;
-            display: flex;
-            flex-direction: column;
+            display: flex; flex-direction: column;
             align-items: center;
         }
 
         .timeline-list {
             position: relative;
-            width: 100%;
-            max-width: 800px;
-            display: flex;
-            flex-direction: column;
+            width: 100%; max-width: 650px;
+            display: flex; flex-direction: column;
         }
 
-        /* VERTICAL TIMELINE LINE */
+        /* LE RAIL (AMÉLIORÉ) */
         .timeline-line {
             position: absolute;
-            left: 100px;
-            top: 20px;
+            left: 80px;
+            /* Le top commence au niveau du premier point (approx 36px) pour ne pas dépasser au dessus */
+            top: 36px;
             bottom: 0;
-            width: 2px;
-            background: var(--border);
+            width: 3px; /* Plus épais */
+            /* Dégradé pour donner une direction et de la profondeur */
+            background: linear-gradient(180deg, var(--accent) 0%, var(--border) 100%);
             z-index: 0;
+            border-radius: 2px;
+            /* Lueur subtile */
+            box-shadow: 0 0 15px var(--accent-glow);
         }
 
-        /* TIMELINE ITEM */
+        /* ITEM */
         .timeline-item {
             display: flex;
             position: relative;
@@ -278,1240 +87,497 @@
             z-index: 1;
         }
 
-        /* DATE COLUMN (Left of rail) */
-        .item-date {
-            width: 100px;
+        /* COLONNE DATE */
+        .item-rail-date {
+            width: 80px;
             flex-shrink: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            padding-right: 20px;
+            display: flex; flex-direction: column; align-items: flex-end;
+            padding-right: 20px; /* Plus d'espace pour le gros point */
             text-align: right;
-            padding-top: 30px;
+            padding-top: 20px;
         }
 
-        .date-year {
-            font-size: 11px;
-            font-weight: 500;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 2px;
+        .rail-year {
+            font-size: 11px; font-weight: 500; color: var(--text-secondary);
+            margin-bottom: 2px; letter-spacing: 0.5px;
         }
 
-        .date-month {
-            font-size: 14px;
-            font-weight: 800;
-            color: var(--text-primary);
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        .rail-month {
+            font-size: 14px; font-weight: 800; color: var(--text-primary);
+            text-transform: uppercase; letter-spacing: 1px;
         }
 
-        /* DOT ON RAIL */
-        .timeline-dot {
+        /* LE POINT SUR LE RAIL */
+        .dot {
             position: absolute;
-            left: 101px;
-            top: 40px;
+            left: 81.5px; /* Centré sur la ligne de 3px */
+            top: 30px;
             transform: translateX(-50%);
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
+            width: 14px; height: 14px;
             background: var(--bg-primary);
-            border: 2px solid var(--accent);
+            border: 3px solid var(--accent); /* Bordure plus épaisse */
+            border-radius: 50%;
             z-index: 2;
-            box-shadow: 0 0 0 4px var(--bg-primary);
-            transition: all 250ms ease-out;
+            box-shadow: 0 0 0 6px var(--bg-primary); /* Halo pour couper le rail proprement */
         }
 
-        .timeline-dot[data-status="futur"] {
-            background: #808080;
-            border-color: #808080;
-            box-shadow: 0 0 8px rgba(128, 128, 128, 0.3);
-        }
-
-        .timeline-dot[data-status="en-cours"] {
-            background: #FFFFFF;
-            border-color: #FFFFFF;
-            box-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
-        }
-
-        .timeline-dot[data-status="validé"] {
-            background: #34C759;
-            border-color: #34C759;
-            box-shadow: 0 0 12px rgba(52, 199, 89, 0.4);
-        }
-
-        .timeline-dot.final {
+        .dot.final {
             background: var(--accent);
-            box-shadow: 0 0 16px var(--accent-glow);
-            width: 16px;
-            height: 16px;
+            box-shadow: 0 0 15px var(--accent), 0 0 0 6px var(--bg-primary);
+            border-color: white;
         }
 
-        /* CARD (Right of rail) */
+        /* CARTE (DROITE DU RAIL) */
         .item-card {
             flex: 1;
-            margin-left: 30px;
+            margin-left: 30px; /* Plus d'espace pour le connecteur */
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            transition: border-color 0.2s;
+            position: relative;
         }
 
-        /* ADD ZONE BETWEEN ITEMS (Fil d'Ariane Horizontal) */
+        .item-card:focus-within { border-color: var(--accent); }
+
+        /* BRAS DE CONNEXION (Rail -> Carte) */
+        .item-card::before {
+            content: '';
+            position: absolute;
+            left: -30px; /* Va chercher le rail */
+            top: 36px; /* Doit s'aligner avec le point */
+            width: 30px;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent) 0%, var(--border) 100%);
+            opacity: 0.5;
+            z-index: -1;
+        }
+
+        .card-header { margin-bottom: 12px; display: flex; justify-content: space-between; align-items: flex-start; }
+
+        .card-meta-top {
+            display: flex; align-items: center; justify-content: space-between; width: 100%;
+            margin-bottom: 8px;
+        }
+
+        .card-number {
+            font-size: 11px; font-weight: 600; color: var(--text-secondary);
+            background: rgba(255,255,255,0.05); padding: 2px 8px; border-radius: 4px;
+        }
+
+        .card-tag {
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.05em; color: var(--accent);
+        }
+
+        .input-title {
+            width: 100%; background: transparent; border: none;
+            color: white; font-size: 18px; font-weight: 700;
+            font-family: var(--font-stack);
+        }
+        .input-title:disabled { opacity: 1; cursor: default; }
+
+        .input-desc {
+            width: 100%; background: rgba(255,255,255,0.03); border: none; border-radius: 8px;
+            color: var(--text-secondary); font-size: 14px; font-family: var(--font-stack);
+            padding: 12px; margin-bottom: 16px; resize: none; min-height: 80px;
+        }
+        .input-desc:focus { background: rgba(255,255,255,0.06); color: white; }
+
+        /* KPI CONTAINER (NOUVEAU STYLE) */
+        .kpi-container {
+            display: flex; align-items: center; gap: 12px;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .kpi-container:focus-within {
+            border-color: var(--accent);
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 0 1px var(--accent-glow);
+        }
+
+        .kpi-label {
+            font-size: 11px; font-weight: 700;
+            color: var(--accent); text-transform: uppercase;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+        }
+
+        .input-kpi {
+            flex: 1; background: transparent; border: none;
+            color: white; font-weight: 600; font-size: 14px;
+        }
+
+        .input-kpi::placeholder {
+            color: var(--text-muted);
+            font-weight: 400;
+            font-style: italic;
+        }
+
+        /* INPUT DATE DISCRET */
+        .date-input-wrapper {
+            position: relative;
+            background: rgba(255,255,255,0.05);
+            border-radius: 6px;
+            padding: 4px 8px;
+            border: 1px solid rgba(255,255,255,0.05);
+            display: flex; align-items: center; gap: 6px;
+        }
+        .date-input-wrapper:hover { background: rgba(255,255,255,0.1); }
+        .date-input-wrapper.disabled { opacity: 0.5; pointer-events: none; }
+
+        .input-date-native {
+            background: transparent; border: none;
+            color: white; font-family: var(--font-stack);
+            font-size: 11px; font-weight: 600;
+            width: 85px; cursor: pointer;
+        }
+        .input-date-native::-webkit-calendar-picker-indicator {
+            filter: invert(1); opacity: 0.5; cursor: pointer;
+        }
+
+        /* BOUTON SUPPRIMER */
+        .btn-delete {
+            background: transparent; border: none; color: var(--text-secondary);
+            cursor: pointer; padding: 4px; transition: color 0.2s;
+            margin-left: 8px;
+        }
+        .btn-delete:hover { color: #ff3b30; }
+
+        /* ZONE D'INSERTION CENTRALE (FIL D'ARIANNE) */
         .inter-add-zone {
             position: relative;
             height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: -20px 0 20px 0;
-            z-index: 5;
+            margin-top: -40px;
+            margin-bottom: 40px;
+            padding-left: 110px; /* Alignement ajusté */
         }
 
-        /* Fil d'Ariane: ligne horizontale reliant les + */
+        /* LIGNE POINTILLÉE CENTRALE VERTICALE */
         .inter-add-zone::before {
             content: '';
             position: absolute;
-            left: 130px;
-            right: 20px;
-            top: 50%;
-            height: 2px;
+            top: -20px; bottom: -20px;
+            left: calc(50% + 55px); /* Ajusté pour centrer sous la carte */
+            width: 1px;
             background: repeating-linear-gradient(
-                to right,
-                var(--border) 0px,
+                to bottom,
+                var(--border),
                 var(--border) 4px,
                 transparent 4px,
-                transparent 10px
+                transparent 8px
             );
-            z-index: 1;
-            transform: translateY(-50%);
+            z-index: 0;
+            opacity: 0.5;
         }
 
         .btn-mini-plus {
             position: relative;
-            width: 36px;
-            height: 36px;
+            width: 28px; height: 28px;
             border-radius: 50%;
             background: var(--bg-primary);
-            border: 2px solid var(--border);
+            border: 1px dashed var(--text-secondary);
             color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
             cursor: pointer;
-            z-index: 20;
-            transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
-            font-size: 18px;
-            box-shadow: 0 0 0 4px var(--bg-primary), 0 2px 8px rgba(0, 0, 0, 0.5);
-            padding: 0;
-            font-family: 'Inter', sans-serif;
-            font-weight: 600;
-            margin: 0 auto;
+            z-index: 10;
+            transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+            font-size: 16px;
+            box-shadow: 0 0 0 4px var(--bg-primary);
         }
 
         .btn-mini-plus:hover {
             background: var(--accent);
             border-color: var(--accent);
+            border-style: solid;
             color: white;
-            transform: scale(1.25);
-            box-shadow: 0 0 0 4px var(--bg-primary), 0 0 16px var(--accent-glow);
+            transform: scale(1.15);
+            box-shadow: 0 0 10px var(--accent-glow), 0 0 0 4px var(--bg-primary);
         }
 
-        .btn-mini-plus::after {
-            content: 'Ajouter un jalon';
-            position: absolute;
-            left: 50%;
-            top: -28px;
-            transform: translateX(-50%);
-            font-size: 11px;
-            letter-spacing: 0.03em;
-            text-transform: uppercase;
-            color: var(--text-primary);
-            background: rgba(5, 5, 5, 0.95);
-            padding: 6px 10px;
-            border-radius: 6px;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.25s ease;
-            white-space: nowrap;
-            border: 1px solid var(--border);
-            font-weight: 500;
-        }
-
-        .btn-mini-plus:hover::after {
-            opacity: 1;
-        }
-
-        .card-wrapper {
+        /* REALITY CHECK (FOOTER) */
+        .reality-check {
+            margin-top: 40px;
+            padding: 30px;
+            text-align: center;
+            border-top: 1px solid var(--border);
             width: 100%;
             max-width: 600px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            padding: 32px;
-            box-shadow: var(--shadow-md);
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-            position: relative;
-            transition: border-color 0.2s;
+            margin-left: auto;
+            margin-right: auto;
+            opacity: 0.7;
+            transition: opacity 0.3s;
         }
-
-        .card-wrapper:focus-within {
-            border-color: var(--accent);
-        }
-
-        /* SENTINEL BLOCK (DATE) */
-        .sentinel-block {
-            text-align: center;
-            border: none;
-            background: transparent;
-            padding: 0;
-            border-radius: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            align-self: flex-start;
-            margin-bottom: 0;
-        }
-        .sentinel-date {
+        .reality-check:hover { opacity: 1; }
+        .reality-check p {
             font-family: 'Inter', sans-serif;
-            font-size: 14px;
-            font-weight: 500;
+            font-style: italic;
             color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .sentinel-year {
-            font-family: 'Inter', sans-serif;
-            font-size: 12px;
-            color: var(--text-muted);
-            font-weight: 400;
-        }
-        .sentinel-icon { color: var(--accent); font-size: 16px; }
-
-        /* DATA BLOCKS */
-        .data-block {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            position: relative;
-        }
-
-        .block-label {
-            font-family: 'Inter', sans-serif;
-            font-size: 12px;
-            text-transform: uppercase;
-            color: var(--text-muted);
-            letter-spacing: 0.5px;
-            font-weight: 500;
-        }
-
-        /* INPUTS */
-        .input-raw {
-            background: transparent;
-            border: none;
-            border-bottom: 2px solid var(--border);
-            color: var(--text-primary);
-            font-family: 'Inter', sans-serif;
-            padding: 12px 0;
-            border-radius: 0;
-            transition: border-color 0.2s;
-            width: 100%;
-            font-size: 16px;
-        }
-        .input-raw:focus {
-            outline: none;
-            border-bottom-color: var(--accent);
-        }
-        .input-raw:hover {
-            border-bottom-color: var(--border-hover);
-        }
-        .input-raw::placeholder { color: var(--text-muted); }
-
-        .input-title {
-            font-size: 32px;
-            font-weight: 600;
-            letter-spacing: -0.5px;
-            line-height: 1.3;
-            color: var(--text-primary);
-        }
-        .input-title::placeholder { font-size: 18px; color: var(--text-muted); }
-
-        .input-area {
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--text-primary);
-            font-family: 'Inter', sans-serif;
-            font-size: 15px;
+            font-size: 14px;
             line-height: 1.6;
-            padding: 12px 0;
-            min-height: 100px;
-            resize: none;
-            border-radius: 0;
-            transition: border-color 0.2s;
-            border-left: none;
-            border-right: none;
-            border-top: none;
-            border-bottom: 2px solid var(--border);
         }
-        .input-area:focus {
-            outline: none;
-            border-bottom-color: var(--accent);
-        }
-        .input-area:hover {
-            border-bottom-color: var(--border-hover);
-        }
-        .input-area::placeholder { color: var(--text-muted); }
-
-        /* KPI WRAPPER */
-        .kpi-wrapper {
-            display: flex;
-            align-items: baseline;
-            gap: 12px;
-            border-bottom: 2px solid var(--border);
-            padding: 12px 0;
-            transition: border-color 0.2s;
-        }
-        .kpi-wrapper:focus-within { border-bottom-color: var(--accent); }
-
-        .kpi-icon { color: var(--accent); font-size: 18px; }
-
-        .input-kpi {
-            background: transparent;
-            border: none;
-            color: var(--accent);
-            font-family: 'Inter', sans-serif;
-            font-size: 16px;
-            font-weight: 600;
-            flex: 1;
-            padding: 0;
-        }
-        .input-kpi::placeholder { color: var(--text-muted); font-weight: 400; }
-
-        /* --- SIMPLIFIED CARD COMPONENTS --- */
-
-        /* CARD META TOP (Number + Date) */
-        .card-meta-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 8px;
-        }
-
-        .card-number {
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--accent);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .card-date-input {
-            background: transparent;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            color: var(--text-primary);
-            font-family: 'Inter', sans-serif;
-            font-size: 12px;
-            padding: 6px 8px;
-            cursor: pointer;
-            transition: border-color 0.2s;
-            flex-shrink: 0;
-        }
-
-        .card-date-input:hover {
-            border-color: var(--border-hover);
-        }
-
-        .card-date-input:focus {
-            outline: none;
-            border-color: var(--accent);
-        }
-
-        /* CARD HEADER (Title) */
-        .card-header {
-            display: flex;
-            align-items: baseline;
-            justify-content: space-between;
-            gap: 12px;
-            margin-bottom: 4px;
-        }
-
-        .input-title {
-            font-size: 24px;
-            font-weight: 700;
-            letter-spacing: -0.02em;
-            line-height: 1.2;
-            color: var(--text-primary);
-            cursor: pointer;
-            flex: 1;
-            padding: 2px 0;
-            transition: opacity 0.2s;
-        }
-
-        .input-title:hover {
-            opacity: 0.8;
-        }
-
-        .card-tag {
-            font-size: 11px;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--text-muted);
-            white-space: nowrap;
-        }
-
-        /* DESCRIPTION INPUT (Spécifique) */
-        .input-desc {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: var(--radius-sm);
-            color: var(--text-primary);
-            font-family: 'Inter', sans-serif;
-            font-size: 14px;
-            line-height: 1.5;
-            padding: 12px;
-            min-height: 80px;
-            resize: none;
-            transition: all 0.2s;
-        }
-
-        .input-desc:hover {
-            border-color: rgba(255, 255, 255, 0.1);
-            background: rgba(255, 255, 255, 0.03);
-        }
-
-        .input-desc:focus {
-            outline: none;
-            border-color: var(--accent);
-            background: rgba(255, 255, 255, 0.04);
-        }
-
-        .input-desc::placeholder {
-            color: var(--text-muted);
-            opacity: 0.5;
-        }
-
-        /* KPI ROW */
-        .kpi-row {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding-top: 8px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .kpi-input-group {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .kpi-label {
-            font-size: 11px;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--text-muted);
-        }
-
-        .input-kpi {
-            background: transparent;
-            border: none;
-            border-bottom: 1px solid var(--border);
-            color: var(--accent);
-            font-family: 'Inter', sans-serif;
-            font-size: 14px;
-            font-weight: 600;
-            padding: 4px 0;
-            transition: border-color 0.2s;
-        }
-
-        .input-kpi:hover {
-            border-bottom-color: var(--border-hover);
-        }
-
-        .input-kpi:focus {
-            outline: none;
-            border-bottom-color: var(--accent);
-        }
-
-        .input-kpi::placeholder {
-            color: var(--text-muted);
-            font-weight: 400;
-        }
-
-        .kpi-date {
-            font-size: 12px;
-            color: var(--text-muted);
-            white-space: nowrap;
-        }
-
-        /* Legacy date styling for timeline column */
-        .date-month {
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            opacity: 0.6;
-        }
-
-        .date-year {
-            font-size: 10px;
-            font-weight: 500;
-            color: var(--text-muted);
-            opacity: 0.5;
-        }
-
-        /* DELETE BUTTON */
-        .delete-btn {
-            position: absolute;
-            right: 44px;
-            top: 14px;
-            background: transparent;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            font-size: 16px;
-            padding: 6px;
-            border-radius: 6px;
-            transition: all 0.2s;
-        }
-
-        .delete-btn:hover {
-            color: var(--accent);
-            background: var(--bg-card-hover);
-        }
-
-        .delete-btn:focus-visible {
-            outline: 2px solid var(--accent);
-            outline-offset: 2px;
-        }
-
-        /* RAIL DOT */
-        .rail-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--accent);
-            box-shadow: 0 0 12px var(--accent-glow);
-            position: absolute;
-            left: 36px;
-            top: 50%;
-            transform: translateY(-50%);
-            transition: all 250ms ease-out;
-        }
-
-        .rail-dot[data-status="futur"] {
-            background: #808080;
-            box-shadow: 0 0 8px rgba(128, 128, 128, 0.3);
-        }
-
-        .rail-dot[data-status="en-cours"] {
-            background: #FFFFFF;
-            box-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
-        }
-
-        .rail-dot[data-status="critique"] {
-            background: #FF4D00;
-            animation: pulse 2s infinite;
-        }
-
-        .rail-dot[data-status="validé"] {
-            background: #34C759;
-            box-shadow: 0 0 12px rgba(52, 199, 89, 0.4);
-        }
-
-        @keyframes pulse {
-            0%, 100% { box-shadow: 0 0 12px rgba(255, 77, 0, 0.4); }
-            50% { box-shadow: 0 0 20px rgba(255, 77, 0, 0.8); }
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(10px); }
-        }
-
-
-        /* KPI MODULE */
-        .kpi-module {
-            background: var(--bg-module);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: var(--radius-md);
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            transition: all 250ms ease-out;
-        }
-
-        .kpi-module:hover {
-            background: rgba(255, 255, 255, 0.035);
-            border-color: rgba(255, 255, 255, 0.08);
-        }
-
-        .kpi-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-        }
-
-        .kpi-label {
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            opacity: 0.6;
-        }
-
-        .kpi-status {
-            font-size: 11px;
-            font-weight: 600;
-            padding: 4px 8px;
-            border-radius: var(--radius-sm);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            white-space: nowrap;
-        }
-
-        .kpi-status[data-status="atteint"] {
-            background: rgba(52, 199, 89, 0.15);
-            color: #34C759;
-        }
-
-        .kpi-status[data-status="non-atteint"] {
-            background: rgba(255, 77, 0, 0.15);
-            color: #FF4D00;
-        }
-
-        .kpi-status[data-status="incertain"] {
-            background: rgba(255, 149, 0, 0.15);
-            color: #FF9500;
-        }
-
-        .kpi-target {
-            display: flex;
-            align-items: baseline;
-            gap: 8px;
-        }
-
-        .kpi-value {
-            background: transparent;
-            border: none;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-            color: var(--accent);
-            font-family: 'Inter', sans-serif;
-            font-size: 16px;
-            font-weight: 600;
-            padding: 8px 0;
-            cursor: text;
-            transition: all 250ms ease-out;
-            width: 100%;
-        }
-
-        .kpi-value:hover {
-            border-bottom-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .kpi-value:focus {
-            outline: none;
-            border-bottom-color: var(--accent);
-            color: var(--accent);
-        }
-
-        .kpi-value::placeholder {
-            color: var(--text-muted);
-            font-weight: 400;
-            font-size: 14px;
-        }
-
-        .kpi-description {
-            font-size: 13px;
-            color: var(--text-secondary);
-            font-weight: 400;
-        }
-
-        .kpi-date {
-            font-size: 12px;
-            color: var(--text-muted);
-            font-weight: 400;
-        }
-
-
-        /* --- RESPONSIVE DESIGN --- */
-        @media (max-width: 768px) {
-            .timeline-line { left: 60px; }
-            .item-date { width: 60px; padding-right: 12px; }
-            .timeline-dot { left: 61px; }
-            .inter-add-zone::before { left: 90px; right: 20px; }
-            .item-card { margin-left: 20px; }
-            .card-wrapper { padding: 24px; }
-            .date-month { font-size: 12px; }
-            .date-year { font-size: 10px; }
-        }
-
-        @media (max-width: 480px) {
-            .timeline-line { left: 50px; }
-            .item-date { width: 50px; padding-right: 10px; }
-            .timeline-dot { left: 51px; }
-            .inter-add-zone::before { left: 80px; right: 16px; }
-            .item-card { margin-left: 16px; }
-            .card-wrapper { padding: 20px 16px; }
-            .date-month { font-size: 11px; }
-            .date-year { font-size: 9px; }
-            .timeline-item { margin-bottom: 60px; }
-            .btn-mini-plus { width: 32px; height: 32px; font-size: 16px; }
-        }
-
-        /* --- FOCUS & KEYBOARD ACCESSIBILITY --- */
-        button:focus-visible,
-        input:focus-visible,
-        textarea:focus-visible {
-            outline: 2px solid var(--accent);
-            outline-offset: 2px;
-        }
-
-        .btn-nav:focus-visible {
-            outline: 2px solid var(--accent);
-            outline-offset: 2px;
-        }
-
-        /* RESET BUTTON (hidden) */
-        .reset-btn {
-            position: fixed;
-            bottom: 12px;
-            right: 12px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--border);
-            color: var(--text-muted);
-            font-size: 11px;
-            padding: 6px 10px;
-            border-radius: 999px;
-            opacity: 0.85;
-            cursor: pointer;
-            z-index: 1001;
-            transition: opacity 0.2s, color 0.2s, border-color 0.2s;
-        }
-
-        .reset-btn:hover {
-            opacity: 1;
-            color: var(--text-primary);
-            border-color: var(--border-hover);
-        }
-
-        /* --- SMOOTH ANIMATIONS --- */
-        * {
-            transition: background-color 0.2s ease-in-out,
-                        color 0.2s ease-in-out,
-                        border-color 0.2s ease-in-out;
-        }
-
-        /* Exemptions de transition pour éviter les flickers */
-        .timeline-scroll,
-        .card-slot,
-        .timeline-month {
-            transition: none;
-        }
+        .reality-check strong { color: var(--text-primary); font-weight: 600; display: block; margin-top: 8px; }
 
     </style>
 </head>
 <body>
 
-    <!-- NAVBAR -->
     <nav class="navbar">
-        <a href="index.html" class="navbar-logo">Carry It</a>
-        <div class="navbar-links">
-            <a href="dashboard.html" class="navbar-link">Mes Objectifs</a>
-            <a href="index.html" class="navbar-link">Accueil</a>
-        </div>
+        <div class="navbar-logo">Carry It</div>
+        <button class="btn-reset" onclick="resetMilestones()">Réinitialiser tout</button>
     </nav>
 
-    <!-- INTRO TEXT - Normal section -->
-    <div class="intro-section">
-        <div>
-            <h2>Le Rétroplanifiage</h2>
-            <p>Partez de votre objectif final et découpez-le en jalons concrets jusqu'à aujourd'hui — éditez inline, insérez des étapes, et utilisez le GPT Custom pour vous guider.</p>
-        </div>
-        <button onclick="window.open('https://chatgpt.com/g/g-692ca373fe108191a36c15ad1250a4a8-carry-it-ai', '_blank')" class="btn-gpt">
-            💬 Ouvrir le GPT Custom
-        </button>
-    </div>
-
-    <!-- MAIN CONTAINER (Simplified Timeline) -->
     <div class="main-container">
-        <div class="timeline-list" id="timelineList">
-            <!-- Timeline items générés par JS -->
+        <div class="timeline-list" id="timelineContainer">
+            <!-- Injecté par JS -->
+        </div>
+
+        <!-- FOOTER MESSAGE -->
+        <div class="reality-check">
+            <p>
+                "Personnellement, j'avais mis comme 1er jalon de faire une V0 en 3 mois. Avec tout ce que j'avais à faire, j'en ai mis 6.<br>
+                Mais regarde, je suis encore là, j'en ai rien à foutre du temps que ça prendra.<br>
+                <strong>Ça fait juste partie du jeu.</strong>"
+            </p>
         </div>
     </div>
-
-    <!-- COMPLETION SECTION (Merged with Reality Check) -->
-    <section class="completion-section">
-        <div class="completion-content">
-
-            <!-- Reality Check Message -->
-            <div class="reality-check">
-                <p>
-                    "Personnellement, j'avais mis comme 1er jalon de faire une V0 en 3 mois.
-                    Avec tout ce que j'avais à faire, j'en ai mis 6.<br>
-                    Mais regarde, je suis encore là, j'en ai rien à foutre du temps que ça prendra.<br>
-                    <strong>Ça fait juste partie du jeu.</strong>"
-                </p>
-            </div>
-
-            <!-- Complete Button -->
-            <a href="dashboard.html" class="btn-complete">
-                <i class="ri-check-double-line"></i> TERMINER
-            </a>
-
-        </div>
-    </section>
-
-    <button class="reset-btn" type="button" onclick="resetMilestones()">Réinitialiser les jalons</button>
 
     <script>
-        // --- DATA & CONFIG ---
+        // --- CONFIG & SMART SYNC ---
         const today = new Date();
 
-        // Récupère la date temporelle du SMART (obligatoire)
-        function getProjectDeadline() {
-            const smart = JSON.parse(localStorage.getItem('carryItObjectifSMART')) || {};
-            if (!smart.temporel) {
-                console.error('Erreur: La date temporelle (T du SMART) doit être définie dans le localStorage');
-                throw new Error('Date temporelle du SMART non définie');
-            }
-            return new Date(smart.temporel + 'T00:00:00');
-        }
-
-        const projectDeadline = getProjectDeadline();
-
-        // Calcule la durée en mois
-        function calculateProjectDuration() {
-            const diffTime = projectDeadline - today;
-            const diffMonths = Math.round(diffTime / (1000 * 60 * 60 * 24 * 30.44));
-            return Math.max(1, diffMonths);
-        }
-        const projectDurationMonths = calculateProjectDuration();
-
-        // DATA SOURCE - Charger depuis localStorage ou utiliser les valeurs par défaut
-        let milestones = (() => {
-            const saved = localStorage.getItem('carryItMilestones');
-            console.log('📦 localStorage.getItem("carryItMilestones"):', saved ? 'EXISTS' : 'EMPTY');
-            if (saved) {
-                try {
-                    const parsed = JSON.parse(saved);
-                    console.log('✅ Loaded from localStorage:', parsed);
-                    return parsed;
-                } catch (e) {
-                    console.error('❌ Error parsing localStorage:', e);
-                }
-            }
-            // Valeurs par défaut
-            console.log('⚙️ Using default values');
-
-            const datePlusMonths = (months) => {
-                const d = new Date(today);
-                d.setMonth(d.getMonth() + months);
-                return d.toISOString().split('T')[0];
-            };
-
-            if (projectDurationMonths > 12) {
-                const halfMonths = Math.max(1, Math.round(projectDurationMonths / 2));
-                return [
-                    { id: 'm1', date: projectDeadline.toISOString().split('T')[0], title: "Jalon Final", desc: "KPI SMART (100%).", specifique: "", kpiValue: "KPI SMART" },
-                    { id: 'm2', date: datePlusMonths(halfMonths), title: "Jalon 50%", desc: "Mi-parcours du plan.", specifique: "", kpiValue: "50%" },
-                    { id: 'm3', date: datePlusMonths(12), title: "Jalon année 1", desc: "Intermédiaire année 1.", specifique: "", kpiValue: "" },
-                    { id: 'm4', date: datePlusMonths(3), title: "Jalon Trimestriel", desc: "Première validation concrète.", specifique: "", kpiValue: "" },
-                    { id: 'm5', date: datePlusMonths(1), title: "Jalon Décollage", desc: "Première action.", specifique: "", kpiValue: "" }
-                ];
-            }
-
-            return [
-                { id: 'm1', date: projectDeadline.toISOString().split('T')[0], title: "Objectif Final", desc: "Le système est stable et autonome.", specifique: "", kpiValue: "300 Clients" },
-                { id: 'm2', date: datePlusMonths(3), title: "Optimisation", desc: "Maximisation de la conversion.", specifique: "", kpiValue: "" },
-                { id: 'm3', date: datePlusMonths(12), title: "MVP Validé", desc: "Première base d'utilisateurs.", specifique: "", kpiValue: "Oui" },
-                { id: 'm4', date: today.toISOString().split('T')[0], title: "Lancement", desc: "Démarrage du projet.", specifique: "", kpiValue: "" }
-            ];
-        })();
-
-        // --- DOM REFS ---
-        const timelineList = document.getElementById('timelineList');
-
-
-        // Récupère les infos SMART depuis localStorage
-        function getSMARTData() {
+        function getSmartData() {
             try {
-                const smart = JSON.parse(localStorage.getItem('carryItObjectifSMART')) || {};
+                return JSON.parse(localStorage.getItem('carryItObjectifSMART')) || {};
+            } catch(e) { return {}; }
+        }
+
+        function getDeadline() {
+            const smart = getSmartData();
+            if(smart && smart.temporel) return new Date(smart.temporel);
+            const d = new Date(); d.setFullYear(d.getFullYear() + 5);
+            return d;
+        }
+
+        const deadline = getDeadline();
+
+        function generateDates() {
+            const dates = [];
+            const timeDiff = deadline.getTime() - today.getTime();
+            const smart = getSmartData();
+
+            dates.push({ label: "Vision Finale", tag: "OBJECTIF 100%", date: deadline });
+            dates.push({ label: "Mi-Parcours", tag: "CAP 50%", date: new Date(today.getTime() + (timeDiff / 2)) });
+
+            const d1y = new Date(today); d1y.setFullYear(d1y.getFullYear() + 1);
+            dates.push({ label: "À 1 An", tag: "ANNÉE 1", date: (d1y < deadline ? d1y : deadline) });
+
+            const d9m = new Date(today); d9m.setMonth(d9m.getMonth() + 9);
+            dates.push({ label: "À 9 Mois", tag: "T3", date: d9m });
+
+            const d6m = new Date(today); d6m.setMonth(d6m.getMonth() + 6);
+            dates.push({ label: "À 6 Mois", tag: "SEMESTRE 1", date: d6m });
+
+            const d3m = new Date(today); d3m.setMonth(d3m.getMonth() + 3);
+            dates.push({ label: "À 3 Mois", tag: "TRIMESTRE 1", date: d3m });
+
+            return dates.sort((a, b) => b.date - a.date);
+        }
+
+        // --- DATA ---
+        let milestones = JSON.parse(localStorage.getItem('carryItMilestones'));
+
+        if (!milestones || milestones.length < 1) {
+            initMilestones();
+        }
+
+        function initMilestones() {
+            const templateDates = generateDates();
+            const smart = getSmartData();
+
+            milestones = templateDates.map((item, index) => {
+                const isFinal = index === 0;
                 return {
-                    specifique: smart.specifique || '',
-                    temporel: smart.temporel || ''
+                    id: `m${Date.now()}-${index}`,
+                    date: item.date.toISOString(),
+                    tag: item.tag,
+                    title: isFinal ? "Vision Finale" : item.label,
+                    desc: isFinal && smart.specifique ? smart.specifique : "",
+                    kpi: isFinal && smart.mesurable ? smart.mesurable : ""
                 };
-            } catch (e) {
-                return { specifique: '', temporel: '' };
-            }
-        }
-
-        // Vérifie si c'est le premier jalon (date finale du projet)
-        function isFirstMilestone(milestone) {
-            const milestoneDate = new Date(milestone.date);
-            const deadline = new Date(projectDeadline);
-            return Math.abs(milestoneDate - deadline) < 24 * 60 * 60 * 1000; // Même jour
-        }
-
-        function formatDateDisplay(dateString) {
-            const date = new Date(dateString + 'T00:00:00');
-            return date.toLocaleDateString('fr-FR', { month: 'short', year: '2-digit' }).toUpperCase();
-        }
-
-        function formatDateYear(dateString) {
-            const date = new Date(dateString + 'T00:00:00');
-            return date.getFullYear();
-        }
-
-        // --- HELPER FUNCTIONS FOR APPLE-LEVEL DESIGN ---
-
-        function calculateCardStatus(milestone) {
-            const milestoneDate = new Date(milestone.date);
-            const todayDate = new Date(today);
-            const deadlineDate = new Date(projectDeadline);
-
-            // Normalize dates to compare only dates, not times
-            milestoneDate.setHours(0, 0, 0, 0);
-            todayDate.setHours(0, 0, 0, 0);
-
-            if (milestoneDate > todayDate) {
-                return 'futur';
-            } else if (milestoneDate.getTime() === todayDate.getTime()) {
-                return 'en-cours';
-            } else {
-                // Check if it's in the past and has KPI defined
-                if (milestone.kpiValue && milestone.kpiValue.trim()) {
-                    return 'validé';
-                }
-                return 'en-cours';
-            }
-        }
-
-        function formatDateForDisplay(dateString) {
-            const date = new Date(dateString + 'T00:00:00');
-            const day = date.getDate();
-            const month = date.toLocaleDateString('fr-FR', { month: 'short' }).toUpperCase();
-            const year = date.getFullYear();
-            return { day, month, year };
-        }
-
-        function formatLongDateFr(dateObj) {
-            const formatted = dateObj.toLocaleDateString('fr-FR', {
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric'
             });
-            return formatted.replace(/(^|\\s)([a-zà-ÿ])/g, (m, p1, p2) => p1 + p2.toUpperCase());
+            save();
         }
 
-        function calculateKPIProgress(milestone) {
-            // Progress is based on whether KPI value is filled (0% if empty, 100% if filled)
-            if (milestone.kpiValue && milestone.kpiValue.trim()) {
-                return 100;
+        function resetMilestones() {
+            if(confirm("Attention frérot : Tu vas effacer tous tes jalons pour repartir de zéro. Tu confirmes ?")) {
+                initMilestones();
+                render();
             }
-            return 0;
-        }
-
-        function getKPIStatus(milestone) {
-            // Only show status if KPI is not defined
-            if (!milestone.kpiValue || !milestone.kpiValue.trim()) {
-                return 'non-atteint';
-            }
-            // If KPI is filled, no status badge shown
-            return null;
-        }
-
-        // --- RENDER ALL CARDS (Simplified flex layout) ---
-        function renderAllCards() {
-            // Clear timeline list
-            timelineList.innerHTML = '<div class="timeline-line"></div>';
-
-            // Sort descending (future → past)
-            const sortedMilestones = [...milestones].sort((a, b) => {
-                const dateA = new Date(a.date);
-                const dateB = new Date(b.date);
-                return dateB - dateA;
-            });
-
-            const total = sortedMilestones.length;
-
-            sortedMilestones.forEach((milestone, index) => {
-                const { day, month, year } = formatDateForDisplay(milestone.date);
-                const status = calculateCardStatus(milestone);
-                const isFinal = isFirstMilestone(milestone);
-                const smartData = isFinal ? getSMARTData() : {};
-                const kpiStatus = getKPIStatus(milestone);
-                const milestoneNumber = index + 1;
-
-                // Create timeline-item (date | dot | card)
-                const item = document.createElement('div');
-                item.className = 'timeline-item';
-                item.dataset.id = milestone.id;
-                item.id = `card-${milestone.id}`;
-
-                const kpiDate = new Date(milestone.date + 'T00:00:00');
-                const formattedKpiDate = kpiDate.toLocaleDateString('fr-FR', {
-                    day: 'numeric', month: 'long', year: 'numeric'
-                });
-
-                const statusBadge = kpiStatus ?
-                    `<span class="kpi-status" data-status="${kpiStatus}">Non atteint</span>` : '';
-
-                // Build HTML - Simplified card design
-                item.innerHTML = `
-                    <!-- Date Column (Left of rail) -->
-                    <div class="item-date">
-                        <span class="date-year">${year}</span>
-                        <span class="date-month">${month}</span>
-                    </div>
-
-                    <!-- Dot on Rail -->
-                    <div class="timeline-dot ${isFinal ? 'final' : ''}" data-status="${status}"></div>
-
-                    <!-- Card (Right) -->
-                    <div class="item-card">
-                        <div class="card-wrapper" data-status="${status}">
-
-                            <!-- Card Top Meta -->
-                            <div class="card-meta-top">
-                                <span class="card-number">Jalon ${milestoneNumber}/${total}</span>
-                                <input type="date"
-                                       class="card-date-input"
-                                       value="${milestone.date}"
-                                       aria-label="Date du jalon"
-                                       oninput="updateData('${milestone.id}', 'date', this.value)">
-                            </div>
-
-                            <!-- Card Header (Title) -->
-                            <div class="card-header">
-                                <h3 class="input-title"
-                                    data-id="${milestone.id}"
-                                    onclick="editTitle(this)"
-                                    title="Cliquez pour éditer">
-                                    ${milestone.title || 'Jalon'}
-                                </h3>
-                                <span class="card-tag">${isFinal ? 'Votre Ambition' : `Phase ${Math.floor(index + 1)}`}</span>
-                            </div>
-
-                            <!-- Description Input -->
-                            <textarea class="input-desc"
-                                      data-id="${milestone.id}"
-                                      placeholder="Description spécifique..."
-                                      oninput="updateData('${milestone.id}', 'specifique', this.value); autoResize(this)"
-                                      >${milestone.specifique || ''}</textarea>
-
-                            <!-- KPI Input Row -->
-                            <div class="kpi-row">
-                                <div class="kpi-input-group">
-                                    <label class="kpi-label">KPI Mesurable</label>
-                                    <input type="text" class="input-kpi"
-                                           value="${milestone.kpiValue || ''}"
-                                           data-id="${milestone.id}"
-                                           placeholder="Ex: 300 clients"
-                                           autocomplete="off"
-                                           oninput="updateData('${milestone.id}', 'kpiValue', this.value)">
-                                </div>
-                                <span class="kpi-date">au ${formattedKpiDate}</span>
-                                ${statusBadge ? `<span class="kpi-status" data-status="${kpiStatus}">Non atteint</span>` : ''}
-                            </div>
-
-                            <!-- Delete Button -->
-                            ${!isFinal ? `
-                                <button class="delete-btn" type="button"
-                                        title="Supprimer le jalon"
-                                        onclick="confirmDeleteMilestone('${milestone.id}')">
-                                    <i class="ri-delete-bin-6-line"></i>
-                                </button>
-                            ` : ''}
-
-                        </div>
-                    </div>
-                `;
-
-                timelineList.appendChild(item);
-
-                // Auto-resize textarea
-                const textarea = item.querySelector('textarea.input-desc');
-                if (textarea) autoResize(textarea);
-
-                // Add + button between items (except after last one)
-                if (index < sortedMilestones.length - 1) {
-                    const nextMilestone = sortedMilestones[index + 1];
-                    const addZone = document.createElement('div');
-                    addZone.className = 'inter-add-zone';
-                    addZone.innerHTML = `
-                        <button class="btn-mini-plus"
-                                type="button"
-                                title="Ajouter un jalon"
-                                onclick="addMilestoneBetween('${milestone.date}', '${nextMilestone.date}')">
-                            <i class="ri-add-line"></i>
-                        </button>
-                    `;
-                    timelineList.appendChild(addZone);
-                }
-            });
-        }
-
-        // Helper: Auto-resize textarea
-        function autoResize(textarea) {
-            if (!textarea) return;
-            textarea.style.height = 'auto';
-            textarea.style.height = textarea.scrollHeight + 'px';
         }
 
         function addMilestoneBetween(dateStrA, dateStrB) {
-            // Calculate median date
             const timeA = new Date(dateStrA).getTime();
             const timeB = new Date(dateStrB).getTime();
             const midTime = (timeA + timeB) / 2;
             const newDate = new Date(midTime);
 
-            // Create new milestone
             const newMilestone = {
-                id: 'm' + Date.now(),
-                date: newDate.toISOString().split('T')[0],
-                title: "Nouveau Jalon",
-                specifique: "",
-                kpiValue: ""
+                id: `m${Date.now()}`,
+                date: newDate.toISOString(),
+                tag: "ÉTAPE",
+                title: "Jalon Intermédiaire",
+                desc: "",
+                kpi: ""
             };
-
             milestones.push(newMilestone);
-            saveMilestones();
-            renderAllCards();
+            save();
+            render();
         }
 
-        function updateData(id, field, value) {
-            const m = milestones.find(m => m.id === id);
-            if (m) {
-                m[field] = value;
-                saveMilestones();
-
-                // Re-render if date changes (affects sort order)
-                if (field === 'date') {
-                    renderAllCards();
-                } else {
-                    // Update KPI status badge
-                    const status = getKPIStatus(m);
-                    const kpiHeader = document.querySelector(`#card-${id} .kpi-header`);
-                    if (kpiHeader) {
-                        const existingBadge = kpiHeader.querySelector('.kpi-status');
-                        if (existingBadge) existingBadge.remove();
-                        if (status) {
-                            const badge = document.createElement('span');
-                            badge.className = 'kpi-status';
-                            badge.dataset.status = status;
-                            badge.textContent = status === 'non-atteint' ? 'Non atteint' : '';
-                            kpiHeader.appendChild(badge);
-                        }
-                    }
-                    // Update completion state
-                    const wrapper = document.querySelector(`#card-${id} .card-wrapper`);
-                    if (wrapper) {
-                        if (status === null) wrapper.classList.add('completed');
-                        else wrapper.classList.remove('completed');
-                    }
-                }
+        function deleteMilestone(id) {
+            if(confirm("Supprimer ce jalon ?")) {
+                milestones = milestones.filter(m => m.id !== id);
+                save();
+                render();
             }
         }
 
-        function confirmDeleteMilestone(id) {
-            if (!window.confirm('Supprimer ce jalon ? Cette action est irréversible.')) return;
-            const nextMilestones = milestones.filter(m => m.id !== id);
-            if (nextMilestones.length === 0) {
-                alert('Impossible de supprimer le dernier jalon.');
-                return;
+        // --- RENDER ---
+        const container = document.getElementById('timelineContainer');
+
+        function render() {
+            milestones.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            const smart = getSmartData();
+            if(milestones.length > 0) {
+                const finalM = milestones[0];
+                finalM.tag = "OBJECTIF 100%";
+                if(smart.temporel) finalM.date = new Date(smart.temporel).toISOString();
+                if(smart.specifique) finalM.desc = smart.specifique;
+                if(smart.mesurable) finalM.kpi = smart.mesurable;
             }
-            milestones = nextMilestones;
-            saveMilestones();
-            renderAllCards();
-        }
 
-        function resetMilestones() {
-            const shouldReset = window.confirm('Réinitialiser tous les jalons ? Cette action est irréversible.');
-            if (!shouldReset) return;
-            localStorage.removeItem('carryItMilestones');
-            window.location.reload();
-        }
+            container.innerHTML = '<div class="timeline-line"></div>';
 
-        function editTitle(titleElement) {
-            const milestoneId = titleElement.dataset.id;
-            const currentTitle = titleElement.textContent;
+            const total = milestones.length;
 
-            // Créer un input pour éditer
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.value = currentTitle;
-            input.style.cssText = `
-                font-size: 28px;
-                font-weight: 700;
-                letter-spacing: -0.03em;
-                line-height: 1.2;
-                color: var(--text-primary);
-                border: 2px solid var(--accent);
-                border-radius: 4px;
-                padding: 4px 8px;
-                font-family: 'Inter', sans-serif;
-                background: transparent;
-                width: 100%;
-                box-sizing: border-box;
-            `;
+            milestones.forEach((m, index) => {
+                const d = new Date(m.date);
+                const month = d.toLocaleDateString('fr-FR', { month: 'short' }).replace('.', '');
+                const year = d.getFullYear();
+                const dateInputValue = m.date.split('T')[0];
+                const isFinal = index === 0;
 
-            // Remplacer le titre par l'input
-            titleElement.replaceWith(input);
-            input.focus();
-            input.select();
+                const milestoneNumber = total - index;
 
-            // Sauvegarder quand on clique ailleurs (blur)
-            input.addEventListener('blur', () => {
-                const newTitle = input.value.trim() || currentTitle;
-                const milestone = milestones.find(m => m.id === milestoneId);
-                console.log('Blur event:', { milestoneId, newTitle, milestone });
-                if (milestone) {
-                    milestone.title = newTitle;
-                    saveMilestones();
-                    console.log('Milestone saved:', milestone);
+                const item = document.createElement('div');
+                item.className = 'timeline-item';
+                item.innerHTML = `
+                    <div class="item-rail-date">
+                        <span class="rail-year">${year}</span>
+                        <span class="rail-month">${month}</span>
+                    </div>
+
+                    <div class="dot ${isFinal ? 'final' : ''}"></div>
+
+                    <div class="item-card">
+                        <div class="card-meta-top">
+                            <span class="card-number">Jalon ${milestoneNumber}/${total}</span>
+                            ${!isFinal ? `
+                                <button class="btn-delete" onclick="deleteMilestone('${m.id}')" title="Supprimer">
+                                    <i class="ri-delete-bin-line"></i>
+                                </button>
+                            ` : ''}
+                        </div>
+
+                        <div class="card-header">
+                            <div style="flex:1">
+                                <span class="card-tag">${m.tag}</span>
+                                <input class="input-title" value="${m.title}"
+                                       placeholder="Titre..."
+                                       ${isFinal ? 'disabled' : ''}
+                                       oninput="update('${m.id}', 'title', this.value)">
+                            </div>
+                            <div class="date-input-wrapper ${isFinal ? 'disabled' : ''}">
+                                <i class="ri-calendar-line" style="font-size:12px; color:var(--text-secondary)"></i>
+                                <input type="date" class="input-date-native"
+                                       value="${dateInputValue}"
+                                       ${isFinal ? 'disabled' : ''}
+                                       onchange="updateDate('${m.id}', this.value)">
+                            </div>
+                        </div>
+
+                        <textarea class="input-desc"
+                                  placeholder="Spécifique : Que doit-il se passer ?"
+                                  ${isFinal ? 'readonly' : ''}
+                                  oninput="autoResize(this); update('${m.id}', 'desc', this.value)">${m.desc || ''}</textarea>
+
+                        <div class="kpi-container">
+                            <span class="kpi-label">KPI :</span>
+                            <input class="input-kpi"
+                                   value="${m.kpi || ''}"
+                                   placeholder="Définir un chiffre clé..."
+                                   ${isFinal ? 'readonly' : ''}
+                                   oninput="update('${m.id}', 'kpi', this.value)">
+                        </div>
+                    </div>
+                `;
+                container.appendChild(item);
+
+                // BOUTON INTERMÉDIAIRE (+) CENTRÉ
+                if (index < milestones.length - 1) {
+                    const nextM = milestones[index + 1];
+                    const interZone = document.createElement('div');
+                    interZone.className = 'inter-add-zone';
+                    interZone.innerHTML = `
+                        <button class="btn-mini-plus" onclick="addMilestoneBetween('${m.date}', '${nextM.date}')" title="Insérer un jalon">
+                            <i class="ri-add-line"></i>
+                        </button>
+                    `;
+                    container.appendChild(interZone);
                 }
+
+                const ta = item.querySelector('textarea');
+                autoResize(ta);
             });
-
-            // Escape = annuler sans sauvegarder
-            input.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') {
-                    const titleEl = document.createElement('h3');
-                    titleEl.className = 'jalon-title';
-                    titleEl.dataset.id = milestoneId;
-                    titleEl.onclick = function() { editTitle(this); };
-                    titleEl.title = 'Cliquez pour éditer';
-                    titleEl.textContent = currentTitle;
-                    input.replaceWith(titleEl);
-                }
-            });
         }
 
-        function saveMilestones() {
-            try {
-                const json = JSON.stringify(milestones);
-                localStorage.setItem('carryItMilestones', json);
-            } catch (e) {
-                console.error('Error saving milestones:', e);
+        function update(id, field, value) {
+            const m = milestones.find(x => x.id === id);
+            if(m) m[field] = value;
+            save();
+        }
+
+        function updateDate(id, newDateStr) {
+            const m = milestones.find(x => x.id === id);
+            if(m) {
+                const newDate = new Date(newDateStr);
+                m.date = newDate.toISOString();
+                save();
+                render();
             }
         }
 
-        // --- INIT ---
-        function init() {
-            renderAllCards();
-            window.scrollTo(0, 0);
+        function save() {
+            localStorage.setItem('carryItMilestones', JSON.stringify(milestones));
         }
 
-        init();
+        function autoResize(el) {
+            el.style.height = 'auto';
+            el.style.height = el.scrollHeight + 'px';
+        }
 
+        render();
     </script>
 </body>
 </html>

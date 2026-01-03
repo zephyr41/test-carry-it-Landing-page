@@ -22,16 +22,16 @@
             --text-primary: #FFFFFF; /* Blanc pur pour un contraste maximal */
             --text-secondary: #AAAAAA; /* Gris clair pour un meilleur contraste WCAG */
             --accent: #FF5A1F;
-            
+
             /* Surfaces et Matériaux iOS */
             --surface-card: rgba(28, 28, 30, 0.75); /* System Ultra Thick Material */
             --surface-kpi: rgba(30, 15, 5, 0.8); /* KPI mis en avant */
             --border-subtle: rgba(255, 255, 255, 0.1);
-            
+
             /* Layout Strict */
-            --margin-axis: 64px; /* Marge gauche rigoureuse */
-            --max-width-content: 580px;
-            
+            --margin-axis: 60px; /* Marge gauche rigoureuse */
+            --max-width-content: 550px;
+
             --ease-ios: cubic-bezier(0.32, 0.72, 0, 1);
         }
 
@@ -62,7 +62,7 @@
 
         /* NAVIGATION : Strictement ALIGNÉE */
         .navbar {
-            padding: 48px var(--margin-axis) 24px;
+            padding: 45px var(--margin-axis) 23px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -96,12 +96,12 @@
 
         .content-block {
             max-width: var(--max-width-content);
-            padding-bottom: 40px; /* Espace pour desktop */
-            padding-top: 24px;
+            padding-bottom: 15px; /* Espace pour desktop */
+            padding-top: 16px;
         }
 
         /* HEADER : HIÉRARCHIE VISUELLE CLAIRE */
-        header { margin-bottom: 32px; }
+        header { margin-bottom: 28px; }
 
         .phase-label {
             display: inline-block;
@@ -111,8 +111,8 @@
         }
 
         h1 {
-            font-size: 52px; /* Augmenté pour dominance */
-            font-weight: 800; 
+            font-size: 44px; /* Augmenté pour dominance */
+            font-weight: 800;
             letter-spacing: -2.5px; /* Tracking très serré */
             line-height: 1.05; color: var(--text-primary);
         }
@@ -121,9 +121,9 @@
         .grid-layout {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 14px; /* Espace pour desktop */
+            gap: 12px; /* Espace pour desktop */
             width: 100%;
-            margin-bottom: 28px;
+            margin-bottom: 24px;
         }
 
         .card {
@@ -131,14 +131,14 @@
             backdrop-filter: blur(20px) saturate(180%); /* Material System iOS */
             -webkit-backdrop-filter: blur(20px) saturate(180%);
             border-radius: 18px;
-            padding: 22px;
+            padding: 18px;
             display: flex;
             flex-direction: column;
             transition: all 0.2s var(--ease-ios);
-            min-height: 110px;
+            min-height: 90px;
             border: 1px solid var(--border-subtle);
         }
-        
+
         .card:hover {
             background: rgba(44, 44, 46, 0.85); /* Hover plus prononcé */
             transform: scale(1.005);
@@ -149,8 +149,8 @@
             grid-column: span 2;
             background: var(--surface-kpi);
             border: 1px solid rgba(255, 90, 31, 0.2);
-            min-height: 85px;
-            padding: 16px 18px;
+            min-height: 70px;
+            padding: 14px 16px;
         }
 
         /* LABELS S.M.A.R.T */
@@ -174,13 +174,13 @@
         }
 
         .card-content.kpi-value {
-            font-size: 20px; 
+            font-size: 20px;
             font-weight: 700;
             color: var(--text-primary); /* Le KPI dominant est en blanc pour le contraste */
             letter-spacing: -0.5px;
             margin-top: 4px;
         }
-        
+
         .card-content.date {
             font-size: 15px;
             font-weight: 600;
@@ -189,7 +189,7 @@
 
         /* ZONE D'ACTION : REMONTÉE ET ALIGNÉE */
         .action-section {
-            margin-top: 24px; /* Séparation pour desktop */
+            margin-top: 20px; /* Séparation pour desktop */
             max-width: var(--max-width-content);
             padding: 0 0 0 0; /* Alignement sur l'axe */
         }
@@ -204,10 +204,10 @@
 
         .btn-primary {
             width: 100%;
-            height: 56px; 
+            height: 56px;
             background: #FFFFFF;
             color: #000000;
-            border-radius: 28px; 
+            border-radius: 28px;
             border: none;
             font-size: 17px; /* Augmenté */
             font-weight: 600;
@@ -236,7 +236,7 @@
             object-fit: cover; opacity: 0.4; /* Opacité réduite pour ne pas concurrencer */
             transform: scale(1.1);
         }
-        
+
         .overlay-gradient {
             position: absolute; inset: 0;
             background: none;
@@ -244,9 +244,9 @@
 
         /* Widget : Repensé pour être un simple support d'information */
         .glass-widget {
-            position: absolute; 
-            top: 48px; 
-            right: 48px; 
+            position: absolute;
+            top: 48px;
+            right: 48px;
             width: 280px; /* Plus compact */
             background: rgba(30, 30, 32, 0.6); /* Matériau plus léger */
             backdrop-filter: blur(20px) saturate(180%);
@@ -269,12 +269,12 @@
             position: absolute; bottom: 56px; left: 48px;
             max-width: 500px;
         }
-        
+
         .quote-title {
             font-size: 28px; font-weight: 700; margin-bottom: 12px;
             letter-spacing: -0.5px;
         }
-        
+
         .quote-body {
             font-size: 15px; color: rgba(255,255,255,0.7);
             line-height: 1.6;
@@ -444,7 +444,7 @@
         <!-- Main Content Scroll (Alignement Strict) -->
         <div class="scroll-container">
             <div class="content-block">
-                
+
                 <!-- Titre (Hiérarchie Maximale) -->
                 <header>
                     <span class="phase-label">Phase 1 : Synthèse</span>
@@ -453,7 +453,7 @@
 
                 <!-- S.M.A.R.T Grid (Material System) -->
                 <div class="grid-layout">
-                    
+
                     <!-- KPI Card (Dominante & Accentuée) -->
                     <div class="card kpi-main">
                         <span class="card-title" style="color: rgba(255,255,255, 0.6);">Indicateur Clé (KPI)</span>
@@ -465,7 +465,7 @@
                         <span class="card-title">Deadline</span>
                         <div class="card-content date" id="disp-t">-</div>
                     </div>
-                    
+
                     <!-- Spécifique -->
                     <div class="card">
                         <span class="card-title">Spécifique</span>
@@ -561,8 +561,8 @@
                 specifique: "Créer un programme éducatif vidéo complet sur le design iOS en 12 modules.",
                 atteignable: "L'expertise est là, il faut structurer le temps et déléguer le montage.",
                 realiste: "L'engagement des viewers est déjà élevé ; il faut capitaliser sur la niche.",
-                temporel: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString() 
-            }; 
+                temporel: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString()
+            };
 
             // Remplissage des cartes S.M.A.R.T
             document.getElementById('disp-s').textContent = obj.specifique || "Aucune spécification détaillée fournie.";
@@ -587,9 +587,9 @@
         function goToJalons() {
             window.location.href = 'jalons.html';
         }
-        function goBackToObjectif() { 
+        function goBackToObjectif() {
             console.log("Retour à objectif.html");
-            // window.location.href = 'objectif.html'; 
+            // window.location.href = 'objectif.html';
         }
 
         function initKPIChart() {
