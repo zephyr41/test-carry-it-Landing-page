@@ -108,6 +108,37 @@
         }
 
         /* LE POINT SUR LE RAIL */
+        /* Animation dissipation fumée */
+        @keyframes smokeDisperse {
+            0% {
+                box-shadow: 0 0 0 6px var(--bg-primary);
+                opacity: 1;
+            }
+            50% {
+                box-shadow: 0 0 20px 15px rgba(255, 77, 0, 0.2), 0 0 0 6px var(--bg-primary);
+                opacity: 0.7;
+            }
+            100% {
+                box-shadow: 0 0 40px 25px rgba(255, 77, 0, 0), 0 0 0 6px var(--bg-primary);
+                opacity: 1;
+            }
+        }
+
+        @keyframes smokeDissipeFinal {
+            0% {
+                box-shadow: 0 0 15px var(--accent), 0 0 0 6px var(--bg-primary);
+                opacity: 1;
+            }
+            50% {
+                box-shadow: 0 0 30px 18px rgba(255, 77, 0, 0.3), 0 0 0 6px var(--bg-primary);
+                opacity: 0.8;
+            }
+            100% {
+                box-shadow: 0 0 50px 30px rgba(255, 77, 0, 0), 0 0 0 6px var(--bg-primary);
+                opacity: 1;
+            }
+        }
+
         .dot {
             position: absolute;
             left: 81.5px; /* Centré sur la ligne de 3px */
@@ -119,12 +150,14 @@
             border-radius: 50%;
             z-index: 2;
             box-shadow: 0 0 0 6px var(--bg-primary); /* Halo pour couper le rail proprement */
+            animation: smokeDisperse 3s ease-in-out infinite;
         }
 
         .dot.final {
             background: var(--accent);
             box-shadow: 0 0 15px var(--accent), 0 0 0 6px var(--bg-primary);
             border-color: white;
+            animation: smokeDissipeFinal 3s ease-in-out infinite;
         }
 
         /* CARTE (DROITE DU RAIL) */

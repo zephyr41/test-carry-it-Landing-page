@@ -345,6 +345,74 @@
         }
         .reality-check strong { color: var(--text-primary); font-weight: 600; display: block; margin-top: 8px; }
 
+        @keyframes subtleFlow {
+            0%, 100% {
+                background:
+                    radial-gradient(420px 280px at 20% 0%, rgba(255, 77, 0, 0.28), transparent 65%),
+                    radial-gradient(520px 320px at 80% 0%, rgba(255, 77, 0, 0.16), transparent 70%);
+            }
+            50% {
+                background:
+                    radial-gradient(422px 282px at 20.5% -1%, rgba(255, 77, 0, 0.28), transparent 65%),
+                    radial-gradient(518px 318px at 79.5% -1%, rgba(255, 77, 0, 0.16), transparent 70%);
+            }
+        }
+
+        @keyframes blueFlow {
+            0%, 100% {
+                background:
+                    radial-gradient(520px 300px at 80% 8%, rgba(10, 42, 83, 0.08), transparent 88%),
+                    radial-gradient(500px 290px at 75% 18%, rgba(10, 42, 83, 0.05), transparent 88%),
+                    radial-gradient(500px 290px at 70% 28%, rgba(10, 42, 83, 0.15), transparent 80%),
+                    radial-gradient(540px 320px at 50% 40%, rgba(10, 42, 83, 0.3), transparent 65%),
+                    radial-gradient(540px 320px at 25% 48%, rgba(10, 42, 83, 0.3), transparent 65%),
+                    radial-gradient(540px 320px at 20% 60%, rgba(10, 42, 83, 0.3), transparent 65%),
+                    radial-gradient(500px 290px at 30% 70%, rgba(10, 42, 83, 0.15), transparent 80%),
+                    radial-gradient(500px 290px at 45% 80%, rgba(10, 42, 83, 0.08), transparent 86%),
+                    radial-gradient(520px 300px at 70% 87%, rgba(10, 42, 83, 0.08), transparent 88%);
+            }
+            50% {
+                background:
+                    radial-gradient(525px 305px at 81% 9%, rgba(10, 42, 83, 0.08), transparent 88%),
+                    radial-gradient(505px 295px at 76% 19%, rgba(10, 42, 83, 0.05), transparent 88%),
+                    radial-gradient(505px 295px at 71% 29%, rgba(10, 42, 83, 0.15), transparent 80%),
+                    radial-gradient(545px 325px at 51% 41%, rgba(10, 42, 83, 0.3), transparent 65%),
+                    radial-gradient(545px 325px at 26% 49%, rgba(10, 42, 83, 0.3), transparent 65%),
+                    radial-gradient(545px 325px at 21% 61%, rgba(10, 42, 83, 0.3), transparent 65%),
+                    radial-gradient(505px 295px at 31% 71%, rgba(10, 42, 83, 0.15), transparent 80%),
+                    radial-gradient(505px 295px at 46% 81%, rgba(10, 42, 83, 0.08), transparent 86%),
+                    radial-gradient(525px 305px at 71% 88%, rgba(10, 42, 83, 0.08), transparent 88%);
+            }
+        }
+
+        /* MIDDLE SECTION AVEC BLEUS */
+        .middle-section {
+            width: 100%;
+            height: 1000px;
+            overflow: visible;
+            pointer-events: none;
+            position: absolute;
+            top: 700px;
+            left: 0;
+            z-index: -1;
+        }
+
+        .middle-section::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(380px 260px at 10% 50%, rgba(10, 42, 83, 0.35), transparent 65%),
+                radial-gradient(450px 300px at 90% 50%, rgba(10, 42, 83, 0.25), transparent 70%);
+            opacity: 1;
+            z-index: 0;
+            animation: blueFlow 6s ease-in-out infinite;
+            pointer-events: none;
+        }
+
         /* INTRO SECTION */
         .intro-section {
             margin-top: 60px;
@@ -374,6 +442,7 @@
                 radial-gradient(520px 320px at 80% 0%, rgba(255, 77, 0, 0.16), transparent 70%);
             opacity: 1;
             z-index: -2;
+            animation: subtleFlow 6s ease-in-out infinite;
         }
 
         .intro-section::after {
@@ -537,6 +606,8 @@
             <i class="ri-arrow-down-line"></i>
         </div>
     </div>
+
+    <div class="middle-section"></div>
 
     <div class="main-container" id="timelineStart">
         <div class="timeline-list" id="timelineContainer">
