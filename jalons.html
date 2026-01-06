@@ -693,20 +693,19 @@
             font-size: 13px;
         }
 
-        /* Positions pour chaque point */
-        .jh-1 { left: 5%; top: 35%; flex-direction: column; }
+        /* Positions pour chaque point - alignés sur la courbe SVG */
+        .jh-1 { left: 12.5%; top: 66.7%; flex-direction: column; }
         .jh-1 .journey-connector { display: none; }
 
-        .jh-2 { left: 22%; top: 68%; flex-direction: column-reverse; }
+        .jh-2 { left: 18.475%; top: 74.3%; flex-direction: column; }
 
-        .jh-3 { left: 36%; top: 58%; flex-direction: column; }
+        .jh-3 { left: 27.875%; top: 48.2%; flex-direction: column-reverse; }
 
-        .jh-4 { left: 54%; top: 82%; flex-direction: column-reverse; width: 120px; }
-        .jh-4 .journey-connector { height: 50px; }
+        .jh-4 { left: 40.375%; top: 58.2%; flex-direction: column; }
 
-        .jh-5 { left: 75%; top: 65%; flex-direction: column-reverse; }
+        .jh-5 { left: 74%; top: 38.4%; flex-direction: column-reverse; }
 
-        .jh-6 { left: 95%; top: 15%; align-items: flex-end; text-align: right; }
+        .jh-6 { left: 87.6%; top: 10%; align-items: flex-end; text-align: right; }
         .jh-6 .journey-connector { display: none; }
 
         /* MIDDLE SECTION AVEC BLEUS */
@@ -1004,49 +1003,101 @@
                     </linearGradient>
                 </defs>
 
-                <path style="fill:none; stroke:url(#journeyGradient); stroke-width:4px; stroke-linecap:round; stroke-linejoin:round;"
-                      d="M 40 180 C 101 192.5 99 270 179 276 Q 215 293 219 341 C 231 275.5 236 326 287 276 C 326.5 201.5 351 252 431 358 C 535 435 438 289 597 282 C 682 234 568 202 702 206 C 763 155 711 251 793 18" />
+                <path style="fill:none; stroke:url(#journeyGradient); stroke-width:3px; stroke-linecap:round; stroke-linejoin:round; filter:url(#smoothFilter);"
+                      d="M 100 300 Q 160 325 195 285 Q 210 235 255 235 L 355 235 C 515 245 405 185 560 200 C 770 205 770 160 775 45" />
 
-                <polygon points="793,10 780,25 800,20" fill="#4dff88" />
+                <!-- Trait pointillé vertical "6 premiers mois" -->
+                <line x1="148" y1="0" x2="148" y2="325" stroke="rgba(255,255,255,0.3)" stroke-width="1" stroke-dasharray="5,5" />
+
+                <!-- Trait pointillé vertical "Année 2" -->
+                <line x1="480" y1="0" x2="480" y2="340" stroke="rgba(255,255,255,0.2)" stroke-width="1" stroke-dasharray="5,5" />
+
+                <!-- Trait pointillé vertical "Année 3" -->
+                <line x1="720" y1="0" x2="720" y2="340" stroke="rgba(255,255,255,0.2)" stroke-width="1" stroke-dasharray="5,5" />
+
+                <!-- Filtre de lissage léger -->
+                <filter id="smoothFilter">
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="0.5" />
+                </filter>
             </svg>
 
-            <!-- Point 1 : Départ -->
+            <!-- Label "6 premiers mois" -->
+            <div style="position: absolute; left: 18.475%; top: 80%; transform: translateX(-50%); font-size: 12px; font-weight: 600; color: var(--text-secondary); text-align: center; width: 100px; letter-spacing: 0.5px;">
+                6 premiers mois
+            </div>
+
+            <!-- Explication: 94% abandonnent -->
+            <div style="position: absolute; left: 18.475%; top: 88%; transform: translateX(-50%); font-size: 11px; color: var(--text-secondary); text-align: center; line-height: 1.4; width: 120px;">
+                <strong style="color: #ff4d4d;">94%</strong> abandonnent ici<br>
+                <span style="font-size: 10px;">Pas de résultats</span>
+            </div>
+
+            <!-- Point 3 - Premier résultat visible -->
+            <div style="position: absolute; left: 27.875%; top: 28%; transform: translateX(-50%); font-size: 11px; color: #4dff88; font-weight: 600; text-align: center; line-height: 1.5; width: 120px;">
+                Premier vrai résultat<br>
+                <span style="font-size: 10px; color: var(--text-secondary);">visible après 1 an</span><br>
+                <span style="font-size: 9px; color: #666; font-weight: 400; margin-top: 2px; display: block;">(Jalon 5)</span>
+            </div>
+
+            <!-- Point 4 - Plateau de stagnation -->
+            <div style="position: absolute; left: 40.375%; top: 68%; transform: translateX(-50%); font-size: 11px; color: var(--text-secondary); font-weight: 600; text-align: center; line-height: 1.5; width: 130px;">
+                Plateau de stagnation<br>
+                <span style="font-size: 10px; font-weight: 400; color: #999;">Tu travailles sans résultat<br>visible au départ</span>
+            </div>
+
+            <!-- Point 5 - Second plateau de stagnation -->
+            <div style="position: absolute; left: 74%; top: 15%; transform: translateX(-50%); font-size: 11px; color: var(--text-secondary); font-weight: 600; text-align: center; line-height: 1.5; width: 130px;">
+                Second plateau<br>
+                <span style="font-size: 10px; font-weight: 400; color: #999;">Tu dois fournir<br>beaucoup plus d'effort<br>pour atteindre le résultat</span>
+            </div>
+
+            <!-- Année 2 - Label et explication -->
+            <div style="position: absolute; left: 60%; top: 75%; transform: translateX(-50%); font-size: 12px; font-weight: 600; color: var(--text-secondary); text-align: center; width: 90px; letter-spacing: 0.5px;">
+                Année 2
+            </div>
+            <div style="position: absolute; left: 60%; top: 83%; transform: translateX(-50%); font-size: 10px; color: #999; text-align: center; line-height: 1.4; width: 110px;">
+                Tu peux encore<br>travailler sans résultats<br>attendus
+            </div>
+
+            <!-- Année 3 - Label et explication -->
+            <div style="position: absolute; left: 90%; top: 75%; transform: translateX(-50%); font-size: 12px; font-weight: 600; color: var(--text-secondary); text-align: center; width: 90px; letter-spacing: 0.5px;">
+                Année 3
+            </div>
+            <div style="position: absolute; left: 90%; top: 83%; transform: translateX(-50%); font-size: 10px; color: #999; text-align: center; line-height: 1.4; width: 110px;">
+                C'est là que<br>tu dois vraiment<br>voir les résultats
+            </div>
+
+            <!-- Point 1 -->
             <div class="journey-hotspot jh-1">
-                <div class="journey-label">Tu penses pouvoir<br>le faire</div>
                 <div class="journey-dot"></div>
             </div>
 
-            <!-- Point 2 : Premier obstacle -->
+            <!-- Point 2 -->
             <div class="journey-hotspot jh-2">
                 <div class="journey-connector"></div>
                 <div class="journey-dot"></div>
-                <div class="journey-label">Tu découvres<br>la difficulté</div>
             </div>
 
-            <!-- Point 3 : Récupération partielle -->
+            <!-- Point 3 -->
             <div class="journey-hotspot jh-3">
-                <div class="journey-label">Tu trouves<br>ton approche</div>
                 <div class="journey-connector"></div>
                 <div class="journey-dot"></div>
             </div>
 
-            <!-- Point 4 : Le fond -->
+            <!-- Point 4 -->
             <div class="journey-hotspot jh-4">
                 <div class="journey-connector"></div>
                 <div class="journey-dot"></div>
-                <div class="journey-label">Sans témoin,<br>sans récompense</div>
             </div>
 
-            <!-- Point 5 : Remontée -->
+            <!-- Point 5 -->
             <div class="journey-hotspot jh-5">
                 <div class="journey-connector"></div>
                 <div class="journey-dot"></div>
-                <div class="journey-label">Tu commences<br>à voir le progrès</div>
             </div>
 
-            <!-- Point 6 : Victoire -->
+            <!-- Point 6 -->
             <div class="journey-hotspot jh-6">
-                <div class="journey-label">T'as tenu bon</div>
                 <div class="journey-dot"></div>
             </div>
         </div>
