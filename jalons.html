@@ -650,9 +650,11 @@
         .journey-wrapper {
             position: relative;
             width: 100%;
-            max-width: 700px;
-            aspect-ratio: 16 / 9;
+            height: 40vh;
             margin: 60px auto 100px;
+            overflow: hidden;
+            transform-origin: center center;
+            transition: transform 0.8s ease-out;
         }
 
         .journey-hotspot {
@@ -692,6 +694,88 @@
             font-weight: 600;
             font-size: 13px;
         }
+
+        /* ANIMATIONS */
+        @keyframes drawCurve {
+            from {
+                stroke-dashoffset: 1500;
+            }
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        @keyframes fadeInDot {
+            from {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes fadeInText {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Zoom states for scroll-triggered effect */
+        .journey-wrapper.zoom-left {
+            transform: scale(2.5) translateX(-18vw) translateY(0);
+        }
+
+        .journey-wrapper.zoom-middle {
+            transform: scale(2.5) translateX(-27.8vw) translateY(-8vh);
+        }
+
+        .journey-wrapper.zoom-plateau {
+            transform: scale(2.8) translateX(-74vw) translateY(-5vh);
+        }
+
+        .journey-wrapper.zoom-full {
+            transform: scale(1) translateX(0) translateY(0);
+        }
+
+        /* Application des animations */
+        .chart-path {
+            stroke-dasharray: 1500;
+            animation: drawCurve 3s ease-out forwards;
+        }
+
+        .journey-dot {
+            animation: fadeInDot 0.6s ease-out forwards;
+        }
+
+        .jh-1 .journey-dot { animation-delay: 1.8s; }
+        .jh-2 .journey-dot { animation-delay: 2.1s; }
+        .jh-3 .journey-dot { animation-delay: 2.4s; }
+        .jh-4 .journey-dot { animation-delay: 2.7s; }
+        .jh-5 .journey-dot { animation-delay: 3s; }
+        .jh-6 .journey-dot { animation-delay: 3.3s; }
+
+        /* Textes explicatifs */
+        div[style*="6 premiers mois"],
+        div[style*="94%"],
+        div[style*="Premier vrai"],
+        div[style*="Plateau de stagnation"],
+        div[style*="Second plateau"],
+        div[style*="Année 2"],
+        div[style*="Année 3"] {
+            animation: fadeInText 0.8s ease-out forwards;
+            opacity: 0;
+        }
+
+        /* Délais pour les textes */
+        .attempts-footer > p:first-child { animation-delay: 2s; }
+        .attempts-footer > p:last-child { animation-delay: 2.3s; }
 
         /* Positions pour chaque point - alignés sur la courbe SVG */
         .jh-1 { left: 12.5%; top: 66.7%; flex-direction: column; }
@@ -1003,7 +1087,7 @@
                     </linearGradient>
                 </defs>
 
-                <path style="fill:none; stroke:url(#journeyGradient); stroke-width:3px; stroke-linecap:round; stroke-linejoin:round; filter:url(#smoothFilter);"
+                <path class="chart-path" style="fill:none; stroke:url(#journeyGradient); stroke-width:3px; stroke-linecap:round; stroke-linejoin:round; filter:url(#smoothFilter);"
                       d="M 100 300 Q 160 325 195 285 Q 210 235 255 235 L 355 235 C 515 245 405 185 560 200 C 770 205 770 160 775 45" />
 
                 <!-- Trait pointillé vertical "6 premiers mois" -->
@@ -1052,20 +1136,17 @@
             </div>
 
             <!-- Année 2 - Label et explication -->
-            <div style="position: absolute; left: 60%; top: 75%; transform: translateX(-50%); font-size: 12px; font-weight: 600; color: var(--text-secondary); text-align: center; width: 90px; letter-spacing: 0.5px;">
-                Année 2
-            </div>
-            <div style="position: absolute; left: 60%; top: 83%; transform: translateX(-50%); font-size: 10px; color: #999; text-align: center; line-height: 1.4; width: 110px;">
-                Tu peux encore<br>travailler sans résultats<br>attendus
+            <div style="position: absolute; left: 60%; top: 75%; transform: translateX(-50%); font-size: 11px; color: var(--text-secondary); text-align: center; line-height: 1.4; width: 110px;">
+                <strong style="font-size: 12px; font-weight: 600;">Année 2</strong><br>
+                <span style="font-size: 9px; color: #999;">Tu peux encore<br>travailler sans résultats</span>
             </div>
 
             <!-- Année 3 - Label et explication -->
-            <div style="position: absolute; left: 90%; top: 75%; transform: translateX(-50%); font-size: 12px; font-weight: 600; color: var(--text-secondary); text-align: center; width: 90px; letter-spacing: 0.5px;">
-                Année 3
+            <div style="position: absolute; left: 90%; top: 75%; transform: translateX(-50%); font-size: 11px; color: var(--text-secondary); text-align: center; line-height: 1.4; width: 110px;">
+                <strong style="font-size: 12px; font-weight: 600;">Année 3</strong><br>
+                <span style="font-size: 9px; color: #999;">C'est là tu dois voir<br>les résultats</span>
             </div>
-            <div style="position: absolute; left: 90%; top: 83%; transform: translateX(-50%); font-size: 10px; color: #999; text-align: center; line-height: 1.4; width: 110px;">
-                C'est là que<br>tu dois vraiment<br>voir les résultats
-            </div>
+
 
             <!-- Point 1 -->
             <div class="journey-hotspot jh-1">
@@ -1351,6 +1432,68 @@
             };
             updateHint();
             window.addEventListener('scroll', updateHint, { passive: true });
+        }
+
+        // --- SCROLL-TRIGGERED ZOOM MONTAGE ---
+        const journeyWrapper = document.querySelector('.journey-wrapper');
+        let currentZoom = 'left'; // Start with left crop
+
+        // Set initial state
+        journeyWrapper.classList.add('zoom-left');
+
+        function updateZoomState() {
+            const wrapperTop = journeyWrapper.getBoundingClientRect().top;
+            const wrapperHeight = journeyWrapper.offsetHeight;
+            const viewportHeight = window.innerHeight;
+
+            // Calculate scroll progress relative to journey wrapper
+            const scrollProgress = (viewportHeight - wrapperTop) / (viewportHeight + wrapperHeight);
+
+            let newZoom = 'left';
+
+            if (scrollProgress < 0) {
+                // Haven't reached wrapper yet
+                newZoom = 'left';
+            } else if (scrollProgress < 0.3) {
+                // First 30% of scroll: show left side (6 premiers mois)
+                newZoom = 'left';
+            } else if (scrollProgress < 0.6) {
+                // Next 30% (30-60%): show middle (Premier résultat)
+                newZoom = 'middle';
+            } else if (scrollProgress < 0.9) {
+                // Next 30% (60-90%): show plateau (Second plateau)
+                newZoom = 'plateau';
+            } else {
+                // Last 10%: reveal full view
+                newZoom = 'full';
+            }
+
+            // Update if state changed
+            if (newZoom !== currentZoom) {
+                currentZoom = newZoom;
+                journeyWrapper.classList.remove('zoom-left', 'zoom-middle', 'zoom-plateau', 'zoom-full');
+                journeyWrapper.classList.add(`zoom-${newZoom}`);
+            }
+        }
+
+        // Trigger on page load in case wrapper is already visible
+        updateZoomState();
+
+        // Listen to scroll events
+        window.addEventListener('scroll', updateZoomState, { passive: true });
+
+        // Also use Intersection Observer to detect when wrapper is in view
+        if (typeof IntersectionObserver !== 'undefined') {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        // Wrapper is in viewport, start listening to scrolls
+                        updateZoomState();
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            observer.observe(journeyWrapper);
         }
     </script>
 </body>
