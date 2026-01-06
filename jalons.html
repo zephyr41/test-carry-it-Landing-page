@@ -327,8 +327,6 @@
         .attempts-section {
             text-align: center;
             margin-bottom: 50px;
-            position: relative;
-            z-index: 2;
         }
 
         .attempts-title {
@@ -652,12 +650,11 @@
         .journey-wrapper {
             position: relative;
             width: 100%;
-            height: 60vh;
-            margin: 100px auto 150px;
+            height: 40vh;
+            margin: 60px auto 100px;
             overflow: hidden;
             transform-origin: center center;
             transition: transform 0.8s ease-out;
-            z-index: 1;
         }
 
         .journey-hotspot {
@@ -732,15 +729,15 @@
 
         /* Zoom states for scroll-triggered effect */
         .journey-wrapper.zoom-left {
-            transform: scale(1.8) translateX(-15vw) translateY(0);
+            transform: scale(2.5) translateX(-18vw) translateY(0);
         }
 
         .journey-wrapper.zoom-middle {
-            transform: scale(1.8) translateX(-20vw) translateY(-5vh);
+            transform: scale(2.5) translateX(-27.8vw) translateY(-8vh);
         }
 
         .journey-wrapper.zoom-plateau {
-            transform: scale(2) translateX(-35vw) translateY(-3vh);
+            transform: scale(2.8) translateX(-74vw) translateY(-5vh);
         }
 
         .journey-wrapper.zoom-full {
@@ -1443,17 +1440,17 @@
             if (scrollProgress < 0) {
                 // Haven't reached wrapper yet
                 newZoom = 'left';
-            } else if (scrollProgress < 0.2) {
-                // First 20% of scroll: show left side (6 premiers mois)
+            } else if (scrollProgress < 0.3) {
+                // First 30% of scroll: show left side (6 premiers mois)
                 newZoom = 'left';
-            } else if (scrollProgress < 0.5) {
-                // Next 30% (20-50%): show middle (Premier résultat)
+            } else if (scrollProgress < 0.6) {
+                // Next 30% (30-60%): show middle (Premier résultat)
                 newZoom = 'middle';
-            } else if (scrollProgress < 0.8) {
-                // Next 30% (50-80%): show plateau (Second plateau)
+            } else if (scrollProgress < 0.9) {
+                // Next 30% (60-90%): show plateau (Second plateau)
                 newZoom = 'plateau';
             } else {
-                // Last 20%: reveal full view
+                // Last 10%: reveal full view
                 newZoom = 'full';
             }
 
