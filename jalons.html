@@ -323,22 +323,56 @@
             box-shadow: 0 0 10px var(--accent-glow), 0 0 0 4px var(--bg-primary);
         }
 
-        /* FAILURES & SUCCESS PATH */
-        .failures-success-container {
-            position: relative;
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 8px 15px;
-            margin-top: 60px;
-            margin-bottom: 60px;
-            margin-left: auto;
-            margin-right: auto;
-            width: fit-content;
-            justify-items: center;
-            align-items: center;
+        /* ATTEMPTS SECTION */
+        .attempts-section {
+            text-align: center;
+            margin-bottom: 50px;
         }
 
-        .failures-success-container::before {
+        .attempts-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+
+        .attempts-subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* FAILURES & SUCCESS PATH */
+        .failures-success-wrapper {
+            position: relative;
+            margin-top: 60px;
+            margin-bottom: 40px;
+            width: 100%;
+        }
+
+        /* ATTEMPTS FOOTER */
+        .attempts-footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 30px;
+            border-top: 1px solid var(--border);
+        }
+
+        .attempts-insight {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+
+        .attempts-microcopy {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        .failures-success-wrapper::before {
             content: '';
             position: absolute;
             top: -400px;
@@ -357,6 +391,85 @@
             opacity: 0.5;
         }
 
+        .failure-success-row {
+            display: flex;
+            gap: 220px;
+            margin-bottom: 40px;
+            position: relative;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .failure-success-row::after {
+            content: '';
+            position: absolute;
+            left: var(--rail-offset);
+            top: 0;
+            bottom: -40px;
+            width: 1px;
+            background: repeating-linear-gradient(
+                to bottom,
+                var(--border),
+                var(--border) 4px,
+                transparent 4px,
+                transparent 8px
+            );
+            opacity: 0.5;
+        }
+
+        .step-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            min-width: 100px;
+            text-align: right;
+            padding-top: 4px;
+            flex-shrink: 0;
+        }
+
+        .failures-success-container {
+            position: relative;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px 8px;
+            align-content: flex-start;
+            width: 240px;
+            padding-left: 0;
+            padding-top: 0;
+        }
+
+        .legend-wrapper {
+            position: absolute;
+            top: -35px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .legend-tag {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .legend-visible {
+            color: #15803D;
+        }
+
+        .legend-hidden {
+            color: #A3150D;
+        }
+
         .failure-item, .success-item {
             display: flex;
             align-items: center;
@@ -365,27 +478,27 @@
         }
 
         .failure-circle, .success-circle {
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
             flex-shrink: 0;
         }
 
         .failure-circle {
-            background: #A3150D;
+            background: #6B5D56;
             color: white;
-            box-shadow: 0 0 12px rgba(163, 21, 13, 0.3);
+            box-shadow: 0 0 12px rgba(107, 93, 86, 0.2);
         }
 
         .success-circle {
-            background: #404025;
-            color: #FFFDF6;
-            box-shadow: 0 0 12px rgba(64, 64, 37, 0.3);
+            background: #15803D;
+            color: white;
+            box-shadow: 0 0 12px rgba(21, 128, 61, 0.4);
         }
 
         /* REALITY CHECK (FOOTER) */
@@ -532,6 +645,69 @@
                     radial-gradient(525px 315px at 16% 101%, rgba(163, 21, 13, 0.01), transparent 97%);
             }
         }
+
+        /* HOTSPOTS POUR LA COURBE */
+        .journey-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            aspect-ratio: 16 / 9;
+            margin: 60px auto 100px;
+        }
+
+        .journey-hotspot {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 140px;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            text-align: center;
+            font-size: 12px;
+            line-height: 1.5;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            pointer-events: none;
+        }
+
+        .journey-dot {
+            width: 10px;
+            height: 10px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(255,255,255,0.6);
+            flex-shrink: 0;
+            margin: 0;
+        }
+
+        .journey-connector {
+            width: 1px;
+            height: 35px;
+            background-color: var(--text-secondary);
+            opacity: 0.5;
+        }
+
+        .journey-label {
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        /* Positions pour chaque point */
+        .jh-1 { left: 5%; top: 35%; flex-direction: column; }
+        .jh-1 .journey-connector { display: none; }
+
+        .jh-2 { left: 22%; top: 68%; flex-direction: column-reverse; }
+
+        .jh-3 { left: 36%; top: 58%; flex-direction: column; }
+
+        .jh-4 { left: 54%; top: 82%; flex-direction: column-reverse; width: 120px; }
+        .jh-4 .journey-connector { height: 50px; }
+
+        .jh-5 { left: 75%; top: 65%; flex-direction: column-reverse; }
+
+        .jh-6 { left: 95%; top: 15%; align-items: flex-end; text-align: right; }
+        .jh-6 .journey-connector { display: none; }
 
         /* MIDDLE SECTION AVEC BLEUS */
         .middle-section {
@@ -811,58 +987,74 @@
             <!-- Injecté par JS -->
         </div>
 
-        <!-- FAILURES & SUCCESS PATH -->
-        <div class="failures-success-container">
-            <div class="failure-item">
-                <div class="failure-circle">
-                    <i class="ri-close-line"></i>
-                </div>
+        <!-- TENTATIVES & RESULTS SECTION -->
+        <div class="attempts-section">
+            <h3 class="attempts-title">Tu vois cette page.<br/>Tu ne vois pas les 3 semaines derrière.</h3>
+            <p class="attempts-subtitle">Chaque pixel, chaque interaction — c'est des soirées. Du travail. Des essais jetés. Tout invisible.</p>
+        </div>
+
+        <!-- JOURNEY CURVE -->
+        <div class="journey-wrapper">
+            <svg style="position: absolute; width: 100%; height: 100%;" viewBox="0 0 800 450" preserveAspectRatio="none">
+                <defs>
+                    <linearGradient id="journeyGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" style="stop-color:#ff4d4d;stop-opacity:1" />
+                        <stop offset="50%" style="stop-color:#ff4d4d;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#4dff88;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+
+                <path style="fill:none; stroke:url(#journeyGradient); stroke-width:4px; stroke-linecap:round; stroke-linejoin:round;"
+                      d="M 40 180 C 101 192.5 99 270 179 276 Q 215 293 219 341 C 231 275.5 236 326 287 276 C 326.5 201.5 351 252 431 358 C 535 435 438 289 597 282 C 682 234 568 202 702 206 C 763 155 711 251 793 18" />
+
+                <polygon points="793,10 780,25 800,20" fill="#4dff88" />
+            </svg>
+
+            <!-- Point 1 : Départ -->
+            <div class="journey-hotspot jh-1">
+                <div class="journey-label">Tu penses pouvoir<br>le faire</div>
+                <div class="journey-dot"></div>
             </div>
-            <div class="failure-item">
-                <div class="failure-circle">
-                    <i class="ri-close-line"></i>
-                </div>
+
+            <!-- Point 2 : Premier obstacle -->
+            <div class="journey-hotspot jh-2">
+                <div class="journey-connector"></div>
+                <div class="journey-dot"></div>
+                <div class="journey-label">Tu découvres<br>la difficulté</div>
             </div>
-            <div class="failure-item">
-                <div class="failure-circle">
-                    <i class="ri-close-line"></i>
-                </div>
+
+            <!-- Point 3 : Récupération partielle -->
+            <div class="journey-hotspot jh-3">
+                <div class="journey-label">Tu trouves<br>ton approche</div>
+                <div class="journey-connector"></div>
+                <div class="journey-dot"></div>
             </div>
-            <div class="failure-item">
-                <div class="failure-circle">
-                    <i class="ri-close-line"></i>
-                </div>
+
+            <!-- Point 4 : Le fond -->
+            <div class="journey-hotspot jh-4">
+                <div class="journey-connector"></div>
+                <div class="journey-dot"></div>
+                <div class="journey-label">Sans témoin,<br>sans récompense</div>
             </div>
-            <div class="failure-item">
-                <div class="failure-circle">
-                    <i class="ri-close-line"></i>
-                </div>
+
+            <!-- Point 5 : Remontée -->
+            <div class="journey-hotspot jh-5">
+                <div class="journey-connector"></div>
+                <div class="journey-dot"></div>
+                <div class="journey-label">Tu commences<br>à voir le progrès</div>
             </div>
-            <div class="failure-item">
-                <div class="failure-circle">
-                    <i class="ri-close-line"></i>
-                </div>
+
+            <!-- Point 6 : Victoire -->
+            <div class="journey-hotspot jh-6">
+                <div class="journey-label">T'as tenu bon</div>
+                <div class="journey-dot"></div>
             </div>
-            <div class="failure-item">
-                <div class="failure-circle">
-                    <i class="ri-close-line"></i>
-                </div>
-            </div>
-            <div class="failure-item">
-                <div class="failure-circle">
-                    <i class="ri-close-line"></i>
-                </div>
-            </div>
-            <div class="failure-item">
-                <div class="failure-circle">
-                    <i class="ri-close-line"></i>
-                </div>
-            </div>
-            <div class="success-item">
-                <div class="success-circle">
-                    <i class="ri-check-line"></i>
-                </div>
-            </div>
+        </div>
+
+        <!-- ATTEMPTS FOOTER -->
+        <div class="attempts-footer">
+            <p class="attempts-insight">111 essais. 3 semaines d'effort. 0 visible.</p>
+            <p class="attempts-microcopy">Tu vois un design. Tu ne vois pas les soirées. Tu ne vois pas les versions jetées. Tu ne vois que le 1 qui a marché.</p>
         </div>
 
         <!-- FOOTER MESSAGE -->
