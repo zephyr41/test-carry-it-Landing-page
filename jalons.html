@@ -19,6 +19,10 @@
             --border: #333333;
             --radius: 16px;
             --font-stack: 'Inter', sans-serif;
+
+            /* Briefing SVG variables */
+            --text-p: #FFFDF6;
+            --text-s: #86868B;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
@@ -28,7 +32,7 @@
             color: var(--text-primary);
             font-family: var(--font-stack);
             min-height: 100vh;
-            display: flex; flex-direction: column;
+            display: flex; flex-direction: column; align-items: center;
         }
 
         /* NAVBAR */
@@ -576,15 +580,27 @@
             50% { transform: translateX(-50%) translateY(8px); }
         }
 
-        /* BRIEFING SECTION */
-        .briefing-section {
-            width: 100%;
-            padding: 60px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        /* COSMIC BACKGROUND FOR BRIEFING */
+        .cosmic-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background:
+                radial-gradient(circle at 10% 20%, rgba(238, 68, 8, 0.04) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(10, 42, 83, 0.12) 0%, transparent 50%);
+            filter: blur(80px);
         }
 
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* BRIEFING SECTION */
         .briefing-shell {
             width: 100%;
             max-width: 1000px;
@@ -592,6 +608,8 @@
             display: flex;
             flex-direction: column;
             gap: 40px;
+            margin: 0 auto;
+            padding: 0 20px;
         }
 
         .header-content {
@@ -610,7 +628,8 @@
             display: block;
         }
 
-        .header-content h1 {
+        h1 {
+            font-family: 'Rifton', sans-serif;
             font-size: clamp(32px, 6vw, 60px);
             line-height: 1;
             letter-spacing: -1.5px;
@@ -619,15 +638,14 @@
 
         .mission-desc {
             font-size: 17px;
-            color: var(--text-secondary);
+            color: #86868B;
             line-height: 1.6;
+            max-width: 750px;
+            margin: 0 auto;
             font-weight: 400;
         }
 
-        .mission-desc strong {
-            color: var(--text-primary);
-            font-weight: 600;
-        }
+        .mission-desc strong { color: #FFFDF6; font-weight: 600; }
 
         .navigation-map {
             position: relative;
@@ -636,6 +654,7 @@
             border-radius: 20px;
             padding: 60px 40px 40px;
             backdrop-filter: blur(25px);
+            overflow: visible;
         }
 
         .map-svg {
@@ -645,13 +664,13 @@
         }
 
         .trajectory-path {
-            stroke: var(--accent);
+            stroke: #EE4408;
             stroke-width: 2.5;
             fill: none;
             stroke-dasharray: 2500;
             stroke-dashoffset: 2500;
             animation: drawTrajectory 4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-            filter: drop-shadow(0 0 10px var(--accent-glow));
+            filter: drop-shadow(0 0 10px rgba(238, 68, 8, 0.4));
         }
 
         .expectation-path {
@@ -661,36 +680,49 @@
             fill: none;
         }
 
-        @keyframes drawTrajectory {
-            to { stroke-dashoffset: 0; }
-        }
+        @keyframes drawTrajectory { to { stroke-dashoffset: 0; } }
 
         .milestone-point {
-            fill: var(--bg-primary);
+            fill: #020203;
             stroke: rgba(255,255,255,0.6);
             stroke-width: 2;
         }
 
         .milestone-point.final {
+            fill: #EE4408;
+            stroke: #EE4408;
+            filter: drop-shadow(0 0 12px #EE4408);
+        }
+
+        .svg-label {
+            font-size: 10px;
+            font-weight: 800;
+            fill: var(--text-s);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .svg-title {
+            font-size: 13px;
+            font-weight: 700;
+            fill: var(--text-p);
+        }
+
+        .svg-desc {
+            font-size: 11px;
+            font-weight: 400;
+            fill: var(--text-s);
+        }
+
+        .svg-accent {
             fill: var(--accent);
-            stroke: var(--accent);
-            filter: drop-shadow(0 0 12px var(--accent));
+            font-weight: 800;
         }
 
-        .annotation {
-            position: absolute;
-            font-size: 12px;
-            font-weight: 500;
-            color: var(--text-secondary);
-            max-width: 160px;
-            line-height: 1.4;
-            background: rgba(0,0,0,0.4);
-            padding: 8px;
-            border-radius: 4px;
+        .leader-line {
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-width: 1;
         }
-
-        .annotation strong { color: var(--text-primary); display: block; margin-bottom: 2px; }
-        .annotation .highlight { color: var(--accent); font-weight: 800; }
 
         .briefing-footer {
             display: flex;
@@ -701,7 +733,7 @@
 
         .quit-check {
             font-size: 14px;
-            color: var(--text-secondary);
+            color: #86868B;
             text-align: center;
             max-width: 600px;
             line-height: 1.6;
@@ -709,10 +741,8 @@
             border-top: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        .quit-check strong { color: var(--text-primary); }
-
         .btn-launch {
-            background: var(--text-primary);
+            background: #FFFDF6;
             color: #000;
             border: none;
             padding: 20px 60px;
@@ -726,7 +756,7 @@
         }
 
         .btn-launch:hover {
-            background: var(--accent);
+            background: #EE4408;
             color: white;
             transform: translateY(-2px);
         }
@@ -739,6 +769,29 @@
         @keyframes revealUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        .annotation {
+            position: absolute;
+            font-size: 12px;
+            font-weight: 500;
+            color: #86868B;
+            max-width: 160px;
+            line-height: 1.4;
+            background: rgba(0,0,0,0.4);
+            padding: 8px;
+            border-radius: 4px;
+        }
+
+        .annotation strong {
+            color: #FFFDF6;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .annotation .highlight {
+            color: #EE4408;
+            font-weight: 800;
         }
 
         @media (max-width: 768px) {
@@ -798,69 +851,90 @@
         </div>
     </div>
 
-    <!-- BRIEFING SECTION -->
-    <div class="briefing-section">
-        <div class="briefing-shell">
+    <div class="briefing-shell">
 
-            <header class="header-content reveal">
-                <span class="eyebrow">Engagement de Mission</span>
-                <h1>Le temps n'est pas le sujet.</h1>
-                <p class="mission-desc">
-                    Là, tu as l'inertie et la motivation. Mais <strong>94% des gens abandonnent</strong> après 3 ou 4 mois. La différence se fera dans ta capacité à <strong>travailler sans aucun résultat visible</strong>, au minimum 5 à 10h par semaine (10h conseillées).
-                </p>
-            </header>
+        <header class="header-content reveal">
+            <span class="eyebrow">Engagement de Trajectoire</span>
+            <h1>Le temps n'est pas le sujet.</h1>
+            <p class="mission-desc">
+                Là, tu as l'inertie et la motivation. Mais <strong>94% des gens abandonnent</strong> au 4e mois car ils attendent des preuves que le terrain ne peut pas encore fournir.
+            </p>
+        </header>
 
-            <main class="navigation-map reveal" style="animation-delay: 0.2s;">
-                <svg class="map-svg" viewBox="0 0 1000 320">
-                    <!-- Zone de filtrage resserrée -->
-                    <rect x="50" y="20" width="100" height="280" fill="rgba(238, 68, 8, 0.05)" rx="4" />
+        <main class="navigation-map reveal" style="animation-delay: 0.2s;">
+            <svg class="map-svg" viewBox="0 0 1000 400">
+                <!-- Zone de Tri (4 mois / 94%) -->
+                <rect x="50" y="20" width="110" height="380" fill="rgba(238, 68, 8, 0.05)" rx="4" />
+                <text x="55" y="45" class="svg-label" style="fill: var(--accent); font-size: 9px;">ZONE DE TRI (MOIS 1-4)</text>
+                <text x="55" y="60" class="svg-accent" style="font-size: 11px;">94% D'ABANDON</text>
 
-                    <!-- Illusion -->
-                    <path class="expectation-path" d="M 50 280 L 950 40" />
+                <!-- Imagination (Ligne pointillée) -->
+                <path id="imaginationPath" class="expectation-path" d="M 50 350 L 950 60" />
+                <text x="820" y="85" class="svg-label" style="opacity: 0.4;">L'Imagination</text>
 
-                    <!-- Trajectoire Réelle -->
-                    <path class="trajectory-path" d="
-                        M 50 280
-                        L 80 270 L 140 300 L 250 305 L 350 300
-                        C 450 300, 500 280, 600 220
-                        L 680 240 L 750 180 L 820 190
-                        L 950 40"
-                    />
+                <!-- Trajectoire Réelle -->
+                <path id="realPath" class="trajectory-path" d="
+                    M 50 360
+                    L 90 350
+                    L 140 375
+                    L 250 370
+                    L 350 365
+                    L 450 372
+                    L 580 320
+                    L 660 345
+                    L 750 205
+                    L 840 225
+                    L 950 60"
+                />
 
-                    <!-- Jalons -->
-                    <circle class="milestone-point" cx="140" cy="300" r="4" />
-                    <circle class="milestone-point" cx="250" cy="305" r="4" />
-                    <circle class="milestone-point" cx="350" cy="300" r="4" />
-                    <circle class="milestone-point" cx="550" cy="250" r="4" />
-                    <circle class="milestone-point" cx="750" cy="180" r="6" style="stroke:var(--accent);" /> <!-- Jalon 5 Bascule -->
-                    <circle class="milestone-point final" cx="950" cy="40" r="8" />
-                </svg>
+                <!-- ANNOTATIONS -->
 
-                <!-- Annotations contextuelles minimales -->
-                <div class="annotation" style="top: 65%; left: 3%;">
-                    <strong>Le Grand Tri</strong>
-                    94% s'arrêtent au 4e mois par manque de preuves.
-                </div>
+                <!-- Annotation 1 : Effort Invisible -->
+                <g transform="translate(180, 240)">
+                    <text class="svg-title" text-anchor="middle">L'Effort Invisible</text>
+                    <text y="18" class="svg-desc" text-anchor="middle">Sans preuves immédiates,</text>
+                    <text y="34" class="svg-desc" text-anchor="middle">la majorité s'arrête ici.</text>
+                    <line class="leader-line" x1="0" y1="45" x2="0" y2="135" />
+                </g>
 
-                <div class="annotation" style="bottom: 5%; left: 36%; width: 300px; text-align: center;">
-                    <strong>Points de Contrôle</strong>
-                    Ce sont des boussoles. Si ça prend <span class="highlight">2x ou 3x plus de temps</span>, on s'en branle. L'important est de garder la direction.
-                </div>
+                <!-- Annotation 2 : Jalons -->
+                <g transform="translate(450, 110)">
+                    <text class="svg-title" text-anchor="middle">Jalons : Points de Contrôle</text>
+                    <text y="18" class="svg-desc" text-anchor="middle">Savoir si tu recalibres ou si tu continues.</text>
+                    <text y="34" class="svg-desc" text-anchor="middle">6 mois au lieu de 3 ? C'est normal.</text>
+                    <text y="54" class="svg-accent" text-anchor="middle">C'est l'Aléa de Parcours.</text>
+                    <line class="leader-line" x1="0" y1="65" x2="0" y2="260" />
+                </g>
 
-                <div class="annotation" style="top: 15%; left: 75%;">
-                    <strong>Vrais Résultats</strong>
-                    Ton travail invisible paye enfin après des années.
-                </div>
-            </main>
+                <!-- POINTS DE JALONS (Uniformisés) -->
+                <circle class="milestone-point" cx="140" cy="375" r="4.5" />
+                <circle class="milestone-point" cx="250" cy="370" r="4.5" />
+                <circle class="milestone-point" cx="350" cy="365" r="4.5" />
+                <circle class="milestone-point" cx="450" cy="372" r="4.5" />
+                <circle class="milestone-point" cx="750" cy="205" r="4.5" />
 
-            <footer class="briefing-footer reveal" style="animation-delay: 0.4s;">
-                <div class="quit-check">
-                    Pose-toi une seule question : <strong>"Si j'avais les résultats aujourd'hui, est-ce que j'arrêterais ?"</strong>. Si la réponse est non, le temps n'a aucune importance. Continue à porter ta mission.
-                </div>
-                <button class="btn-launch">Accepter le chaos et progresser</button>
-            </footer>
+                <!-- LABELS JALONS -->
+                <text x="140" y="398" text-anchor="middle" class="svg-label">JALON 1</text>
+                <text x="250" y="393" text-anchor="middle" class="svg-label">JALON 2</text>
+                <text x="350" y="388" text-anchor="middle" class="svg-label">JALON 3</text>
+                <text x="450" y="395" text-anchor="middle" class="svg-label">JALON 4</text>
+                <!-- JALON 5 : Maintenant au dessus du point (y < 205) et couleur standard -->
+                <text x="750" y="185" text-anchor="middle" class="svg-label">JALON 5 (50%)</text>
 
-        </div>
+                <!-- FINAL -->
+                <circle class="milestone-point final" cx="950" cy="60" r="8" />
+                <text x="820" y="40" class="svg-label svg-accent" style="font-size: 13px; font-weight: 900;">AMBITION ATTEINTE</text>
+            </svg>
+        </main>
+
+        <footer class="briefing-footer reveal" style="animation-delay: 0.4s;">
+            <div class="quit-check">
+                Pose-toi une seule question : <strong>"Si j'avais les résultats aujourd'hui, est-ce que j'arrêterais ?"</strong>.<br>
+                Si la réponse est non, alors le temps n'a aucune importance. Continue à porter ta mission.
+            </div>
+            <button class="btn-launch">Accepter le chaos et progresser</button>
+        </footer>
+
     </div>
 
     <script>
