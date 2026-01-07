@@ -871,57 +871,6 @@
             }
         }
 
-        @keyframes oliveFlow {
-            0%, 100% {
-                background:
-                    radial-gradient(520px 300px at 5% 8%, rgba(64, 64, 37, 0.03), transparent 92%),
-                    radial-gradient(500px 290px at 10% 18%, rgba(64, 64, 37, 0.03), transparent 90%),
-                    radial-gradient(500px 290px at 15% 28%, rgba(64, 64, 37, 0.10), transparent 80%),
-                    radial-gradient(540px 320px at 35% 40%, rgba(64, 64, 37, 0.2), transparent 65%),
-                    radial-gradient(540px 320px at 60% 48%, rgba(64, 64, 37, 0.2), transparent 65%),
-                    radial-gradient(540px 320px at 65% 60%, rgba(64, 64, 37, 0.2), transparent 65%),
-                    radial-gradient(500px 290px at 55% 70%, rgba(64, 64, 37, 0.10), transparent 80%),
-                    radial-gradient(500px 290px at 40% 80%, rgba(64, 64, 37, 0.05), transparent 86%),
-                    radial-gradient(520px 300px at 15% 87%, rgba(64, 64, 37, 0.05), transparent 88%);
-            }
-            50% {
-                background:
-                    radial-gradient(525px 305px at 4% 9%, rgba(64, 64, 37, 0.03), transparent 92%),
-                    radial-gradient(505px 295px at 9% 19%, rgba(64, 64, 37, 0.03), transparent 90%),
-                    radial-gradient(505px 295px at 14% 29%, rgba(64, 64, 37, 0.10), transparent 80%),
-                    radial-gradient(545px 325px at 34% 41%, rgba(64, 64, 37, 0.2), transparent 65%),
-                    radial-gradient(545px 325px at 59% 49%, rgba(64, 64, 37, 0.2), transparent 65%),
-                    radial-gradient(545px 325px at 64% 61%, rgba(64, 64, 37, 0.2), transparent 65%),
-                    radial-gradient(505px 295px at 54% 71%, rgba(64, 64, 37, 0.10), transparent 80%),
-                    radial-gradient(505px 295px at 39% 81%, rgba(64, 64, 37, 0.05), transparent 86%),
-                    radial-gradient(525px 305px at 14% 88%, rgba(64, 64, 37, 0.05), transparent 88%);
-            }
-        }
-
-        @keyframes redFlow {
-            0%, 100% {
-                background:
-                    radial-gradient(520px 310px at 15% 0%, rgba(163, 21, 13, 0.02), transparent 95%),
-                    radial-gradient(450px 270px at 15% 15%, rgba(163, 21, 13, 0.05), transparent 92%),
-                    radial-gradient(470px 290px at 20% 30%, rgba(163, 21, 13, 0.05), transparent 90%),
-                    radial-gradient(500px 310px at 25% 45%, rgba(163, 21, 13, 0.12), transparent 85%),
-                    radial-gradient(520px 320px at 30% 60%, rgba(163, 21, 13, 0.2), transparent 75%),
-                    radial-gradient(480px 290px at 22% 75%, rgba(163, 21, 13, 0.12), transparent 85%),
-                    radial-gradient(450px 270px at 18% 88%, rgba(163, 21, 13, 0.05), transparent 92%),
-                    radial-gradient(520px 310px at 15% 100%, rgba(163, 21, 13, 0.01), transparent 97%);
-            }
-            50% {
-                background:
-                    radial-gradient(525px 315px at 16% 1%, rgba(163, 21, 13, 0.02), transparent 95%),
-                    radial-gradient(455px 275px at 16% 16%, rgba(163, 21, 13, 0.05), transparent 92%),
-                    radial-gradient(475px 295px at 21% 31%, rgba(163, 21, 13, 0.05), transparent 90%),
-                    radial-gradient(505px 315px at 26% 46%, rgba(163, 21, 13, 0.12), transparent 85%),
-                    radial-gradient(525px 325px at 31% 61%, rgba(163, 21, 13, 0.2), transparent 75%),
-                    radial-gradient(485px 295px at 23% 76%, rgba(163, 21, 13, 0.12), transparent 85%),
-                    radial-gradient(455px 275px at 19% 89%, rgba(163, 21, 13, 0.05), transparent 92%),
-                    radial-gradient(525px 315px at 16% 101%, rgba(163, 21, 13, 0.01), transparent 97%);
-            }
-        }
 
         .annotation {
             position: absolute;
@@ -1005,23 +954,6 @@
             animation: orangeFlow 6s ease-in-out infinite;
         }
 
-        .glow-olive {
-            height: 1200px;
-            top: 1600px;
-        }
-
-        .glow-olive::before {
-            animation: oliveFlow 6s ease-in-out infinite;
-        }
-
-        .glow-red {
-            height: 1200px;
-            top: 4400px;
-        }
-
-        .glow-red::before {
-            animation: redFlow 6s ease-in-out infinite;
-        }
 
         @media (max-width: 768px) {
             .intro-section {
@@ -1454,8 +1386,6 @@
     <!-- GLOW SECTIONS -->
     <div class="middle-section"></div>
     <div class="glow-section glow-orange"></div>
-    <div class="glow-section glow-olive"></div>
-    <div class="glow-section glow-red"></div>
 
 </body>
 </html>
