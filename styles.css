@@ -2403,7 +2403,7 @@
         }
 
         .carousel-wrapper {
-            overflow: visible;
+            overflow: hidden;
             width: 100%;
         }
 
