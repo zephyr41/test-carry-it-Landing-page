@@ -2399,7 +2399,7 @@
         .carousel-container {
             position: relative;
             width: 100%;
-            overflow: visible;
+            overflow: hidden;
         }
 
         .carousel-wrapper {
