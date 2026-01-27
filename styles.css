@@ -2426,7 +2426,7 @@
         }
 
         .carousel-nav {
-            display: none;
+            display: flex;
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
@@ -2465,7 +2465,7 @@
         }
 
         .carousel-dots {
-            display: none;
+            display: flex;
             justify-content: center;
             gap: 8px;
             margin-top: 24px;
