@@ -56,7 +56,7 @@
         /* CONTAINER */
         .main-container {
             margin-top: 25px;
-            padding: 0 20px 100px 20px;
+            padding: 0 20px 20px 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -147,6 +147,59 @@
             background: var(--accent);
             border-color: var(--accent);
             box-shadow: 0 0 10px var(--accent-glow), 0 0 0 6px var(--bg-primary);
+        }
+
+        /* CONNECTEUR DE TRANSITION */
+        .timeline-connector {
+            position: relative;
+            width: 100%;
+            height: 150px;
+            margin: -60px auto 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2;
+        }
+
+        .timeline-connector::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            transform: translateX(-50%);
+            background: linear-gradient(180deg,
+                var(--accent) 0%,
+                rgba(255, 77, 0, 0.5) 30%,
+                rgba(255, 77, 0, 0.2) 60%,
+                transparent 100%);
+            opacity: 0.8;
+        }
+
+        .timeline-connector::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            box-shadow: 0 0 12px var(--accent-glow);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+                transform: translateX(-50%) scale(1);
+            }
+            50% {
+                opacity: 0.6;
+                transform: translateX(-50%) scale(1.2);
+            }
         }
 
         /* CARTE */
@@ -636,42 +689,50 @@
         .briefing-shell {
             width: 100%;
             max-width: 1000px;
+            min-height: auto;
             z-index: 5;
             display: flex;
             flex-direction: column;
-            gap: 40px;
+            gap: 28px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 35px 20px 35px;
+            justify-content: flex-start;
+            align-items: center;
         }
 
         .header-content {
             text-align: center;
             max-width: 800px;
             margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
         .eyebrow {
-            font-size: 10px;
+            font-size: 9px;
             font-weight: 700;
-            letter-spacing: 4px;
+            letter-spacing: 3px;
             color: var(--accent);
             text-transform: uppercase;
-            margin-bottom: 16px;
+            margin-bottom: 0;
             display: block;
+            opacity: 0.9;
+            text-shadow: 0 0 8px rgba(255, 77, 0, 0.3);
         }
 
         h1 {
             font-family: 'Rifton', sans-serif;
-            font-size: clamp(32px, 6vw, 60px);
+            font-size: clamp(32px, 7vw, 56px);
             line-height: 1;
             letter-spacing: -1.5px;
-            margin-bottom: 24px;
+            margin-bottom: 16px;
         }
 
         .mission-desc {
             font-size: 17px;
             color: #86868B;
-            line-height: 1.6;
+            line-height: 1.7;
             max-width: 750px;
             margin: 0 auto;
             font-weight: 400;
@@ -684,7 +745,7 @@
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 20px;
-            padding: 60px 40px 40px;
+            padding: 50px 45px 45px;
             backdrop-filter: blur(25px);
             overflow: visible;
         }
@@ -760,16 +821,16 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 24px;
+            gap: 16px;
         }
 
         .quit-check {
-            font-size: 14px;
+            font-size: 12px;
             color: #86868B;
             text-align: center;
             max-width: 600px;
-            line-height: 1.6;
-            padding-top: 20px;
+            line-height: 1.4;
+            padding-top: 12px;
             border-top: 1px solid rgba(255, 255, 255, 0.08);
         }
 
@@ -777,12 +838,12 @@
             background: #FFFDF6;
             color: #000;
             border: none;
-            padding: 20px 60px;
+            padding: 14px 40px;
             border-radius: 100px;
             font-weight: 800;
-            font-size: 16px;
+            font-size: 13px;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.8px;
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
@@ -1012,22 +1073,26 @@
         </div>
     </div>
 
+    <!-- CONNECTEUR DE TRANSITION -->
+    <div class="timeline-connector"></div>
+
     <div class="briefing-shell">
 
         <header class="header-content reveal">
             <span class="eyebrow">Engagement de Trajectoire</span>
-            <h1>Le temps n'est pas le sujet.</h1>
+            <h1>La Réalité</h1>
             <p class="mission-desc">
-                Là, tu as l'inertie et la motivation. Mais <strong>94% des gens abandonnent</strong> au 4e mois car ils attendent des preuves que le terrain ne peut pas encore fournir.
-            </p>
-        </header>
+    Près de <strong>9 personnes sur 10</strong> n’atteignent pas leurs objectifs.
+Elles exigent des preuves immédiates là où il n’y a encore que des fondations.
+</p>
+            </header>
 
         <main class="navigation-map reveal" style="animation-delay: 0.2s;">
             <svg class="map-svg" viewBox="0 0 1000 400">
                 <!-- Zone de Tri (4 mois / 94%) -->
                 <rect x="50" y="20" width="110" height="380" fill="rgba(238, 68, 8, 0.05)" rx="4" />
                 <text x="55" y="45" class="svg-label" style="fill: var(--accent); font-size: 9px;">ZONE DE TRI (MOIS 1-4)</text>
-                <text x="55" y="60" class="svg-accent" style="font-size: 11px;">94% D'ABANDON</text>
+                <text x="55" y="60" class="svg-accent" style="font-size: 11px;">92% D'ABANDON</text>
 
                 <!-- Imagination (Ligne pointillée) -->
                 <path id="imaginationPath" class="expectation-path" d="M 50 350 L 950 60" />
@@ -1090,10 +1155,9 @@
 
         <footer class="briefing-footer reveal" style="animation-delay: 0.4s;">
             <div class="quit-check">
-                Pose-toi une seule question : <strong>"Si j'avais les résultats aujourd'hui, est-ce que j'arrêterais ?"</strong>.<br>
-                Si la réponse est non, alors le temps n'a aucune importance. Continue à porter ta mission.
+                L’app qui t’amène là où tu veux abandonner… et qui te montre que c’est là que tout commence.
             </div>
-            <button class="btn-launch">Accepter le chaos et progresser</button>
+            <button class="btn-launch" onclick="window.location.href='dashboard.html'">Accepter</button>
         </footer>
 
     </div>

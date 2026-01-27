@@ -370,6 +370,7 @@ Temporel : [JJ mois AAAA]`;
         // Gestion des objectifs multiples
         let allObjectifs = [];
         let currentCarouselIndex = 0;
+        const useListLayout = false;
 
         function loadAllObjectifs() {
             const stored = localStorage.getItem('carryItAllObjectifs');
@@ -472,6 +473,19 @@ Temporel : [JJ mois AAAA]`;
                 const item = document.createElement('div');
                 item.className = 'carousel-item';
                 item.innerHTML = `
+                    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin: 0 0 16px 0;">
+                        <div style="font-size: 12px; font-weight: 700; color: #8E8E93; text-transform: uppercase; letter-spacing: 0.6px; font-family: 'Inter', sans-serif;">
+                            Objectif ${index + 1}/${allObjectifs.length}
+                        </div>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <button onclick="openAddMeasureModal(${index})" style="height: 44px; padding: 0 16px; background: #0A84FF; border: 1px solid #0A84FF; color: #FFF; border-radius: 12px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; font-family: 'Inter', sans-serif;">
+                                + Ajouter une mesure
+                            </button>
+                            <a href="jalons.html" style="height: 44px; padding: 0 16px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.2); color: #A1A1A6; border-radius: 12px; font-size: 13px; font-weight: 600; text-decoration: none; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; flex-shrink: 0; font-family: 'Inter', sans-serif;">
+                                Gérer jalons
+                            </a>
+                        </div>
+                    </div>
                     <div class="carousel-cards-grid">
                         <!-- CARTE 1: SMART -->
                         <div class="smart-card" id="card-${index}" style="min-height: 500px; background: #111113; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.35);">
@@ -486,7 +500,7 @@ Temporel : [JJ mois AAAA]`;
                                             <circle cx="12" cy="12" r="10" stroke-width="2"></circle>
                                             <path stroke-linecap="round" stroke-width="2" d="M12 6v6l4 2"></path>
                                         </svg>
-                                        <span>Deadline: ${objectif.temporel || 'Non défini'}</span>
+                                        <span>Date cible: ${objectif.temporel || 'Non défini'}</span>
                                     </div>
                                 </div>
                                 <div style="display: flex; gap: 8px;">
@@ -545,13 +559,13 @@ Temporel : [JJ mois AAAA]`;
                         </div>
 
                         <!-- CARTE 2: KPI -->
-                        <div style="background: #111113; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.35); display: flex; flex-direction: column; overflow: hidden; min-height: 500px;">
+                        <div style="background: #111113; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.35); display: flex; flex-direction: column; overflow: hidden; min-height: 420px;">
                             <div style="padding: 24px; border-bottom: 1px solid rgba(255, 255, 255, 0.12); display: flex; justify-content: space-between; align-items: flex-start; gap: 16px;">
                                 <div>
-                                    <h3 style="font-size: 16px; font-weight: 600; color: #FFFFFF; font-family: 'Inter', sans-serif; margin: 0 0 8px 0;">Suivi du KPI</h3>
-                                    <p style="font-size: 13px; color: #A8A8A8; font-family: 'Inter', sans-serif; margin: 0; font-weight: 500;">${extractTargetValue(objectif.mesurable) || '?'} ${extractKPI(objectif.mesurable) || ''}</p>
+                                    <h3 style="font-size: 16px; font-weight: 700; color: #FFFFFF; font-family: 'Inter', sans-serif; margin: 0 0 6px 0;">Projet: ${objectif.titre || 'Sans titre'}</h3>
+                                    <p style="font-size: 13px; color: #A8A8A8; font-family: 'Inter', sans-serif; margin: 0; font-weight: 500;">KPI: ${extractKPI(objectif.mesurable) || 'Indicateur'}</p>
                                 </div>
-                                <button onclick="openAddMeasureModal(${index})" style="background: rgba(238, 68, 8, 0.1); border: 1px solid #EE4408; color: #EE4408; padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; font-family: 'Inter', sans-serif; flex-shrink: 0;" onmouseover="this.style.background='rgba(238, 68, 8, 0.2)'" onmouseout="this.style.background='rgba(238, 68, 8, 0.1)'">
+                                <button onclick="openAddMeasureModal(${index})" style="height: 44px; padding: 0 16px; background: #0A84FF; border: 1px solid #0A84FF; color: #FFF; border-radius: 12px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; font-family: 'Inter', sans-serif; flex-shrink: 0;">
                                     + Ajouter
                                 </button>
                             </div>
@@ -570,8 +584,8 @@ Temporel : [JJ mois AAAA]`;
                                             ${objectif.jalons.filter(j => j.statut === 'completed').length}/${objectif.jalons.length} jalons complétés
                                         </p>
                                     </div>
-                                    <a href="jalons.html" style="background: rgba(238, 68, 8, 0.1); border: 1px solid rgba(238, 68, 8, 0.5); color: #EE4408; padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; text-decoration: none; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px; white-space: nowrap; flex-shrink: 0;" onmouseover="this.style.background='rgba(238, 68, 8, 0.2)'" onmouseout="this.style.background='rgba(238, 68, 8, 0.1)'">
-                                        ✏️ Gérer
+                                    <a href="jalons.html" style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.2); color: #A1A1A6; padding: 8px 12px; border-radius: 10px; font-size: 12px; font-weight: 600; text-decoration: none; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px; white-space: nowrap; flex-shrink: 0;">
+                                        Gérer
                                     </a>
                                 </div>
 
@@ -587,11 +601,12 @@ Temporel : [JJ mois AAAA]`;
                 // Initialiser le graphique après que l'élément soit ajouté au DOM
                 setTimeout(() => initKPIChart(index, objectif), 0);
 
-                // Créer le dot
-                const dot = document.createElement('div');
-                dot.className = `carousel-dot ${index === currentCarouselIndex ? 'active' : ''}`;
-                dot.onclick = () => goToCarouselIndex(index);
-                dotsContainer.appendChild(dot);
+                if (!useListLayout) {
+                    const dot = document.createElement('div');
+                    dot.className = `carousel-dot ${index === currentCarouselIndex ? 'active' : ''}`;
+                    dot.onclick = () => goToCarouselIndex(index);
+                    dotsContainer.appendChild(dot);
+                }
             });
 
             updateCarouselPosition();
@@ -599,6 +614,7 @@ Temporel : [JJ mois AAAA]`;
         }
 
         function navigateCarousel(direction) {
+            if (useListLayout) return;
             const newIndex = currentCarouselIndex + direction;
             if (newIndex >= 0 && newIndex < allObjectifs.length) {
                 currentCarouselIndex = newIndex;
@@ -609,6 +625,7 @@ Temporel : [JJ mois AAAA]`;
         }
 
         function goToCarouselIndex(index) {
+            if (useListLayout) return;
             currentCarouselIndex = index;
             updateCarouselPosition();
             updateCarouselNav();
@@ -616,12 +633,14 @@ Temporel : [JJ mois AAAA]`;
         }
 
         function updateCarouselPosition() {
+            if (useListLayout) return;
             const track = document.getElementById('carouselTrack');
             const offset = -currentCarouselIndex * 100;
             track.style.transform = `translateX(${offset}%)`;
         }
 
         function updateCarouselNav() {
+            if (useListLayout) return;
             const prevBtn = document.getElementById('carouselPrev');
             const nextBtn = document.getElementById('carouselNext');
 
@@ -630,6 +649,7 @@ Temporel : [JJ mois AAAA]`;
         }
 
         function updateCarouselDots() {
+            if (useListLayout) return;
             const dots = document.querySelectorAll('.carousel-dot');
             dots.forEach((dot, index) => {
                 dot.classList.toggle('active', index === currentCarouselIndex);
@@ -799,6 +819,9 @@ Temporel : [JJ mois AAAA]`;
                     </svg>
                     <p style="color: #FFFDF6; font-size: 15px; font-weight: 600; font-family: 'Inter', sans-serif; margin: 0 0 6px 0;">Aucune mesure enregistrée</p>
                     <p style="color: #929292; font-size: 13px; font-family: 'Inter', sans-serif; margin: 0; line-height: 1.4;">Commencez par ajouter votre première mesure pour suivre votre progression</p>
+                    <button onclick="openAddMeasureModal(${index})" style="margin-top: 18px; height: 44px; padding: 0 18px; background: #0A84FF; border: 1px solid #0A84FF; color: white; border-radius: 12px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif;">
+                        + Ajouter une mesure
+                    </button>
                 </div>
             `;
         }
@@ -1362,35 +1385,39 @@ Temporel : [JJ mois AAAA]`;
                                     📅 ${formatDateJalonFR(jalon.date)}
                                 </span>
                                 ${!isCompleted && daysRemaining > 0 ? `
-                                    <span style="font-size: 12px; color: ${daysRemaining < 30 ? '#EE4408' : '#929292'};">
+                                    <span style="font-size: 12px; color: ${daysRemaining < 30 ? '#FF9F0A' : '#8E8E93'};">
                                         ${daysRemaining < 30 ? '⚠️' : '⏱️'} Dans ${daysRemaining} jours
                                     </span>
                                 ` : ''}
                                 ${isPast && !isCompleted ? `
-                                    <span style="font-size: 12px; color: #EE4408; font-weight: 600;">
+                                    <span style="font-size: 12px; color: #FF453A; font-weight: 600;">
                                         ⚠️ En retard
                                     </span>
                                 ` : ''}
                             </div>
 
-                            <p style="font-size: 12px; color: #EE4408; font-weight: 600; margin: 0 0 12px 0;">
+                            <p style="font-size: 12px; color: #8E8E93; font-weight: 600; margin: 0 0 12px 0;">
                                 ${jalon.progression}% de l'objectif
                             </p>
 
                             ${!isCompleted ? `
-                                <button onclick="completeJalon(${objectifIndex}, ${jalonIndex})" style="
-                                    background: rgba(238, 68, 8, 0.1);
-                                    border: 1px solid #EE4408;
-                                    color: #EE4408;
-                                    padding: 8px 16px;
-                                    border-radius: 8px;
-                                    font-size: 12px;
-                                    font-weight: 600;
+                                <button onclick="completeJalon(${objectifIndex}, ${jalonIndex})" title="Marquer comme complété" style="
+                                    width: 44px;
+                                    height: 44px;
+                                    background: rgba(48, 209, 88, 0.12);
+                                    border: 1px solid #30D158;
+                                    color: #30D158;
+                                    border-radius: 12px;
+                                    font-size: 16px;
+                                    font-weight: 700;
                                     cursor: pointer;
                                     transition: all 0.2s;
-                                " onmouseover="this.style.background='#EE4408'; this.style.color='#FFF'"
-                                   onmouseout="this.style.background='rgba(238, 68, 8, 0.1)'; this.style.color='#EE4408'">
-                                    ✓ Marquer comme complété
+                                    display: inline-flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                " onmouseover="this.style.background='#30D158'; this.style.color='#FFF'"
+                                   onmouseout="this.style.background='rgba(48, 209, 88, 0.12)'; this.style.color='#30D158'">
+                                    ✓
                                 </button>
                             ` : `
                                 <div style="

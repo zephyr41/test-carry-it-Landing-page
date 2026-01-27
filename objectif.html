@@ -876,24 +876,32 @@
                 const daysDiff = Math.ceil((jalonDate - today) / (1000 * 60 * 60 * 24));
                 const isProche = daysDiff < 90;
 
+                // Déterminer le tag approprié
+                let tag = 'ÉTAPE';
+                if (config.progression === 100) {
+                    tag = 'OBJECTIF 100%';
+                } else if (config.progression === 50) {
+                    tag = 'CAP 50%';
+                } else if (config.progression === 25) {
+                    tag = 'TRIMESTRE 2';
+                } else if (config.progression === 15) {
+                    tag = 'MOIS 1';
+                } else if (config.progression === 10) {
+                    tag = 'DÉCOLLAGE';
+                }
+
                 return {
-                    id: Date.now() + index,
-                    ordre: index + 1,
-                    titre: config.titre,
-                    date: jalonDate.toISOString().split('T')[0],
-                    type: isProche ? 'proche' : 'lointain',
-                    progression: config.progression,
-                    statut: index === 0 ? 'in_progress' : 'pending',
-                    // Propriétés pour jalons.html
+                    id: `m${Date.now()}-${index}`,
+                    date: jalonDate.toISOString(),
+                    tag: tag,
+                    title: config.titre,
+                    desc: `Atteindre ${config.progression}% de votre objectif`,
                     kpi: `${config.progression}% de progression`,
-                    desc: `Atteindre ${config.progression}% de votre objectif d'ici ${jalonDate.toLocaleDateString('fr-FR')}`,
-                    miniSmart: {
-                        specifique: '',
-                        mesurable: '',
-                        atteignable: isProche ? '' : null,
-                        realiste: isProche ? '' : null
-                    },
-                    taches: isProche ? [] : null
+                    // Propriétés additionnelles pour compatibilité
+                    ordre: index + 1,
+                    progression: config.progression,
+                    type: isProche ? 'proche' : 'lointain',
+                    statut: index === 0 ? 'in_progress' : 'pending'
                 };
             });
         }
