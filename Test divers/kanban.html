@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarryIt - Cockpit</title>
+    
+    <!-- Police Inter (Standard SaaS) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* =========================================
+           CARRY IT : DESIGN SYSTEM V2 (TIER 1)
+        ========================================= */
+        :root {
+            /* Palette Base */
+            --bg-base: #080809;
+            --bg-surface: #0E0E10; /* Légèrement plus clair pour les hovers */
+            --bg-surface-hover: #161618;
+            
+            /* Palette Texte */
+            --text-primary: #FFFDF6;
+            --text-secondary: #929292;
+            --text-tertiary: #525252;
+            
+            /* Palette Accents */
+            --accent-orange: #EE4408;
+            --accent-orange-dim: rgba(238, 68, 8, 0.15);
+            
+            --accent-blue: #0A2A53;
+            --accent-blue-text: #4B7BB8; /* Version lisible du bleu pour le texte */
+            
+            --accent-red: #A3150D;
+            --accent-red-dim: rgba(163, 21, 13, 0.15);
+            
+            --accent-olive: #404025;
+            
+            /* Borders */
+            --border-subtle: rgba(146, 146, 146, 0.1);
+            --border-focus: rgba(146, 146, 146, 0.3);
+            
+            /* Spacing */
+            --header-height: 56px;
+            --sidebar-width: 260px;
+        }
+
+        /* RESET */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            -webkit-font-smoothing: antialiased;
+            overflow: hidden; /* App-like feel */
+            height: 100vh;
+            display: flex;
+        }
+
+        /* =========================================
+           SIDEBAR (NAVIGATION)
+        ========================================= */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--bg-base);
+            border-right: 1px solid var(--border-subtle);
+            display: flex;
+            flex-direction: column;
+            padding: 16px 12px;
+            flex-shrink: 0;
+        }
+
+        .brand {
+            padding: 8px 12px;
+            margin-bottom: 24px;
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: -0.2px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-primary);
+        }
+        
+        .brand-logo {
+            width: 20px;
+            height: 20px;
+            background: var(--text-primary); /* Logo blanc simple */
+            border-radius: 4px;
+        }
+
+        .nav-group {
+            margin-bottom: 24px;
+        }
+
+        .nav-label {
+            padding: 0 12px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 12px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.15s ease;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-surface);
+            color: var(--text-primary);
+        }
+
+        .nav-item.active {
+            background: var(--bg-surface);
+            color: var(--text-primary);
+        }
+
+        .nav-item .icon {
+            width: 16px;
+            height: 16px;
+            opacity: 0.7;
+        }
+
+        /* WIDGET VISION (La Montagne) - Intégré à la Sidebar */
+        .vision-widget {
+            margin-top: auto;
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            padding: 16px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0) 100%);
+        }
+
+        .vision-header {
+            font-size: 11px;
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .vision-graphic {
+            height: 60px;
+            width: 100%;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        /* SVG Montagne abstraite */
+        .vision-svg {
+            width: 100%;
+            height: 100%;
+            stroke: var(--text-secondary);
+            fill: none;
+            stroke-width: 1;
+        }
+        
+        /* Point actuel */
+        .vision-current-point {
+            position: absolute;
+            bottom: 10px;
+            left: 20%;
+            width: 6px;
+            height: 6px;
+            background: var(--accent-orange);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--accent-orange);
+        }
+
+        /* =========================================
+           MAIN CONTENT (LE COCKPIT)
+        ========================================= */
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-base);
+        }
+
+        /* Topbar */
+        .topbar {
+            height: var(--header-height);
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+        }
+        .breadcrumb span { color: var(--text-primary); font-weight: 500; }
+        .separator { opacity: 0.3; }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-primary {
+            background: var(--text-primary);
+            color: var(--bg-base);
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: opacity 0.2s;
+        }
+        .btn-primary:hover { opacity: 0.9; }
+
+        /* =========================================
+           TASK LIST (LINEAR STYLE)
+        ========================================= */
+        .content-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding: 32px 40px;
+        }
+
+        .list-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-left: 12px;
+        }
+
+        .group-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        /* COULEURS DE GROUPE (Statuts) */
+        .group-focus { color: var(--accent-orange); background: var(--accent-orange-dim); }
+        .group-todo { color: var(--text-secondary); background: rgba(146,146,146,0.1); }
+        .group-done { color: var(--accent-blue-text); background: rgba(10, 42, 83, 0.4); }
+
+        /* Lignes de tâches */
+        .task-list {
+            margin-bottom: 40px;
+        }
+
+        .task-row {
+            display: grid;
+            grid-template-columns: 24px 1fr 120px 100px; /* Checkbox | Titre | Date | Priorité */
+            align-items: center;
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border-subtle);
+            cursor: default;
+            transition: background 0.1s;
+            gap: 12px;
+            border-radius: 4px; /* Subtle hover radius */
+        }
+
+        .task-row:hover {
+            background: var(--bg-surface);
+        }
+
+        /* Checkbox Custom (Cercle style Linear) */
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .custom-checkbox {
+            width: 16px;
+            height: 16px;
+            border: 1px solid var(--text-secondary);
+            border-radius: 4px; /* Légèrement arrondi comme Screenshot 2 */
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s;
+        }
+
+        .custom-checkbox:hover { border-color: var(--text-primary); }
+        
+        /* Titre de la tâche */
+        .task-title {
+            color: var(--text-primary);
+            font-weight: 500;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tag {
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: var(--bg-surface-hover);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-subtle);
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        /* Tags spécifiques */
+        .tag.tag-orange { color: var(--accent-orange); border-color: var(--accent-orange-dim); background: rgba(238,68,8,0.05); }
+
+        .task-date {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+        .task-date.overdue { color: var(--accent-red); }
+
+        .task-priority {
+            font-size: 11px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        /* Icone priorité */
+        .prio-icon { width: 12px; height: 12px; }
+        .prio-high { color: var(--accent-orange); }
+
+        /* État complété */
+        .task-row.completed .task-title {
+            color: var(--text-secondary);
+            text-decoration: line-through;
+        }
+        .task-row.completed .custom-checkbox {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+        }
+        /* Checkmark en CSS pur */
+        .task-row.completed .custom-checkbox::after {
+            content: '';
+            position: absolute;
+            left: 5px; top: 1px;
+            width: 4px; height: 8px;
+            border: solid rgba(255,255,255,0.7);
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        /* Inbox Input (Clean) */
+        .quick-add {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            margin-top: -1px;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+        .quick-add:hover { opacity: 1; }
+        .quick-add input {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 14px;
+            width: 100%;
+            outline: none;
+            font-family: 'Inter', sans-serif;
+        }
+        .plus-icon { color: var(--text-secondary); }
+
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <nav class="sidebar">
+        <div class="brand">
+            <div class="brand-logo"></div>
+            CARRYIT
+        </div>
+
+        <div class="nav-group">
+            <div class="nav-label">Navigation</div>
+            <a href="#" class="nav-item">
+                <span class="icon" style="background:var(--text-secondary); mask: url('data:image/svg+xml;utf8,<svg viewBox=\'0 0 24 24\'><path d=\'M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z\'/></svg>');"></span>
+                Dashboard
+            </a>
+            <a href="#" class="nav-item active">
+                <span class="icon" style="background:var(--text-primary); mask: url('data:image/svg+xml;utf8,<svg viewBox=\'0 0 24 24\'><path d=\'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm6 9H6v-1c0-2 4-3.1 6-3.1s6 1.1 6 3.1v1z\'/></svg>');"></span>
+                La Tranchée
+            </a>
+            <a href="#" class="nav-item">
+                <span class="icon" style="background:var(--text-secondary); mask: url('data:image/svg+xml;utf8,<svg viewBox=\'0 0 24 24\'><path d=\'M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z\'/></svg>');"></span>
+                Journal 1009
+            </a>
+        </div>
+
+        <div class="nav-group">
+            <div class="nav-label">Projets Actifs</div>
+            <a href="#" class="nav-item">
+                <span style="width:8px; height:8px; border-radius:50%; background:var(--accent-orange); margin-right:8px;"></span>
+                Immobilier 700k
+            </a>
+            <a href="#" class="nav-item">
+                <span style="width:8px; height:8px; border-radius:50%; background:var(--text-secondary); margin-right:8px;"></span>
+                Marathon 2026
+            </a>
+        </div>
+
+        <!-- WIDGET VISION (Rappel de l'image 1) -->
+        <div class="vision-widget">
+            <div class="vision-header">
+                <span>ASCENSION</span>
+                <span style="color:var(--text-primary);">12%</span>
+            </div>
+            <div class="vision-graphic">
+                <!-- SVG Abstrait Triangle -->
+                <svg class="vision-svg" viewBox="0 0 100 60">
+                    <path d="M10 55 L50 5 L90 55" stroke-dasharray="2 2" opacity="0.5"/>
+                    <path d="M10 55 L35 25" stroke="white" stroke-width="1.5" />
+                </svg>
+                <div class="vision-current-point"></div>
+            </div>
+            <div style="font-size:10px; color:var(--text-secondary); margin-top:8px; text-align:center;">
+                Prochain Jalon: Décollage
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+        <div class="topbar">
+            <div class="breadcrumb">
+                CarryIt <span class="separator">/</span> Immobilier 700k <span class="separator">/</span> <span>Tranchée</span>
+            </div>
+            <div class="actions">
+                <button class="btn-primary">
+                    <span>+</span> Action
+                </button>
+            </div>
+        </div>
+
+        <div class="content-scroll">
+            
+            <!-- SECTION FOCUS (Orange) -->
+            <div class="list-header">
+                <div class="group-title group-focus">
+                    <span>⚡ FOCUS</span>
+                    <span style="opacity:0.6; margin-left:4px;">1</span>
+                </div>
+            </div>
+
+            <div class="task-list">
+                <div class="task-row">
+                    <div class="checkbox-wrapper">
+                        <div class="custom-checkbox" onclick="this.parentElement.parentElement.classList.toggle('completed')"></div>
+                    </div>
+                    <div class="task-title">
+                        Finaliser dossier de financement banque
+                        <span class="tag tag-orange">Urgent</span>
+                    </div>
+                    <div class="task-date overdue">Aujourd'hui</div>
+                    <div class="task-priority">
+                        <span class="prio-icon prio-high">▲</span> High
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION TO DO (Grey) -->
+            <div class="list-header">
+                <div class="group-title group-todo">
+                    <span>TO DO</span>
+                    <span style="opacity:0.6; margin-left:4px;">3</span>
+                </div>
+            </div>
+
+            <div class="task-list">
+                <div class="task-row">
+                    <div class="checkbox-wrapper">
+                        <div class="custom-checkbox" onclick="this.parentElement.parentElement.classList.toggle('completed')"></div>
+                    </div>
+                    <div class="task-title">
+                        Relancer l'agent immobilier (M. Dupont)
+                        <span class="tag">Friction</span>
+                    </div>
+                    <div class="task-date overdue">Hier</div>
+                    <div class="task-priority">
+                        <span class="prio-icon prio-high">▲</span> High
+                    </div>
+                </div>
+
+                <div class="task-row">
+                    <div class="checkbox-wrapper">
+                        <div class="custom-checkbox" onclick="this.parentElement.parentElement.classList.toggle('completed')"></div>
+                    </div>
+                    <div class="task-title">
+                        Lire le PLU de la commune cible
+                    </div>
+                    <div class="task-date">19 Fév</div>
+                    <div class="task-priority">
+                        <span style="color:var(--text-tertiary)">●</span> Low
+                    </div>
+                </div>
+
+                <div class="task-row">
+                    <div class="checkbox-wrapper">
+                        <div class="custom-checkbox" onclick="this.parentElement.parentElement.classList.toggle('completed')"></div>
+                    </div>
+                    <div class="task-title">
+                        Calculer rentabilité nette du bien #3
+                    </div>
+                    <div class="task-date">22 Fév</div>
+                    <div class="task-priority">
+                        <span style="color:var(--text-secondary)">■</span> Med
+                    </div>
+                </div>
+
+                <!-- Quick Add -->
+                <div class="quick-add">
+                    <span class="plus-icon">+</span>
+                    <input type="text" placeholder="Ajouter une tâche...">
+                </div>
+            </div>
+
+            <!-- SECTION COMPLETED (Blue/Muted) -->
+            <div class="list-header">
+                <div class="group-title group-done">
+                    <span>COMPLETED</span>
+                    <span style="opacity:0.6; margin-left:4px;">2</span>
+                </div>
+            </div>
+
+            <div class="task-list">
+                <div class="task-row completed">
+                    <div class="checkbox-wrapper">
+                        <div class="custom-checkbox"></div>
+                    </div>
+                    <div class="task-title">
+                        Appeler le courtier
+                    </div>
+                    <div class="task-date">16 Fév</div>
+                    <div class="task-priority">High</div>
+                </div>
+                <div class="task-row completed">
+                    <div class="checkbox-wrapper">
+                        <div class="custom-checkbox"></div>
+                    </div>
+                    <div class="task-title">
+                        Définir la zone de recherche
+                    </div>
+                    <div class="task-date">12 Fév</div>
+                    <div class="task-priority">Med</div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+</body>
+</html>
