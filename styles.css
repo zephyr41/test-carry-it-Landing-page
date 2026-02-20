@@ -3127,15 +3127,15 @@
             -webkit-backdrop-filter: blur(50px);
             mask-image: radial-gradient(
                 circle 800px at 50% 100%,
-                transparent 0%,
+                black 0%,
                 black 40%,
-                black 100%
+                transparent 100%
             );
             -webkit-mask-image: radial-gradient(
                 circle 800px at 50% 100%,
-                transparent 0%,
+                black 0%,
                 black 40%,
-                black 100%
+                transparent 100%
             );
             pointer-events: none;
             z-index: 12;
