@@ -2682,6 +2682,175 @@
             }
         }
 
+        /* SECTION 8: PHILOSOPHY - Mentalité & Identity */
+        .philosophy-section {
+            padding: var(--space-96) var(--space-24);
+            background: linear-gradient(
+                180deg,
+                var(--color-background-base) 0%,
+                rgba(238, 68, 8, 0.02) 50%,
+                var(--color-background-base) 100%
+            );
+            position: relative;
+        }
+
+        .philosophy-section .section-overline {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--color-text-tertiary);
+            margin-bottom: var(--space-24);
+            font-family: var(--font-primary);
+        }
+
+        .philosophy-section h2 {
+            font-size: var(--text-h2);
+            font-weight: 700;
+            color: var(--color-text-primary);
+            margin-bottom: var(--space-16);
+            line-height: 1.3;
+            max-width: 700px;
+        }
+
+        .philosophy-section .section-subtitle {
+            margin-bottom: var(--space-64);
+        }
+
+        /* Philosophy Principles */
+        .philosophy-principles {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-48);
+            max-width: 1200px;
+            margin-bottom: var(--space-96);
+        }
+
+        .principle {
+            position: relative;
+            padding-left: var(--space-32);
+        }
+
+        .principle::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 4px;
+            height: 40px;
+            background: var(--color-accent-action);
+            border-radius: 2px;
+        }
+
+        .principle h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            margin-bottom: var(--space-12);
+            font-family: var(--font-primary);
+        }
+
+        .principle p {
+            font-size: 15px;
+            color: var(--color-text-secondary);
+            line-height: 1.7;
+            font-family: var(--font-primary);
+            margin: 0 0 var(--space-12) 0;
+        }
+
+        .principle-detail {
+            font-size: 14px !important;
+            color: var(--color-text-tertiary) !important;
+        }
+
+        /* Philosophy Quote */
+        .philosophy-quote {
+            background: linear-gradient(
+                135deg,
+                rgba(238, 68, 8, 0.08) 0%,
+                rgba(238, 68, 8, 0.03) 100%
+            );
+            border: 1px solid rgba(238, 68, 8, 0.2);
+            border-radius: 12px;
+            padding: var(--space-48);
+            margin-bottom: var(--space-64);
+            max-width: 900px;
+            text-align: center;
+        }
+
+        .philosophy-quote blockquote {
+            font-size: 16px;
+            color: var(--color-text-secondary);
+            line-height: 1.9;
+            font-style: italic;
+            margin: 0;
+            font-family: var(--font-primary);
+        }
+
+        /* Philosophy Rule */
+        .philosophy-rule {
+            background: rgba(28, 28, 30, 0.4);
+            border: 2px solid var(--color-accent-action);
+            border-radius: 12px;
+            padding: var(--space-48);
+            max-width: 900px;
+            text-align: center;
+        }
+
+        .rule-text {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--color-text-tertiary);
+            display: block;
+            margin-bottom: var(--space-24);
+            font-family: var(--font-primary);
+        }
+
+        .rule-statement {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            line-height: 1.8;
+            font-family: var(--font-primary);
+        }
+
+        /* Responsive: Philosophy Section */
+        @media (max-width: 768px) {
+            .philosophy-section {
+                padding: var(--space-64) var(--space-24);
+            }
+
+            .philosophy-section h2 {
+                font-size: 28px;
+            }
+
+            .philosophy-principles {
+                grid-template-columns: 1fr;
+                gap: var(--space-32);
+                margin-bottom: var(--space-48);
+            }
+
+            .philosophy-quote {
+                padding: var(--space-32);
+                margin-bottom: var(--space-48);
+            }
+
+            .philosophy-quote blockquote {
+                font-size: 14px;
+            }
+
+            .philosophy-rule {
+                padding: var(--space-32);
+            }
+
+            .rule-statement {
+                font-size: 16px;
+            }
+        }
+
         /* SECTION 3: DOULEURS (VIDEO) - Full Screen Cinématique */
         .douleurs-section {
             position: relative;
