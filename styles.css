@@ -3118,27 +3118,7 @@
 
         /* Arc de cercle smooth avec blur */
         .douleurs-blur-dome {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 350px;
-            backdrop-filter: blur(50px);
-            -webkit-backdrop-filter: blur(50px);
-            mask-image: radial-gradient(
-                circle 800px at 50% 100%,
-                black 0%,
-                black 40%,
-                transparent 100%
-            );
-            -webkit-mask-image: radial-gradient(
-                circle 800px at 50% 100%,
-                black 0%,
-                black 40%,
-                transparent 100%
-            );
-            pointer-events: none;
-            z-index: 12;
+            display: none;
         }
 
         /* CTA avec question et scroll indicator */
