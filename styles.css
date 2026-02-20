@@ -2244,6 +2244,212 @@
             }
         }
 
+        /* SECTION 6: DEMO - Concrete Case Studies */
+        .demo-section {
+            padding: var(--space-96) var(--space-24);
+            background: linear-gradient(
+                180deg,
+                var(--color-background-base) 0%,
+                rgba(238, 68, 8, 0.02) 50%,
+                var(--color-background-base) 100%
+            );
+            position: relative;
+        }
+
+        .demo-section .section-overline {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--color-text-tertiary);
+            margin-bottom: var(--space-24);
+            font-family: var(--font-primary);
+        }
+
+        .demo-section h2 {
+            font-size: var(--text-h2);
+            font-weight: 700;
+            color: var(--color-text-primary);
+            margin-bottom: var(--space-16);
+            line-height: 1.3;
+            max-width: 700px;
+        }
+
+        .demo-section .section-subtitle {
+            margin-bottom: var(--space-64);
+        }
+
+        /* Demo Cases Grid */
+        .demo-cases {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-64);
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .demo-case {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: var(--space-32);
+            align-items: start;
+            padding: var(--space-32);
+            background: rgba(28, 28, 30, 0.3);
+            border: 1px solid var(--color-border-subtle);
+            border-radius: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .demo-case:hover {
+            background: rgba(44, 44, 46, 0.4);
+            border-color: var(--color-border-default);
+        }
+
+        .demo-before,
+        .demo-after {
+            position: relative;
+        }
+
+        .demo-before h3,
+        .demo-after h3 {
+            font-size: 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--color-text-tertiary);
+            margin-bottom: var(--space-16);
+            font-family: var(--font-primary);
+        }
+
+        .demo-ambition {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--color-text-primary);
+            margin-bottom: var(--space-16);
+            font-style: italic;
+            font-family: var(--font-primary);
+        }
+
+        .demo-status {
+            display: inline-block;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 6px 12px;
+            border-radius: 4px;
+            margin-top: var(--space-16);
+            font-family: var(--font-primary);
+        }
+
+        .status-vague {
+            background: rgba(238, 68, 8, 0.15);
+            color: var(--color-accent-action);
+        }
+
+        .status-structured {
+            background: rgba(52, 199, 89, 0.15);
+            color: var(--color-success);
+        }
+
+        .demo-arrow {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--color-accent-action);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100px;
+            font-family: var(--font-primary);
+        }
+
+        .demo-plan {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-16);
+        }
+
+        .demo-plan li {
+            font-size: 14px;
+            color: var(--color-text-secondary);
+            line-height: 1.6;
+            font-family: var(--font-primary);
+            padding-left: var(--space-24);
+            position: relative;
+        }
+
+        .demo-plan li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--color-success);
+            font-weight: bold;
+        }
+
+        .demo-plan strong {
+            color: var(--color-text-primary);
+        }
+
+        .demo-plan ul {
+            list-style: none;
+            padding: 0;
+            margin: var(--space-8) 0 0 0;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-6);
+        }
+
+        .demo-plan ul li {
+            padding-left: var(--space-20);
+            font-size: 13px;
+            color: var(--color-text-tertiary);
+        }
+
+        .demo-plan ul li::before {
+            content: '→';
+        }
+
+        /* Responsive: Demo Section */
+        @media (max-width: 968px) {
+            .demo-case {
+                grid-template-columns: 1fr;
+                gap: var(--space-24);
+            }
+
+            .demo-arrow {
+                transform: rotate(90deg);
+                min-height: auto;
+                padding: var(--space-16) 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .demo-section {
+                padding: var(--space-64) var(--space-24);
+            }
+
+            .demo-section h2 {
+                font-size: 28px;
+            }
+
+            .demo-cases {
+                gap: var(--space-32);
+            }
+
+            .demo-case {
+                padding: var(--space-20);
+                gap: var(--space-16);
+            }
+
+            .demo-plan li {
+                font-size: 13px;
+            }
+        }
+
         /* SECTION 3: DOULEURS (VIDEO) - Full Screen Cinématique */
         .douleurs-section {
             position: relative;
