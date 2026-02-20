@@ -2851,6 +2851,198 @@
             }
         }
 
+        /* SECTION 9: PROOF - Credibility & Validation */
+        .proof-section {
+            padding: var(--space-96) var(--space-24);
+            background: linear-gradient(
+                180deg,
+                var(--color-background-base) 0%,
+                rgba(238, 68, 8, 0.02) 50%,
+                var(--color-background-base) 100%
+            );
+            position: relative;
+        }
+
+        .proof-section .section-overline {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--color-text-tertiary);
+            margin-bottom: var(--space-24);
+            font-family: var(--font-primary);
+        }
+
+        .proof-section h2 {
+            font-size: var(--text-h2);
+            font-weight: 700;
+            color: var(--color-text-primary);
+            margin-bottom: var(--space-16);
+            line-height: 1.3;
+            max-width: 700px;
+        }
+
+        .proof-section .section-subtitle {
+            margin-bottom: var(--space-64);
+        }
+
+        /* Methods Grid */
+        .methods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--space-32);
+            margin-bottom: var(--space-96);
+            max-width: 1200px;
+        }
+
+        .method-card {
+            background: rgba(28, 28, 30, 0.3);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--color-border-subtle);
+            border-radius: 12px;
+            padding: var(--space-32);
+            transition: all 0.3s ease;
+        }
+
+        .method-card:hover {
+            background: rgba(44, 44, 46, 0.4);
+            border-color: var(--color-border-default);
+            transform: translateY(-2px);
+        }
+
+        .method-card h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            margin-bottom: var(--space-12);
+            font-family: var(--font-primary);
+        }
+
+        .method-origin {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--color-accent-action);
+            margin-bottom: var(--space-12) !important;
+        }
+
+        .method-card p {
+            font-size: 14px;
+            color: var(--color-text-secondary);
+            line-height: 1.6;
+            font-family: var(--font-primary);
+            margin: 0;
+        }
+
+        /* Proof Statement */
+        .proof-statement {
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto var(--space-96);
+        }
+
+        .proof-statement p {
+            font-size: 16px;
+            color: var(--color-text-secondary);
+            line-height: 1.8;
+            font-family: var(--font-primary);
+            margin-bottom: var(--space-16);
+        }
+
+        .statement-emphasis {
+            font-size: 18px !important;
+            font-weight: 600 !important;
+            color: var(--color-text-primary) !important;
+        }
+
+        /* Proof Science */
+        .proof-science {
+            background: rgba(238, 68, 8, 0.08);
+            border: 1px solid rgba(238, 68, 8, 0.2);
+            border-radius: 12px;
+            padding: var(--space-48);
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .proof-science h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            margin-bottom: var(--space-32);
+            text-align: center;
+            font-family: var(--font-primary);
+        }
+
+        .science-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-24);
+        }
+
+        .science-list li {
+            font-size: 15px;
+            color: var(--color-text-secondary);
+            line-height: 1.7;
+            font-family: var(--font-primary);
+            padding-left: var(--space-32);
+            position: relative;
+        }
+
+        .science-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--color-accent-action);
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .science-list strong {
+            color: var(--color-text-primary);
+            font-weight: 600;
+        }
+
+        /* Responsive: Proof Section */
+        @media (max-width: 768px) {
+            .proof-section {
+                padding: var(--space-64) var(--space-24);
+            }
+
+            .proof-section h2 {
+                font-size: 28px;
+            }
+
+            .methods-grid {
+                grid-template-columns: 1fr;
+                gap: var(--space-24);
+                margin-bottom: var(--space-48);
+            }
+
+            .proof-science {
+                padding: var(--space-32);
+            }
+
+            .proof-science h3 {
+                font-size: 18px;
+                margin-bottom: var(--space-24);
+            }
+
+            .science-list {
+                gap: var(--space-16);
+            }
+
+            .science-list li {
+                font-size: 14px;
+            }
+        }
+
         /* SECTION 3: DOULEURS (VIDEO) - Full Screen Cinématique */
         .douleurs-section {
             position: relative;
