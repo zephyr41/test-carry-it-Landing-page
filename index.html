@@ -80,49 +80,52 @@ CarryIt structure tes ambitions en objectifs clairs et mesurables pour tenir sur
 
             <div class="pain-list">
 
-                <div class="pain-item pain-item--visual">
-                    <div class="pain-item-text">
-                        <span class="pain-number">01</span>
-                        <div class="pain-content">
+                <div class="pain-item pain-reveal">
+                    <span class="pain-number">01</span>
+                    <div class="pain-content">
+                        <div class="pain-row">
                             <h3 class="pain-title">Un plan d'une clarté absolue.</h3>
-                            <p class="pain-body">Tu as un plan. Mais t'as besoin d'encore plus — d'une clarté et d'une lucidité totale.</p>
+                            <img src="Images/icon/vision_icon.png" alt="" class="pain-icon">
                         </div>
-                    </div>
-                    <div class="pain-visual">
-                        <div class="pain-visual-frame">
-                            <img src="Images/indus-draw.jpg" alt="Carry It — Blueprint" class="pain-mockup">
-                            <div class="pain-blueprint-grid"></div>
-                            <div class="pain-blueprint-corners"></div>
-                        </div>
+                        <p class="pain-body">Tu as un plan. Mais t'as besoin d'encore plus — d'une clarté et d'une lucidité totale.</p>
                     </div>
                 </div>
 
                 <div class="pain-separator"></div>
 
-                <div class="pain-item">
+                <div class="pain-item pain-reveal">
                     <span class="pain-number">02</span>
                     <div class="pain-content">
-                        <h3 class="pain-title">Un travail acharné.</h3>
+                        <div class="pain-row">
+                            <h3 class="pain-title">Un travail acharné.</h3>
+                            <img src="Images/icon/struggle_icon.png" alt="" class="pain-icon">
+                        </div>
                         <p class="pain-body">Tu bosses. Tu fais des sacrifices. Le ressenti est là — mais tu n'as pas l'impression d'avancer. L'absence de mesure concrète, ou d'espace unique pour visualiser ta progression avec lucidité.</p>
                     </div>
                 </div>
 
                 <div class="pain-separator"></div>
 
-                <div class="pain-item">
+                <div class="pain-item pain-reveal">
                     <span class="pain-number">03</span>
                     <div class="pain-content">
-                        <h3 class="pain-title">Tu gères plusieurs chantiers. Sans vue globale.</h3>
+                        <div class="pain-row">
+                            <h3 class="pain-title">Tu gères plusieurs chantiers. Sans vue globale.</h3>
+                            <img src="Images/icon/recul_icon.png" alt="" class="pain-icon">
+                        </div>
                         <p class="pain-body">Sport, business, études, projets perso — tu avances sur beaucoup de choses. Mais tu n'as pas d'espace pour tout voir en même temps. Et tu as cette sensation de travailler dans le vide.</p>
                     </div>
                 </div>
 
                 <div class="pain-separator"></div>
 
-                <div class="pain-item">
+                <div class="pain-item pain-reveal">
                     <span class="pain-number">04</span>
                     <div class="pain-content">
-                        <h3 class="pain-title">T'as déjà vécu le cycle. Tu refuses de le revivre.</h3>
+                        <div class="pain-row">
+                            <h3 class="pain-title">T'as déjà vécu le cycle. Tu refuses de le revivre.</h3>
+                            <img src="Images/icon/cycle_pain.png" alt="" class="pain-icon">
+                        </div>
                         <p class="pain-body">Motivation → Charbon → Absence de résultats → Changement de cap. Tu veux enfin comprendre comment tenir. Pas juste trois semaines. Tu veux trouver le projet qui durera longtemps — et que tu réussiras.</p>
                     </div>
                 </div>
@@ -130,7 +133,7 @@ CarryIt structure tes ambitions en objectifs clairs et mesurables pour tenir sur
             </div>
 
             <p class="pain-conclusion">
-                Carry It est construit par des high achievers qui ont la dalle.<br>
+                Carry It est construit par des High Achievers.<br>
                 <strong>Pour des gens qui ont la dalle.</strong>
             </p>
         </div>
@@ -146,11 +149,11 @@ CarryIt structure tes ambitions en objectifs clairs et mesurables pour tenir sur
             <div class="douleurs-overlay"></div>
             <div class="douleurs-grain"></div>
             <div class="douleurs-subtitle">
-                Rappelle toi du tournant le plus important de ta vie <br>
+                Rappelle toi du tournant le plus important de ta vie.
             </div>
             <div class="douleurs-blur-dome"></div>
             <div class="douleurs-cta">
-                <h3>Les erreurs qui t'empèche d'avancer</h3>
+                <h3>Ce que tu as décidé de ne plus être.</h3>
                 <div class="scroll-indicator">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="6 9 12 15 18 9"></polyline>
@@ -665,8 +668,24 @@ CarryIt structure tes ambitions en objectifs clairs et mesurables pour tenir sur
                 <p class="warning-emphasis">Commence maintenant : tu sais exactement ce que tu dois faire.</p>
             </div>
         </div>
+        <div> Icons made by <a href="https://www.freepik.com" title="Freepik"> Freepik </a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com'</a></div>
     </section>
     <script>
+        // Scroll reveal — pain items
+        const painObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    painObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.15 });
+
+        document.querySelectorAll('.pain-reveal').forEach((el, i) => {
+            el.style.transitionDelay = `${i * 0.12}s`;
+            painObserver.observe(el);
+        });
+
         function goToHome() {
             window.location.href = 'index.html';
         }
