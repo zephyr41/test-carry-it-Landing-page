@@ -16,6 +16,7 @@
 
         /* Design System Variables - Mode Sombre */
         :root {
+            color-scheme: dark;
             /* COLORS - Background */
             --color-background-base: #080809;
             --color-background-secondary: #1C1C1E;
@@ -267,8 +268,6 @@
             min-height: 100vh;
             padding-top: calc(var(--navbar-height) + var(--space-96));
             padding-bottom: var(--space-96);
-            opacity: 1;
-            transition: opacity 0.5s ease-in-out;
             overflow: hidden;
         }
 
@@ -2041,170 +2040,447 @@
         }
 
         /* SECTION 4: MARKET GAP - Market Problem Analysis */
+        /* SECTION 5: MARKET GAP — Apple Bento Redesign */
         .market-gap-section {
-            padding: var(--space-96) var(--space-24);
-            background: linear-gradient(
-                180deg,
-                var(--color-background-base) 0%,
-                rgba(238, 68, 8, 0.02) 50%,
-                var(--color-background-base) 100%
-            );
+            background: #000000;
+            padding: 100px 24px;
             position: relative;
         }
 
-        .market-gap-section .section-overline {
-            display: inline-block;
-            font-size: 11px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--color-accent-action);
-            margin-bottom: var(--space-24);
-            font-family: var(--font-primary);
+        .mg-container {
+            max-width: 1100px;
+            margin: 0 auto;
         }
 
-        .market-gap-section h2 {
-            font-size: var(--text-h2);
+        /* Header */
+        .mg-header {
+            margin-bottom: 48px;
+        }
+
+        .mg-overline {
+            display: block;
+            font-size: 12px;
             font-weight: 700;
-            color: var(--color-text-primary);
-            margin-bottom: var(--space-16);
-            line-height: 1.3;
-            max-width: 700px;
-        }
-
-        .market-gap-section .section-subtitle {
-            margin-bottom: var(--space-64);
-        }
-
-        /* Tools Comparison Grid */
-        .tools-comparison {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: var(--space-24);
-            margin-bottom: var(--space-96);
-            max-width: 1200px;
-        }
-
-        .tool-card {
-            background: rgba(28, 28, 30, 0.3);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--color-border-subtle);
-            border-radius: 12px;
-            padding: var(--space-24);
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .tool-card:hover {
-            background: rgba(44, 44, 46, 0.4);
-            border-color: var(--color-border-default);
-            transform: translateY(-2px);
-        }
-
-        .tool-card h3 {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--color-text-primary);
-            margin-bottom: var(--space-8);
-            font-family: var(--font-primary);
-        }
-
-        .tool-problem {
-            font-size: 13px;
-            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--color-accent-action);
-            margin-bottom: var(--space-12) !important;
+            letter-spacing: 0.12em;
+            color: #EE4408;
+            margin-bottom: 14px;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
 
-        .tool-card p {
+        .mg-title {
+            font-size: clamp(32px, 5vw, 52px);
+            font-weight: 600;
+            background: linear-gradient(180deg, #FFFFFF 0%, #AEAEB2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -1.5px;
+            line-height: 1.05;
+            margin: 0 0 14px 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        .mg-subtitle {
+            font-size: 17px;
+            color: #86868b;
+            font-weight: 400;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        /* Bento Grid */
+        .mg-bento {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: auto auto;
+            gap: 12px;
+            margin-bottom: 48px;
+        }
+
+        .mg-card {
+            background:
+                linear-gradient(#1C1C1E, #1C1C1E) padding-box,
+                linear-gradient(135deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.02) 50%, rgba(255,255,255,0.04) 100%) border-box;
+            border: 1px solid transparent;
+            border-radius: 16px;
+            padding: 36px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.07);
+        }
+
+        .mg-card--large { grid-column: 1 / 3; grid-row: 1; }
+        .mg-card--tall  { grid-column: 3;     grid-row: 1 / 3; }
+        .mg-card--small { grid-column: 1;     grid-row: 2; }
+        .mg-card--mini  { grid-column: 2;     grid-row: 2; display: flex; flex-direction: column; justify-content: center; }
+
+        .mg-card-label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #EE4408;
+            margin-bottom: 10px;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        .mg-card-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #FFFFFF;
+            letter-spacing: -0.4px;
+            margin: 0 0 10px 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.2;
+        }
+
+        .mg-card-body {
             font-size: 14px;
-            color: var(--color-text-secondary);
+            color: #86868b;
             line-height: 1.6;
-            font-family: var(--font-primary);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             margin: 0;
         }
 
-        /* Pipeline Missing Section */
-        .pipeline-missing {
-            background: linear-gradient(
-                135deg,
-                rgba(238, 68, 8, 0.08) 0%,
-                rgba(238, 68, 8, 0.03) 100%
+        /* Todo visual */
+        .mg-visual-todo {
+            margin-top: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
+
+        .mg-todo-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: #3A3A3C;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        .mg-todo-item.checked { color: #48484a; }
+        .mg-todo-item.pending { color: #3A3A3C; }
+        .mg-todo-icon { flex-shrink: 0; }
+        .mg-todo-item.checked .mg-todo-icon { color: #3A3A3C; }
+        .mg-todo-item.pending .mg-todo-icon { color: #EE4408; opacity: 0.5; }
+
+        /* Maze visual */
+        .mg-visual-maze { margin-top: 24px; opacity: 0.8; }
+
+        /* Broken pipeline visual */
+        .mg-broken-pipeline {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+
+        .mg-bp-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .mg-bp-on {
+            background: #EE4408;
+            box-shadow: 0 0 6px rgba(238, 68, 8, 0.6);
+        }
+
+        .mg-bp-off {
+            background: #2C2C2E;
+        }
+
+        .mg-bp-line {
+            flex: 1;
+            height: 1px;
+            background: #2C2C2E;
+            min-width: 12px;
+        }
+
+        .mg-bp-broken {
+            background: repeating-linear-gradient(
+                90deg,
+                #3A3A3C 0,
+                #3A3A3C 3px,
+                transparent 3px,
+                transparent 8px
             );
-            border: 1px solid rgba(238, 68, 8, 0.2);
-            border-radius: 16px;
-            padding: var(--space-48);
+        }
+
+        /* Stat mini */
+        .mg-stat-number {
+            font-size: 72px;
+            font-weight: 700;
+            color: #EE4408;
+            letter-spacing: -4px;
+            line-height: 1;
+            margin: 0 0 8px 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        .mg-stat-label {
+            font-size: 13px;
+            color: #86868b;
+            line-height: 1.4;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+        }
+
+        /* Pipeline */
+        .mg-pipeline {
+            background: #0A0A0A;
+            border: 1px solid #1C1C1E;
+            border-radius: 20px;
+            padding: 40px 48px;
+        }
+
+        .mg-pipeline-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #48484a;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0 0 24px 0;
             text-align: center;
+        }
+
+        .mg-pipeline-track {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+        }
+
+        .mg-pill {
+            background: #1C1C1E;
+            border: 1px solid #2C2C2E;
+            border-radius: 100px;
+            padding: 8px 20px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #AEAEB2;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .mg-connector {
+            flex: 1;
+            height: 1px;
+            background: #2C2C2E;
+            position: relative;
+            min-width: 24px;
+        }
+
+        .mg-dot {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: #EE4408;
+            border-radius: 50%;
+            top: -2px;
+            box-shadow: 0 0 8px rgba(238, 68, 8, 0.9), 0 0 16px rgba(238, 68, 8, 0.4);
+            animation: travelPipeline 2.6s ease-in-out infinite;
+        }
+
+        @keyframes travelPipeline {
+            0%   { left: 0%;   opacity: 0; transform: scale(0.5); }
+            12%  { opacity: 1; transform: scale(1); }
+            88%  { opacity: 1; transform: scale(1); }
+            100% { left: 100%; opacity: 0; transform: scale(0.5); }
+        }
+
+        .mg-pipeline-caption {
+            font-size: 14px;
+            color: #48484a;
+            text-align: center;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .market-gap-section { padding: 80px 20px; }
+
+            .mg-bento {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto;
+                gap: 10px;
+            }
+
+            .mg-card--large,
+            .mg-card--tall,
+            .mg-card--small,
+            .mg-card--mini { grid-column: 1; grid-row: auto; }
+
+            .mg-pipeline { padding: 28px 20px; }
+
+            .mg-pipeline-track { flex-wrap: wrap; gap: 8px; justify-content: center; }
+
+            .mg-connector { display: none; }
+
+            .mg-pill { font-size: 12px; padding: 6px 14px; }
+
+            .mg-stat-number { font-size: 52px; }
+        }
+
+        /* SECTION A: DUALITÉ IDENTITAIRE */
+        .duality-section {
+            background: #000;
+            padding: 120px 24px 140px;
+            text-align: center;
+        }
+
+        .duality-container {
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        .duality-overline {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.22em;
+            color: #48484a;
+            margin: 0 0 64px 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        .duality-states {
+            display: flex;
+            flex-direction: column;
+            gap: 48px;
+            margin-bottom: 72px;
+        }
+
+        .duality-high,
+        .duality-low {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .duality-high span {
+            font-size: clamp(28px, 5vw, 48px);
+            font-weight: 700;
+            color: #FFFFFF;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            letter-spacing: -0.04em;
+            text-shadow: 0 0 30px rgba(255,255,255,0.12), 0 0 60px rgba(255,255,255,0.04);
+        }
+
+        .duality-low {
+            opacity: 0.28;
+            filter: blur(1.2px);
+        }
+
+        .duality-low span {
+            font-size: clamp(28px, 5vw, 48px);
+            font-weight: 700;
+            color: #FFFFFF;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            letter-spacing: -0.04em;
+        }
+
+        .duality-pivot {
+            font-size: 22px;
+            font-weight: 400;
+            color: #86868b;
+            line-height: 1.35;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            letter-spacing: -0.02em;
+        }
+
+        @media (max-width: 768px) {
+            .duality-section { padding: 80px 20px; }
+            .duality-high, .duality-low { gap: 20px; }
+        }
+
+        /* SECTION B: CE QUE CARRYIT FORGE */
+        .forge-section {
+            background: #000;
+            padding: 100px 24px;
+            border-top: 1px solid #1C1C1E;
+        }
+
+        .forge-container {
             max-width: 900px;
             margin: 0 auto;
         }
 
-        .pipeline-missing h3 {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--color-text-primary);
-            margin-bottom: var(--space-24);
-            font-family: var(--font-primary);
-        }
-
-        .pipeline-flow {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--color-accent-action);
-            letter-spacing: 1px;
-            margin-bottom: var(--space-24);
-            font-family: var(--font-primary);
+        .forge-overline {
+            font-size: 11px;
             font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: #EE4408;
+            margin: 0 0 24px 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
 
-        .pipeline-conclusion {
+        .forge-title {
+            font-size: clamp(28px, 4vw, 48px);
+            font-weight: 700;
+            color: #FFFFFF;
+            letter-spacing: -1.5px;
+            line-height: 1.1;
+            margin: 0 0 64px 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        .forge-pillars {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 48px;
+            margin-bottom: 64px;
+        }
+
+        .forge-pillar {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .forge-word {
+            font-size: 28px;
+            font-weight: 700;
+            color: #FFFFFF;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            letter-spacing: -0.5px;
+            display: block;
+        }
+
+        .forge-pillar p {
             font-size: 15px;
-            color: var(--color-text-secondary);
+            color: #86868b;
             line-height: 1.7;
-            font-family: var(--font-primary);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             margin: 0;
         }
 
-        .pipeline-conclusion strong {
-            color: var(--color-text-primary);
+        .forge-bottom {
+            font-size: 22px;
             font-weight: 600;
+            color: #AEAEB2;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.5;
+            margin: 0;
+            border-top: 1px solid #1C1C1E;
+            padding-top: 40px;
         }
 
-        /* Responsive: Market Gap Section */
         @media (max-width: 768px) {
-            .market-gap-section {
-                padding: var(--space-64) var(--space-24);
-            }
-
-            .market-gap-section h2 {
-                font-size: 28px;
-            }
-
-            .tools-comparison {
-                grid-template-columns: 1fr;
-                gap: var(--space-16);
-                margin-bottom: var(--space-64);
-            }
-
-            .tool-card {
-                padding: var(--space-20);
-            }
-
-            .pipeline-missing {
-                padding: var(--space-32);
-            }
-
-            .pipeline-flow {
-                font-size: 14px;
-                word-break: break-word;
-            }
-
-            .pipeline-conclusion {
-                font-size: 14px;
-            }
+            .forge-section { padding: 80px 20px; }
+            .forge-pillars { grid-template-columns: 1fr; gap: 32px; }
+            .forge-bottom { font-size: 18px; }
         }
 
         /* SECTION 5: SOLUTION - CarryIT Architecture */
@@ -3257,31 +3533,22 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(
-                180deg,
-                rgba(0, 0, 0, 0.2) 0%,
-                rgba(0, 0, 0, 0) 50%,
-                rgba(0, 0, 0, 0.4) 100%
-            );
+            background-image:
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.12'/%3E%3C/svg%3E"),
+                linear-gradient(
+                    180deg,
+                    rgba(0, 0, 0, 0.2) 0%,
+                    rgba(0, 0, 0, 0) 50%,
+                    rgba(0, 0, 0, 0.4) 100%
+                );
+            background-repeat: repeat, no-repeat;
+            background-size: 300px 300px, 100% 100%;
             pointer-events: none;
-        }
-
-        .douleurs-grain {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0.22;
-            pointer-events: none;
-            background-image: url("data:image/svg+xml,%3Csvg width='4' height='4' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0' y='0' width='2' height='2' fill='%23999999' opacity='0.6'/%3E%3Crect x='2' y='2' width='2' height='2' fill='%23999999' opacity='0.4'/%3E%3C/svg%3E");
-            background-repeat: repeat;
-            background-size: 4px 4px;
         }
 
         .douleurs-subtitle {
             position: absolute;
-            bottom: 180px;
+            bottom: 220px;
             left: 50%;
             transform: translateX(-50%);
             color: #FFFDF6;
@@ -3298,7 +3565,7 @@
         @media (max-width: 768px) {
             .douleurs-subtitle {
                 font-size: 18px;
-                bottom: 100px;
+                bottom: 140px;
             }
         }
 
@@ -3310,18 +3577,19 @@
         /* CTA avec question et scroll indicator */
         .douleurs-cta {
             position: absolute;
-            bottom: 40px;
+            bottom: 72px;
             left: 50%;
             transform: translateX(-50%);
             text-align: center;
             z-index: 25;
+            white-space: nowrap;
         }
 
         .douleurs-cta h3 {
             color: #FFFDF6;
             font-size: 18px;
             font-weight: 500;
-            margin-bottom: 24px;
+            margin-bottom: 10px;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             letter-spacing: -0.3px;
         }
@@ -3358,9 +3626,216 @@
                 height: 300px;
             }
 
+            .douleurs-subtitle {
+                bottom: 158px;
+            }
+
+            .douleurs-cta {
+                bottom: 60px;
+                white-space: normal;
+                width: 90%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
             .douleurs-cta h3 {
                 font-size: 16px;
-                margin-bottom: 16px;
+                margin-bottom: 10px;
+                text-align: center;
+            }
+
+            .scroll-indicator {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* SECTION 4: MENTAL STATES - Interactive Toggle */
+        .mental-states-section {
+            background: #080809;
+            padding: 100px 24px;
+            transition: background 0.7s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mental-states-section.cold-state {
+            background: #00090f;
+        }
+
+        .mental-container {
+            max-width: 820px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .mental-header {
+            margin-bottom: 64px;
+        }
+
+        .mental-overline {
+            transition: color 0.7s ease;
+        }
+
+        .mental-states-section.cold-state .mental-overline {
+            color: #4BA3D4;
+        }
+
+        .mental-title {
+            font-size: clamp(28px, 4vw, 52px);
+            font-weight: 700;
+            color: #FFFDF6;
+            letter-spacing: -1.5px;
+            line-height: 1.05;
+            margin: 0;
+        }
+
+        /* Arena: mots gauche | roue | mots droite */
+        .mental-arena {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            gap: 52px;
+            margin-bottom: 64px;
+        }
+
+        .mental-words {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .mental-words-left { text-align: right; }
+        .mental-words-right { text-align: left; }
+
+        .mental-word {
+            display: block;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-weight: 700;
+            color: #EE4408;
+            letter-spacing: -0.5px;
+            line-height: 1.1;
+            transition: color 0.5s ease, opacity 0.2s ease, transform 0.2s ease;
+        }
+
+        /* Tailles variées pour la profondeur */
+        .mental-word.mw-lg { font-size: clamp(24px, 3.2vw, 40px); }
+        .mental-word.mw-md { font-size: clamp(20px, 2.5vw, 32px); }
+        .mental-word.mw-sm { font-size: clamp(16px, 2vw, 24px); opacity: 0.65; }
+        .mental-word.mw-xs { font-size: clamp(13px, 1.6vw, 18px); opacity: 0.4; }
+
+        .mental-states-section.cold-state .mental-word {
+            color: #4BA3D4;
+        }
+
+        /* Roue centrale */
+        .mental-wheel-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .mental-wheel {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: transparent;
+            border: 2px solid #EE4408;
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: border-color 0.7s ease, box-shadow 0.7s ease, transform 0.65s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 28px rgba(238, 68, 8, 0.3), inset 0 0 20px rgba(238, 68, 8, 0.06);
+            outline: none;
+            flex-shrink: 0;
+        }
+
+        .mental-wheel:hover {
+            box-shadow: 0 0 44px rgba(238, 68, 8, 0.5), inset 0 0 20px rgba(238, 68, 8, 0.1);
+        }
+
+        .mental-states-section.cold-state .mental-wheel {
+            border-color: #4BA3D4;
+            box-shadow: 0 0 28px rgba(75, 163, 212, 0.35), inset 0 0 20px rgba(75, 163, 212, 0.08);
+            transform: rotate(180deg);
+        }
+
+        .mental-states-section.cold-state .mental-wheel:hover {
+            box-shadow: 0 0 44px rgba(75, 163, 212, 0.5), inset 0 0 20px rgba(75, 163, 212, 0.12);
+        }
+
+        .wheel-icon {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.35s ease;
+        }
+
+        .wheel-icon-warm { color: #EE4408; opacity: 1; }
+        .wheel-icon-cold { color: #4BA3D4; opacity: 0; }
+
+        .mental-states-section.cold-state .wheel-icon-warm { opacity: 0; }
+        .mental-states-section.cold-state .wheel-icon-cold { opacity: 1; }
+
+        .mental-caption {
+            font-size: 15px;
+            color: rgba(255, 253, 246, 0.35);
+            letter-spacing: -0.2px;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-style: italic;
+            transition: color 0.7s ease;
+            margin: 0;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .mental-states-section {
+                padding: 80px 20px;
+            }
+
+            .mental-header {
+                margin-bottom: 44px;
+            }
+
+            .mental-arena {
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: auto auto;
+                gap: 20px 16px;
+                margin-bottom: 44px;
+            }
+
+            .mental-words-left {
+                grid-column: 1;
+                grid-row: 1;
+                text-align: center;
+            }
+
+            .mental-words-right {
+                grid-column: 2;
+                grid-row: 1;
+                text-align: center;
+            }
+
+            .mental-wheel-wrapper {
+                grid-column: 1 / -1;
+                grid-row: 2;
+            }
+
+            .mental-word.mw-lg,
+            .mental-word.mw-md,
+            .mental-word.mw-sm,
+            .mental-word.mw-xs {
+                font-size: 15px;
+                opacity: 1;
+            }
+
+            .mental-wheel {
+                width: 84px;
+                height: 84px;
             }
         }
 
