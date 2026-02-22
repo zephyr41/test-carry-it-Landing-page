@@ -1810,18 +1810,206 @@
 
         /* Pain Conclusion */
         .pain-conclusion {
-            font-size: 16px;
-            color: var(--color-text-secondary);
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.5);
             line-height: 1.8;
-            max-width: 900px;
-            text-align: center;
-            margin: 0 auto;
+            max-width: 860px;
+            text-align: left;
+            margin: 0;
             font-family: var(--font-primary);
         }
 
         .pain-conclusion strong {
-            color: var(--color-text-primary);
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        /* Pain Section — Apple Numbered List */
+        .pain-section {
+            padding: var(--space-96) 0;
+            background: #000;
+        }
+
+        .pain-inner {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 0 var(--space-48);
+        }
+
+        .pain-list {
+            margin: var(--space-64) 0;
+        }
+
+        .pain-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 40px;
+            padding: var(--space-48) 0;
+        }
+
+        .pain-number {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--color-accent-action);
+            letter-spacing: 3px;
+            font-family: var(--font-primary);
+            min-width: 28px;
+            padding-top: 8px;
+            flex-shrink: 0;
+        }
+
+        .pain-content {
+            flex: 1;
+        }
+
+        .pain-title {
+            font-size: clamp(22px, 2.8vw, 36px);
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 14px;
+            letter-spacing: -0.025em;
+            line-height: 1.2;
+            font-family: var(--font-primary);
+        }
+
+        .pain-body {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.45);
+            line-height: 1.65;
+            font-family: var(--font-primary);
+            margin: 0;
+        }
+
+        .pain-separator {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.07);
+            width: 100%;
+        }
+
+        /* Pain Item — avec visuel (Pain 01) */
+        .pain-item--visual {
+            align-items: center;
+            gap: 56px;
+            max-width: 100%;
+        }
+
+        .pain-item-text {
+            display: flex;
+            align-items: flex-start;
+            gap: 40px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .pain-visual {
+            width: 420px;
+            flex-shrink: 0;
+        }
+
+        .pain-visual-frame {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            aspect-ratio: 9 / 13;
+            border: 1px solid rgba(238, 68, 8, 0.25);
+            background: #060b10;
+        }
+
+        .pain-mockup {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center top;
+            filter: brightness(0.85) contrast(1.05);
+            display: block;
+        }
+
+        .pain-blueprint-grid {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(238, 68, 8, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(238, 68, 8, 0.03) 1px, transparent 1px);
+            background-size: 32px 32px;
+            pointer-events: none;
+        }
+
+        .pain-blueprint-corners {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .pain-blueprint-corners::before {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            width: 18px;
+            height: 18px;
+            border-top: 1.5px solid rgba(238, 68, 8, 0.55);
+            border-left: 1.5px solid rgba(238, 68, 8, 0.55);
+        }
+
+        .pain-blueprint-corners::after {
+            content: '';
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            width: 18px;
+            height: 18px;
+            border-bottom: 1.5px solid rgba(238, 68, 8, 0.55);
+            border-right: 1.5px solid rgba(238, 68, 8, 0.55);
+        }
+
+        /* Pain Statements Format (legacy) */
+        .pain-intro {
+            font-size: 20px;
             font-weight: 600;
+            color: var(--color-text-secondary);
+            margin-bottom: var(--space-48);
+            font-family: var(--font-primary);
+            max-width: 800px;
+        }
+
+        .pain-statements {
+            display: flex;
+            flex-direction: column;
+            max-width: 800px;
+            margin-bottom: var(--space-64);
+        }
+
+        .pain-statement {
+            padding: var(--space-48) 0;
+        }
+
+        .statement-text {
+            font-size: clamp(28px, 4vw, 52px);
+            font-weight: 700;
+            color: var(--color-text-primary);
+            line-height: 1.15;
+            margin-bottom: 14px;
+            font-family: var(--font-primary);
+            letter-spacing: -0.02em;
+        }
+
+        .statement-second {
+            color: var(--color-accent-action);
+        }
+
+        .statement-context {
+            font-size: 16px;
+            color: var(--color-text-tertiary);
+            font-weight: 400;
+            line-height: 1.5;
+            font-family: var(--font-primary);
+            margin: 0;
+        }
+
+        .pain-divider {
+            width: 100%;
+            height: 1px;
+            background: var(--color-border-subtle);
         }
 
         /* Responsive: Pain Section */
@@ -1849,8 +2037,45 @@
                 padding: var(--space-24);
             }
 
+            .pain-inner {
+                padding: 0 var(--space-24);
+            }
+
+            .pain-item {
+                gap: 24px;
+                padding: 32px 0;
+            }
+
+            .pain-title {
+                font-size: 22px;
+            }
+
+            .statement-text {
+                font-size: 28px;
+            }
+
+            .pain-statement {
+                padding: 32px 0;
+            }
+
             .pain-conclusion {
                 font-size: 14px;
+            }
+
+            .pain-item--visual {
+                flex-direction: column;
+                gap: 32px;
+            }
+
+            .pain-item-text {
+                gap: 24px;
+                width: 100%;
+            }
+
+            .pain-visual {
+                width: 100%;
+                max-width: 320px;
+                margin: 0 auto;
             }
         }
 
