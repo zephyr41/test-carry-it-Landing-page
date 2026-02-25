@@ -1902,6 +1902,7 @@
 
         .pain-body {
             font-size: 16px;
+            font-weight: 500;
             color: rgba(255, 255, 255, 0.4);
             line-height: 1.7;
             font-family: var(--font-primary);
@@ -2042,7 +2043,7 @@
         /* SECTION 4: MARKET GAP - Market Problem Analysis */
         /* SECTION 5: MARKET GAP — Apple Bento Redesign */
         .market-gap-section {
-            background: #000000;
+            background: #080809;
             padding: 100px 24px;
             position: relative;
         }
@@ -2083,7 +2084,7 @@
 
         .mg-subtitle {
             font-size: 17px;
-            color: #86868b;
+            color: #929292;
             font-weight: 400;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             margin: 0;
@@ -2100,15 +2101,13 @@
         }
 
         .mg-card {
-            background:
-                linear-gradient(#1C1C1E, #1C1C1E) padding-box,
-                linear-gradient(135deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.02) 50%, rgba(255,255,255,0.04) 100%) border-box;
-            border: 1px solid transparent;
+            background: #1C1C1E;
+            border: 1px solid rgba(146, 146, 146, 0.12);
             border-radius: 16px;
             padding: 36px;
             position: relative;
             overflow: hidden;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.07);
+            box-shadow: inset 0 1px 0 rgba(255, 253, 246, 0.04);
         }
 
         .mg-card--large { grid-column: 1 / 3; grid-row: 1; }
@@ -2130,7 +2129,7 @@
         .mg-card-title {
             font-size: 20px;
             font-weight: 600;
-            color: #FFFFFF;
+            color: #FFFDF6;
             letter-spacing: -0.4px;
             margin: 0 0 10px 0;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -2139,7 +2138,8 @@
 
         .mg-card-body {
             font-size: 14px;
-            color: #86868b;
+            font-weight: 500;
+            color: #929292;
             line-height: 1.6;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             margin: 0;
@@ -2162,10 +2162,10 @@
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
 
-        .mg-todo-item.checked { color: #48484a; }
+        .mg-todo-item.checked { color: #404025; }
         .mg-todo-item.pending { color: #3A3A3C; }
         .mg-todo-icon { flex-shrink: 0; }
-        .mg-todo-item.checked .mg-todo-icon { color: #3A3A3C; }
+        .mg-todo-item.checked .mg-todo-icon { color: #404025; }
         .mg-todo-item.pending .mg-todo-icon { color: #EE4408; opacity: 0.5; }
 
         /* Maze visual */
@@ -2192,7 +2192,8 @@
         }
 
         .mg-bp-off {
-            background: #2C2C2E;
+            background: rgba(163, 21, 13, 0.35);
+            box-shadow: 0 0 4px rgba(163, 21, 13, 0.25);
         }
 
         .mg-bp-line {
@@ -2205,8 +2206,8 @@
         .mg-bp-broken {
             background: repeating-linear-gradient(
                 90deg,
-                #3A3A3C 0,
-                #3A3A3C 3px,
+                rgba(163, 21, 13, 0.5) 0,
+                rgba(163, 21, 13, 0.5) 3px,
                 transparent 3px,
                 transparent 8px
             );
@@ -2235,73 +2236,87 @@
         .mg-pipeline {
             background: #0A0A0A;
             border: 1px solid #1C1C1E;
-            border-radius: 20px;
-            padding: 40px 48px;
+            border-radius: 14px;
+            padding: 24px 32px 28px;
+        }
+
+        .mg-pipeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
         }
 
         .mg-pipeline-label {
-            font-size: 11px;
-            font-weight: 700;
+            font-size: 9px;
+            font-weight: 500;
             text-transform: uppercase;
-            letter-spacing: 0.1em;
+            letter-spacing: 0.18em;
             color: #48484a;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            margin: 0 0 24px 0;
-            text-align: center;
+            font-family: 'Roboto Mono', 'SF Mono', 'Courier New', monospace;
+            margin: 0;
+        }
+
+        .mg-pipeline-live {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 9px;
+            font-weight: 400;
+            letter-spacing: 0.12em;
+            text-transform: lowercase;
+            color: #48484a;
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        .mg-status-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: #30D158;
+            box-shadow: 0 0 5px rgba(48, 209, 88, 0.7);
+            flex-shrink: 0;
         }
 
         .mg-pipeline-track {
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 24px;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
         }
 
         .mg-pill {
-            background: #1C1C1E;
+            background: #141414;
             border: 1px solid #2C2C2E;
-            border-radius: 100px;
-            padding: 8px 20px;
-            font-size: 13px;
-            font-weight: 500;
+            border-radius: 6px;
+            padding: 7px 14px;
+            font-size: 11px;
+            font-weight: 400;
             color: #AEAEB2;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Roboto Mono', 'SF Mono', 'Courier New', monospace;
             white-space: nowrap;
             flex-shrink: 0;
+            letter-spacing: 0.03em;
         }
 
-        .mg-connector {
-            flex: 1;
-            height: 1px;
-            background: #2C2C2E;
-            position: relative;
-            min-width: 24px;
-        }
-
-        .mg-dot {
-            position: absolute;
-            width: 5px;
-            height: 5px;
-            background: #EE4408;
-            border-radius: 50%;
-            top: -2px;
-            box-shadow: 0 0 8px rgba(238, 68, 8, 0.9), 0 0 16px rgba(238, 68, 8, 0.4);
-            animation: travelPipeline 2.6s ease-in-out infinite;
-        }
-
-        @keyframes travelPipeline {
-            0%   { left: 0%;   opacity: 0; transform: scale(0.5); }
-            12%  { opacity: 1; transform: scale(1); }
-            88%  { opacity: 1; transform: scale(1); }
-            100% { left: 100%; opacity: 0; transform: scale(0.5); }
+        .mg-arrow {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 12px;
+            color: #EE4408;
+            opacity: 0.55;
+            flex-shrink: 0;
+            line-height: 1;
         }
 
         .mg-pipeline-caption {
-            font-size: 14px;
+            font-size: 11px;
             color: #48484a;
             text-align: center;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Roboto Mono', monospace;
             margin: 0;
+            letter-spacing: 0.03em;
         }
 
         /* Mobile */
@@ -2319,27 +2334,55 @@
             .mg-card--small,
             .mg-card--mini { grid-column: 1; grid-row: auto; }
 
-            .mg-pipeline { padding: 28px 20px; }
+            .mg-pipeline { padding: 20px 16px 24px; }
 
-            .mg-pipeline-track { flex-wrap: wrap; gap: 8px; justify-content: center; }
+            .mg-pipeline-track { flex-wrap: wrap; gap: 6px; justify-content: center; }
 
-            .mg-connector { display: none; }
+            .mg-pill { font-size: 10px; padding: 5px 10px; }
 
-            .mg-pill { font-size: 12px; padding: 6px 14px; }
+            .mg-arrow { font-size: 10px; }
 
             .mg-stat-number { font-size: 52px; }
         }
 
-        /* SECTION A: DUALITÉ IDENTITAIRE */
+        /* SECTION A: MENTAL — OSCILLATION */
         .duality-section {
-            background: #000;
-            padding: 120px 24px 140px;
+            background: #03070f;
+            padding: 100px 24px 120px;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: background 1.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .duality-section.state-high {
+            background: #0d0501;
+        }
+
+        .mental-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 700px;
+            height: 560px;
+            border-radius: 50%;
+            filter: blur(130px);
+            pointer-events: none;
+            z-index: 0;
+            background: rgba(25, 65, 200, 0.24);
+            transition: background 1.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .duality-section.state-high .mental-glow {
+            background: rgba(210, 72, 8, 0.20);
         }
 
         .duality-container {
-            max-width: 720px;
+            max-width: 680px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
 
         .duality-overline {
@@ -2347,68 +2390,183 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.22em;
-            color: #48484a;
-            margin: 0 0 64px 0;
+            color: rgba(70, 110, 200, 0.5);
+            margin: 0 0 52px 0;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            transition: color 1.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .duality-states {
+        .duality-section.state-high .duality-overline {
+            color: rgba(180, 95, 35, 0.5);
+        }
+
+        /* Mental Oscillator */
+        .mental-oscillator {
+            position: relative;
+            width: 100%;
+            min-height: 290px;
+            margin-bottom: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mental-state {
+            position: absolute;
+            width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 48px;
-            margin-bottom: 72px;
+            align-items: center;
+            gap: 20px;
+            opacity: 0;
+            transform: translateY(18px);
+            filter: blur(8px);
+            transition: opacity 0.95s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 0.95s cubic-bezier(0.4, 0, 0.2, 1),
+                        filter 0.95s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+            will-change: opacity, transform, filter;
         }
 
-        .duality-high,
-        .duality-low {
+        .mental-state.is-active {
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0);
+            pointer-events: auto;
+        }
+
+        .mental-phase-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.22em;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        .mental-state--low .mental-phase-label {
+            color: rgba(90, 130, 220, 0.55);
+        }
+
+        .mental-state--high .mental-phase-label {
+            color: rgba(220, 155, 70, 0.5);
+        }
+
+        .mental-words {
             display: flex;
-            justify-content: center;
-            gap: 40px;
-            flex-wrap: wrap;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
         }
 
-        .duality-high span {
-            font-size: clamp(28px, 5vw, 48px);
-            font-weight: 700;
-            color: #FFFFFF;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        .mental-word {
+            font-size: clamp(28px, 5vw, 44px);
+            font-weight: 600;
             letter-spacing: -0.04em;
-            text-shadow: 0 0 30px rgba(255,255,255,0.12), 0 0 60px rgba(255,255,255,0.04);
-        }
-
-        .duality-low {
-            opacity: 0.28;
-            filter: blur(1.2px);
-        }
-
-        .duality-low span {
-            font-size: clamp(28px, 5vw, 48px);
-            font-weight: 700;
-            color: #FFFFFF;
+            line-height: 1.05;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            letter-spacing: -0.04em;
         }
 
-        .duality-pivot {
-            font-size: 22px;
+        .mental-state--low .mental-word {
+            color: rgba(130, 170, 255, 0.55);
+        }
+
+        .mental-word--cold {
+            color: rgba(90, 148, 255, 0.92) !important;
+        }
+
+        .mental-state--high .mental-word {
+            color: rgba(255, 238, 208, 0.85);
+        }
+
+        .mental-word--warm {
+            color: #EE6118 !important;
+        }
+
+        .mental-forge-note {
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 4px 0 0;
+        }
+
+        .mental-state--low .mental-forge-note {
+            color: rgba(80, 130, 255, 0.38);
+        }
+
+        .mental-forge-note--result {
+            color: rgba(200, 130, 50, 0.42);
+        }
+
+        /* Truth block */
+        .mental-truth-block {
+            margin-bottom: 52px;
+            text-align: center;
+        }
+
+        .mental-truth-line {
+            font-size: clamp(15px, 2.2vw, 18px);
             font-weight: 400;
-            color: #86868b;
-            line-height: 1.35;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            letter-spacing: -0.02em;
+            line-height: 1.5;
+            margin: 0 0 4px;
+            transition: color 1.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .mental-truth-line--em {
+            font-weight: 600;
+            margin: 0;
+            transition: color 1.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .duality-section.state-low .mental-truth-line {
+            color: rgba(100, 140, 220, 0.55);
+        }
+
+        .duality-section.state-low .mental-truth-line--em {
+            color: rgba(150, 195, 255, 0.9);
+        }
+
+        .duality-section.state-high .mental-truth-line {
+            color: rgba(185, 140, 90, 0.6);
+        }
+
+        .duality-section.state-high .mental-truth-line--em {
+            color: rgba(255, 238, 200, 0.92);
+        }
+
+        /* Punchline */
+        .duality-pivot {
+            font-size: 18px;
+            font-weight: 400;
+            line-height: 1.4;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             margin: 0;
             letter-spacing: -0.02em;
+            transition: color 1.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .duality-section.state-low .duality-pivot {
+            color: rgba(80, 120, 210, 0.58);
+        }
+
+        .duality-section.state-high .duality-pivot {
+            color: rgba(195, 130, 55, 0.6);
         }
 
         @media (max-width: 768px) {
-            .duality-section { padding: 80px 20px; }
-            .duality-high, .duality-low { gap: 20px; }
+            .duality-section { padding: 70px 20px 90px; }
+            .mental-oscillator { min-height: 230px; }
+            .mental-word { font-size: clamp(22px, 6vw, 32px); }
+            .mental-glow { width: 100vw; height: 80vw; }
         }
 
         /* SECTION B: CE QUE CARRYIT FORGE */
         .forge-section {
-            background: #000;
+            background: #080809;
             padding: 100px 24px;
-            border-top: 1px solid #1C1C1E;
+            border-top: 1px solid rgba(146, 146, 146, 0.10);
         }
 
         .forge-container {
@@ -2460,7 +2618,8 @@
 
         .forge-pillar p {
             font-size: 15px;
-            color: #86868b;
+            font-weight: 500;
+            color: #929292;
             line-height: 1.7;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             margin: 0;

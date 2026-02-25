@@ -6,7 +6,7 @@
     <title>Carry It</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <link rel="stylesheet" href="styles.css">
 
@@ -162,23 +162,44 @@ CarryIt structure tes ambitions en objectifs clairs et mesurables pour tenir sur
         </div>
     </section>
 
-    <!-- SECTION 4: DUALITÉ IDENTITAIRE -->
-    <section class="duality-section">
+    <!-- SECTION 4: MENTAL — OSCILLATION AUTOMATIQUE -->
+    <section class="duality-section state-low" id="dualitySection">
+        <div class="mental-glow"></div>
         <div class="duality-container">
-            <p class="duality-overline">TU CONNAIS CES DEUX ÉTATS</p>
-            <div class="duality-states">
-                <div class="duality-high">
-                    <span>Élan.</span>
-                    <span>Discipline.</span>
-                    <span>Clarté.</span>
+            <p class="duality-overline">LE MENTAL SE CONSTRUIT ICI</p>
+
+            <div class="mental-oscillator">
+
+                <!-- Phase Basse — starts active -->
+                <div class="mental-state mental-state--low is-active" id="statelow">
+                    <span class="mental-phase-label">Phase basse.</span>
+                    <div class="mental-words">
+                        <div class="mental-word">Doute.</div>
+                        <div class="mental-word">Épuisement.</div>
+                        <div class="mental-word mental-word--cold">Envie d'arrêter.</div>
+                    </div>
+                    <p class="mental-forge-note">C'est ici que tout se forge.</p>
                 </div>
-                <div class="duality-low">
-                    <span>Addiction.</span>
-                    <span>Dispersion.</span>
-                    <span>Brouillard.</span>
+
+                <!-- Phase Haute -->
+                <div class="mental-state mental-state--high" id="statehigh">
+                    <span class="mental-phase-label">Phase haute.</span>
+                    <div class="mental-words">
+                        <div class="mental-word">Discipliné.</div>
+                        <div class="mental-word">Lucide.</div>
+                        <div class="mental-word mental-word--warm">Solide.</div>
+                    </div>
+                    <p class="mental-forge-note mental-forge-note--result">C'est le résultat du fond.</p>
                 </div>
+
             </div>
-            <p class="duality-pivot">Prisonnier du ressenti.</p>
+
+            <div class="mental-truth-block">
+                <p class="mental-truth-line">Le mental ne se révèle pas quand tu es à ton top.</p>
+                <p class="mental-truth-line mental-truth-line--em">Il se construit quand tu es au fond.</p>
+            </div>
+
+            <p class="duality-pivot">Tu ne décides pas. Ça arrive.</p>
         </div>
     </section>
 
@@ -189,8 +210,8 @@ CarryIt structure tes ambitions en objectifs clairs et mesurables pour tenir sur
             <!-- Header -->
             <div class="mg-header">
                 <p class="mg-overline">LE PROBLÈME</p>
-                <h2 class="mg-title">L'architecture<br>de la stagnation.</h2>
-                <p class="mg-subtitle">Le chaos ne vient pas d'un manque de volonté, mais d'un manque de système.</p>
+                <h2 class="mg-title">Ambition démesurée.<br>Système inexistant.</h2>
+                <p class="mg-subtitle">Mais aucun outil n'est conçu pour soutenir une discipline sur plusieurs années.</p>
             </div>
 
             <!-- Bento Grid -->
@@ -199,8 +220,8 @@ CarryIt structure tes ambitions en objectifs clairs et mesurables pour tenir sur
                 <!-- Large card (2/3): To-do + Habit trackers -->
                 <div class="mg-card mg-card--large">
                     <span class="mg-card-label">L'ILLUSION DE LA PRODUCTIVITÉ</span>
-                    <h3 class="mg-card-title">La dopamine vide.</h3>
-                    <p class="mg-card-body">Cocher des cases n'est pas une trajectoire. C'est une anesthésie.</p>
+                    <h3 class="mg-card-title">Tu coches des cases.</h3>
+                    <p class="mg-card-body">Pas de trajectoire derrière. Les to-do lists ne sont pas construites pour le long terme.</p>
                     <div class="mg-visual-todo">
                         <div class="mg-todo-item checked">
                             <svg class="mg-todo-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -224,8 +245,8 @@ CarryIt structure tes ambitions en objectifs clairs et mesurables pour tenir sur
                 <!-- Tall card (1/3 × 2 rows): Notion/ClickUp -->
                 <div class="mg-card mg-card--tall">
                     <span class="mg-card-label">LA COMPLEXITÉ INUTILE</span>
-                    <h3 class="mg-card-title">L'organisation comme fuite.</h3>
-                    <p class="mg-card-body">Tu construis le labyrinthe au lieu de le traverser.</p>
+                    <h3 class="mg-card-title">Tu t'organises.</h3>
+                    <p class="mg-card-body">Notion. ClickUp. Obsidian. Aucun n'est conçu pour structurer dix ans de vie.</p>
                     <div class="mg-visual-maze">
                         <svg width="100%" height="110" viewBox="0 0 160 110" fill="none" preserveAspectRatio="xMidYMid meet">
                             <path d="M10 15 L70 15 L70 50 L30 50 L30 90 L130 90" stroke="#2C2C2E" stroke-width="1.5" stroke-linecap="round"/>
@@ -240,8 +261,8 @@ CarryIt structure tes ambitions en objectifs clairs et mesurables pour tenir sur
                 <!-- Small card (col 1, row 2): Apps bien-être -->
                 <div class="mg-card mg-card--small">
                     <span class="mg-card-label">LE PIÈGE DE LA DOPAMINE</span>
-                    <h3 class="mg-card-title">Le confort du mensonge.</h3>
-                    <p class="mg-card-body">Les badges ne remplacent pas la réalité des résultats.</p>
+                    <h3 class="mg-card-title">Tu maintiens une streak.</h3>
+                    <p class="mg-card-body">150 jours. L'application te félicite. Elle ne sait pas où tu vas.</p>
                 </div>
 
                 <!-- Mini card (col 2, row 2): broken pipeline -->
@@ -264,19 +285,22 @@ CarryIt structure tes ambitions en objectifs clairs et mesurables pour tenir sur
 
             <!-- Pipeline -->
             <div class="mg-pipeline">
-                <p class="mg-pipeline-label">Le chaînon manquant.</p>
-                <div class="mg-pipeline-track">
-                    <div class="mg-pill">Vision</div>
-                    <div class="mg-connector"><span class="mg-dot" style="animation-delay:0s"></span></div>
-                    <div class="mg-pill">Objectif</div>
-                    <div class="mg-connector"><span class="mg-dot" style="animation-delay:0.65s"></span></div>
-                    <div class="mg-pill">KPI</div>
-                    <div class="mg-connector"><span class="mg-dot" style="animation-delay:1.3s"></span></div>
-                    <div class="mg-pill">Priorisation</div>
-                    <div class="mg-connector"><span class="mg-dot" style="animation-delay:1.95s"></span></div>
-                    <div class="mg-pill">Mesure</div>
+                <div class="mg-pipeline-header">
+                    <p class="mg-pipeline-label">Le chaînon manquant.</p>
+                    <span class="mg-pipeline-live"><span class="mg-status-dot"></span>live</span>
                 </div>
-                <p class="mg-pipeline-caption">La trajectoire est une science. Cinq étapes. Un seul système.</p>
+                <div class="mg-pipeline-track">
+                    <div class="mg-pill">vision</div>
+                    <span class="mg-arrow">→</span>
+                    <div class="mg-pill">objectif</div>
+                    <span class="mg-arrow">→</span>
+                    <div class="mg-pill">kpi</div>
+                    <span class="mg-arrow">→</span>
+                    <div class="mg-pill">priorisation</div>
+                    <span class="mg-arrow">→</span>
+                    <div class="mg-pill">mesure</div>
+                </div>
+                <p class="mg-pipeline-caption">Personne n'a connecté ces cinq étapes. Jusqu'ici.</p>
             </div>
 
         </div>
@@ -824,6 +848,30 @@ CarryIt structure tes ambitions en objectifs clairs et mesurables pour tenir sur
         function scrollToManifest() {
             document.getElementById('manifestSection').scrollIntoView({ behavior: 'smooth' });
         }
+
+        // ── Mental States Oscillator ─────────────────────────────────────
+        (function() {
+            const low     = document.getElementById('statelow');
+            const high    = document.getElementById('statehigh');
+            const section = document.getElementById('dualitySection');
+            if (!low || !high || !section) return;
+            let isLow = true;
+            setInterval(() => {
+                if (isLow) {
+                    low.classList.remove('is-active');
+                    high.classList.add('is-active');
+                    section.classList.remove('state-low');
+                    section.classList.add('state-high');
+                } else {
+                    high.classList.remove('is-active');
+                    low.classList.add('is-active');
+                    section.classList.remove('state-high');
+                    section.classList.add('state-low');
+                }
+                isLow = !isLow;
+            }, 4500);
+        })();
+        // ─────────────────────────────────────────────────────────────────
     </script>
 </body>
 </html>
