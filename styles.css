@@ -2059,27 +2059,37 @@
         }
 
         .mg-overline {
-            display: block;
-            font-size: 12px;
-            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            font-size: 11px;
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.12em;
-            color: #EE4408;
-            margin-bottom: 14px;
+            letter-spacing: 0.1em;
+            color: rgba(255,255,255,0.55);
+            margin-bottom: 20px;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            border: 1px solid rgba(255,255,255,0.18);
+            border-radius: 999px;
+            padding: 5px 16px;
         }
 
         .mg-title {
             font-size: clamp(32px, 5vw, 52px);
-            font-weight: 600;
-            background: linear-gradient(180deg, #FFFFFF 0%, #AEAEB2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-weight: 700;
             letter-spacing: -1.5px;
-            line-height: 1.05;
-            margin: 0 0 14px 0;
+            line-height: 1.08;
+            margin: 0 0 16px 0;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        .mg-title-bright {
+            display: block;
+            color: #FFFFFF;
+        }
+
+        .mg-title-dim {
+            display: block;
+            color: rgba(255,255,255,0.42);
         }
 
         .mg-subtitle {
@@ -2091,7 +2101,150 @@
             line-height: 1.5;
         }
 
-        /* Bento Grid */
+        /* Statement — replaces bento */
+        .mg-statement {
+            margin-bottom: 52px;
+        }
+
+        .mg-tools-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            margin-bottom: 52px;
+        }
+
+        .mg-tool-line {
+            font-size: clamp(22px, 2.8vw, 40px);
+            font-weight: 500;
+            color: rgba(255, 253, 246, 0.35);
+            letter-spacing: -0.03em;
+            line-height: 1.35;
+            position: relative;
+            margin: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            opacity: 0;
+            transform: translateX(-28px);
+            transition: opacity 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .mg-tool-line.is-visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .mg-tool-line.is-struck {
+            opacity: 0.28;
+            transition: opacity 0.5s ease 0.15s, transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .mg-tool-name {
+            color: rgba(255, 253, 246, 0.82);
+            font-weight: 700;
+        }
+
+        .mg-tool-line::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 52%;
+            width: 0;
+            height: 2px;
+            background: rgba(238, 68, 8, 0.85);
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .mg-tool-line.is-struck::after {
+            width: 100%;
+        }
+
+        .mg-conclusion {
+            font-size: clamp(28px, 3.8vw, 56px);
+            font-weight: 700;
+            color: #FFFDF6;
+            letter-spacing: -0.04em;
+            line-height: 1.1;
+            margin: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            opacity: 0;
+            transform: translateY(22px);
+            transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .mg-conclusion.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .mg-uvp {
+            font-size: clamp(28px, 3.8vw, 56px);
+            font-weight: 800;
+            color: var(--accent-orange);
+            letter-spacing: -0.04em;
+            line-height: 1.1;
+            margin: 24px 0 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            opacity: 0;
+            transform: translateY(18px) scale(0.97);
+            transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .mg-uvp.is-visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        /* Problem List — card + text layout */
+        .problem-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 52px;
+        }
+
+        .problem-item {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            opacity: 0;
+            transform: translateY(16px);
+            transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .problem-item.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .problem-visual {
+            flex-shrink: 0;
+            width: 180px;
+            height: 130px;
+            background: #141416;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.06);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .problem-title {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: #FFFDF6;
+            margin: 0 0 8px;
+            letter-spacing: -0.025em;
+        }
+
+        .problem-desc {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 15px;
+            color: rgba(255,253,246,0.45);
+            margin: 0;
+            line-height: 1.55;
+        }
+
+        /* Bento Grid (kept for reference, unused) */
         .mg-bento {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
@@ -2347,8 +2500,8 @@
 
         /* SECTION A: MENTAL — OSCILLATION */
         .duality-section {
-            background: #03070f;
-            padding: 100px 24px 120px;
+            background: radial-gradient(ellipse 90% 75% at 50% 45%, #0a1022 0%, #010307 55%, #000000 100%);
+            padding: 120px clamp(24px, 12vw, 120px) 140px;
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -2356,7 +2509,7 @@
         }
 
         .duality-section.state-high {
-            background: #0d0501;
+            background: radial-gradient(ellipse 90% 75% at 50% 45%, #150a03 0%, #060200 55%, #000000 100%);
         }
 
         .mental-glow {
@@ -2364,18 +2517,18 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 700px;
-            height: 560px;
+            width: 1000px;
+            height: 380px;
             border-radius: 50%;
-            filter: blur(130px);
+            filter: blur(120px);
             pointer-events: none;
             z-index: 0;
-            background: rgba(25, 65, 200, 0.24);
+            background: rgba(12, 18, 55, 0.08);
             transition: background 1.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .duality-section.state-high .mental-glow {
-            background: rgba(210, 72, 8, 0.20);
+            background: rgba(200, 68, 8, 0.18);
         }
 
         .duality-container {
@@ -2386,29 +2539,31 @@
         }
 
         .duality-overline {
-            font-size: 10px;
-            font-weight: 700;
+            font-size: 14px;
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.22em;
-            color: rgba(70, 110, 200, 0.5);
-            margin: 0 0 52px 0;
+            letter-spacing: 0.15em;
+            color: rgba(70, 110, 200, 0.42);
+            margin: 0 0 64px 0;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             transition: color 1.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .duality-section.state-high .duality-overline {
-            color: rgba(180, 95, 35, 0.5);
+            color: rgba(180, 95, 35, 0.42);
         }
 
         /* Mental Oscillator */
         .mental-oscillator {
             position: relative;
             width: 100%;
-            min-height: 290px;
-            margin-bottom: 64px;
+            min-height: 300px;
+            margin-bottom: 200px;
+            padding-bottom: 8%;
             display: flex;
             align-items: center;
             justify-content: center;
+            box-sizing: border-box;
         }
 
         .mental-state {
@@ -2455,7 +2610,17 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 8px;
+            gap: 4px;
+            width: fit-content;
+            margin: 0 auto;
+        }
+
+        .mental-words .mental-word:nth-child(2) {
+            padding-left: 0;
+        }
+
+        .mental-words .mental-word:nth-child(3) {
+            padding-left: 0;
         }
 
         .mental-word {
@@ -2475,12 +2640,22 @@
         }
 
         .mental-state--high .mental-word {
-            color: rgba(255, 238, 208, 0.85);
+            color: rgba(255, 238, 208, 0.80);
         }
 
         .mental-word--warm {
-            color: #EE6118 !important;
+            background: linear-gradient(135deg, #F07020 0%, #FFA040 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent !important;
         }
+
+        /* Weight utility classes — requires Inter 300–900 loaded */
+        .mw-light   { font-weight: 300; }
+        .mw-regular { font-weight: 400; }
+        .mw-medium  { font-weight: 500; }
+        .mw-black   { font-weight: 800; }
 
         .mental-forge-note {
             font-size: 11px;
@@ -2505,35 +2680,21 @@
         }
 
         .mental-truth-line {
-            font-size: clamp(15px, 2.2vw, 18px);
+            font-size: clamp(18px, 2vw, 22px);
             font-weight: 400;
+            color: rgba(255, 253, 246, 0.6);
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             letter-spacing: -0.02em;
             line-height: 1.5;
-            margin: 0 0 4px;
-            transition: color 1.4s cubic-bezier(0.4, 0, 0.2, 1);
+            margin: 0 0 8px;
         }
 
         .mental-truth-line--em {
-            font-weight: 600;
+            font-weight: 700;
+            color: #FFFDF6;
             margin: 0;
-            transition: color 1.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .duality-section.state-low .mental-truth-line {
-            color: rgba(100, 140, 220, 0.55);
-        }
-
-        .duality-section.state-low .mental-truth-line--em {
-            color: rgba(150, 195, 255, 0.9);
-        }
-
-        .duality-section.state-high .mental-truth-line {
-            color: rgba(185, 140, 90, 0.6);
-        }
-
-        .duality-section.state-high .mental-truth-line--em {
-            color: rgba(255, 238, 200, 0.92);
+            font-size: clamp(20px, 2.4vw, 26px);
+            letter-spacing: -0.03em;
         }
 
         /* Punchline */
@@ -2548,18 +2709,21 @@
         }
 
         .duality-section.state-low .duality-pivot {
-            color: rgba(80, 120, 210, 0.58);
+            color: rgba(90, 148, 255, 0.82);
         }
 
         .duality-section.state-high .duality-pivot {
-            color: rgba(195, 130, 55, 0.6);
+            color: rgba(210, 140, 60, 0.90);
         }
 
         @media (max-width: 768px) {
-            .duality-section { padding: 70px 20px 90px; }
-            .mental-oscillator { min-height: 230px; }
-            .mental-word { font-size: clamp(22px, 6vw, 32px); }
-            .mental-glow { width: 100vw; height: 80vw; }
+            .duality-section { padding: 80px 6vw 100px; }
+            .mental-oscillator { min-height: 250px; margin-bottom: 100px; padding-bottom: 6%; }
+            .mental-word { font-size: clamp(26px, 7vw, 36px); }
+            .mental-glow { width: 100vw; height: 50vw; }
+            .mental-words .mental-word:nth-child(2) { padding-left: 0; }
+            .mental-words .mental-word:nth-child(3) { padding-left: 0; }
+            .duality-overline { font-size: 12px; margin: 0 0 48px 0; }
         }
 
         /* SECTION B: CE QUE CARRYIT FORGE */
