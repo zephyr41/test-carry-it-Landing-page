@@ -2044,18 +2044,22 @@
         /* SECTION 5: MARKET GAP — Apple Bento Redesign */
         .market-gap-section {
             background: #080809;
-            padding: 100px 24px;
+            padding: 72px 24px;
             position: relative;
         }
 
         .mg-container {
-            max-width: 1100px;
+            max-width: 900px;
             margin: 0 auto;
+            text-align: center;
         }
 
         /* Header */
         .mg-header {
-            margin-bottom: 48px;
+            max-width: 640px;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 56px;
         }
 
         .mg-overline {
@@ -2066,7 +2070,7 @@
             text-transform: uppercase;
             letter-spacing: 0.1em;
             color: rgba(255,255,255,0.55);
-            margin-bottom: 20px;
+            margin-bottom: 18px;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             border: 1px solid rgba(255,255,255,0.18);
             border-radius: 999px;
@@ -2074,11 +2078,11 @@
         }
 
         .mg-title {
-            font-size: clamp(32px, 5vw, 52px);
+            font-size: clamp(28px, 4.5vw, 48px);
             font-weight: 700;
             letter-spacing: -1.5px;
-            line-height: 1.08;
-            margin: 0 0 16px 0;
+            line-height: 1.2;
+            margin: 0 0 24px 0;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
 
@@ -2089,21 +2093,37 @@
 
         .mg-title-dim {
             display: block;
-            color: rgba(255,255,255,0.42);
+            color: rgba(255,255,255,0.38);
+            margin-top: 4px;
         }
 
         .mg-subtitle {
-            font-size: 17px;
-            color: #929292;
+            font-size: 15px;
+            color: #A1A1AA;
             font-weight: 400;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             margin: 0;
-            line-height: 1.5;
+            line-height: 1.6;
         }
 
         /* Statement — replaces bento */
         .mg-statement {
             margin-bottom: 52px;
+        }
+
+        .mg-conclusion {
+            font-size: clamp(16px, 1.8vw, 19px);
+            font-weight: 500;
+            color: #ffffff;
+            text-align: center;
+            max-width: 560px;
+            margin: 0 auto;
+            line-height: 1.5;
+            border-top: 1px solid rgba(255,255,255,0.07);
+            padding-top: 36px;
+            opacity: 0;
+            transform: translateY(14px);
+            transition: opacity 0.65s cubic-bezier(0.16,1,0.3,1), transform 0.65s cubic-bezier(0.16,1,0.3,1);
         }
 
         .mg-tools-list {
@@ -2157,19 +2177,6 @@
             width: 100%;
         }
 
-        .mg-conclusion {
-            font-size: clamp(28px, 3.8vw, 56px);
-            font-weight: 700;
-            color: #FFFDF6;
-            letter-spacing: -0.04em;
-            line-height: 1.1;
-            margin: 0;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            opacity: 0;
-            transform: translateY(22px);
-            transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
         .mg-conclusion.is-visible {
             opacity: 1;
             transform: translateY(0);
@@ -2197,16 +2204,20 @@
         .problem-list {
             display: flex;
             flex-direction: column;
-            gap: 16px;
-            margin-bottom: 52px;
+            gap: 40px;
+            margin-bottom: 40px;
+            text-align: left;
+            max-width: 760px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .problem-item {
             display: flex;
             align-items: center;
-            gap: 28px;
+            gap: 48px;
             opacity: 0;
-            transform: translateY(16px);
+            transform: translateY(14px);
             transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
@@ -2217,31 +2228,129 @@
 
         .problem-visual {
             flex-shrink: 0;
-            width: 180px;
-            height: 130px;
-            background: #141416;
-            border-radius: 14px;
-            border: 1px solid rgba(255,255,255,0.06);
+            width: 280px;
+            height: 160px;
+            background: #121212;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+            padding: 20px 24px;
+        }
+
+        .problem-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #eeeeee;
+            margin: 0 0 5px;
+            letter-spacing: -0.02em;
+        }
+
+        .problem-highlight {
+            display: block;
+            color: #d1d1d1;
+            font-weight: 500;
+            font-size: 1rem;
+            margin: 0 0 5px;
+        }
+
+        .problem-desc {
+            color: #8a8a8a;
+            font-size: 1rem;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        /* --- Visual 1: Dot grid --- */
+        .prob-grid-dots {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 7px;
+            width: 100%;
+        }
+        .prob-dot {
+            aspect-ratio: 1;
+            background: #222222;
+            border-radius: 3px;
+        }
+        .prob-dot.active { background: #ff3b1f; }
+
+        /* --- Visual 2: To-do list (checkbox + bar) --- */
+        .prob-todo {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+        }
+        .prob-todo-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .prob-todo-check {
+            width: 13px;
+            height: 13px;
+            border-radius: 3px;
+            flex-shrink: 0;
+        }
+        .prob-todo-bar {
+            height: 10px;
+            border-radius: 5px;
+        }
+        .prob-todo-row.done .prob-todo-check { background: #ff3b1f; }
+        .prob-todo-row.done .prob-todo-bar   { background: #ff3b1f; }
+        .prob-todo-row.pending .prob-todo-check { background: #222222; }
+        .prob-todo-row.pending .prob-todo-bar   { background: #222222; }
+
+        /* --- Visual 3: Streak cards --- */
+        .prob-streak-cards {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: center;
+        }
+        .prob-scard {
+            width: 48px;
+            height: 66px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-
-        .problem-title {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            font-size: 20px;
-            font-weight: 700;
-            color: #FFFDF6;
-            margin: 0 0 8px;
-            letter-spacing: -0.025em;
+        .prob-scard.done {
+            background: rgba(255, 59, 31, 0.14);
+        }
+        .prob-scard.done::after {
+            content: '';
+            width: 14px;
+            height: 9px;
+            border-left: 2.5px solid #ff3b1f;
+            border-bottom: 2.5px solid #ff3b1f;
+            transform: rotate(-45deg);
+            margin-top: -3px;
+        }
+        .prob-scard.missed {
+            background: #1a1a1a;
+            border: 1px solid #252528;
+        }
+        .prob-scard.today {
+            background: transparent;
+            border: 2px solid #2e2e32;
         }
 
-        .problem-desc {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            font-size: 15px;
-            color: rgba(255,253,246,0.45);
-            margin: 0;
-            line-height: 1.55;
+        /* --- Visual 4: Gamification sunburst + star --- */
+        .prob-sunburst {
+            width: 100%;
+            height: 100%;
+            background: repeating-conic-gradient(
+                rgba(255, 255, 255, 0.04) 0deg 12deg,
+                transparent 12deg 24deg
+            );
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         /* Bento Grid (kept for reference, unused) */
