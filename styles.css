@@ -3358,6 +3358,555 @@
             .feature-blocks { gap: 64px; padding: 0 20px; }
         }
 
+/* ── EXAMPLES SECTION ───────────────────────────────────────────── */
+/* ─── CINEMA SECTION — Quote → Dashboard ─── */
+.cinema-section {
+    height: 100vh;
+    background: #080809;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+/* Header */
+.cin-header {
+    position: absolute;
+    top: 48px;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    z-index: 10;
+}
+
+.cin-overline {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(238, 68, 8, 0.75);
+    margin: 0;
+    font-family: var(--font-primary);
+}
+
+.cin-subtitle {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.3);
+    margin: 0;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+}
+
+.cin-dots {
+    display: flex;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.cin-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.12);
+    transition: background 0.4s ease, transform 0.4s ease;
+}
+
+.cin-dot.active {
+    background: rgba(238, 68, 8, 0.8);
+    transform: scale(1.3);
+}
+
+/* Quote layer */
+.cin-quote-wrap {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    filter: blur(0px);
+    transition: opacity 0.8s ease, filter 0.8s ease;
+    pointer-events: none;
+}
+
+.cin-quote-wrap.q-in {
+    opacity: 1;
+    filter: blur(0px);
+}
+
+.cin-quote-wrap.q-blur {
+    opacity: 0;
+    filter: blur(14px);
+}
+
+.cin-quote {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: clamp(24px, 3.2vw, 40px);
+    font-style: italic;
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.65);
+    letter-spacing: -0.025em;
+    text-align: center;
+    max-width: 600px;
+    line-height: 1.35;
+    margin: 0 32px;
+}
+
+/* Dashboard layer */
+.cin-dashboard-wrap {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    filter: blur(10px);
+    transform: scale(0.97) translateY(14px);
+    transition: opacity 1s cubic-bezier(0.16,1,0.3,1),
+                filter 1s cubic-bezier(0.16,1,0.3,1),
+                transform 1s cubic-bezier(0.16,1,0.3,1);
+    pointer-events: none;
+}
+
+.cin-dashboard-wrap.d-in {
+    opacity: 1;
+    filter: blur(0px);
+    transform: scale(1) translateY(0);
+}
+
+.cin-dashboard-wrap.d-out {
+    opacity: 0;
+    filter: blur(4px);
+    transform: scale(1.02);
+    transition: opacity 0.7s ease, filter 0.7s ease, transform 0.7s ease;
+}
+
+.cin-dashboard {
+    width: min(860px, 90vw);
+    min-height: min(520px, 65vh) !important;
+    padding: 40px !important;
+    gap: 24px !important;
+}
+
+/* Boost internal card sizes for epic reveal */
+.cin-dashboard .sk-db-grid {
+    flex: 1;
+    gap: 20px;
+}
+
+.cin-dashboard .sk-db-smart-card,
+.cin-dashboard .sk-db-kpi-card {
+    padding: 24px;
+    border-radius: 16px;
+}
+
+.cin-dashboard .sk-db-proj-name {
+    height: 18px;
+    width: 65%;
+    background: rgba(255,255,255,0.14);
+}
+
+.cin-dashboard .sk-db-date-badge {
+    height: 22px;
+    width: 130px;
+}
+
+.cin-dashboard .sk-db-smart-rows {
+    gap: 12px;
+}
+
+.cin-dashboard .sk-db-sbar {
+    height: 8px;
+}
+
+.cin-dashboard .sk-db-sep {
+    margin: 4px 0;
+}
+
+.cin-dashboard .sk-db-tasks {
+    gap: 14px;
+}
+
+.cin-dashboard .sk-db-taskbar {
+    height: 8px;
+}
+
+.cin-dashboard .sk-db-check {
+    width: 14px;
+    height: 14px;
+}
+
+/* ─── Dashboard texte réel ─── */
+.cin-db-proj {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.82);
+    font-family: var(--font-primary);
+    min-height: 16px;
+}
+
+.cin-db-date {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.35);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 999px;
+    padding: 3px 11px;
+    font-family: var(--font-primary);
+    align-self: flex-start;
+}
+
+.cin-db-smart-text {
+    font-size: 11px;
+    color: rgba(255,255,255,0.42);
+    font-family: var(--font-primary);
+    line-height: 1.3;
+    flex: 1;
+}
+
+.cin-smart-accent {
+    color: rgba(238, 68, 8, 0.75);
+    font-weight: 500;
+}
+
+.cin-sl-accent {
+    color: rgba(238, 68, 8, 0.75) !important;
+}
+
+/* Override sk-db-srow pour texte */
+.cin-dashboard .sk-db-srow {
+    align-items: flex-start;
+    padding: 2px 0;
+}
+
+.cin-dashboard .sk-db-sl {
+    font-size: 11px;
+    margin-top: 1px;
+    font-weight: 700;
+}
+
+/* KPI texte */
+.cin-db-kpi-unit {
+    font-size: 22px;
+    font-weight: 700;
+    color: rgba(238, 68, 8, 0.9);
+    letter-spacing: 0.03em;
+    font-family: var(--font-primary);
+    line-height: 1;
+}
+
+.cin-db-kpi-desc {
+    font-size: 10px;
+    color: rgba(255,255,255,0.28);
+    font-family: var(--font-primary);
+    margin-top: 4px;
+    margin-bottom: 6px;
+}
+
+/* Jalons task labels */
+.cin-db-task-label {
+    font-size: 12px;
+    color: rgba(255,255,255,0.45);
+    font-family: var(--font-primary);
+    line-height: 1;
+}
+
+.cin-db-task-label.done {
+    color: rgba(255,255,255,0.22);
+    text-decoration: line-through;
+    text-decoration-color: rgba(238,68,8,0.25);
+}
+
+/* LEGACY — kept for reference (unused) */
+.examples-section {
+    padding: 80px 24px;
+    background: linear-gradient(
+        180deg,
+        #080809 0%,
+        rgba(238, 68, 8, 0.025) 50%,
+        #080809 100%
+    );
+    border-top: 1px solid rgba(255,255,255,0.07);
+}
+
+.examples-container {
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.examples-title {
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -1px;
+    margin: 12px 0 10px;
+}
+
+.examples-subtitle {
+    font-size: 16px;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 52px;
+}
+
+.examples-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: left;
+}
+
+/* ─── TRANSFORM CARD ─── */
+.ex-transform-card {
+    position: relative;
+    background: #111113;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 20px;
+    overflow: hidden;
+    min-height: 260px;
+    transition: border-color 0.3s ease;
+}
+
+.ex-transform-card:hover {
+    border-color: rgba(238, 68, 8, 0.18);
+}
+
+.ex-card-num {
+    position: absolute;
+    top: 18px;
+    left: 24px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: rgba(255,255,255,0.13);
+    z-index: 3;
+    font-family: var(--font-primary);
+}
+
+/* Both states overlay each other */
+.ex-state {
+    position: absolute;
+    inset: 0;
+    padding: 42px 32px 26px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: opacity 0.35s ease, filter 0.35s ease;
+}
+
+/* ─── QUOTE STATE ─── */
+.ex-state-quote {
+    align-items: center;
+    text-align: center;
+    gap: 20px;
+    opacity: 1;
+    filter: blur(0px);
+}
+
+.ex-big-quote {
+    font-size: clamp(17px, 2.2vw, 23px);
+    font-style: italic;
+    font-weight: 400;
+    color: rgba(255,255,255,0.3);
+    line-height: 1.45;
+    letter-spacing: -0.02em;
+    margin: 0;
+    filter: blur(2.5px);
+}
+
+.ex-vague-badge {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: rgba(160, 90, 10, 0.1);
+    border: 1px solid rgba(160, 90, 10, 0.2);
+    color: rgba(200, 130, 40, 0.55);
+}
+
+/* ─── GOAL CARD STATE ─── */
+.ex-state-goal {
+    opacity: 0;
+    filter: blur(10px);
+    justify-content: flex-start;
+    gap: 0;
+    padding-top: 40px;
+}
+
+.ex-gc-smart {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 14px;
+}
+
+.ex-gc-overline {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(238, 68, 8, 0.8);
+}
+
+.ex-gc-obj {
+    font-size: 15px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.88);
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+    margin: 0;
+}
+
+.ex-gc-sep {
+    height: 1px;
+    background: rgba(255,255,255,0.05);
+    flex-shrink: 0;
+    margin-bottom: 14px;
+}
+
+.ex-gc-kpi-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.ex-gc-row-label {
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.18);
+    flex-shrink: 0;
+    min-width: 42px;
+}
+
+.ex-gc-kpi-unit {
+    font-size: 13px;
+    font-weight: 700;
+    color: rgba(238, 68, 8, 0.9);
+    letter-spacing: 0.04em;
+}
+
+.ex-gc-kpi-desc {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.32);
+}
+
+/* Timeline */
+.ex-gc-tl-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 14px;
+}
+
+.ex-gc-tl-label {
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.18);
+}
+
+.ex-gc-tl {
+    display: flex;
+    align-items: flex-start;
+}
+
+.ex-gc-ms {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    flex-shrink: 0;
+}
+
+.ex-gc-ms-lbl {
+    font-size: 9px;
+    color: rgba(255, 255, 255, 0.28);
+    white-space: nowrap;
+    font-weight: 500;
+    line-height: 1;
+}
+
+.ex-gc-ms.target .ex-gc-ms-lbl {
+    background: linear-gradient(135deg, #F07020 0%, #FFA040 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+}
+
+.ex-gc-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #1e1e22;
+    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
+}
+
+.ex-gc-dot.done {
+    background: rgba(238, 68, 8, 0.3);
+    border-color: rgba(238, 68, 8, 0.45);
+}
+
+.ex-gc-dot.target-dot {
+    background: linear-gradient(135deg, #F07020, #FFA040);
+    border-color: transparent;
+    box-shadow: 0 0 8px rgba(238, 68, 8, 0.4);
+}
+
+.ex-gc-line {
+    flex: 1;
+    height: 1.5px;
+    background: rgba(255, 255, 255, 0.06);
+    margin-top: 4px;
+}
+
+.ex-structured-badge {
+    display: inline-block;
+    align-self: flex-start;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: rgba(238, 68, 8, 0.08);
+    border: 1px solid rgba(238, 68, 8, 0.25);
+    color: rgba(238, 100, 50, 0.85);
+}
+
+/* ─── TRANSFORM TOGGLE ─── */
+.ex-transform-card.is-transformed .ex-state-quote {
+    opacity: 0;
+    filter: blur(14px);
+    pointer-events: none;
+}
+
+.ex-transform-card.is-transformed .ex-state-goal {
+    opacity: 1;
+    filter: blur(0px);
+}
+
+@media (max-width: 768px) {
+    .ex-state { padding: 40px 20px 20px; }
+    .ex-big-quote { font-size: 17px; }
+    .ex-gc-obj { font-size: 13px; }
+    .ex-gc-ms-lbl { font-size: 8px; }
+}
+
         /* ── OLD pipeline compact (unused) ── */
         .pipeline-track {
             display: flex;
