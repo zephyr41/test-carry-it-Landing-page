@@ -2044,7 +2044,7 @@
         /* SECTION 5: MARKET GAP — Apple Bento Redesign */
         .market-gap-section {
             background: #080809;
-            padding: 72px 24px;
+            padding: 72px 24px 32px;
             position: relative;
         }
 
@@ -2917,7 +2917,8 @@
 
         /* SECTION 5: SOLUTION - CarryIT Architecture */
         .solution-section {
-            padding: var(--space-96) var(--space-24);
+            border-top: 1px solid rgba(255,255,255,0.07);
+            padding: 64px var(--space-24) var(--space-96);
             background: linear-gradient(
                 180deg,
                 var(--color-background-base) 0%,
@@ -2947,11 +2948,417 @@
             max-width: 700px;
         }
 
-        .solution-section .section-subtitle {
-            margin-bottom: 48px;
+        /* ── SOLUTION SECTION — Feature Blocks ── */
+
+        .sol-header {
+            text-align: center;
+            max-width: 640px;
+            margin: 0 auto 96px;
+            padding: 0 24px;
         }
 
-        /* Pipeline compact */
+        .sol-header h2 {
+            font-size: clamp(28px, 4vw, 48px);
+            font-weight: 700;
+            letter-spacing: -1.5px;
+            line-height: 1.1;
+            color: #fff;
+            margin: 0 0 16px;
+        }
+
+        .sol-header .section-subtitle {
+            font-size: 16px;
+            color: rgba(255,255,255,0.45);
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .feature-blocks {
+            display: flex;
+            flex-direction: column;
+            gap: 100px;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        .feature-block {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .feature-block:nth-child(even) .feature-text { order: 2; }
+        .feature-block:nth-child(even) .feature-visual { order: 1; }
+
+        .feature-step {
+            display: inline-block;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #ff3b1f;
+            margin-bottom: 20px;
+        }
+
+        .feature-title {
+            font-size: clamp(22px, 2.5vw, 32px);
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -0.03em;
+            line-height: 1.2;
+            margin: 0 0 16px;
+        }
+
+        .feature-desc {
+            font-size: 15px;
+            color: rgba(255,255,255,0.45);
+            line-height: 1.7;
+            margin: 0;
+        }
+
+        /* Skeleton card base */
+        .sk-card {
+            background: #111113;
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 20px;
+            padding: 32px;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 14px;
+        }
+
+        .sk-card-center { align-items: center; text-align: center; }
+
+        /* Skeleton bar */
+        .sk-bar {
+            height: 10px;
+            background: #1e1e22;
+            border-radius: 5px;
+            flex-shrink: 0;
+        }
+
+        .sk-bar.sk-accent { background: rgba(255,59,31,0.25); }
+
+        /* Card 1 — Ambition */
+        .sk-field-label {
+            height: 8px;
+            width: 80px;
+            background: #1e1e22;
+            border-radius: 4px;
+        }
+
+        .sk-field {
+            height: 40px;
+            background: #181818;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 10px;
+        }
+
+        .sk-chips {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .sk-chip {
+            height: 26px;
+            width: 70px;
+            background: #1a1a1e;
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 999px;
+        }
+
+        .sk-chip.sk-short { width: 50px; }
+        .sk-chip.sk-long { width: 90px; }
+
+        /* Card 2 — SMART */
+        .sk-smart-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sk-letter {
+            font-size: 13px;
+            font-weight: 700;
+            color: rgba(255,255,255,0.2);
+            width: 16px;
+            flex-shrink: 0;
+        }
+
+        /* Card 3 — KPI */
+        .sk-kpi-unit {
+            font-size: 13px;
+            font-weight: 600;
+            color: #ff3b1f;
+            letter-spacing: 0.05em;
+        }
+
+        .sk-kpi-value {
+            font-size: 56px;
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: -3px;
+            line-height: 1;
+        }
+
+        .sk-kpi-sub {
+            height: 8px;
+            width: 120px;
+            background: #1e1e22;
+            border-radius: 4px;
+            margin: 4px auto 0;
+        }
+
+        /* Card 4 — Jalons (horizontal timeline) */
+        .sk-timeline {
+            display: flex;
+            align-items: flex-start;
+            gap: 0;
+            padding: 16px 0;
+        }
+
+        .sk-milestone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .sk-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #2a2a2e;
+            border: 2px solid #333;
+            flex-shrink: 0;
+        }
+
+        .sk-dot.sk-dot-done {
+            background: #ff3b1f;
+            border-color: #ff3b1f;
+        }
+
+        .sk-ml-lbl {
+            font-size: 9px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.3);
+            letter-spacing: 0.04em;
+            white-space: nowrap;
+        }
+
+        .sk-tl-line {
+            flex: 1;
+            height: 2px;
+            background: #222226;
+            margin-top: 6px;
+        }
+
+        .sk-tl-line.sk-tl-done { background: rgba(255,59,31,0.4); }
+
+        /* Card 5 — Exécution */
+        .sk-task {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sk-check {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            background: rgba(255,59,31,0.2);
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .sk-check::after {
+            content: '';
+            position: absolute;
+            left: 3px;
+            top: 1px;
+            width: 8px;
+            height: 5px;
+            border-left: 2px solid #ff3b1f;
+            border-bottom: 2px solid #ff3b1f;
+            transform: rotate(-45deg);
+        }
+
+        .sk-check.sk-check-empty {
+            background: #1e1e22;
+            border: 1px solid #2a2a2e;
+        }
+
+        .sk-check.sk-check-empty::after { display: none; }
+        .sk-task-done .sk-bar { background: rgba(255,59,31,0.2); }
+
+        /* Card 6 — Dashboard */
+        .sk-card-dashboard {
+            min-height: 320px;
+            gap: 16px;
+        }
+
+        /* 2-col grid */
+        .sk-db-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            flex: 1;
+        }
+
+        /* SMART card (gauche) */
+        .sk-db-smart-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .sk-db-proj-name {
+            height: 14px;
+            width: 70%;
+            background: rgba(255,255,255,0.12);
+            border-radius: 4px;
+        }
+
+        .sk-db-date-badge {
+            height: 18px;
+            width: 110px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 999px;
+        }
+
+        .sk-db-smart-rows {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .sk-db-srow {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sk-db-sl {
+            font-size: 9px;
+            font-weight: 700;
+            color: rgba(255,255,255,0.25);
+            width: 10px;
+            flex-shrink: 0;
+        }
+
+        .sk-db-sbar {
+            height: 6px;
+            background: rgba(255,255,255,0.07);
+            border-radius: 3px;
+        }
+
+        .sk-db-sbar-accent { background: rgba(255,59,31,0.2); }
+
+        /* KPI card (droite) */
+        .sk-db-kpi-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .sk-db-kpi-label {
+            height: 8px;
+            width: 55%;
+            background: rgba(255,255,255,0.07);
+            border-radius: 3px;
+        }
+
+        .sk-db-dotchart {
+            flex: 1;
+            min-height: 64px;
+            display: flex;
+        }
+
+        .sk-db-linechart {
+            width: 100%;
+            height: 100%;
+            min-height: 64px;
+            overflow: visible;
+        }
+
+        /* Séparateur */
+        .sk-db-sep {
+            height: 1px;
+            background: rgba(255,255,255,0.06);
+        }
+
+        /* To-do list (bas) */
+        .sk-db-tasks {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
+
+        .sk-db-task {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .sk-db-check {
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+            background: rgba(255,59,31,0.25);
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .sk-db-check::after {
+            content: '';
+            position: absolute;
+            inset: 2px;
+            background: #ff3b1f;
+            border-radius: 1px;
+        }
+
+        .sk-db-check-empty {
+            background: transparent;
+            border: 1.5px solid rgba(255,255,255,0.15);
+        }
+
+        .sk-db-check-empty::after { display: none; }
+
+        .sk-db-taskbar {
+            height: 6px;
+            background: #1e1e22;
+            border-radius: 3px;
+        }
+
+        .sk-db-task-done .sk-db-taskbar { background: rgba(255,59,31,0.15); }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .feature-block {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+            .feature-block:nth-child(even) .feature-text { order: 1; }
+            .feature-block:nth-child(even) .feature-visual { order: 2; }
+            .feature-blocks { gap: 64px; padding: 0 20px; }
+        }
+
+        /* ── OLD pipeline compact (unused) ── */
         .pipeline-track {
             display: flex;
             align-items: center;
@@ -4350,11 +4757,6 @@
             font-weight: 600;
         }
 
-        /* SECTION 4: MARKET GAP SECTION */
-        .market-gap-section {
-            background: var(--color-background-base);
-            padding: var(--space-96) var(--space-24);
-        }
 
         .tools-comparison {
             display: grid;
