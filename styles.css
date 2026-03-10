@@ -3294,6 +3294,8 @@
             height: 100%;
             min-height: 64px;
             overflow: visible;
+            will-change: transform;
+            transform: translateZ(0);
         }
 
         /* Séparateur */
@@ -3490,6 +3492,9 @@
 .cin-dashboard {
     position: relative;
     transform: perspective(900px) rotateX(-3deg) rotateY(-3deg);
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
 }
 
 .cin-dashboard::after {
@@ -3533,13 +3538,13 @@
     font-size: 11px;
     font-weight: 500;
     letter-spacing: 0.04em;
-    color: rgba(255, 255, 255, 0.22);
+    color: rgba(255, 255, 255, 0.55);
     font-family: var(--font-primary);
     text-transform: none;
 }
 
 .cin-scroll-hint svg {
-    color: rgba(255, 255, 255, 0.18);
+    color: rgba(255, 255, 255, 0.40);
     width: 18px;
     height: 18px;
 }
