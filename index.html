@@ -532,63 +532,50 @@ CarryIt structure tes ambitions en objectifs clairs et mesurables pour tenir sur
         <div class="cin-dashboard-wrap" id="cinDashWrap">
             <div class="cin-db-inner">
 
-                <!-- Titre épique au-dessus de la card -->
                 <div class="cin-db-epic-title" id="cinEpicTitle"></div>
 
                 <div class="sk-card sk-card-dashboard cin-dashboard">
-
-                    <!-- Top: 2 colonnes -->
                     <div class="sk-db-grid">
 
-                        <!-- SMART -->
+                        <!-- SMART card — texte réel injecté par JS -->
                         <div class="sk-db-smart-card">
-                            <p class="cin-section-label">OBJECTIF SMART</p>
-                            <div class="cin-db-date" id="cinDbDate"></div>
-                            <div class="sk-db-smart-rows">
-                                <div class="sk-db-srow"><span class="sk-db-sl">S</span><span class="cin-db-smart-text" id="cinSmartS"></span></div>
-                                <div class="sk-db-srow"><span class="sk-db-sl">M</span><span class="cin-db-smart-text" id="cinSmartM"></span></div>
-                                <div class="sk-db-srow"><span class="sk-db-sl">A</span><span class="cin-db-smart-text" id="cinSmartA"></span></div>
-                                <div class="sk-db-srow"><span class="sk-db-sl">R</span><span class="cin-db-smart-text" id="cinSmartR"></span></div>
-                                <div class="sk-db-srow"><span class="sk-db-sl cin-sl-accent">T</span><span class="cin-db-smart-text cin-smart-accent" id="cinSmartT"></span></div>
+                            <div>
+                                <div class="cin-section-label">Indicateur Clé (KPI)</div>
+                                <div class="cin-kpi-main" id="cinKpiMain"></div>
                             </div>
+                            <div class="sk-db-smart-rows" id="cinSmartRows"></div>
                         </div>
 
-                        <!-- KPI + chart -->
+                        <!-- KPI card — stats + chart -->
                         <div class="sk-db-kpi-card">
-                            <p class="cin-section-label">KPI HEBDO</p>
-                            <div class="cin-db-kpi-unit" id="cinKpiUnit"></div>
-                            <div class="cin-db-kpi-desc" id="cinKpiDesc"></div>
+                            <div id="cinKpiStats"></div>
                             <div class="sk-db-dotchart">
-                                <svg class="sk-db-linechart" viewBox="0 0 120 82" xmlns="http://www.w3.org/2000/svg">
+                                <svg class="sk-db-linechart" viewBox="0 0 120 70" xmlns="http://www.w3.org/2000/svg">
                                     <defs>
                                         <linearGradient id="cinAreaFill" x1="0" x2="0" y1="0" y2="1">
-                                            <stop offset="0%" stop-color="rgba(238,68,8,0.12)"/>
+                                            <stop offset="0%" stop-color="rgba(238,68,8,0.06)"/>
                                             <stop offset="100%" stop-color="rgba(238,68,8,0)"/>
                                         </linearGradient>
                                     </defs>
-                                    <!-- Axes -->
-                                    <line x1="6" y1="4" x2="6" y2="68" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
-                                    <line x1="6" y1="68" x2="116" y2="68" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
-                                    <!-- Area -->
-                                    <polygon points="8,58 24,50 40,54 58,38 78,24 110,18 110,70 8,70" fill="url(#cinAreaFill)"/>
-                                    <!-- Line -->
-                                    <polyline points="8,58 24,50 40,54 58,38 78,24 110,18" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <!-- Dots -->
-                                    <circle cx="8"   cy="58" r="2" fill="rgba(255,255,255,0.12)"/>
-                                    <circle cx="24"  cy="50" r="2" fill="rgba(255,255,255,0.12)"/>
-                                    <circle cx="40"  cy="54" r="2" fill="rgba(255,255,255,0.12)"/>
-                                    <circle cx="58"  cy="38" r="2" fill="rgba(255,255,255,0.12)"/>
-                                    <circle cx="78"  cy="24" r="2" fill="rgba(255,255,255,0.12)"/>
-                                    <!-- Dernier point — maintenant -->
-                                    <circle cx="110" cy="18" r="4" fill="rgba(238,68,8,0.9)"/>
-                                    <circle cx="110" cy="18" r="7" fill="rgba(238,68,8,0.15)"/>
-                                    <!-- Labels X axis -->
-                                    <text x="8"   y="78" text-anchor="middle" font-size="5" fill="rgba(255,255,255,0.2)">S1</text>
-                                    <text x="24"  y="78" text-anchor="middle" font-size="5" fill="rgba(255,255,255,0.2)">S4</text>
-                                    <text x="40"  y="78" text-anchor="middle" font-size="5" fill="rgba(255,255,255,0.2)">S8</text>
-                                    <text x="58"  y="78" text-anchor="middle" font-size="5" fill="rgba(255,255,255,0.2)">S12</text>
-                                    <text x="78"  y="78" text-anchor="middle" font-size="5" fill="rgba(255,255,255,0.2)">S16</text>
-                                    <text x="110" y="78" text-anchor="middle" font-size="5" fill="rgba(238,68,8,0.7)" font-weight="bold">NOW</text>
+                                    <line x1="6" y1="4" x2="6" y2="68" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+                                    <line x1="6" y1="68" x2="116" y2="68" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+                                    <polygon points="8,58 24,50 40,54 58,38 78,24 110,28 110,70 8,70" fill="url(#cinAreaFill)"/>
+                                    <polyline points="8,58 24,50 40,54 58,38 78,24 110,28" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <g style="font-size:3.5px; font-weight:700; font-family:'Inter',sans-serif;">
+                                        <text id="cinChartV1" x="8"   y="54" text-anchor="middle" fill="rgba(255,255,255,0.2)"></text>
+                                        <circle cx="8"   cy="58" r="1.5" fill="rgba(255,255,255,0.15)"/>
+                                        <text id="cinChartV2" x="24"  y="46" text-anchor="middle" fill="rgba(255,255,255,0.2)"></text>
+                                        <circle cx="24"  cy="50" r="1.5" fill="rgba(255,255,255,0.15)"/>
+                                        <text id="cinChartV3" x="40"  y="50" text-anchor="middle" fill="rgba(255,255,255,0.2)"></text>
+                                        <circle cx="40"  cy="54" r="1.5" fill="rgba(255,255,255,0.15)"/>
+                                        <text id="cinChartV4" x="58"  y="34" text-anchor="middle" fill="rgba(255,255,255,0.2)"></text>
+                                        <circle cx="58"  cy="38" r="1.5" fill="rgba(255,255,255,0.15)"/>
+                                        <text id="cinChartV5" x="78"  y="20" text-anchor="middle" fill="rgba(255,255,255,0.2)"></text>
+                                        <circle cx="78"  cy="24" r="1.5" fill="rgba(255,255,255,0.15)"/>
+                                        <text id="cinChartCurrent" x="110" y="23" text-anchor="middle" fill="rgba(255,255,255,0.75)" style="font-weight:800; font-size:4px;"></text>
+                                        <circle cx="110" cy="28" r="3" fill="rgba(238,68,8,0.9)"/>
+                                        <circle cx="110" cy="28" r="6" fill="rgba(238,68,8,0.12)"/>
+                                    </g>
                                 </svg>
                             </div>
                         </div>
@@ -597,20 +584,7 @@ CarryIt structure tes ambitions en objectifs clairs et mesurables pour tenir sur
 
                     <div class="sk-db-sep"></div>
 
-                    <!-- Bas : Jalons + Prochaines Actions -->
-                    <div class="cin-bottom-grid">
-
-                        <div class="cin-jalons-section">
-                            <p class="cin-section-label">JALONS</p>
-                            <div class="cin-jalons-list" id="cinTasks"></div>
-                        </div>
-
-                        <div class="cin-actions-section">
-                            <p class="cin-section-label">PROCHAINES ACTIONS</p>
-                            <div class="cin-actions-list" id="cinActions"></div>
-                        </div>
-
-                    </div>
+                    <div class="sk-db-tasks" id="cinTasks"></div>
 
                 </div>
             </div>
@@ -980,97 +954,92 @@ CarryIt structure tes ambitions en objectifs clairs et mesurables pour tenir sur
                 {
                     quote: '"Je veux courir un ultra-trail."',
                     title: 'PROJET UTMB 2028',
-                    proj:  'UTMB 2028 — Ultra-trail',
-                    date:  'Août 2028',
-                    smart: {
-                        S: 'Courir l\'UTMB (171 km)',
-                        M: 'Distance km parcourue par semaine',
-                        A: 'Programme trail progressif sur 2 ans',
-                        R: 'Capacité physique + expérience trail',
-                        T: 'Août 2028'
-                    },
-                    kpi:   { unit: '[km]', desc: 'parcourus par semaine' },
-                    tasks: [
-                        { done: true,  label: 'Semi-marathon 21 km' },
-                        { done: false, label: 'Trail 50 km' },
-                        { done: false, label: 'Ultra 100 km' }
+                    kpiMain: 'Total de kilomètres courus chaque semaine',
+                    smart: [
+                        { l: 'S', text: 'Finir l\'UTMB — 170 km / 10 000 D+' },
+                        { l: 'M', text: 'Suivi strict via KPI hebdomadaire' },
+                        { l: 'A', text: 'Hausse progressive sur 5 ans' },
+                        { l: 'R', text: '5–10 h d\'entraînement par semaine' },
+                        { l: 'T', text: '4 Septembre 2031', accent: true }
                     ],
-                    actions: [
-                        'Sortie trail 3h samedi matin',
-                        'S\'inscrire au trail 50 km de juin',
-                        'Augmenter volume à 60 km/sem'
+                    kpiCurrent: '22 KM',
+                    chartValues: ['5', '10', '8', '15', '20', '22 KM'],
+                    tasks: [
+                        { done: true,  text: 'S\'acheter de nouvelles chaussures' },
+                        { done: true,  text: 'Courir de nuit' },
+                        { done: false, text: 'Courir sans musique' },
+                        { done: false, text: 'S\'inscrire au premier semi-marathon' }
                     ]
                 },
                 {
                     quote: '"Je veux 2 000 € MRR avec mon projet."',
                     title: 'OBJECTIF 2 000 € MRR',
-                    proj:  'CarryIT — 2 000 € MRR',
-                    date:  'Décembre 2026',
-                    smart: {
-                        S: 'Atteindre 2 000 € MRR récurrents',
-                        M: 'MRR mensuel en euros',
-                        A: 'Acquisition organique + produit SaaS',
-                        R: 'Compétences tech + réseau existant',
-                        T: 'Décembre 2026'
-                    },
-                    kpi:   { unit: '[€]', desc: 'revenus récurrents mensuels' },
-                    tasks: [
-                        { done: true,  label: '1er client payant' },
-                        { done: false, label: '500 € MRR' },
-                        { done: false, label: '1 000 € MRR' }
+                    kpiMain: 'Revenus mensuels récurrents (clients actifs)',
+                    smart: [
+                        { l: 'S', text: 'Atteindre 2 000 € MRR stables' },
+                        { l: 'M', text: 'Suivi mensuel via tableau de bord' },
+                        { l: 'A', text: 'Progression de 200 € / mois' },
+                        { l: 'R', text: '2–3 h de travail quotidien dédié' },
+                        { l: 'T', text: '31 Décembre 2025', accent: true }
                     ],
-                    actions: [
-                        'Contacter 10 prospects LinkedIn cette semaine',
-                        'Finir l\'onboarding utilisateur v2',
-                        'Publier 3 posts de contenu'
+                    kpiCurrent: '340 €',
+                    chartValues: ['50€', '120€', '95€', '180€', '280€', '340 €'],
+                    tasks: [
+                        { done: true,  text: 'Créer la landing page' },
+                        { done: false, text: 'Lancer 10 cold emails' },
+                        { done: false, text: 'Valider le premier client payant' },
+                        { done: false, text: 'Atteindre 500 € MRR' }
                     ]
                 },
                 {
                     quote: '"Je veux écrire un livre un jour."',
                     title: 'ÉCRIRE MON LIVRE',
-                    proj:  'Livre — 80 000 mots',
-                    date:  'Janvier 2028',
-                    smart: {
-                        S: 'Publier un livre de 80 000 mots',
-                        M: 'Mots écrits par semaine',
-                        A: '1 000 mots/jour — 5 jours/semaine',
-                        R: 'Sujet maîtrisé + discipline en place',
-                        T: 'Janvier 2028'
-                    },
-                    kpi:   { unit: '[mots]', desc: 'écrits par semaine' },
-                    tasks: [
-                        { done: true,  label: 'Plan + structure validée' },
-                        { done: false, label: '20 000 mots écrits' },
-                        { done: false, label: '50 000 mots écrits' }
+                    kpiMain: 'Mots écrits par semaine (session minimum)',
+                    smart: [
+                        { l: 'S', text: 'Écrire un livre de 80 000 mots' },
+                        { l: 'M', text: '500 mots par session minimum' },
+                        { l: 'A', text: '1 session par jour, 5 jours / semaine' },
+                        { l: 'R', text: 'Bloc d\'écriture tôt le matin' },
+                        { l: 'T', text: '1er Octobre 2026', accent: true }
                     ],
-                    actions: [
-                        'Écrire 1 000 mots chapitre 3 ce soir',
-                        'Bloquer 2h mardi matin sans distractions',
-                        'Relire et valider plan chapitre 4'
+                    kpiCurrent: '1 800',
+                    chartValues: ['200', '500', '350', '800', '1400', '1 800'],
+                    tasks: [
+                        { done: true,  text: 'Définir les 12 chapitres' },
+                        { done: false, text: 'Écrire le chapitre 1' },
+                        { done: false, text: 'Trouver un bêta-lecteur' },
+                        { done: false, text: 'Terminer le premier jet' }
                     ]
                 }
             ];
 
             function updateDashboard(data) {
                 document.getElementById('cinEpicTitle').textContent = data.title;
-                document.getElementById('cinDbDate').textContent  = data.date;
-                document.getElementById('cinSmartS').textContent  = data.smart.S;
-                document.getElementById('cinSmartM').textContent  = data.smart.M;
-                document.getElementById('cinSmartA').textContent  = data.smart.A;
-                document.getElementById('cinSmartR').textContent  = data.smart.R;
-                document.getElementById('cinSmartT').textContent  = data.smart.T;
-                document.getElementById('cinKpiUnit').textContent = data.kpi.unit;
-                document.getElementById('cinKpiDesc').textContent = data.kpi.desc;
-                document.getElementById('cinTasks').innerHTML = data.tasks.map((t, i) =>
-                    `<div class="cin-milestone${t.done ? ' done' : ''}">
-                        <div class="cin-milestone-dot">${i + 1}</div>
-                        <span class="cin-milestone-label">${t.label}</span>
+
+                document.getElementById('cinKpiMain').textContent = data.kpiMain;
+
+                document.getElementById('cinSmartRows').innerHTML = data.smart.map(s =>
+                    `<div class="sk-db-srow">
+                        <span class="sk-db-sl${s.accent ? ' cin-sl-accent' : ''}">${s.l}</span>
+                        <span class="cin-db-smart-text${s.accent ? ' cin-smart-accent' : ''}">${s.text}</span>
                     </div>`
                 ).join('');
-                document.getElementById('cinActions').innerHTML = data.actions.map(a =>
-                    `<div class="cin-action-item">
-                        <span class="cin-action-dot">→</span>
-                        <span class="cin-action-label">${a}</span>
+
+                document.getElementById('cinKpiStats').innerHTML =
+                    `<div style="line-height:1.1;">
+                        <div class="cin-section-label">Statistiques</div>
+                        <div class="cin-db-kpi-unit">${data.kpiCurrent}</div>
+                    </div>`;
+
+                ['cinChartV1','cinChartV2','cinChartV3','cinChartV4','cinChartV5','cinChartCurrent'].forEach((id, i) => {
+                    const el = document.getElementById(id);
+                    if (el && data.chartValues) el.textContent = data.chartValues[i];
+                });
+
+                document.getElementById('cinTasks').innerHTML = data.tasks.map(t =>
+                    `<div class="sk-db-task${t.done ? ' sk-db-task-done' : ''}">
+                        <div class="sk-db-check${t.done ? '' : ' sk-db-check-empty'}"></div>
+                        <span class="cin-db-task-label${t.done ? ' done' : ''}">${t.text}</span>
                     </div>`
                 ).join('');
             }
@@ -1119,13 +1088,13 @@ CarryIt structure tes ambitions en objectifs clairs et mesurables pour tenir sur
                 });
 
                 // Dashboard fade out
-                after(12000, () => {
+                after(16000, () => {
                     dashWrap.classList.remove('d-in');
                     dashWrap.classList.add('d-out');
                 });
 
                 // Next example
-                after(13500, () => {
+                after(17500, () => {
                     idx = (idx + 1) % examples.length;
                     runCycle();
                 });

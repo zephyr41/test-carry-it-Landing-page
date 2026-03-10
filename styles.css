@@ -3479,6 +3479,18 @@
     transform: scale(1) translateY(0);
 }
 
+/* Glow ambiant derrière le dashboard */
+.cin-dashboard-wrap::before {
+    content: '';
+    position: absolute;
+    width: 700px;
+    height: 300px;
+    background: radial-gradient(ellipse, rgba(238,68,8,0.09) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: -1;
+}
+
 .cin-dashboard-wrap.d-out {
     opacity: 0;
     filter: blur(4px);
@@ -3491,6 +3503,12 @@
     min-height: min(520px, 65vh) !important;
     padding: 40px !important;
     gap: 24px !important;
+    background: #18181b !important;
+    border: 1px solid rgba(255,255,255,0.12) !important;
+    box-shadow:
+        0 0 0 1px rgba(238,68,8,0.06),
+        0 32px 80px rgba(0,0,0,0.6),
+        0 0 120px rgba(238,68,8,0.07) !important;
 }
 
 /* Boost internal card sizes for epic reveal */
@@ -3503,6 +3521,8 @@
 .cin-dashboard .sk-db-kpi-card {
     padding: 24px;
     border-radius: 16px;
+    background: rgba(255,255,255,0.04) !important;
+    border: 1px solid rgba(255,255,255,0.09) !important;
 }
 
 .cin-dashboard .sk-db-proj-name {
@@ -3581,14 +3601,17 @@
 
 /* Override sk-db-srow pour texte */
 .cin-dashboard .sk-db-srow {
-    align-items: flex-start;
+    align-items: center;
     padding: 2px 0;
+    gap: 10px;
 }
 
 .cin-dashboard .sk-db-sl {
     font-size: 11px;
-    margin-top: 1px;
     font-weight: 700;
+    width: 16px;
+    flex-shrink: 0;
+    text-align: center;
 }
 
 /* KPI texte */
@@ -3609,7 +3632,17 @@
     margin-bottom: 6px;
 }
 
-/* Jalons task labels */
+/* KPI main description */
+.cin-kpi-main {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.45);
+    font-family: var(--font-primary);
+    line-height: 1.4;
+    margin-top: 4px;
+}
+
+/* Task labels */
 .cin-db-task-label {
     font-size: 12px;
     color: rgba(255,255,255,0.45);
@@ -3618,10 +3651,92 @@
 }
 
 .cin-db-task-label.done {
-    color: rgba(255,255,255,0.22);
-    text-decoration: line-through;
-    text-decoration-color: rgba(238,68,8,0.25);
+    color: rgba(238, 68, 8, 0.45);
+    text-decoration: none;
 }
+
+/* ── SKELETON → FILL ANIMATION ─────────────────────────────────── */
+.cin-sk-fill-wrap {
+    position: relative;
+    flex: 1;
+    height: 14px;
+    display: flex;
+    align-items: center;
+}
+
+.cin-sk-bar {
+    transition: opacity 0.45s ease;
+    flex-shrink: 0;
+}
+
+.cin-real-text {
+    position: absolute;
+    left: 0;
+    right: 0;
+    opacity: 0;
+    font-size: 11px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.52);
+    font-family: var(--font-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1;
+    transition: opacity 0.5s ease 0.1s;
+}
+
+.cin-real-accent {
+    color: rgba(238, 68, 8, 0.8);
+    font-weight: 500;
+}
+
+.cin-real-proj {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+/* Date badge : wrapper dimensions + pilule quand remplie */
+.cin-wrap-date {
+    height: 18px;
+    align-self: flex-start;
+    width: 110px;
+}
+
+.cin-real-date {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.38);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 999px;
+    padding: 0 10px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    right: auto;
+    width: auto;
+}
+
+/* KPI label */
+.cin-real-kpi {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.3);
+    right: 0;
+}
+
+/* Quand is-filled : barres disparaissent, texte apparaît */
+.cin-dashboard.is-filled .cin-sk-bar {
+    opacity: 0;
+}
+
+.cin-dashboard.is-filled .cin-real-text {
+    opacity: 1;
+}
+
+/* ── END SKELETON → FILL ─────────────────────────────────────── */
 
 /* Epic title + inner column wrapper */
 .cin-db-inner {

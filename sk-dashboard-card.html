@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard UTMB — Epic Edition</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: #080809;
+            display: flex;
+            flex-direction: column; 
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            padding: 40px;
+        }
+
+        /* ── TITRE EPIC AU-DESSUS ── */
+        .epic-title {
+            color: #fff;
+            font-size: 48px; /* Plus grand pour l'effet epic */
+            font-weight: 900;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 40px;
+            text-align: center;
+            line-height: 1.1;
+        }
+
+        /* ── sk-card base (Agrandie) ── */
+        .sk-card {
+            background: #111113;
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 24px;
+            padding: 48px; /* Plus de padding */
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 24px;
+            width: 720px; /* Passage de 480px à 720px */
+        }
+
+        .sk-card-dashboard {
+            gap: 32px;
+        }
+
+        .sk-db-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr; /* Ajustement des proportions */
+            gap: 20px;
+            flex: 1;
+        }
+
+        .sk-db-smart-card {
+            background: rgba(255,255,255,0.015);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* Texte KPI dans le bloc SMART */
+        .kpi-header-text {
+            color: rgba(255,255,255,0.25); 
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+        .kpi-main-text {
+            color: rgba(255,255,255,0.45); 
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 1.4;
+            margin-bottom: 8px;
+        }
+
+        .sk-db-smart-rows {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .sk-db-srow {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sk-db-sl {
+            font-size: 11px;
+            font-weight: 800;
+            color: rgba(255,255,255,0.15); 
+            width: 14px;
+            flex-shrink: 0;
+        }
+
+        /* KPI card (droite) */
+        .sk-db-kpi-card {
+            background: rgba(255,255,255,0.015);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .sk-db-dotchart {
+            flex: 1;
+            min-height: 100px; /* Plus d'espace pour le graph */
+            display: flex;
+        }
+
+        .sk-db-linechart {
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+        }
+
+        .sk-db-sep {
+            height: 1px;
+            background: rgba(255,255,255,0.03); 
+        }
+
+        /* To-do list */
+        .sk-db-tasks {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .sk-db-task {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .sk-db-check {
+            width: 14px;
+            height: 14px;
+            border-radius: 3px;
+            background: rgba(255,59,31,0.2);
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .sk-db-check::after {
+            content: '';
+            position: absolute;
+            inset: 3px;
+            background: #ff3b1f;
+            border-radius: 1px;
+        }
+
+        .sk-db-check-empty {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.08); 
+        }
+
+        .sk-db-check-empty::after {
+            display: none;
+        }
+
+        .sk-db-task-text {
+            color: rgba(255,255,255,0.25); /* Gris pour les tâches non faites */
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+        
+        /* Tâches accomplies : Couleur sans trait barré */
+        .sk-db-task-done .sk-db-task-text {
+            color: rgba(255, 59, 31, 0.45); /* Orange tamisé pour indiquer que c'est fait */
+            text-decoration: none; /* Suppression du trait barré */
+        }
+    </style>
+</head>
+<body>
+
+    <h1 class="epic-title">PROJET ULTRA TRAIL<br>DU MONT BLANC</h1>
+
+    <div class="sk-card sk-card-dashboard">
+
+        <div class="sk-db-grid">
+
+            <!-- Gauche: SMART -->
+            <div class="sk-db-smart-card">
+                <div>
+                    <div class="kpi-header-text">Indicateur Clé (KPI)</div>
+                    <div class="kpi-main-text">Total de kilomètres courus chaque semaine</div>
+                </div>
+                
+                <div class="sk-db-smart-rows">
+                    <div class="sk-db-srow">
+                        <span class="sk-db-sl">S</span>
+                        <div style="color:rgba(255,255,255,0.3); font-size:11px;">Finir l'UTMB — 170 km / 10k D+</div>
+                    </div>
+                    <div class="sk-db-srow">
+                        <span class="sk-db-sl">M</span>
+                        <div style="color:rgba(255,255,255,0.3); font-size:11px;">Suivi strict via KPI hebdomadaire</div>
+                    </div>
+                    <div class="sk-db-srow">
+                        <span class="sk-db-sl">A</span>
+                        <div style="color:rgba(255,255,255,0.3); font-size:11px;">Hausse progressive sur 5 ans</div>
+                    </div>
+                    <div class="sk-db-srow">
+                        <span class="sk-db-sl">R</span>
+                        <div style="color:rgba(255,255,255,0.3); font-size:11px;">5–10 h/semaine d'ici 2028</div>
+                    </div>
+                    <div class="sk-db-srow">
+                        <span class="sk-db-sl" style="color:rgba(255,59,31,0.5)">T</span>
+                        <div style="color:rgba(255,255,255,0.9); font-size:11px; font-weight:700">4 Septembre 2031</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Droite: Graphique -->
+            <div class="sk-db-kpi-card">
+                <div style="line-height: 1.1;">
+                    <div style="color:rgba(255,255,255,0.15); font-size:9px; font-weight:700; text-transform:uppercase;">Statistiques</div>
+                    <div style="color:rgba(255,255,255,0.6); font-size:13px; font-weight:800;">Volume Actuel : <span style="color:rgba(255,59,31,0.8)">22KM</span></div>
+                </div>
+                <div class="sk-db-dotchart">
+                    <svg class="sk-db-linechart" viewBox="0 0 120 70" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="areaFill" x1="0" x2="0" y1="0" y2="1">
+                                <stop offset="0%" stop-color="rgba(255,59,31,0.04)"/>
+                                <stop offset="100%" stop-color="rgba(255,59,31,0)"/>
+                            </linearGradient>
+                        </defs>
+                        <!-- Axes -->
+                        <line x1="6" y1="4" x2="6" y2="68" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+                        <line x1="6" y1="68" x2="116" y2="68" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+                        
+                        <text x="8" y="5" style="fill:rgba(255,255,255,0.1); font-size:4px; font-weight:700;">Y (KM)</text>
+                        <text x="95" y="66" style="fill:rgba(255,255,255,0.1); font-size:4px; font-weight:700;">X (SEMAINE)</text>
+
+                        <!-- Courbe -->
+                        <polygon points="8,58 28,48 48,38 68,44 88,28 108,24 108,70 8,70" fill="url(#areaFill)"/>
+                        <polyline points="8,58 28,48 48,38 68,44 88,28 108,24" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+                        
+                        <!-- Points et Valeurs -->
+                        <g style="fill:rgba(255,255,255,0.15); font-size:3.5px; font-weight:700; font-family: 'Inter', sans-serif;">
+                            <text x="8" y="54" text-anchor="middle">5</text>
+                            <circle cx="8" cy="58" r="1.2" fill="rgba(255,255,255,0.05)"/>
+
+                            <text x="28" y="44" text-anchor="middle">10</text>
+                            <circle cx="28" cy="48" r="1.2" fill="rgba(255,255,255,0.05)"/>
+
+                            <text x="48" y="34" text-anchor="middle">15</text>
+                            <circle cx="48" cy="38" r="1.2" fill="rgba(255,255,255,0.05)"/>
+
+                            <text x="68" y="40" text-anchor="middle">12</text>
+                            <circle cx="68" cy="44" r="1.2" fill="rgba(255,255,255,0.05)"/>
+
+                            <text x="88" y="24" text-anchor="middle">20</text>
+                            <circle cx="88" cy="28" r="1.2" fill="rgba(255,255,255,0.05)"/>
+
+                            <!-- Point actuel orange -->
+                            <text x="108" y="19" text-anchor="middle" style="fill:#fff; font-weight:800; font-size:4px; opacity: 0.8;">22</text>
+                            <circle cx="108" cy="24" r="2.2" fill="#ff3b1f"/>
+                        </g>
+                    </svg>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="sk-db-sep"></div>
+
+        <!-- To-do list agrandie sans trait barré -->
+        <div class="sk-db-tasks">
+            <div class="sk-db-task sk-db-task-done">
+                <div class="sk-db-check"></div>
+                <span class="sk-db-task-text">S'acheter de nouvelles chaussures</span>
+            </div>
+            <div class="sk-db-task sk-db-task-done">
+                <div class="sk-db-check"></div>
+                <span class="sk-db-task-text">Courir de nuit</span>
+            </div>
+            <div class="sk-db-task">
+                <div class="sk-db-check sk-db-check-empty"></div>
+                <span class="sk-db-task-text">Courir sans musique</span>
+            </div>
+            <div class="sk-db-task">
+                <div class="sk-db-check sk-db-check-empty"></div>
+                <span class="sk-db-task-text">S'inscrire au premier semi-marathon</span>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
