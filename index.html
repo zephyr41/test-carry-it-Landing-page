@@ -550,18 +550,35 @@ CarryIt structure tes ambitions en objectifs clairs et mesurables pour tenir sur
                         <div class="sk-db-kpi-card">
                             <div id="cinKpiStats"></div>
                             <div class="sk-db-dotchart">
-                                <svg class="sk-db-linechart" viewBox="0 0 120 70" xmlns="http://www.w3.org/2000/svg">
+                                <svg class="sk-db-linechart" viewBox="0 0 120 82" xmlns="http://www.w3.org/2000/svg" overflow="visible">
                                     <defs>
                                         <linearGradient id="cinAreaFill" x1="0" x2="0" y1="0" y2="1">
-                                            <stop offset="0%" stop-color="rgba(238,68,8,0.06)"/>
+                                            <stop offset="0%" stop-color="rgba(238,68,8,0.07)"/>
                                             <stop offset="100%" stop-color="rgba(238,68,8,0)"/>
                                         </linearGradient>
                                     </defs>
-                                    <line x1="6" y1="4" x2="6" y2="68" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
-                                    <line x1="6" y1="68" x2="116" y2="68" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
-                                    <polygon points="8,58 24,50 40,54 58,38 78,24 110,28 110,70 8,70" fill="url(#cinAreaFill)"/>
-                                    <polyline points="8,58 24,50 40,54 58,38 78,24 110,28" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <g style="font-size:3.5px; font-weight:700; font-family:'Inter',sans-serif;">
+
+                                    <!-- Lignes de référence horizontales -->
+                                    <line x1="6" y1="24" x2="116" y2="24" stroke="rgba(255,255,255,0.04)" stroke-width="0.5" stroke-dasharray="2,3"/>
+                                    <line x1="6" y1="41" x2="116" y2="41" stroke="rgba(255,255,255,0.04)" stroke-width="0.5" stroke-dasharray="2,3"/>
+                                    <line x1="6" y1="58" x2="116" y2="58" stroke="rgba(255,255,255,0.04)" stroke-width="0.5" stroke-dasharray="2,3"/>
+
+                                    <!-- Axes -->
+                                    <line x1="6" y1="4" x2="6" y2="68" stroke="rgba(255,255,255,0.08)" stroke-width="0.8"/>
+                                    <line x1="6" y1="68" x2="116" y2="68" stroke="rgba(255,255,255,0.08)" stroke-width="0.8"/>
+
+                                    <!-- Ordonnée : unité + valeurs -->
+                                    <text id="cinYUnit" x="6" y="2.5" fill="rgba(255,255,255,0.18)" font-size="3" font-weight="700" font-family="Inter,sans-serif"></text>
+                                    <text id="cinYHigh" x="4" y="26"  text-anchor="end" fill="rgba(255,255,255,0.18)" font-size="3" font-weight="600" font-family="Inter,sans-serif"></text>
+                                    <text id="cinYMid"  x="4" y="43"  text-anchor="end" fill="rgba(255,255,255,0.18)" font-size="3" font-weight="600" font-family="Inter,sans-serif"></text>
+                                    <text id="cinYLow"  x="4" y="60"  text-anchor="end" fill="rgba(255,255,255,0.18)" font-size="3" font-weight="600" font-family="Inter,sans-serif"></text>
+
+                                    <!-- Aire + courbe -->
+                                    <polygon points="8,58 24,50 40,54 58,38 78,24 110,28 110,68 8,68" fill="url(#cinAreaFill)"/>
+                                    <polyline points="8,58 24,50 40,54 58,38 78,24 110,28" fill="none" stroke="rgba(255,255,255,0.14)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+
+                                    <!-- Points + labels données -->
+                                    <g font-size="3.5" font-weight="700" font-family="Inter,sans-serif">
                                         <text id="cinChartV1" x="8"   y="54" text-anchor="middle" fill="rgba(255,255,255,0.2)"></text>
                                         <circle cx="8"   cy="58" r="1.5" fill="rgba(255,255,255,0.15)"/>
                                         <text id="cinChartV2" x="24"  y="46" text-anchor="middle" fill="rgba(255,255,255,0.2)"></text>
@@ -572,9 +589,20 @@ CarryIt structure tes ambitions en objectifs clairs et mesurables pour tenir sur
                                         <circle cx="58"  cy="38" r="1.5" fill="rgba(255,255,255,0.15)"/>
                                         <text id="cinChartV5" x="78"  y="20" text-anchor="middle" fill="rgba(255,255,255,0.2)"></text>
                                         <circle cx="78"  cy="24" r="1.5" fill="rgba(255,255,255,0.15)"/>
-                                        <text id="cinChartCurrent" x="110" y="23" text-anchor="middle" fill="rgba(255,255,255,0.75)" style="font-weight:800; font-size:4px;"></text>
+                                        <text id="cinChartCurrent" x="110" y="23" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-weight="800" font-size="4"></text>
                                         <circle cx="110" cy="28" r="3" fill="rgba(238,68,8,0.9)"/>
                                         <circle cx="110" cy="28" r="6" fill="rgba(238,68,8,0.12)"/>
+                                    </g>
+
+                                    <!-- Abscisse : labels semaines -->
+                                    <g font-size="3" fill="rgba(255,255,255,0.15)" font-family="Inter,sans-serif" font-weight="500">
+                                        <text x="8"   y="74" text-anchor="middle">S1</text>
+                                        <text x="24"  y="74" text-anchor="middle">S2</text>
+                                        <text x="40"  y="74" text-anchor="middle">S3</text>
+                                        <text x="58"  y="74" text-anchor="middle">S4</text>
+                                        <text x="78"  y="74" text-anchor="middle">S5</text>
+                                        <text x="110" y="74" text-anchor="middle">S6</text>
+                                        <text x="116" y="74" fill="rgba(255,255,255,0.08)" font-size="2.8">sem.</text>
                                     </g>
                                 </svg>
                             </div>
@@ -584,6 +612,7 @@ CarryIt structure tes ambitions en objectifs clairs et mesurables pour tenir sur
 
                     <div class="sk-db-sep"></div>
 
+                    <div class="cin-section-label" style="margin-bottom: 2px;">Prochaine Action</div>
                     <div class="sk-db-tasks" id="cinTasks"></div>
 
                 </div>
@@ -964,6 +993,7 @@ CarryIt structure tes ambitions en objectifs clairs et mesurables pour tenir sur
                     ],
                     kpiCurrent: '22 KM',
                     chartValues: ['5', '10', '8', '15', '20', '22 KM'],
+                    yTicks: ['20', '12', '5'], yUnit: 'KM',
                     tasks: [
                         { done: true,  text: 'S\'acheter de nouvelles chaussures' },
                         { done: true,  text: 'Courir de nuit' },
@@ -984,6 +1014,7 @@ CarryIt structure tes ambitions en objectifs clairs et mesurables pour tenir sur
                     ],
                     kpiCurrent: '340 €',
                     chartValues: ['50€', '120€', '95€', '180€', '280€', '340 €'],
+                    yTicks: ['280€', '140€', '50€'], yUnit: '€ MRR',
                     tasks: [
                         { done: true,  text: 'Créer la landing page' },
                         { done: false, text: 'Lancer 10 cold emails' },
@@ -1004,6 +1035,7 @@ CarryIt structure tes ambitions en objectifs clairs et mesurables pour tenir sur
                     ],
                     kpiCurrent: '1 800',
                     chartValues: ['200', '500', '350', '800', '1400', '1 800'],
+                    yTicks: ['1400', '700', '200'], yUnit: 'mots',
                     tasks: [
                         { done: true,  text: 'Définir les 12 chapitres' },
                         { done: false, text: 'Écrire le chapitre 1' },
@@ -1026,15 +1058,23 @@ CarryIt structure tes ambitions en objectifs clairs et mesurables pour tenir sur
                 ).join('');
 
                 document.getElementById('cinKpiStats').innerHTML =
-                    `<div style="line-height:1.1;">
+                    `<div style="line-height:1.2;">
                         <div class="cin-section-label">Statistiques</div>
                         <div class="cin-db-kpi-unit">${data.kpiCurrent}</div>
+                        <div class="cin-kpi-recall">${data.kpiMain}</div>
                     </div>`;
 
                 ['cinChartV1','cinChartV2','cinChartV3','cinChartV4','cinChartV5','cinChartCurrent'].forEach((id, i) => {
                     const el = document.getElementById(id);
                     if (el && data.chartValues) el.textContent = data.chartValues[i];
                 });
+
+                ['cinYHigh','cinYMid','cinYLow'].forEach((id, i) => {
+                    const el = document.getElementById(id);
+                    if (el && data.yTicks) el.textContent = data.yTicks[i];
+                });
+                const yUnitEl = document.getElementById('cinYUnit');
+                if (yUnitEl && data.yUnit) yUnitEl.textContent = data.yUnit;
 
                 document.getElementById('cinTasks').innerHTML = data.tasks.map(t =>
                     `<div class="sk-db-task${t.done ? ' sk-db-task-done' : ''}">
