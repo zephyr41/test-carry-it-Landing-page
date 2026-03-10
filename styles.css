@@ -162,7 +162,7 @@
         .navbar-link.cta {
             background-color: var(--color-accent-action);
             color: var(--color-text-primary);
-            padding: 12px var(--space-24);
+            padding: 8px 18px;
             border-radius: var(--btn-radius);
             font-weight: 600;
         }
@@ -3361,7 +3361,7 @@
 /* ── EXAMPLES SECTION ───────────────────────────────────────────── */
 /* ─── CINEMA SECTION — Quote → Dashboard ─── */
 .cinema-section {
-    height: 100vh;
+    height: 90vh;
     background: #080809;
     position: relative;
     display: flex;
@@ -3370,6 +3370,7 @@
     overflow: hidden;
     border-top: 1px solid rgba(255,255,255,0.06);
 }
+
 
 /* Header */
 .cin-header {
@@ -3385,21 +3386,22 @@
 }
 
 .cin-overline {
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 700;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
-    color: rgba(238, 68, 8, 0.75);
+    color: #EE4408;
     margin: 0;
     font-family: var(--font-primary);
 }
 
 .cin-subtitle {
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.3);
+    font-size: clamp(16px, 1.6vw, 20px);
+    color: rgba(255, 255, 255, 0.45);
     margin: 0;
     font-weight: 400;
     letter-spacing: -0.01em;
+    line-height: 1.4;
 }
 
 .cin-dots {
@@ -3464,13 +3466,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 80px 0;
+    padding: 120px 0 55px;
     opacity: 0;
-    filter: blur(10px);
-    transform: scale(0.97) translateY(14px);
-    transition: opacity 1s cubic-bezier(0.16,1,0.3,1),
-                filter 1s cubic-bezier(0.16,1,0.3,1),
-                transform 1s cubic-bezier(0.16,1,0.3,1);
+    filter: blur(18px);
+    transform: scale(0.93) translateY(28px);
+    transition: opacity 2.4s cubic-bezier(0.16,1,0.3,1) 0.1s,
+                filter 2s cubic-bezier(0.16,1,0.3,1),
+                transform 2.2s cubic-bezier(0.16,1,0.3,1);
     pointer-events: none;
 }
 
@@ -3480,16 +3482,71 @@
     transform: scale(1) translateY(0);
 }
 
-/* Glow ambiant derrière le dashboard */
-.cin-dashboard-wrap::before {
+.cin-dashboard-wrap.d-in .cin-dashboard {
+    pointer-events: auto;
+}
+
+/* Shine overlay + default tilt */
+.cin-dashboard {
+    position: relative;
+    transform: perspective(900px) rotateX(-3deg) rotateY(-3deg);
+}
+
+.cin-dashboard::after {
     content: '';
     position: absolute;
-    width: 700px;
-    height: 300px;
-    background: radial-gradient(ellipse, rgba(238,68,8,0.09) 0%, transparent 70%);
-    border-radius: 50%;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(
+        circle at var(--shine-x, 50%) var(--shine-y, 50%),
+        rgba(255, 255, 255, 0.07) 0%,
+        rgba(255, 255, 255, 0.03) 30%,
+        transparent 65%
+    );
+    opacity: 0;
+    transition: opacity 0.4s ease;
     pointer-events: none;
-    z-index: -1;
+    z-index: 10;
+}
+
+.cin-dashboard.is-hovered::after {
+    opacity: 1;
+}
+
+
+/* Scroll hint — bottom of cinema section */
+.cin-scroll-hint {
+    position: absolute;
+    bottom: 36px;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    z-index: 20;
+    pointer-events: none;
+    animation: cin-hint-bob 2.4s ease-in-out infinite;
+}
+
+.cin-scroll-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: rgba(255, 255, 255, 0.22);
+    font-family: var(--font-primary);
+    text-transform: none;
+}
+
+.cin-scroll-hint svg {
+    color: rgba(255, 255, 255, 0.18);
+    width: 18px;
+    height: 18px;
+}
+
+@keyframes cin-hint-bob {
+    0%, 100% { transform: translateY(0); opacity: 0.7; }
+    50%       { transform: translateY(5px); opacity: 1; }
 }
 
 .cin-dashboard-wrap.d-out {
@@ -3500,30 +3557,53 @@
 }
 
 .cin-dashboard {
-    width: min(780px, 88vw);
-    min-height: min(460px, 58vh) !important;
-    padding: 28px !important;
+    width: min(900px, 92vw);
+    min-height: min(380px, 46vh) !important;
+    padding: 22px !important;
     gap: 24px !important;
-    background: #18181b !important;
-    border: 1px solid rgba(255,255,255,0.12) !important;
+    background: linear-gradient(
+        160deg,
+        rgba(32, 32, 36, 0.97) 0%,
+        rgba(20, 20, 23, 0.99) 100%
+    ) !important;
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(238,68,8,0.14) !important;
+    border-top-color: rgba(238,68,8,0.40) !important;
     box-shadow:
-        0 0 0 1px rgba(238,68,8,0.06),
-        0 32px 80px rgba(0,0,0,0.6),
-        0 0 120px rgba(238,68,8,0.07) !important;
+        inset 0 1px 0 rgba(255,255,255,0.06),
+        0 -20px 60px  rgba(210, 65, 8, 0.20),
+        0 -60px 130px rgba(190, 55, 8, 0.12),
+        0 -100px 220px rgba(170, 45, 8, 0.07),
+        0 -140px 320px rgba(150, 40, 8, 0.04),
+        0 32px 80px rgba(0,0,0,0.6) !important;
 }
 
 /* Boost internal card sizes for epic reveal */
 .cin-dashboard .sk-db-grid {
     flex: 1;
     gap: 20px;
+    align-items: stretch;
 }
 
 .cin-dashboard .sk-db-smart-card,
 .cin-dashboard .sk-db-kpi-card {
-    padding: 24px;
-    border-radius: 16px;
-    background: rgba(255,255,255,0.04) !important;
-    border: 1px solid rgba(255,255,255,0.09) !important;
+    padding: 18px;
+    border-radius: 14px;
+    background: linear-gradient(
+        150deg,
+        rgba(255,255,255,0.07) 0%,
+        rgba(255,255,255,0.025) 100%
+    ) !important;
+    border: 1px solid rgba(255,255,255,0.10) !important;
+    border-top-color: rgba(255,255,255,0.18) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.09),
+        0 6px 20px rgba(0,0,0,0.35) !important;
+}
+
+.cin-dashboard .sk-db-smart-card {
+    padding-top: 20px;
 }
 
 .cin-dashboard .sk-db-proj-name {
@@ -3560,6 +3640,18 @@
 .cin-dashboard .sk-db-check {
     width: 14px;
     height: 14px;
+    border-radius: 4px;
+    background: rgba(238, 68, 8, 0.18);
+    border: 1.5px solid rgba(238, 68, 8, 0.5);
+}
+
+.cin-dashboard .sk-db-check-empty {
+    background: transparent;
+    border: 1.5px solid rgba(255,255,255,0.18);
+}
+
+.cin-dashboard .sk-db-check-empty::after {
+    display: none;
 }
 
 /* ─── Dashboard texte réel ─── */
@@ -3585,9 +3677,9 @@
 
 .cin-db-smart-text {
     font-size: 13px;
-    color: rgba(255,255,255,0.45);
+    color: rgba(255,255,255,0.70);
     font-family: var(--font-primary);
-    line-height: 1.5;
+    line-height: 1.4;
     flex: 1;
 }
 
@@ -3611,26 +3703,81 @@
 /* Override sk-db-srow pour texte */
 .cin-dashboard .sk-db-srow {
     align-items: center;
-    padding: 4px 0;
-    gap: 10px;
+    padding: 6px 0;
+    gap: 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.cin-dashboard .sk-db-srow:last-child {
+    border-bottom: none;
+}
+
+/* Header interne de la carte SMART : nom du projet + date badge */
+.cin-smart-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    padding-bottom: 12px;
+    margin-bottom: 4px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.cin-smart-proj-name {
+    font-size: 16px;
+    font-weight: 800;
+    color: rgba(255,255,255,0.90);
+    font-family: var(--font-primary);
+    letter-spacing: -0.02em;
+    line-height: 1;
+    flex: 1;
+}
+
+.cin-smart-date-badge {
+    font-size: 9px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.38);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 999px;
+    padding: 3px 10px;
+    font-family: var(--font-primary);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.cin-smart-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+}
+
+.cin-smart-sublabel {
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.38);
+    font-family: var(--font-primary);
+    line-height: 1;
 }
 
 .cin-dashboard .sk-db-sl {
-    font-size: 15px;
+    font-size: 13px;
     font-weight: 900;
-    width: 20px;
+    width: 24px;
     flex-shrink: 0;
     text-align: center;
-    color: rgba(255,255,255,0.75);
+    color: rgba(255,255,255,0.80);
     letter-spacing: 0;
 }
 
 /* KPI texte */
 .cin-db-kpi-unit {
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 700;
-    color: rgba(238, 68, 8, 0.9);
-    letter-spacing: 0.03em;
+    color: rgba(238, 68, 8, 0.95);
+    letter-spacing: -0.01em;
     font-family: var(--font-primary);
     line-height: 1;
 }
@@ -3664,7 +3811,7 @@
     font-weight: 700;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.3);
+    color: rgba(255,255,255,0.5);
     font-family: var(--font-primary);
 }
 
@@ -3688,6 +3835,7 @@
     color: rgba(255,255,255,0.2);
     font-family: var(--font-primary);
     letter-spacing: 0.04em;
+    margin-bottom: 4px;
 }
 
 /* KPI main description */
@@ -3703,14 +3851,15 @@
 /* Task labels */
 .cin-db-task-label {
     font-size: 12px;
-    color: rgba(255,255,255,0.45);
+    color: rgba(255,255,255,0.62);
     font-family: var(--font-primary);
     line-height: 1;
 }
 
 .cin-db-task-label.done {
-    color: rgba(238, 68, 8, 0.45);
-    text-decoration: none;
+    color: rgba(255,255,255,0.18);
+    text-decoration: line-through;
+    text-decoration-color: rgba(255,255,255,0.10);
 }
 
 /* ── SKELETON → FILL ANIMATION ─────────────────────────────────── */
@@ -3801,8 +3950,15 @@
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    gap: 24px;
-    width: min(860px, 90vw);
+    gap: 20px;
+    width: min(900px, 92vw);
+}
+
+.cin-db-header-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
 }
 
 .cin-db-title-label {
@@ -3818,23 +3974,24 @@
 }
 
 .cin-db-epic-title {
-    font-size: clamp(26px, 3.5vw, 48px);
+    font-size: clamp(18px, 2vw, 28px);
     font-weight: 900;
-    letter-spacing: 0.04em;
+    letter-spacing: -0.01em;
     text-transform: uppercase;
     color: #FFFDF6;
     font-family: var(--font-primary);
     text-align: center;
     line-height: 1;
+    margin-bottom: 8px;
 }
 
 /* Section labels inside dashboard */
 .cin-section-label {
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 700;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: rgba(238, 68, 8, 0.6);
+    color: rgba(238, 68, 8, 0.65);
     margin: 0 0 12px 0;
     font-family: var(--font-primary);
 }
@@ -3880,13 +4037,32 @@
     line-height: 1;
 }
 
+/* Tasks card — bloc indépendant en bas du dashboard */
+.cin-tasks-card {
+    margin-top: 4px;
+    padding: 16px 20px;
+    background: linear-gradient(
+        150deg,
+        rgba(255,255,255,0.055) 0%,
+        rgba(255,255,255,0.018) 100%
+    );
+    border: 1px solid rgba(255,255,255,0.09);
+    border-top-color: rgba(255,255,255,0.15);
+    border-radius: 12px;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.07),
+        0 4px 14px rgba(0,0,0,0.28);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
 .cin-action-label {
-    font-size: 13px;
+    font-size: 10px;
     font-weight: 700;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.75);
-    margin-bottom: 10px;
+    color: rgba(238, 68, 8, 0.7);
+    margin-bottom: 12px;
     font-family: var(--font-primary);
 }
 

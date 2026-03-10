@@ -512,15 +512,15 @@ CarryIt structure tes ambitions en objectifs clairs et mesurables pour tenir sur
     <!-- SECTION: CINÉMA — Quote → Dashboard -->
     <section class="cinema-section" id="cinemaSection">
 
-        <!-- Header fixe -->
-        <div class="cin-header">
-            <p class="cin-overline">LE PIPELINE CARRYIT EN ACTION</p>
-            <p class="cin-subtitle">N'importe quelle ambition. Un seul système.</p>
-        </div>
-
         <!-- Quote layer (texte injecté par JS) -->
         <div class="cin-quote-wrap" id="cinQuoteWrap">
             <p class="cin-quote" id="cinQuoteText"></p>
+        </div>
+
+        <!-- Header permanent -->
+        <div class="cin-header">
+            <p class="cin-overline">LE PIPELINE CARRYIT EN ACTION</p>
+            <p class="cin-subtitle">N'importe quelle ambition. Un seul système.</p>
         </div>
 
         <!-- Dashboard layer -->
@@ -534,7 +534,8 @@ CarryIt structure tes ambitions en objectifs clairs et mesurables pour tenir sur
 
                         <!-- SMART card — texte réel injecté par JS -->
                         <div class="sk-db-smart-card">
-                            <div class="cin-section-label">Plan Smart</div>
+                            <div class="cin-section-label" id="cinSmartLabel"></div>
+                            <div class="cin-smart-header" id="cinSmartHeader"></div>
                             <div class="sk-db-smart-rows" id="cinSmartRows"></div>
                         </div>
 
@@ -550,39 +551,26 @@ CarryIt structure tes ambitions en objectifs clairs et mesurables pour tenir sur
                                         </linearGradient>
                                     </defs>
 
+                                    <!-- Grid lines horizontales -->
+                                    <line x1="6" y1="26" x2="116" y2="26" stroke="rgba(255,255,255,0.04)" stroke-width="0.8"/>
+                                    <line x1="6" y1="43" x2="116" y2="43" stroke="rgba(255,255,255,0.04)" stroke-width="0.8"/>
+                                    <line x1="6" y1="60" x2="116" y2="60" stroke="rgba(255,255,255,0.04)" stroke-width="0.8"/>
+
                                     <!-- Axes -->
                                     <line x1="6" y1="4" x2="6" y2="68" stroke="rgba(255,255,255,0.22)" stroke-width="0.8"/>
                                     <line x1="6" y1="68" x2="116" y2="68" stroke="rgba(255,255,255,0.22)" stroke-width="0.8"/>
 
                                     <!-- Ordonnée : unité + valeurs -->
-                                    <text id="cinYUnit" x="6" y="2.5" fill="rgba(255,255,255,0.3)" font-size="3" font-weight="700" font-family="Inter,sans-serif"></text>
-                                    <text id="cinYHigh" x="4" y="26"  text-anchor="end" fill="rgba(255,255,255,0.28)" font-size="3" font-weight="600" font-family="Inter,sans-serif"></text>
-                                    <text id="cinYMid"  x="4" y="43"  text-anchor="end" fill="rgba(255,255,255,0.28)" font-size="3" font-weight="600" font-family="Inter,sans-serif"></text>
-                                    <text id="cinYLow"  x="4" y="60"  text-anchor="end" fill="rgba(255,255,255,0.28)" font-size="3" font-weight="600" font-family="Inter,sans-serif"></text>
+                                    <text id="cinYUnit" x="6" y="2.5" fill="rgba(255,255,255,0.35)" font-size="3.5" font-weight="700" font-family="Inter,sans-serif"></text>
+                                    <text id="cinYHigh" x="4" y="26"  text-anchor="end" fill="rgba(255,255,255,0.38)" font-size="3.5" font-weight="600" font-family="Inter,sans-serif"></text>
+                                    <text id="cinYMid"  x="4" y="43"  text-anchor="end" fill="rgba(255,255,255,0.38)" font-size="3.5" font-weight="600" font-family="Inter,sans-serif"></text>
+                                    <text id="cinYLow"  x="4" y="60"  text-anchor="end" fill="rgba(255,255,255,0.38)" font-size="3.5" font-weight="600" font-family="Inter,sans-serif"></text>
 
-                                    <!-- Aire + courbe -->
-                                    <polygon points="8,58 24,50 40,54 58,38 78,24 110,28 110,68 8,68" fill="url(#cinAreaFill)"/>
-                                    <polyline points="8,58 24,50 40,54 58,38 78,24 110,28" fill="none" stroke="rgba(255,255,255,0.14)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-
-                                    <!-- Points + labels données -->
-                                    <g font-size="4.5" font-weight="700" font-family="Inter,sans-serif">
-                                        <text id="cinChartV1" x="8"   y="54" text-anchor="middle" fill="rgba(255,255,255,0.35)"></text>
-                                        <circle cx="8"   cy="58" r="1.5" fill="rgba(255,255,255,0.25)"/>
-                                        <text id="cinChartV2" x="24"  y="46" text-anchor="middle" fill="rgba(255,255,255,0.35)"></text>
-                                        <circle cx="24"  cy="50" r="1.5" fill="rgba(255,255,255,0.25)"/>
-                                        <text id="cinChartV3" x="40"  y="50" text-anchor="middle" fill="rgba(255,255,255,0.35)"></text>
-                                        <circle cx="40"  cy="54" r="1.5" fill="rgba(255,255,255,0.25)"/>
-                                        <text id="cinChartV4" x="58"  y="34" text-anchor="middle" fill="rgba(255,255,255,0.35)"></text>
-                                        <circle cx="58"  cy="38" r="1.5" fill="rgba(255,255,255,0.25)"/>
-                                        <text id="cinChartV5" x="78"  y="20" text-anchor="middle" fill="rgba(255,255,255,0.35)"></text>
-                                        <circle cx="78"  cy="24" r="1.5" fill="rgba(255,255,255,0.25)"/>
-                                        <text id="cinChartCurrent" x="110" y="23" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-weight="800" font-size="4"></text>
-                                        <circle cx="110" cy="28" r="3" fill="rgba(238,68,8,0.9)"/>
-                                        <circle cx="110" cy="28" r="6" fill="rgba(238,68,8,0.12)"/>
-                                    </g>
+                                    <!-- Données dynamiques (rendu par JS) -->
+                                    <g id="cinChartData"></g>
 
                                     <!-- Abscisse : labels semaines -->
-                                    <g font-size="3" fill="rgba(255,255,255,0.28)" font-family="Inter,sans-serif" font-weight="500">
+                                    <g font-size="3.5" fill="rgba(255,255,255,0.38)" font-family="Inter,sans-serif" font-weight="500">
                                         <text x="8"   y="74" text-anchor="middle">S1</text>
                                         <text x="24"  y="74" text-anchor="middle">S2</text>
                                         <text x="40"  y="74" text-anchor="middle">S3</text>
@@ -597,13 +585,21 @@ CarryIt structure tes ambitions en objectifs clairs et mesurables pour tenir sur
 
                     </div>
 
-                    <div class="sk-db-sep"></div>
-
-                    <div class="cin-action-label">Prochaine Action</div>
-                    <div class="sk-db-tasks" id="cinTasks"></div>
+                    <div class="cin-tasks-card">
+                        <div class="cin-action-label">Prochaine Action</div>
+                        <div class="sk-db-tasks" id="cinTasks"></div>
+                    </div>
 
                 </div>
             </div>
+        </div>
+
+        <!-- Scroll hint vers la section Forge -->
+        <div class="cin-scroll-hint">
+            <span class="cin-scroll-label">CarryIT ne te motive pas. Il forge autre chose.</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
         </div>
 
     </section>
@@ -977,15 +973,16 @@ CarryIt structure tes ambitions en objectifs clairs et mesurables pour tenir sur
                     kpiGoal: '170 KM',
                     kpiProgressPct: 13,
                     smart: [
-                        { l: 'S', text: 'Finir l\'UTMB — 170 km / 10 000 D+' },
-                        { l: 'M', text: 'Suivi strict via KPI hebdomadaire' },
-                        { l: 'A', text: 'Hausse progressive sur 5 ans' },
+                        { l: 'S', text: 'Finir l\'UTMB 2028 (170 km / 10 000 D+)' },
+                        { l: 'M', text: 'KM hebdo + D+ tracké chaque semaine' },
+                        { l: 'A', text: 'Progression +10% / mois sur 3 ans' },
                         { l: 'R', text: '5–10 h d\'entraînement par semaine' },
-                        { l: 'T', text: '4 Septembre 2031', dateStyle: true }
+                        { l: 'T', text: '30 Août 2028', dateStyle: true }
                     ],
                     kpiCurrent: '22 KM',
-                    chartValues: ['5', '10', '8', '15', '20', '22 KM'],
-                    yTicks: ['20', '12', '5'], yUnit: 'KM',
+                    chartValues: ['5', '10', '8', '15', '20', '22'],
+                    chartNums: [5, 10, 8, 15, 20, 22],
+                    yUnit: 'KM',
                     tasks: [
                         { done: true,  text: 'S\'acheter de nouvelles chaussures' },
                         { done: true,  text: 'Courir de nuit' },
@@ -1010,8 +1007,9 @@ CarryIt structure tes ambitions en objectifs clairs et mesurables pour tenir sur
                         { l: 'T', text: '31 Décembre 2025', dateStyle: true }
                     ],
                     kpiCurrent: '340 €',
-                    chartValues: ['50€', '120€', '95€', '180€', '280€', '340 €'],
-                    yTicks: ['280€', '140€', '50€'], yUnit: '€ MRR',
+                    chartValues: ['50', '120', '95', '180', '280', '340€'],
+                    chartNums: [50, 120, 95, 180, 280, 340],
+                    yUnit: '€ MRR',
                     tasks: [
                         { done: true,  text: 'Créer la landing page' },
                         { done: false, text: 'Lancer 10 cold emails' },
@@ -1036,8 +1034,9 @@ CarryIt structure tes ambitions en objectifs clairs et mesurables pour tenir sur
                         { l: 'T', text: '1er Octobre 2026', dateStyle: true }
                     ],
                     kpiCurrent: '1 800',
-                    chartValues: ['200', '500', '350', '800', '1400', '1 800'],
-                    yTicks: ['1400', '700', '200'], yUnit: 'mots',
+                    chartValues: ['200', '500', '350', '800', '1400', '1800'],
+                    chartNums: [200, 500, 350, 800, 1400, 1800],
+                    yUnit: 'mots',
                     tasks: [
                         { done: true,  text: 'Définir les 12 chapitres' },
                         { done: false, text: 'Écrire le chapitre 1' },
@@ -1050,33 +1049,61 @@ CarryIt structure tes ambitions en objectifs clairs et mesurables pour tenir sur
             function updateDashboard(data) {
                 document.getElementById('cinEpicTitle').textContent = data.titleLine2;
 
+                document.getElementById('cinSmartLabel').textContent = data.titleLine1;
+                const deadline = data.smart.find(s => s.l === 'T');
+                document.getElementById('cinSmartHeader').innerHTML =
+                    `<span class="cin-smart-proj-name">${data.titleLine2}</span>
+                     ${deadline ? `<span class="cin-smart-date-badge">${deadline.text}</span>` : ''}`;
                 document.getElementById('cinSmartRows').innerHTML = data.smart.map(s =>
                     `<div class="sk-db-srow">
-                        <span class="sk-db-sl${s.dateStyle ? '' : ''}">${s.l}</span>
+                        <span class="sk-db-sl">${s.l}</span>
                         <span class="cin-db-smart-text${s.dateStyle ? ' cin-date-text' : ''}">${s.text}</span>
                     </div>`
                 ).join('');
 
                 document.getElementById('cinKpiStats').innerHTML =
                     `<div class="cin-stats-block">
-                        <div class="cin-section-label" style="margin-bottom:8px;">Progression</div>
-                        <div class="cin-stats-label">${data.kpiLabel}</div>
+                        <div class="cin-section-label" style="margin-bottom:8px;">${data.kpiLabel}</div>
                         <div class="cin-db-kpi-unit">${data.kpiCurrent}</div>
+                        <div class="cin-progress-legend">${data.kpiCurrent} / ${data.kpiGoal}</div>
                         <div class="cin-progress-bar-wrap">
                             <div class="cin-progress-bar" style="width:${data.kpiProgressPct}%"></div>
                         </div>
-                        <div class="cin-progress-legend">${data.kpiCurrent} / ${data.kpiGoal}</div>
                     </div>`;
 
-                ['cinChartV1','cinChartV2','cinChartV3','cinChartV4','cinChartV5','cinChartCurrent'].forEach((id, i) => {
-                    const el = document.getElementById(id);
-                    if (el && data.chartValues) el.textContent = data.chartValues[i];
-                });
+                // Rendu graphique dynamique (coordonnées mathématiquement exactes)
+                if (data.chartNums && data.chartNums.length === 6) {
+                    const nums = data.chartNums;
+                    const maxVal = Math.ceil(Math.max(...nums) * 1.35 / 5) * 5;
+                    const xPos = [8, 24, 40, 58, 78, 110];
+                    const yPos = nums.map(v => +Math.max(5, Math.min(67, 68 - (v / maxVal) * 64)).toFixed(1));
 
-                ['cinYHigh','cinYMid','cinYLow'].forEach((id, i) => {
-                    const el = document.getElementById(id);
-                    if (el && data.yTicks) el.textContent = data.yTicks[i];
-                });
+                    // Y-tick labels (calculés depuis maxVal, positions SVG fixes : y=26, 43, 60)
+                    const fmt = v => v >= 1000 ? (Math.round(v/100)/10) + 'k' : Math.round(v);
+                    const tickVals = [0.656, 0.391, 0.125].map(f => fmt(maxVal * f));
+                    ['cinYHigh','cinYMid','cinYLow'].forEach((id, i) => {
+                        const el = document.getElementById(id);
+                        if (el) el.textContent = tickVals[i];
+                    });
+
+                    const areaPoints = xPos.map((x,i) => `${x},${yPos[i]}`).join(' ') + ` 110,68 8,68`;
+                    const linePoints = xPos.map((x,i) => `${x},${yPos[i]}`).join(' ');
+                    const dots = xPos.slice(0,5).map((x,i) =>
+                        `<text x="${x}" y="${+(yPos[i]-4).toFixed(1)}" text-anchor="middle" fill="rgba(255,255,255,0.35)" font-size="4.5" font-weight="700" font-family="Inter,sans-serif">${data.chartValues[i]}</text>
+                        <circle cx="${x}" cy="${yPos[i]}" r="1.5" fill="rgba(255,255,255,0.25)"/>`
+                    ).join('');
+                    const lx = xPos[5], ly = yPos[5];
+                    document.getElementById('cinChartData').innerHTML =
+                        `<polygon points="${areaPoints}" fill="url(#cinAreaFill)"/>
+                        <polyline points="${linePoints}" fill="none" stroke="rgba(255,255,255,0.14)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                        <g font-size="4.5" font-weight="700" font-family="Inter,sans-serif">
+                            ${dots}
+                            <text x="${lx}" y="${+(ly-5).toFixed(1)}" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-weight="800" font-size="4" font-family="Inter,sans-serif">${data.chartValues[5]}</text>
+                            <circle cx="${lx}" cy="${ly}" r="2.5" fill="rgba(238,68,8,0.9)"/>
+                            <circle cx="${lx}" cy="${ly}" r="5" fill="rgba(238,68,8,0.08)"/>
+                        </g>`;
+                }
+
                 const yUnitEl = document.getElementById('cinYUnit');
                 if (yUnitEl && data.yUnit) yUnitEl.textContent = data.yUnit;
 
@@ -1171,6 +1198,86 @@ CarryIt structure tes ambitions en objectifs clairs et mesurables pour tenir sur
             }, { threshold: 0.3 });
 
             observer.observe(section);
+        })();
+        // ─────────────────────────────────────────────────────────────────
+
+        // ── Tilt & Shine — cin-dashboard ─────────────────────────────────
+        (function() {
+            const card = document.querySelector('.cin-dashboard');
+            const wrap = document.getElementById('cinDashWrap');
+            if (!card || !wrap) return;
+
+            // bas-gauche → haut-droite, une seule fois
+            const FROM_RX = -3, FROM_RY = -3;
+            const TO_RX   = 5,  TO_RY   = 4;
+            const DURATION = 8000; // 8s pour aller du début à la fin
+
+            let isHovered  = false;
+            let currentRX  = FROM_RX, currentRY = FROM_RY;
+            let targetRX   = FROM_RX, targetRY  = FROM_RY;
+            let autoStart  = null;
+
+            function lerp(a, b, t) { return a + (b - a) * t; }
+
+            // Reset autoStart à chaque apparition de la carte
+            const observer = new MutationObserver(() => {
+                if (wrap.classList.contains('d-in')) {
+                    autoStart = null;
+                    currentRX = FROM_RX;
+                    currentRY = FROM_RY;
+                    targetRX  = FROM_RX;
+                    targetRY  = FROM_RY;
+                }
+            });
+            observer.observe(wrap, { attributes: true, attributeFilter: ['class'] });
+
+            function tick(ts) {
+                // Ne démarre le timer que quand la carte est visible
+                if (wrap.classList.contains('d-in') && !autoStart) autoStart = ts;
+
+                if (!isHovered && autoStart) {
+                    // Progression linéaire 0→1, s'arrête à 1
+                    const progress = Math.min((ts - autoStart) / DURATION, 1);
+                    targetRX = lerp(FROM_RX, TO_RX, progress);
+                    targetRY = lerp(FROM_RY, TO_RY, progress);
+                }
+
+                const speed = isHovered ? 0.10 : 0.025;
+                currentRX = lerp(currentRX, targetRX, speed);
+                currentRY = lerp(currentRY, targetRY, speed);
+
+                card.style.transform =
+                    `perspective(900px) rotateX(${currentRX.toFixed(2)}deg) rotateY(${currentRY.toFixed(2)}deg)`;
+
+                requestAnimationFrame(tick);
+            }
+
+            card.addEventListener('mouseenter', () => { isHovered = true; });
+
+            card.addEventListener('mousemove', function(e) {
+                if (!wrap.classList.contains('d-in')) return;
+                const rect = card.getBoundingClientRect();
+                const x  = e.clientX - rect.left;
+                const y  = e.clientY - rect.top;
+                const cx = rect.width  / 2;
+                const cy = rect.height / 2;
+
+                targetRX = -((y - cy) / cy) * 2;
+                targetRY =  ((x - cx) / cx) * 3;
+
+                card.style.setProperty('--shine-x', (x / rect.width  * 100).toFixed(1) + '%');
+                card.style.setProperty('--shine-y', (y / rect.height * 100).toFixed(1) + '%');
+                card.classList.add('is-hovered');
+            });
+
+            card.addEventListener('mouseleave', function() {
+                isHovered = false;
+                card.classList.remove('is-hovered');
+                // auto-float reprend via le lerp
+            });
+
+            // Loop permanent dès le chargement
+            requestAnimationFrame(tick);
         })();
         // ─────────────────────────────────────────────────────────────────
     </script>
