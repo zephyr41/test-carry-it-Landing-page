@@ -3464,7 +3464,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding-top: 80px;
+    padding: 80px 0;
     opacity: 0;
     filter: blur(10px);
     transform: scale(0.97) translateY(14px);
