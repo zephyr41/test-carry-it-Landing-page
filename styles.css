@@ -6795,23 +6795,13 @@
             display: block;
         }
 
-        /* Weeks grid — cercles semaines documentées */
-        .sk-weeks-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 10px;
-        }
-
-        .sk-week {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            border: 1.5px solid rgba(255,255,255,0.1);
-        }
-
-        .sk-w-done {
-            background: rgba(255,255,255,0.1);
-            border-color: rgba(255,255,255,0.15);
+        /* Failure circles — 1009 échecs à documenter */
+        .sk-failure-circles {
+            width: 100%;
+            max-width: 320px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
         }
 
         .sk-w-zero {
