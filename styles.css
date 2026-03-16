@@ -6764,17 +6764,32 @@
             font-weight: 800;
             letter-spacing: -0.04em;
             color: #fff;
-            margin: 0;
+            margin: 0 0 20px;
             line-height: 1.05;
             max-width: 820px;
+        }
+
+        .diff-nord-uvp {
+            font-size: 14px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.35);
+            letter-spacing: 0.02em;
+            margin: 0;
         }
 
         @media (max-width: 768px) {
             .diff-nord { padding: 48px 24px 40px; }
         }
 
-        /* Résilience chart */
-        .sk-resilience-chart {
+        /* No badge — signe interdit */
+        .sk-no-badge {
+            width: 130px;
+            height: 130px;
+            display: block;
+        }
+
+        /* Year calendar */
+        .sk-year-calendar {
             width: 100%;
             height: auto;
             display: block;
