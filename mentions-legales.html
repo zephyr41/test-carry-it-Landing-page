@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentions légales & RGPD — CarryIT</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg: #080C14;
+            --surface: #0d1220;
+            --text-primary: #f0f4ff;
+            --text-secondary: rgba(240, 244, 255, 0.55);
+            --text-tertiary: rgba(240, 244, 255, 0.35);
+            --accent: #FF5E00;
+            --border: rgba(255, 255, 255, 0.07);
+            --font: 'Inter', -apple-system, sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text-primary);
+            font-family: var(--font);
+            font-size: 16px;
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ─── Navbar ─── */
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(8, 12, 20, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .navbar-logo {
+            font-weight: 700;
+            font-size: 17px;
+            color: var(--text-primary);
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+        .navbar-back {
+            font-size: 13px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.2s;
+        }
+        .navbar-back:hover { color: var(--text-primary); }
+        .navbar-back::before { content: '←'; }
+
+        /* ─── Page content ─── */
+        .page-container {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 80px 24px 120px;
+        }
+
+        .page-header {
+            margin-bottom: 64px;
+        }
+        .page-overline {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.14em;
+            color: var(--accent);
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+        .page-header h1 {
+            font-size: clamp(28px, 5vw, 40px);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1.15;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+        }
+        .page-header p {
+            font-size: 15px;
+            color: var(--text-secondary);
+        }
+
+        /* ─── Sections ─── */
+        .legal-section {
+            margin-bottom: 56px;
+            padding-bottom: 56px;
+            border-bottom: 1px solid var(--border);
+        }
+        .legal-section:last-of-type {
+            border-bottom: none;
+        }
+        .legal-section h2 {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+            margin-bottom: 24px;
+        }
+        .legal-section h3 {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-top: 28px;
+            margin-bottom: 10px;
+        }
+        .legal-section p {
+            font-size: 15px;
+            color: var(--text-secondary);
+            margin-bottom: 14px;
+        }
+        .legal-section p:last-child { margin-bottom: 0; }
+        .legal-section a {
+            color: rgba(255, 94, 0, 0.8);
+            text-decoration: none;
+        }
+        .legal-section a:hover {
+            color: var(--accent);
+            text-decoration: underline;
+        }
+        .legal-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+            font-size: 14px;
+        }
+        .legal-table th {
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-primary);
+            padding: 10px 16px;
+            background: rgba(255,255,255,0.04);
+            border-bottom: 1px solid var(--border);
+        }
+        .legal-table td {
+            padding: 10px 16px;
+            color: var(--text-secondary);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            vertical-align: top;
+        }
+        .legal-table tr:last-child td { border-bottom: none; }
+
+        /* ─── Footer ─── */
+        .site-footer {
+            position: relative;
+            background: #040810;
+            padding: 80px 24px 40px;
+            overflow: hidden;
+        }
+        .site-footer::before {
+            content: '';
+            position: absolute;
+            inset: -20px;
+            background-image: url('Images/scale-gray.png');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0.55;
+            mix-blend-mode: screen;
+            filter: blur(6px);
+            pointer-events: none;
+        }
+        .site-footer::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(4, 8, 16, 0.72);
+            pointer-events: none;
+        }
+        .site-footer .footer-inner { position: relative; z-index: 2; }
+        .footer-bottom { position: relative; z-index: 2; }
+        .site-footer .footer-inner {
+            position: relative;
+            width: 100%;
+            max-width: 1120px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 48px;
+        }
+        .footer-brand { display: flex; flex-direction: column; gap: 12px; flex: 1; }
+        .footer-logo { width: 40px; height: 40px; object-fit: contain; }
+        .footer-tagline { font-size: 13px; color: rgba(255,255,255,0.4); line-height: 1.5; max-width: 220px; margin: 0; }
+        .footer-nav { display: flex; flex-direction: column; gap: 14px; }
+        .footer-nav a { font-size: 14px; color: rgba(255,255,255,0.55); text-decoration: none; transition: color 0.2s; }
+        .footer-nav a:hover { color: rgba(255,255,255,0.9); }
+        .footer-contact { display: flex; flex-direction: column; gap: 16px; }
+        .footer-contact > a { font-size: 14px; color: rgba(255,255,255,0.55); text-decoration: none; transition: color 0.2s; }
+        .footer-contact > a:hover { color: rgba(255,255,255,0.9); }
+        .footer-socials { display: flex; flex-direction: column; gap: 10px; }
+        .footer-socials a { font-size: 13px; color: rgba(255,255,255,0.4); text-decoration: none; transition: color 0.2s; }
+        .footer-socials a:hover { color: rgba(255,255,255,0.8); }
+        .footer-bottom {
+            position: relative;
+            max-width: 1120px;
+            margin: 40px auto 0;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+        .footer-bottom p { font-size: 12px; color: rgba(255,255,255,0.3); margin: 0; }
+        .footer-bottom-right { display: flex; align-items: center; gap: 24px; }
+        .footer-bottom a { font-size: 12px; color: rgba(255,255,255,0.3); text-decoration: none; transition: color 0.2s; }
+        .footer-bottom a:hover { color: rgba(255,255,255,0.6); }
+
+        @media (max-width: 768px) {
+            .site-footer .footer-inner { flex-direction: column; gap: 40px; }
+            .footer-bottom { flex-direction: column; align-items: flex-start; gap: 8px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="index.html" class="navbar-logo">Carry It</a>
+        <a href="index.html" class="navbar-back">Retour à l'accueil</a>
+    </nav>
+
+    <!-- Content -->
+    <main class="page-container">
+
+        <header class="page-header">
+            <p class="page-overline">Informations légales</p>
+            <h1>Mentions légales & RGPD</h1>
+            <p>Dernière mise à jour : mars 2026</p>
+        </header>
+
+        <!-- 1. Mentions légales -->
+        <section class="legal-section">
+            <h2>1. Mentions légales</h2>
+
+            <h3>Éditeur du site</h3>
+            <p>
+                Le site <strong>carryit.app</strong> est édité par :<br>
+                <strong>Nils Jaudon</strong><br>
+                Auto-entrepreneur — SIREN en cours d'immatriculation<br>
+                Email : <a href="mailto:nils@carryit.fr">nils@carryit.fr</a>
+            </p>
+
+            <h3>Hébergement</h3>
+            <p>
+                Le site est hébergé par :<br>
+                [HÉBERGEUR — à compléter]<br>
+                [Adresse — à compléter]
+            </p>
+
+            <h3>Propriété intellectuelle</h3>
+            <p>
+                L'ensemble des contenus présents sur ce site (textes, images, visuels, code) sont la propriété exclusive de Nils Jaudon, sauf mention contraire. Toute reproduction, distribution ou utilisation sans autorisation préalable est interdite.
+            </p>
+        </section>
+
+        <!-- 2. Politique de confidentialité / RGPD -->
+        <section class="legal-section">
+            <h2>2. Politique de confidentialité</h2>
+
+            <h3>Données collectées</h3>
+            <p>
+                À ce stade du projet, <strong>aucune donnée personnelle n'est collectée</strong> via ce site. Il n'existe pas de formulaire actif, pas d'inscription, et pas de compte utilisateur.
+            </p>
+
+            <h3>Responsable du traitement</h3>
+            <p>
+                Nils Jaudon — <a href="mailto:nils@carryit.fr">nils@carryit.fr</a>
+            </p>
+
+            <h3>Droits des utilisateurs</h3>
+            <p>
+                Conformément au Règlement Général sur la Protection des Données (RGPD — Règlement UE 2016/679), vous disposez d'un droit d'accès, de rectification, d'effacement et d'opposition concernant vos données personnelles. Pour exercer ces droits, contactez : <a href="mailto:nils@carryit.fr">nils@carryit.fr</a>.
+            </p>
+            <p>
+                En l'absence de collecte de données, ces droits n'ont pas d'objet à ce jour. Cette politique sera mise à jour lors de l'activation de fonctionnalités impliquant un traitement de données.
+            </p>
+        </section>
+
+        <!-- 3. Cookies -->
+        <section class="legal-section">
+            <h2>3. Cookies</h2>
+
+            <p>Ce site utilise uniquement des cookies techniques strictement nécessaires à son fonctionnement.</p>
+
+            <table class="legal-table">
+                <thead>
+                    <tr>
+                        <th>Cookie</th>
+                        <th>Finalité</th>
+                        <th>Durée</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Aucun cookie tiers</td>
+                        <td>Aucun cookie publicitaire, analytique ou de tracking n'est déposé</td>
+                        <td>—</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p style="margin-top: 20px;">
+                Aucun consentement n'est requis dans la mesure où aucun cookie non-essentiel n'est utilisé.
+            </p>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <img src="Images/logo_png.png" alt="CarryIT" class="footer-logo">
+                <p class="footer-tagline">De l'ambition à l'exécution.</p>
+            </div>
+            <div class="footer-nav">
+                <a href="index.html#heroSection">Le système</a>
+                <a href="index.html#manifestSection">Le manifeste</a>
+                <a href="objectif.html">Accès bêta</a>
+                <a href="mentions-legales.html">Mentions légales</a>
+            </div>
+            <div class="footer-contact">
+                <a href="mailto:nils@carryit.fr">nils@carryit.fr</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 CarryIT — Tous droits réservés</p>
+            <div class="footer-bottom-right">
+                <a href="mentions-legales.html">Mentions légales</a>
+                <a href="https://instagram.com/nilsjaudon" target="_blank" rel="noopener">Instagram</a>
+                <a href="https://linkedin.com/in/nilsjaudon" target="_blank" rel="noopener">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

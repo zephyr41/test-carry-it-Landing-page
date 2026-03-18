@@ -6652,8 +6652,10 @@
         }
 
         .diff-statement {
-            padding: 100px 80px 0;
-            max-width: 860px;
+            padding: 100px 40px 0;
+            max-width: 1100px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .diff-stmt-a {
@@ -6745,8 +6747,11 @@
 
         /* Face Nord manifesto */
         .diff-nord {
-            padding: 56px 80px 48px;
+            padding: 56px 40px 48px;
             border-top: 1px solid rgba(255,255,255,0.06);
+            max-width: 1100px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .diff-nord-tag {
@@ -6779,6 +6784,7 @@
 
         @media (max-width: 768px) {
             .diff-nord { padding: 48px 24px 40px; }
+            .diff-statement { padding: 60px 24px 0; }
         }
 
         /* No badge — signe interdit */
@@ -6831,7 +6837,23 @@
         }
 
         .founder-inner {
-            max-width: 680px;
+            max-width: 860px;
+            display: flex;
+            gap: 64px;
+            align-items: flex-start;
+        }
+
+        .founder-photo {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 50%;
+            flex-shrink: 0;
+            filter: grayscale(20%);
+        }
+
+        .founder-text {
+            flex: 1;
         }
 
         .founder-tag {
@@ -6844,52 +6866,86 @@
         }
 
         .founder-quote {
-            font-size: clamp(22px, 3.2vw, 42px);
+            font-size: clamp(20px, 2.6vw, 36px);
             font-weight: 700;
             letter-spacing: -0.03em;
-            line-height: 1.2;
+            line-height: 1.25;
             color: #fff;
-            margin: 0 0 60px;
+            margin: 0 0 40px;
             padding: 0;
             border: none;
             font-style: normal;
         }
 
+        /* Facts — 3 lignes brutes */
+        .founder-facts {
+            margin: 0 0 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .founder-fact {
+            font-size: 14px;
+            font-weight: 600;
+            color: rgba(255,255,255,0.6);
+            padding-left: 16px;
+            border-left: 2px solid rgba(238,68,8,0.5);
+            line-height: 1.4;
+            margin: 0;
+        }
+
         .founder-name {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 800;
             color: #fff;
-            margin: 0 0 4px;
+            margin: 0 0 28px;
             letter-spacing: -0.02em;
         }
 
-        .founder-role {
+        .founder-role-inline {
             font-size: 12px;
-            font-weight: 700;
-            color: var(--accent-orange);
-            margin: 0 0 32px;
-            letter-spacing: 0.06em;
+            font-weight: 600;
+            color: var(--accent-orange, #EE4408);
+            letter-spacing: 0.04em;
             text-transform: uppercase;
+            vertical-align: middle;
+        }
+
+        .founder-role {
+            display: none;
         }
 
         .founder-story {
-            font-size: 16px;
-            color: rgba(255,255,255,0.42);
-            line-height: 1.75;
-            margin: 0 0 16px;
+            font-size: 15px;
+            color: rgba(255,255,255,0.45);
+            line-height: 1.8;
+            margin: 0 0 14px;
+        }
+
+        .founder-story--accent {
+            color: rgba(255,255,255,0.75);
+            font-weight: 500;
+            font-style: italic;
+            border-left: 2px solid #EE4408;
+            padding-left: 14px;
+            margin-top: 20px;
         }
 
         .founder-sign {
-            font-size: 18px;
-            font-weight: 700;
-            color: rgba(255,255,255,0.7);
-            margin: 32px 0 0;
-            letter-spacing: -0.01em;
-            font-style: italic;
+            font-size: 17px;
+            font-weight: 800;
+            color: #fff;
+            margin: 28px 0 0;
+            letter-spacing: -0.02em;
         }
 
         @media (max-width: 768px) {
             .founder-section { padding: 80px 24px; }
+            .founder-inner { flex-direction: column; gap: 32px; }
+            .founder-photo { width: 120px; height: 120px; }
+            .founder-stats { flex-wrap: wrap; }
+            .founder-stat { flex: 1 1 45%; }
         }
 
         /* SECTION 8: PHILOSOPHY SECTION */
@@ -7236,7 +7292,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            min-height: auto;
             padding: 80px 20px 80px 20px;
             max-width: 800px;
             margin: 0 auto;
@@ -8760,7 +8816,7 @@
            ============================================================ */
 
         .manifest-section {
-            padding: var(--space-96) var(--space-24);
+            padding: 100px var(--space-24) 120px;
             background: linear-gradient(
                 180deg,
                 var(--color-background-base) 0%,
@@ -8783,16 +8839,17 @@
             text-transform: uppercase;
             letter-spacing: 2px;
             color: var(--color-text-tertiary);
-            margin-bottom: var(--space-24);
+            margin-bottom: var(--space-16);
             font-family: var(--font-primary);
         }
 
         .manifest-section h2 {
-            font-size: var(--text-h2);
-            font-weight: 700;
+            font-size: clamp(26px, 3.5vw, 48px);
+            font-weight: 800;
             color: var(--color-text-primary);
-            margin-bottom: var(--space-16);
-            line-height: 1.3;
+            margin-bottom: 48px;
+            line-height: 1.15;
+            letter-spacing: -0.02em;
         }
 
         .manifest-subtitle {
@@ -8939,7 +8996,7 @@
 
         @media (max-width: 768px) {
             .manifest-section {
-                padding: var(--space-64) var(--space-24);
+                padding: 48px var(--space-24);
             }
 
             .manifest-section h2 {
@@ -8975,5 +9032,185 @@
 
             .manifest-warning p {
                 font-size: 13px;
+            }
+        }
+
+        /* ─── CTA Demo Button ─────────────────────────────────────────── */
+        .btn-cta-demo {
+            padding: 14px 40px;
+            font-size: 15px;
+            letter-spacing: 0.04em;
+            height: auto;
+            margin-top: 0;
+        }
+        .btn-cta-demo:hover {
+            box-shadow: 0 12px 40px rgba(255, 94, 0, 0.5);
+        }
+
+        /* ─── Site Footer ─────────────────────────────────────────────── */
+        .site-footer {
+            position: relative;
+            background: #060607;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding: 0;
+            font-family: var(--font-primary);
+        }
+
+        .site-footer .footer-inner {
+            position: relative;
+            z-index: 1;
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 28px 40px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 32px;
+        }
+
+        .site-footer .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        .site-footer .footer-logo {
+            width: 28px;
+            height: 28px;
+            opacity: 0.9;
+        }
+
+        .site-footer .footer-tagline {
+            font-size: 13px;
+            color: rgba(255,255,255,0.35);
+            font-weight: 400;
+            letter-spacing: -0.01em;
+            white-space: nowrap;
+            margin: 0;
+        }
+
+        .site-footer .footer-nav {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .site-footer .footer-nav a {
+            font-size: 13px;
+            color: rgba(255,255,255,0.45);
+            text-decoration: none;
+            transition: color 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .site-footer .footer-nav a:hover {
+            color: rgba(255,255,255,0.8);
+        }
+
+        .site-footer .footer-nav a.footer-nav-accent {
+            color: #EE4408;
+            font-weight: 500;
+        }
+
+        .site-footer .footer-nav a.footer-nav-accent:hover {
+            color: #ff5a20;
+        }
+
+        .site-footer .footer-contact a {
+            font-size: 13px;
+            color: rgba(255,255,255,0.35);
+            text-decoration: none;
+            transition: color 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .site-footer .footer-contact a:hover {
+            color: rgba(255,255,255,0.7);
+        }
+
+        .site-footer .footer-social {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        .site-footer .footer-social a {
+            color: rgba(255,255,255,0.3);
+            transition: color 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .site-footer .footer-social a:hover {
+            color: #EE4408;
+        }
+
+        .site-footer .footer-bottom {
+            position: relative;
+            z-index: 1;
+            max-width: 1120px;
+            margin: 16px auto 0;
+            padding: 14px 40px 18px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            color: rgba(255,255,255,0.2);
+        }
+
+        .site-footer .footer-bottom a {
+            color: rgba(255,255,255,0.25);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .site-footer .footer-bottom a:hover {
+            color: rgba(255,255,255,0.5);
+        }
+
+        .site-footer .footer-bottom-sep {
+            display: inline-block;
+            width: 3px;
+            height: 3px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.15);
+            margin: 0 12px;
+            vertical-align: middle;
+        }
+
+        @media (max-width: 768px) {
+            .site-footer .footer-inner {
+                flex-wrap: wrap;
+                padding: 24px 20px 0;
+                gap: 16px 24px;
+                justify-content: center;
+            }
+            .site-footer .footer-brand {
+                width: 100%;
+                justify-content: center;
+            }
+            .site-footer .footer-nav {
+                gap: 16px;
+            }
+            .site-footer .footer-bottom {
+                padding: 14px 20px 16px;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 4px 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .site-footer .footer-nav {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 12px 16px;
+            }
+            .site-footer .footer-contact {
+                width: 100%;
+                text-align: center;
             }
         }
