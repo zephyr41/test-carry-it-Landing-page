@@ -539,6 +539,16 @@
 
             <div class="input-group">
                 <div class="input-row">
+                    <span class="input-label">TYPE DE KPI</span>
+                    <select id="kpiTypeSelect">
+                        <option value="cumulatif" selected>Cumulatif</option>
+                        <option value="cadence">Cadencé</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <div class="input-row">
                     <span class="input-label" id="dayLabel">QUEL JOUR DE LA SEMAINE ?</span>
                     <select id="daySelect">
                         <option value="lundi">Lundi</option>
@@ -716,6 +726,7 @@
             if(step === 2) {
                 data['frequence'] = document.getElementById('frequenceSelect').value;
                 data['jour'] = document.getElementById('daySelect').value;
+                data['kpiType'] = document.getElementById('kpiTypeSelect').value;
             }
 
             localStorage.setItem('carryItObjectifSMART', JSON.stringify(data));
@@ -737,6 +748,9 @@
             if(data['jour']) {
                 document.getElementById('daySelect').value = data['jour'];
             }
+            if(data['kpiType']) {
+                document.getElementById('kpiTypeSelect').value = data['kpiType'];
+            }
         }
 
         function finalizeObjectif() {
@@ -751,6 +765,7 @@
 
             all.push({
                 id: Date.now(),
+                createdAt: Date.now(),
                 ...current,
                 measures: [],
                 jalons: jalons  // NOUVEAU
