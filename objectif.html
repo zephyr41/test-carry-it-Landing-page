@@ -208,9 +208,9 @@
         .main-stage {
             flex: 1;
             display: flex;
-            align-items: flex-start;     /* Aligné en haut pour cohérence step-by-step */
-            justify-content: center; /* Centrage Horizontal */
-            padding: 225px 20px 120px 20px;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 200px 20px 110px 20px;
             position: relative;
         }
 
@@ -242,7 +242,7 @@
         }
 
         h1 {
-            font-size: 48px; /* Titre massif Apple Style */
+            font-size: 48px;
             font-weight: 700;
             letter-spacing: -1px;
             margin-top: 16px;
@@ -252,10 +252,10 @@
         }
 
         .description {
-            font-size: 20px; /* Texte plus grand pour l'immersion */
+            font-size: 20px;
             line-height: 1.5;
             color: var(--text-secondary);
-            margin-bottom: 48px;
+            margin-bottom: 36px;
             max-width: 580px;
         }
 
@@ -268,6 +268,7 @@
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             transition: border-color 0.3s, transform 0.3s;
+            margin-bottom: 10px;
         }
 
         .input-group:focus-within {
@@ -277,7 +278,7 @@
         }
 
         .input-row {
-            padding: 20px 24px;
+            padding: 16px 22px;
             position: relative;
         }
 
@@ -288,8 +289,15 @@
             font-weight: 600;
             letter-spacing: 0.5px;
             margin-bottom: 8px;
-            margin-top: 12px;
+            margin-top: 4px;
             display: block;
+        }
+
+        /* 2 champs côte à côte */
+        .input-group-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
         }
 
         .paste-btn {
@@ -345,9 +353,9 @@
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             background: transparent;
-            color: #dcb08a; /* Gold IA */
+            color: #dcb08a;
             border: 1px solid rgba(238, 68, 8, 0.3);
             padding: 10px 20px;
             border-radius: 30px;
@@ -453,7 +461,7 @@
 
             h1 { font-size: 28px; }
             .description { font-size: 16px; }
-            .main-stage { padding-top: 140px; padding-bottom: 120px; }
+            .main-stage { padding-top: 130px; padding-bottom: 80px; }
             .step-indicator { font-size: 12px; margin-bottom: 8px; }
         }
 
@@ -537,28 +545,29 @@
                 </div>
             </div>
 
-            <div class="input-group">
-                <div class="input-row">
-                    <span class="input-label">TYPE DE KPI</span>
-                    <select id="kpiTypeSelect">
-                        <option value="cumulatif" selected>Cumulatif</option>
-                        <option value="cadence">Cadencé</option>
-                    </select>
+            <div class="input-group-row">
+                <div class="input-group">
+                    <div class="input-row">
+                        <span class="input-label">TYPE DE KPI</span>
+                        <select id="kpiTypeSelect">
+                            <option value="cumulatif" selected>Cumulatif</option>
+                            <option value="cadence">Cadencé</option>
+                        </select>
+                    </div>
                 </div>
-            </div>
-
-            <div class="input-group">
-                <div class="input-row">
-                    <span class="input-label" id="dayLabel">QUEL JOUR DE LA SEMAINE ?</span>
-                    <select id="daySelect">
-                        <option value="lundi">Lundi</option>
-                        <option value="mardi">Mardi</option>
-                        <option value="mercredi">Mercredi</option>
-                        <option value="jeudi">Jeudi</option>
-                        <option value="vendredi">Vendredi</option>
-                        <option value="samedi">Samedi</option>
-                        <option value="dimanche">Dimanche</option>
-                    </select>
+                <div class="input-group">
+                    <div class="input-row">
+                        <span class="input-label" id="dayLabel">QUEL JOUR DE LA SEMAINE ?</span>
+                        <select id="daySelect">
+                            <option value="lundi">Lundi</option>
+                            <option value="mardi">Mardi</option>
+                            <option value="mercredi">Mercredi</option>
+                            <option value="jeudi">Jeudi</option>
+                            <option value="vendredi">Vendredi</option>
+                            <option value="samedi">Samedi</option>
+                            <option value="dimanche">Dimanche</option>
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>
