@@ -171,7 +171,7 @@ body::before {
     display: grid;
     grid-template-columns: 1.6fr 1fr;
     gap: 16px;
-    align-items: start;
+    align-items: stretch;
 }
 
 /* ── SMART PANEL ── */
@@ -358,9 +358,18 @@ body::before {
 
 .kpi-panel-top {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
     padding-bottom: 6px;
+}
+
+.kpi-panel-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.30);
+    font-family: var(--mono);
 }
 
 .kpi-title {
@@ -401,13 +410,12 @@ body::before {
 }
 
 .kpi-chart-area {
-    height: 110px;
-    max-height: 110px;
+    flex: 1;
+    min-height: 80px;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
-    flex-shrink: 0;
 }
 
 .kpi-chart-area canvas {
@@ -574,6 +582,35 @@ body::before {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+/* Empty state — message centre orange */
+.kpi-empty-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 10px;
+    font-family: var(--mono);
+    color: rgba(238,68,8,0.80);
+    white-space: nowrap;
+    pointer-events: none;
+    text-align: center;
+    letter-spacing: 0.02em;
+}
+
+/* Empty state — label MESURABLE en haut à gauche */
+.kpi-mesurable-label {
+    position: absolute;
+    top: 4px;
+    left: 2px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: var(--mono);
+    color: rgba(255,255,255,0.35);
+    pointer-events: none;
 }
 
 /* Overlay "aucune mesure" sur graphique vide */

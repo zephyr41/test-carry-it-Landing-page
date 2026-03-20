@@ -445,6 +445,21 @@
             display: block;
         }
 
+        .hero-title-line + .hero-title-line {
+            margin-top: 0.14em;
+        }
+
+        .hero-title-mobile,
+        .hero-scroll-label {
+            display: none;
+        }
+
+        .hero-title-mobile .hero-title-line:first-child {
+            white-space: nowrap;
+            font-size: 0.84em;
+            letter-spacing: -0.035em;
+        }
+
         .hero-title-accent {
             color: var(--color-accent-action);
         }
@@ -586,11 +601,15 @@
         /* Scroll Indicator — Hero */
         .hero-section .scroll-indicator {
             display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
             justify-content: center;
             padding-top: 2.5rem;
             padding-bottom: 1.5rem;
             color: rgba(255, 255, 255, 0.35);
             animation: scrollBounce 2.4s ease-in-out infinite;
+            z-index: 6;
         }
 
         .hero-section .scroll-indicator svg {
@@ -9286,10 +9305,19 @@
             }
 
             .hero-title {
-                font-size: clamp(34px, 10.5vw, 46px);
-                line-height: 0.94;
-                max-width: 9.5ch;
-                text-wrap: balance;
+                font-size: 29px;
+                line-height: 0.96;
+                max-width: none;
+                text-wrap: unset;
+                letter-spacing: -0.03em;
+            }
+
+            .hero-title-desktop {
+                display: none;
+            }
+
+            .hero-title-mobile {
+                display: block;
             }
 
             .hero-title + .hero-subtitle {
@@ -9297,8 +9325,8 @@
             }
 
             .hero-subtitle {
-                font-size: 15px;
-                line-height: 1.45;
+                font-size: 14px;
+                line-height: 1.5;
                 max-width: 18em;
                 text-wrap: balance;
             }
@@ -9321,7 +9349,7 @@
                 max-width: 280px;
                 align-self: center;
                 gap: 10px;
-                margin-top: 4px;
+                margin-top: 8px;
             }
 
             .btn {
@@ -9341,8 +9369,26 @@
                 position: absolute;
                 left: 0;
                 right: 0;
-                bottom: 10px;
+                bottom: 18px;
                 padding: 0;
+                width: 100%;
+                height: auto;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+            }
+
+            .hero-scroll-label {
+                display: inline;
+                font-size: 13px;
+                font-weight: 600;
+                color: rgba(255, 255, 255, 0.82);
+                letter-spacing: -0.01em;
+                max-width: 240px;
+            }
+
+            .hero-section .scroll-indicator svg {
+                color: rgba(255, 255, 255, 0.55);
             }
 
             .pain-section,
@@ -9512,11 +9558,11 @@
             }
 
             .hero-title {
-                font-size: clamp(31px, 9vw, 40px);
+                font-size: 27px;
             }
 
             .hero-subtitle {
-                font-size: 14px;
+                font-size: 13px;
             }
 
             .hero-section {

@@ -265,6 +265,7 @@
                     <div class="db-row-kpi-smart">
                         <div class="kpi-panel" id="kpiPanel-${i}">
                             <div class="kpi-panel-top">
+                                <span class="kpi-panel-label">Mesurable</span>
                                 <button class="kpi-add-btn" onclick="openAddMeasureModal(${i})">+ Mesure</button>
                             </div>
                             <div class="kpi-chart-area" id="kpiWrap-${i}">
@@ -909,11 +910,20 @@
 
             if (measures.length === 0) {
                 canvas.style.display = 'block';
-                wrap.querySelectorAll('.kpi-empty-cta, .kpi-empty-overlay, .kpi-single-overlay').forEach(el => el.remove());
-                // Empty chart skeleton — axes visible, no data
+                wrap.querySelectorAll('.kpi-empty-cta, .kpi-empty-overlay, .kpi-single-overlay, .kpi-empty-label, .kpi-mesurable-label').forEach(el => el.remove());
+                // Generate 5 future month labels as ghost X axis
+                const monthNames = ['Janv','Févr','Mars','Avr','Mai','Juin','Juil','Août','Sept','Oct','Nov','Déc'];
+                const now = new Date();
+                const ghostLabels = Array.from({length: 5}, (_, k) => {
+                    const d = new Date(now.getFullYear(), now.getMonth() + k, 1);
+                    return monthNames[d.getMonth()];
+                });
                 kpiCharts[i] = new Chart(canvas.getContext('2d'), {
                     type: 'line',
-                    data: { labels: [], datasets: [{ data: [] }] },
+                    data: {
+                        labels: ghostLabels,
+                        datasets: [{ data: new Array(5).fill(null), borderWidth: 0, pointRadius: 0 }]
+                    },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
@@ -921,13 +931,13 @@
                         plugins: { legend: { display: false }, tooltip: { enabled: false } },
                         scales: {
                             x: {
-                                grid: { color: 'rgba(255,255,255,0.05)', drawTicks: false },
-                                ticks: { display: false },
+                                grid: { color: 'rgba(255,255,255,0.06)', drawTicks: false },
+                                ticks: { color: 'rgba(255,255,255,0.20)', font: { family: 'Inter', size: 9 }, maxRotation: 0 },
                                 border: { display: false }
                             },
                             y: {
-                                grid: { color: 'rgba(255,255,255,0.07)', drawTicks: false },
-                                ticks: { color: 'rgba(255,255,255,0.22)', font: { family: 'Inter', size: 9 }, maxTicksLimit: 3 },
+                                grid: { color: 'rgba(255,255,255,0.09)', drawTicks: false },
+                                ticks: { color: 'rgba(255,255,255,0.20)', font: { family: 'Inter', size: 9 }, maxTicksLimit: 4, precision: 0 },
                                 beginAtZero: true,
                                 min: 0,
                                 max: target || 10,
@@ -937,11 +947,23 @@
                         }
                     }
                 });
+                // Label "MESURABLE : unit" — top-left
+                if (kpiUnit) {
+                    const mesLabel = document.createElement('div');
+                    mesLabel.className = 'kpi-mesurable-label';
+                    mesLabel.textContent = `MESURABLE : ${kpiUnit}`;
+                    wrap.appendChild(mesLabel);
+                }
+                // CTA centré — orange
+                const emptyLabel = document.createElement('div');
+                emptyLabel.className = 'kpi-empty-label';
+                emptyLabel.textContent = 'Ajoute ta première mesure pour tracer ta route →';
+                wrap.appendChild(emptyLabel);
                 return;
             }
 
             // Remove any overlays — measures now exist
-            wrap.querySelectorAll('.kpi-empty-cta, .kpi-empty-overlay, .kpi-single-overlay').forEach(el => el.remove());
+            wrap.querySelectorAll('.kpi-empty-cta, .kpi-empty-overlay, .kpi-single-overlay, .kpi-empty-label, .kpi-mesurable-label').forEach(el => el.remove());
             canvas.style.display = 'block';
 
             // 1+ measures — always Chart.js (1 measure = 1 visible dot)
@@ -1023,19 +1045,33 @@
                     scales: {
                         x: {
                             grid: { color: 'rgba(255,255,255,0.04)', drawTicks: false },
-                            ticks: { color: '#929292', font: { family: 'Inter', size: 10 }, maxRotation: 35 },
-                            title: { display: true, text: axisXTitle, color: 'rgba(255,255,255,0.35)', font: { family: 'Inter', size: 10, weight: '600' } }
+                            ticks: {
+                                color: 'rgba(255,255,255,0.22)',
+                                font: { family: 'Inter', size: 9 },
+                                maxRotation: 0,
+                                maxTicksLimit: 5,
+                                callback: function(val, idx) {
+                                    const lbl = this.getLabelForValue(val);
+                                    if (!lbl) return '';
+                                    const p = lbl.split('/');
+                                    return p.length === 3 ? `${p[0]}/${p[1]}` : lbl;
+                                }
+                            },
+                            title: { display: false },
+                            border: { display: false }
                         },
                         y: {
-                            grid: { color: 'rgba(255,255,255,0.04)', drawTicks: false },
+                            grid: { color: 'rgba(255,255,255,0.05)', drawTicks: false },
                             ticks: {
-                                color: '#929292',
-                                font: { family: 'Inter', size: 10 },
-                                callback: v => v
+                                color: 'rgba(255,255,255,0.22)',
+                                font: { family: 'Inter', size: 9 },
+                                maxTicksLimit: 4,
+                                precision: 0
                             },
                             beginAtZero: true,
                             max: target ? Math.max(target, Math.max(...data)) * 1.05 : undefined,
-                            title: { display: true, text: axisYTitle, color: 'rgba(255,255,255,0.35)', font: { family: 'Inter', size: 10, weight: '600' } }
+                            title: { display: false },
+                            border: { display: false }
                         }
                     }
                 }
