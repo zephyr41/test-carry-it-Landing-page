@@ -182,6 +182,15 @@ body::before {
     padding: 14px 16px;
     display: flex;
     flex-direction: column;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.smart-view {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .smart-header {
@@ -217,31 +226,30 @@ body::before {
 
 .smart-row {
     display: flex;
-    align-items: flex-start;
-    gap: 10px;
+    align-items: center;
+    gap: 8px;
     padding: 6px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.045);
+    border-bottom: 1px solid rgba(255,255,255,0.03);
 }
 
 .smart-row:last-child { border-bottom: none; }
 
 .smart-letter {
     flex-shrink: 0;
-    padding-top: 1px;
 }
 
 .smart-letter-badge {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 20px;
-    height: 20px;
-    background: rgba(238,68,8,0.1);
-    border: 1px solid rgba(238,68,8,0.2);
-    border-radius: 5px;
-    font-size: 11px;
-    font-weight: 800;
-    color: #EE4408;
+    width: 16px;
+    height: 16px;
+    background: rgba(238,68,8,0.06);
+    border: 1px solid rgba(238,68,8,0.12);
+    border-radius: 3px;
+    font-size: 9px;
+    font-weight: 700;
+    color: rgba(238,68,8,0.6);
     font-family: var(--mono);
 }
 
@@ -254,20 +262,21 @@ body::before {
 }
 
 .smart-sublabel {
-    font-size: 9px;
+    font-size: 7px;
     font-weight: 700;
-    letter-spacing: 0.11em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.45);
-    margin-bottom: 0;
+    color: rgba(255,255,255,0.22);
+    margin-bottom: 2px;
     line-height: 1;
     font-family: var(--mono);
 }
 
 .smart-value {
-    font-size: 12px;
-    color: rgba(255,255,255,0.42);
-    line-height: 1.28;
+    font-size: 11px;
+    color: rgba(255,255,255,0.55);
+    font-weight: 400;
+    line-height: 1.3;
     font-family: var(--mono);
     display: -webkit-box;
     -webkit-line-clamp: 2;
