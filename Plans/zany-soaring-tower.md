@@ -1,217 +1,109 @@
-# Dashboard — Refonte UX/UI complète
+# Dashboard — Layout 60/40 + Police Inter unifiée
 
 ## Context
 
-Le dashboard actuel fonctionne bien côté logique (toutes les features sont là) mais l'UX/UI est générique, dense et manque de hiérarchie visuelle. L'objectif est une refonte purement cosmétique : **zéro changement JS**, uniquement CSS + structure HTML dans les fonctions `build*()`. Le nouveau design suit les inspirations modernes fournies (FundedNext dark, Virdee, ClickUp) tout en restant cohérent avec la charte Carry It (fond #080809, accent #EE4408, typo Rifton/Inter).
+Suite aux itérations de layout (50/50 → 70/30), Gemini recommande un ratio 60/40 comme "golden ratio" pour ce dashboard d'exécution : la colonne todo à 40% donne assez d'espace pour des tâches détaillées sans couper le graphique KPI à gauche. Parallèlement, la police actuelle mélange DM Mono (51 éléments), Rifton (3 éléments display) et Inter — on unifie tout en Inter pour la lisibilité et la cohérence.
 
 ---
 
-## Fichier unique à modifier
+## Fichiers à modifier
 
-**`/Users/nils/Desktop/Carry-IT Entreprise/test-carry-it-Landing-page/dashboard.html`**
-
-Trois zones dans ce fichier :
-1. **`<style>` block** (lignes ~13–1275) — rewrite complet du CSS
-2. **Fonctions `build*()`** (lignes ~1425–2103) — rewrite des templates HTML
-3. **HTML des modals + side panel** (lignes ~1299–1365) — rewrite du markup
+1. **`dashboard.css`** — 3 changements
+2. **`dashboard.html`** — 1 changement (Google Fonts link)
 
 ---
 
-## Nouvelle architecture de layout
+## Fix 1 — Layout : 70/30 → 60/40 (dashboard.css ~179)
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│ [Navbar existante — inchangée]                              │
-├─────────────────────────────────────────────────────────────┤
-│  padding: 24px 32px 64px                                    │
-│                                                             │
-│  [Project Switcher — pill tabs]                             │
-│                                                             │
-│  ┌───────────────────────────────────────────────────────┐  │
-│  │ PROJECT HEADER CARD                                   │  │
-│  │  ● Orange accent bar (top-left border ou dot)        │  │
-│  │  Titre (Rifton italic, 36-44px)    [Modifier →] [🗑] │  │
-│  │  [T·deadline] [freq] [N jalons]                      │  │
-│  └───────────────────────────────────────────────────────┘  │
-│                                                             │
-│  ┌─────────────────────┐  ┌───────────────────────────────┐ │
-│  │ SMART PANEL (38%)   │  │ KPI CHART PANEL (62%)         │ │
-│  │                     │  │  Title + unit label           │ │
-│  │  S · L'Ambition     │  │  [+ Ajouter une mesure btn]   │ │
-│  │  M · La Mesure      │  │                               │ │
-│  │  A · Atteignable    │  │  [line chart / empty state]   │ │
-│  │  R · Réaliste       │  │                               │ │
-│  │  T · L'Échéance     │  │  ─────────────────────────    │ │
-│  │                     │  │  Current val · Progression %  │ │
-│  │  [✎ Modifier]       │  │                               │ │
-│  └─────────────────────┘  └───────────────────────────────┘ │
-│                                                             │
-│  ┌───────────────────────────────────────────────────────┐  │
-│  │ TODO — "Exécution quotidienne"                        │  │
-│  │  [Input field + send btn]                             │  │
-│  │  ● Task 1   [▾] [✎] [×]                              │  │
-│  │  ● Task 2                                             │  │
-│  │  ── Terminées (3) ── [Afficher]                       │  │
-│  └───────────────────────────────────────────────────────┘  │
-│                                                             │
-│  ┌───────────────────────────────────────────────────────┐  │
-│  │ JALONS — "Étapes Clés"                [Gérer →]       │  │
-│  │  ──●──────●──────●──────●──                          │  │
-│  └───────────────────────────────────────────────────────┘  │
-│                                                             │
-│  "C'est quand t'as envie d'abandonner que tout commence."   │
-└─────────────────────────────────────────────────────────────┘
+**Problème :** 70/30 trop étroit pour la colonne todo sur écrans standard.
+
+```css
+/* Avant */
+.db-layout {
+    grid-template-columns: 70fr 30fr;
+}
+
+/* Après */
+.db-layout {
+    grid-template-columns: 3fr 2fr;  /* 60/40 exact */
+}
 ```
 
 ---
 
-## Design System (nouveau CSS)
+## Fix 2 — Variable font : --mono → Inter (dashboard.css ~1-4)
 
-### Couleurs (identiques aux CSS vars existantes)
-- Fond page : `#080809`
-- Card principale : `#0e0e10` (légèrement plus clair)
-- Inner panels : `rgba(255,255,255,0.028)` + border `rgba(255,255,255,0.07)`
-- Accent : `#EE4408`
-- Texte primary : `#FFFDF6`
-- Texte muted : `rgba(255,255,255,0.45)`
-- Texte dim : `rgba(255,255,255,0.25)`
+**Problème :** `var(--mono)` = DM Mono (monospace). 51 éléments l'utilisent. On change la variable à la racine — tous les éléments basculent en un seul changement.
 
-### Typographie
-- Titre projet : `Rifton` italic, `clamp(28px, 3.5vw, 42px)`, `letter-spacing: -0.02em`
-- Labels uppercase : 10-11px, `letter-spacing: 0.1em`, weight 700
-- Valeurs SMART : 13px, `rgba(255,255,255,0.72)`
-- Stats KPI : 18-20px bold pour current value
+```css
+/* Avant */
+:root {
+    --mono: 'DM Mono', 'Courier New', monospace;
+}
 
-### Cards & Panels
-- `.proj-card` : `border-radius: 20px`, `border: 1px solid rgba(255,255,255,0.08)`, `background: #0e0e10`
-- Inner panels (`.smart-panel`, `.kpi-panel`, `.todo-panel`, `.jalons-panel`) : `border-radius: 14px`, subtler border, plus de padding
-- Séparateur header/body : gradient border au lieu de solid
-
-### Boutons
-- `.proj-edit-link` : style pill, `border-radius: 8px`, texte 12px, hover → orange
-- `.kpi-add-btn` : style compact, orange outline
-- `.smart-edit-btn` : icon + text, hover orange
-- `.todo-plus-btn` : icône "+" propre, 36×36px
-- Checkboxes todo : `border-radius: 4px` (carré pour tâches), `border-radius: 50%` (rond pour subtasks)
-
-### Project Switcher
-- `.db-tab` : pills arrondis, `border-radius: 10px`, fond transparent → active = fond orange subtle
-- Caché si 1 seul projet (déjà le cas)
-
-### Modals
-- `.m-box` : fond `#111113`, `border-radius: 20px`, `padding: 32px`, shadow `0 32px 80px rgba(0,0,0,0.85)`
-- Inputs : height 44px, `border-radius: 10px`
-- Bouton OK : `#EE4408`, pleine largeur flexible
-
-### Side Panel
-- `.side-panel` : fond `#0e0e10`, `width: 480px`, `border-left: 1px solid rgba(255,255,255,0.07)`, `padding: 28px`
-- `.side-panel-title` : Rifton italic ou Inter bold, 20px
-- Textarea notes : fond `rgba(255,255,255,0.03)`, border subtil
+/* Après */
+:root {
+    --mono: 'Inter', -apple-system, sans-serif;
+}
+```
 
 ---
 
-## Changements CSS précis (style block)
+## Fix 3 — Rifton → Inter Bold (dashboard.css)
 
-### Suppressions / remplacements
-- `.db-2col` : ratio passe de `1fr 1.3fr` à `1fr 1.65fr` (SMART plus étroit, KPI plus large)
-- `.proj-body` gap : `16px` → `20px`
-- `.smart-panel` / `.kpi-panel` / `.todo-panel` / `.jalons-panel` : padding `18px` → `20px 22px`
-- `.proj-title` font-size : déjà `clamp(26px, 3.5vw, 44px)` — ok
-- `.kpi-big-val` : `54px` → `48px`, meilleure proportion
-- `.todo-input` height : `36px` → `40px` (plus confortable)
-- `.todo-item` hover : `rgba(255,255,255,0.04)` → `rgba(255,255,255,0.03)` (plus subtil)
-- `.smart-row` border-bottom color : plus visible `rgba(255,255,255,0.07)` → `rgba(255,255,255,0.05)`
-- `.jt-dot` size : `14px` → `16px` (plus lisible)
-- `.jt-title` : `12px` → `13px`
-- `.kpi-panel-top` : ajouter `padding-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,0.05);`
-- `.proj-header` : ajouter `border-left: 3px solid #EE4408` sur `.proj-card` header indicator
-- `.todo-cb` : changer le checkmark en SVG tick plus propre (border-bottom+border-left trick existant est ok)
+**Problème :** 3 éléments utilisent `font-family: 'Rifton', serif` hardcodé (titles, KPI big value, empty state). Rifton est une police locale qui peut ne pas charger. → Inter 800 pour les titres display.
 
-### Ajouts
-- `.proj-card` : `transition: none` (pas d'animation au render)
-- `.db-header-accent` : barre verticale orange à gauche du header (pseudo-élément ou div)
-- `.kpi-stat-row` : flex row avec gap pour afficher current val + badge côte à côte
-- `.smart-letter` : changer de simple texte orange → petit badge carré/pill avec fond `rgba(238,68,8,0.12)`, taille `16×16`, centré
+Éléments concernés :
+- `.proj-title` (~ligne 77) : `font-family: 'Rifton', serif` → `font-family: 'Inter', sans-serif; font-weight: 800;`
+- `.kpi-big-val` (~ligne 468) : même remplacement
+- `.db-empty-title` (~ligne 1207) : même remplacement
 
 ---
 
-## Changements HTML dans les build functions
+## Fix 4 — Google Fonts link : retirer DM Mono (dashboard.html ~9)
 
-### `buildProjectCard()` — modifications layout
-- Supprimer la `.db-citation` de la fin (déplacer dans le footer hors carte)
-- Wrapper le header dans un div avec classe `proj-card-header-inner` pour la barre d'accent
-- Réorganiser `.proj-body` : garder l'ordre (2col SMART+KPI, todo, jalons)
+**Problème :** DM Mono n'est plus utilisé, inutile de le charger.
 
-### `buildSmartRow()` — lettre en badge
 ```html
 <!-- Avant -->
-<span class="smart-letter">S</span>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
 
 <!-- Après -->
-<span class="smart-letter"><span class="smart-letter-badge">S</span></span>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 ```
-Avec CSS `.smart-letter-badge` : `background: rgba(238,68,8,0.1); border: 1px solid rgba(238,68,8,0.2); border-radius: 6px; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; color: #EE4408;`
 
-### `buildTodoPanel()` — input amélioré
-- Changer le `+` textuel du bouton en SVG icon propre
-- Ajouter placeholder plus inspirant : `"Quelle action aujourd'hui ?"`
-- Ajouter une transition légère sur le todo-item
-
-### `buildJalonsPanel()` — dots plus grands
-- `.jt-dot` → 16px (mis à jour CSS)
-- Ajouter un tooltip au hover sur les dots avec titre+date (via `title` attribute HTML)
-
-### KPI empty state
-- Icône SVG plus grande et centrée
-- Texte plus encourageant : "Premier pas : enregistrez votre point de départ"
-
-### KPI single state
-- Big number plus aéré
-- Ajouter sous-texte motivant
+Ajout des poids 800 et 900 pour les titres display qui étaient en Rifton.
 
 ---
 
-## Modals — retouches HTML
+## Contraste — État actuel (pas de nouveaux fix nécessaires)
 
-Les modals (`#measureModalOverlay`, `#editMeasureModalOverlay`, `#deleteConfirmModal`) :
-- `.m-box` : ajouter `backdrop-filter: blur(4px)` sur l'overlay
-- `.m-btns` : ajouter `flex-direction: column-reverse` sur mobile
-- Bouton supprimer dans edit modal : changer couleur → rouge subtle `rgba(255,59,48,0.1)` border `rgba(255,59,48,0.3)` texte `#FF3B30`
+Les corrections de la session précédente couvrent déjà les problèmes critiques :
+- `.todo-text` → 0.75 (~9.2:1) ✅
+- `.todo-del / .todo-edit` → 0.35 (~3.8:1, icônes hover-only) ✅
+- `.subtask-del` → 0.35 ✅
+- `.subtask-input::placeholder` → 0.28 (hint, non-critique) ✅
+- `.db-citation` → 0.35 ✅
 
----
-
-## Side Panel — retouches
-
-- Titre en Inter bold 20px (garder `side-panel-title` class)
-- Labels en uppercase 10px, tracking 0.1em
-- Textarea notes : min-height 100px, meilleur focus ring
-- Séparateur entre sections : `border-top: 1px solid rgba(255,255,255,0.05)` + `margin: 16px 0`
+Avec Inter (police sans-serif à x-height élevé), les ratios effectifs seront légèrement meilleurs que DM Mono à même opacité — pas de régressions attendues.
 
 ---
 
-## Stratégie d'implémentation
+## Ordre d'implémentation
 
-**Ordre des modifications dans dashboard.html :**
-
-1. **CSS block** : Rewrite ligne par ligne chaque classe dans `<style>` — garder TOUS les noms de classes, modifier uniquement les valeurs CSS + ajouter nouvelles classes helper
-2. **HTML statique** (lignes 1278-1365) : Navbar inchangée, retoucher les 3 modals + side panel
-3. **`buildProjectCard()`** : Ajuster layout, ajouter barre accent header
-4. **`buildSmartRow()` + `buildSmartEditRow()`** : Badge lettres, meilleur espacement
-5. **`buildTodoPanel()` + `renderTaskItem()`** : Input amélioré, SVG icon
-6. **`buildJalonsPanel()`** : Dots avec tooltip title attribute
-7. **`initKPIChart()`** : Retoucher les empty states + single state HTML
-8. **Zero changement** à tout le reste du JS
+1. `dashboard.css` ligne ~1-4 : Fix 2 (variable --mono)
+2. `dashboard.css` ligne ~77 : Fix 3a (proj-title)
+3. `dashboard.css` ligne ~468 : Fix 3b (kpi-big-val)
+4. `dashboard.css` ligne ~1207 : Fix 3c (db-empty-title)
+5. `dashboard.css` ligne ~179 : Fix 1 (grid 60/40)
+6. `dashboard.html` ligne ~9 : Fix 4 (Google Fonts)
 
 ---
 
 ## Vérification
 
-1. Ouvrir `http://localhost:9999/dashboard.html` (python3 -m http.server 9999)
-2. Vérifier layout desktop avec > 1 projet : SMART + KPI côte à côte
-3. Tester inline edit SMART → save → annuler
-4. Tester ajout mesure → chart s'affiche
-5. Tester todo : add/check/edit/delete/subtasks
-6. Tester side panel (clic sur texte tâche)
-7. Tester modal supprimer projet
-8. Vérifier responsive 768px (mobile) : colonnes empilées
-9. Vérifier switcher multi-projets si plusieurs objectifs
+1. `http://localhost:9999/dashboard.html`
+2. **Police** : tous les textes (labels, inputs, badges, todo) en Inter — aucun DM Mono visible
+3. **Titres** : `.proj-title` et KPI big value en Inter bold (pas Rifton)
+4. **Layout** : colonne droite (todo) visiblement plus large que 30%, champ de saisie confortable
+5. **Contraste** : labels SMART, todo-text, badges lisibles sans hover

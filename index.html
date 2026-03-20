@@ -2,7 +2,7 @@
 <html lang="fr" class="dark-mode">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>Carry It</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -37,27 +37,38 @@
         <div class="hero-content">
             <p class="hero-overline">CARRY IT</p>
 
-            <h1 class="hero-title">Structurer ses objectifs <span style="color: var(--accent-orange);">ambitieux</span></h1>
+            <h1 class="hero-title">
+                <span class="hero-title-line">Les grandes ambitions</span>
+                <span class="hero-title-line hero-title-accent">prennent des années.</span>
+            </h1>
             <!-- <h1 class="hero-title">TAG LINE<span style="color: var(--accent-orange);"> ICI</span></h1> -->
 
 
-            <h2 class="hero-subtitle">Mesure, planifie, exécute — chaque semaine.</h2>
+            <h2 class="hero-subtitle">
+                <span class="hero-subtitle-desktop">Une application pour ceux qui construisent sur plusieurs années. Objectif, KPI, jalons, exécution — tout dans un seul système.</span>
+                <span class="hero-subtitle-mobile">L'app pour tenir une ambition sur plusieurs années.</span>
+            </h2>
 
-            <p class="hero-description">
-CarryIt structure tes ambitions en objectifs clairs et mesurables pour tenir sur le long termes .</p>
+            <p class="hero-description">Sans système, tu juges ton projet uniquement sur le résultat final. Tant qu'il n'est pas visible, le doute s'installe — et la plupart abandonnent trop tôt.</p>
 
             <div class="hero-ctas">
-                <button class="btn btn-primary" onclick="scrollToManifest()">Commencer maintenant</button>
-                <button class="btn btn-secondary" onclick="scrollToManifest()">Voir le manifeste</button>
+                <button class="btn btn-primary" onclick="scrollToManifest()">
+                    <span class="btn-label-desktop">Commencer maintenant</span>
+                    <span class="btn-label-mobile">Commencer</span>
+                </button>
+                <button class="btn btn-secondary" onclick="scrollToManifest()">
+                    <span class="btn-label-desktop">Voir le manifeste</span>
+                    <span class="btn-label-mobile">Manifeste</span>
+                </button>
             </div>
 
-            <p class="hero-reassurance">Structurer sa vie avec rigueur, clarté et exigence</p>
+            <p class="hero-reassurance">Pour ceux qui construisent quelque chose qui prend des années.</p>
 
             <div class="features-grid">
                 <div class="feature-card">
                     <img src="Images/climb.png" alt="Résilience" class="feature-icon">
                     <div class="feature-title">Résilience</div>
-                    <div class="feature-desc">Des objectifs à long termes</div>
+                    <div class="feature-desc">Tenir sur plusieurs années</div>
                 </div>
                 <div class="feature-card">
                     <img src="Images/kpi.png" alt="KPI" class="feature-icon">
@@ -140,77 +151,13 @@ CarryIt structure tes ambitions en objectifs clairs et mesurables pour tenir sur
             </div>
 
             <p class="pain-conclusion">
-                Carry It est construit par des High Achievers.<br>
-                <strong>Pour des gens qui ont la dalle.</strong>
+                Sans preuve concrète que tu avances, le doute gagne toujours.<br>
+                <strong>CarryIt est le système qui te donne cette preuve.</strong>
             </p>
         </div>
     </section>
 
-    <!-- SECTION 3: DOULEURS (DESCENTE VIDEO) - Transition cinématique -->
-    <section class="douleurs-section">
-        <div class="douleurs-video-container">
-            <video class="douleurs-video" autoplay muted loop playsinline>
-                <source src="Images/heropage/video2/video2.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-            <div class="douleurs-overlay"></div>
-            <div class="douleurs-subtitle">
-                Rappelle toi du tournant le plus important de ta vie.
-            </div>
-            <div class="douleurs-blur-dome"></div>
-            <div class="douleurs-cta">
-                <h3>Cette mentalité t'a porté jusqu'ici.</h3>
-                <div class="scroll-indicator">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polyline points="6 9 12 15 18 9"></polyline>
-                    </svg>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- SECTION 4: MENTAL — OSCILLATION AUTOMATIQUE -->
-    <section class="duality-section state-low" id="dualitySection">
-        <div class="mental-glow"></div>
-        <div class="duality-container">
-            <p class="duality-overline">LE MENTAL SE CONSTRUIT ICI</p>
-
-            <div class="mental-oscillator">
-
-                <!-- Phase Basse — starts active -->
-                <div class="mental-state mental-state--low is-active" id="statelow">
-                    <span class="mental-phase-label">Phase basse.</span>
-                    <div class="mental-words">
-                        <div class="mental-word mw-light">Doute</div>
-                        <div class="mental-word mw-light">Épuisement</div>
-                        <div class="mental-word mw-medium mental-word--cold">Envie d'arrêter</div>
-                    </div>
-                    <p class="mental-forge-note">C'est ici que tout se forge.</p>
-                </div>
-
-                <!-- Phase Haute -->
-                <div class="mental-state mental-state--high" id="statehigh">
-                    <span class="mental-phase-label">Phase haute.</span>
-                    <div class="mental-words">
-                        <div class="mental-word mw-regular">Discipliné</div>
-                        <div class="mental-word mw-medium">Lucide</div>
-                        <div class="mental-word mw-black mental-word--warm">Solide</div>
-                    </div>
-                    <p class="mental-forge-note mental-forge-note--result">C'est le résultat du fond.</p>
-                </div>
-
-            </div>
-
-            <div class="mental-truth-block">
-                <p class="mental-truth-line">Le mental ne se révèle pas quand tu es à ton top.</p>
-                <p class="mental-truth-line mental-truth-line--em">Il se construit quand tu es au fond.</p>
-            </div>
-
-            <p class="duality-pivot">Ces cycles sont le chemin. Pas un détour.</p>
-        </div>
-    </section>
-
-    <!-- SECTION 5: MARKET GAP - Apple Bento Redesign -->
+    <!-- SECTION 3: MARKET GAP - Apple Bento Redesign -->
     <section class="market-gap-section">
         <div class="mg-container">
 
@@ -309,7 +256,7 @@ CarryIt structure tes ambitions en objectifs clairs et mesurables pour tenir sur
 
                 </div>
 
-                <p class="mg-conclusion">Il manque une application pour passer d'une vision long terme à l'exécution quotidienne.</p>
+                <p class="mg-conclusion">Il manquait un système pour tenir une ambition sur plusieurs années — et prouver que tu avances même quand les résultats ne sont pas encore visibles.</p>
 
             </div>
 
@@ -603,12 +550,53 @@ CarryIt structure tes ambitions en objectifs clairs et mesurables pour tenir sur
 
         <!-- Scroll hint vers la section Forge -->
         <div class="cin-scroll-hint">
-            <span class="cin-scroll-label">CarryIT ne te motive pas. Il forge autre chose.</span>
+            <span class="cin-scroll-label">CarryIT ne te motive pas. Il te prouve que tu avances.</span>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
         </div>
 
+    </section>
+
+    <!-- SECTION: PHILOSOPHIE — POURQUOI CETTE APP EXISTE -->
+    <section class="duality-section state-low" id="dualitySection">
+        <div class="mental-glow"></div>
+        <div class="duality-container">
+            <p class="duality-overline">POURQUOI CETTE APP EXISTE</p>
+
+            <div class="mental-oscillator">
+
+                <!-- Phase Basse — starts active -->
+                <div class="mental-state mental-state--low is-active" id="statelow">
+                    <span class="mental-phase-label">Phase basse.</span>
+                    <div class="mental-words">
+                        <div class="mental-word mw-light">Doute</div>
+                        <div class="mental-word mw-light">Épuisement</div>
+                        <div class="mental-word mw-medium mental-word--cold">Envie d'arrêter</div>
+                    </div>
+                    <p class="mental-forge-note">C'est ici que tout se forge.</p>
+                </div>
+
+                <!-- Phase Haute -->
+                <div class="mental-state mental-state--high" id="statehigh">
+                    <span class="mental-phase-label">Phase haute.</span>
+                    <div class="mental-words">
+                        <div class="mental-word mw-regular">Discipliné</div>
+                        <div class="mental-word mw-medium">Lucide</div>
+                        <div class="mental-word mw-black mental-word--warm">Solide</div>
+                    </div>
+                    <p class="mental-forge-note mental-forge-note--result">C'est le résultat du fond.</p>
+                </div>
+
+            </div>
+
+            <div class="mental-truth-block">
+                <p class="mental-truth-line">Le mental ne se révèle pas quand tu es à ton top.</p>
+                <p class="mental-truth-line mental-truth-line--em">Il se construit quand tu es au fond.</p>
+            </div>
+
+            <p class="duality-pivot">Ces cycles sont le chemin. Pas un détour.</p>
+        </div>
     </section>
 
     <!-- VALEURS -->
@@ -844,8 +832,8 @@ CarryIt structure tes ambitions en objectifs clairs et mesurables pour tenir sur
         <div class="manifest-line-top" aria-hidden="true"></div>
         <div class="manifest-container">
             <p class="manifest-overline">Teste en 2 minutes</p>
-            <h2 class="manifest-headline">Ton ambition<br>mérite un système.</h2>
-            <p class="manifest-sub">Arrête de tout garder dans ta tête. CarryIT te donne la structure pour passer de l'intention à l'exécution réelle.</p>
+            <h2 class="manifest-headline">Les grandes ambitions<br>prennent des années.</h2>
+            <p class="manifest-sub">Sans KPI ni jalons, tu juges uniquement sur le résultat final — et tu abandonnes trop tôt. CarryIT transforme ton ambition en trajectoire claire et te prouve semaine après semaine que tu avances.</p>
             <a href="objectif.html" class="btn btn-primary btn-cta-demo">Créer mon premier objectif</a>
             <p class="manifest-contract">Gratuit · Sans carte bancaire · Tes données restent privées</p>
         </div>

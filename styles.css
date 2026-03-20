@@ -416,8 +416,9 @@
         }
 
         .hero-overline {
+            font-family: var(--font-display);
             font-size: var(--text-small);
-            font-weight: 600;
+            font-weight: normal;
             text-transform: uppercase;
             letter-spacing: 0.08em;
             color: var(--color-text-secondary);
@@ -440,6 +441,14 @@
             text-shadow: 0 4px 30px rgba(0, 0, 0, 0.7);
         }
 
+        .hero-title-line {
+            display: block;
+        }
+
+        .hero-title-accent {
+            color: var(--color-accent-action);
+        }
+
         .hero-title + .hero-subtitle {
             margin-top: var(--space-16);
         }
@@ -452,6 +461,11 @@
             line-height: 1.5;
             margin-bottom: 0;
             text-shadow: 0 2px 20px rgba(0, 0, 0, 0.6);
+        }
+
+        .hero-subtitle-mobile,
+        .btn-label-mobile {
+            display: none;
         }
 
         .hero-subtitle + .hero-description {
@@ -548,11 +562,12 @@
             margin: 0 auto var(--space-16);
         }
 
-        .feature-title {
-            font-size: var(--text-body);
-            font-weight: 700;
+        .feature-card .feature-title {
+            font-size: 14px;
+            font-weight: 600;
             color: var(--color-text-primary);
             margin-bottom: var(--space-8);
+            letter-spacing: 0;
         }
 
         .feature-desc {
@@ -2635,8 +2650,8 @@
 
         /* SECTION A: MENTAL — OSCILLATION */
         .duality-section {
-            background: radial-gradient(ellipse 90% 75% at 50% 45%, #0a1022 0%, #010307 55%, #000000 100%);
-            padding: 120px clamp(24px, 12vw, 120px) 140px;
+            background: radial-gradient(ellipse 90% 60% at 50% 45%, #0a1022 0%, #010307 55%, #000000 100%);
+            padding: 72px clamp(24px, 12vw, 120px) 80px;
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -9157,5 +9172,543 @@
             .site-footer .footer-contact {
                 width: 100%;
                 text-align: center;
+            }
+        }
+
+        /* ============================================================
+           RESPONSIVE HARDENING - INDEX
+           ============================================================ */
+
+        html,
+        body {
+            max-width: 100%;
+        }
+
+        img,
+        svg,
+        video,
+        canvas {
+            max-width: 100%;
+        }
+
+        .hero-content,
+        .pain-content,
+        .problem-text,
+        .feature-text,
+        .feature-visual,
+        .sk-card,
+        .cin-db-inner,
+        .cin-dashboard,
+        .vals-content,
+        .founder-text,
+        .site-footer .footer-inner > * {
+            min-width: 0;
+        }
+
+        @media (max-width: 1024px) {
+            .hero-content {
+                max-width: min(820px, calc(100% - 48px));
+            }
+
+            .problem-item {
+                gap: 24px;
+                align-items: flex-start;
+            }
+
+            .problem-visual {
+                width: min(240px, 34vw);
+                height: auto;
+                aspect-ratio: 14 / 8;
+            }
+
+            .feature-block {
+                gap: 48px;
+            }
+
+            .feature-blocks {
+                padding-left: 24px;
+                padding-right: 24px;
+            }
+
+            .cinema-section {
+                height: clamp(820px, 110svh, 980px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                overflow-x: clip;
+            }
+
+            .navbar {
+                min-height: var(--navbar-height);
+                padding: 12px 16px;
+                gap: 10px;
+            }
+
+            .navbar-logo {
+                font-size: 0.98rem;
+                white-space: nowrap;
+                letter-spacing: -0.04em;
+            }
+
+            .navbar-links {
+                gap: 8px;
+                flex-wrap: nowrap;
+                justify-content: flex-end;
+            }
+
+            .navbar-link {
+                font-size: 11px;
+            }
+
+            .navbar-link.cta {
+                padding: 7px 11px;
+            }
+
+            .hero-section {
+                min-height: 100svh;
+                height: 100svh;
+                padding: calc(var(--navbar-height) + 10px) 16px 20px;
+            }
+
+            .hero-content {
+                width: 100%;
+                max-width: 100%;
+                min-height: calc(100svh - var(--navbar-height) - 30px);
+                justify-content: center;
+                gap: 14px;
+            }
+
+            .hero-overline {
+                font-size: 11px;
+                letter-spacing: 0.16em;
+            }
+
+            .hero-title {
+                font-size: clamp(34px, 10.5vw, 46px);
+                line-height: 0.94;
+                max-width: 9.5ch;
+                text-wrap: balance;
+            }
+
+            .hero-title + .hero-subtitle {
+                margin-top: 4px;
+            }
+
+            .hero-subtitle {
+                font-size: 15px;
+                line-height: 1.45;
+                max-width: 18em;
+                text-wrap: balance;
+            }
+
+            .hero-subtitle-desktop,
+            .btn-label-desktop,
+            .hero-description,
+            .hero-reassurance,
+            .features-grid {
+                display: none;
+            }
+
+            .hero-subtitle-mobile,
+            .btn-label-mobile {
+                display: inline;
+            }
+
+            .hero-ctas {
+                width: 100%;
+                max-width: 280px;
+                align-self: center;
+                gap: 10px;
+                margin-top: 4px;
+            }
+
+            .btn {
+                width: 100%;
+                min-height: 46px;
+                height: 46px;
+                padding: 0 18px;
+                font-size: 15px;
+            }
+
+            .hero-video-bg {
+                object-position: center center;
+                transform: scale(1.08);
+            }
+
+            .hero-section .scroll-indicator {
+                position: absolute;
+                left: 0;
+                right: 0;
+                bottom: 10px;
+                padding: 0;
+            }
+
+            .pain-section,
+            .market-gap-section,
+            .solution-section,
+            .duality-section,
+            .vals-section,
+            .founder-section,
+            .manifest-section {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+
+            .pain-inner,
+            .mg-container,
+            .feature-blocks,
+            .founder-inner {
+                max-width: 100%;
+                padding-left: 0;
+                padding-right: 0;
+            }
+
+            .problem-item {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .problem-visual {
+                width: 100%;
+                max-width: none;
+                min-height: 140px;
+                aspect-ratio: 16 / 9;
+            }
+
+            .feature-blocks {
+                gap: 56px;
+            }
+
+            .feature-block {
+                gap: 24px;
+            }
+
+            .sk-card {
+                padding: 20px;
+                border-radius: 18px;
+                min-height: unset;
+            }
+
+            .sk-timeline {
+                overflow-x: auto;
+                padding-bottom: 8px;
+            }
+
+            .sk-db-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cinema-section {
+                height: clamp(820px, 135svh, 1100px);
+            }
+
+            .cin-header {
+                top: 32px;
+                padding: 0 20px;
+            }
+
+            .cin-quote {
+                font-size: clamp(22px, 8vw, 34px);
+                max-width: 320px;
+                margin: 0 24px;
+            }
+
+            .cin-dashboard-wrap {
+                padding: 148px 20px 104px;
+            }
+
+            .cin-db-inner,
+            .cin-dashboard {
+                width: 100%;
+                max-width: 100%;
+            }
+
+            .cin-dashboard {
+                min-height: auto !important;
+                padding: 18px !important;
+                gap: 18px !important;
+                transform: none !important;
+            }
+
+            .cin-dashboard .sk-db-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .cin-scroll-hint {
+                bottom: 24px;
+                padding: 0 20px;
+            }
+
+            .cin-scroll-label {
+                max-width: 290px;
+                text-align: center;
+            }
+
+            .mental-oscillator {
+                min-height: 220px;
+                margin-bottom: 72px;
+            }
+
+            .mental-state {
+                width: 100%;
+            }
+
+            .vals-item {
+                gap: 20px;
+                align-items: flex-start;
+            }
+
+            .vals-word,
+            .founder-quote,
+            .diff-nord-line,
+            .manifest-headline {
+                text-wrap: balance;
+            }
+
+            .founder-inner {
+                margin: 0 auto;
+            }
+
+            .founder-photo {
+                align-self: flex-start;
+            }
+
+            .site-footer .footer-inner {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+
+            .site-footer .footer-tagline,
+            .site-footer .footer-contact a {
+                white-space: normal;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            :root {
+                --navbar-height: 64px;
+                --space-24: 20px;
+                --space-32: 24px;
+                --space-48: 32px;
+                --space-64: 48px;
+            }
+
+            .navbar {
+                align-items: center;
+            }
+
+            .navbar-logo {
+                font-size: 0.92rem;
+            }
+
+            .navbar-links {
+                width: auto;
+                justify-content: flex-end;
+                gap: 6px;
+            }
+
+            .hero-title {
+                font-size: clamp(31px, 9vw, 40px);
+            }
+
+            .hero-subtitle {
+                font-size: 14px;
+            }
+
+            .hero-section {
+                padding-top: calc(var(--navbar-height) + 8px);
+                padding-bottom: 18px;
+            }
+
+            .btn {
+                min-height: 44px;
+                height: 44px;
+                font-size: 14px;
+            }
+
+            .pain-item {
+                grid-template-columns: 1fr;
+            }
+
+            .pain-number {
+                padding-top: 0;
+            }
+
+            .pain-row {
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .pain-title {
+                font-size: 22px;
+            }
+
+            .pain-body,
+            .mg-subtitle,
+            .feature-desc,
+            .founder-story,
+            .manifest-sub {
+                font-size: 14px;
+                line-height: 1.65;
+            }
+
+            .problem-title {
+                font-size: 1.1rem;
+            }
+
+            .feature-step {
+                margin-bottom: 14px;
+            }
+
+            .sk-card-dashboard {
+                min-height: 280px;
+            }
+
+            .sk-kpi-value {
+                font-size: 48px;
+            }
+
+            .sk-ml-lbl {
+                font-size: 8px;
+            }
+
+            .cin-dashboard-wrap {
+                padding: 148px 16px 100px;
+            }
+
+            .cin-dashboard {
+                padding: 16px !important;
+            }
+
+            .cin-smart-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .cin-dashboard .sk-db-srow {
+                align-items: flex-start;
+            }
+
+            .cin-db-task-label {
+                line-height: 1.35;
+            }
+
+            .diff-statement,
+            .diff-nord,
+            .differentiation-section .feature-blocks {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .pain-section {
+                padding: 88px 20px 72px;
+                border-top: 1px solid rgba(255, 255, 255, 0.05);
+            }
+
+            .pain-section .section-overline {
+                display: block;
+                margin-bottom: 10px;
+                font-size: 10px;
+                letter-spacing: 0.16em;
+                color: rgba(255, 255, 255, 0.42);
+            }
+
+            .pain-inner {
+                max-width: 100%;
+            }
+
+            .pain-list {
+                margin: 34px 0 24px;
+            }
+
+            .pain-item {
+                grid-template-columns: 52px 1fr;
+                gap: 18px;
+                padding: 28px 0;
+                align-items: start;
+            }
+
+            .pain-number {
+                font-size: 18px;
+                line-height: 1;
+                letter-spacing: 0.08em;
+                padding-top: 2px;
+            }
+
+            .pain-row {
+                gap: 14px;
+                margin-bottom: 10px;
+                align-items: flex-start;
+            }
+
+            .pain-title {
+                font-size: clamp(20px, 5.8vw, 28px);
+                line-height: 1.08;
+                max-width: 15ch;
+            }
+
+            .pain-icon {
+                width: 34px;
+                height: 34px;
+                margin-top: 2px;
+            }
+
+            .pain-body {
+                font-size: 14px;
+                line-height: 1.55;
+                max-width: 32ch;
+                color: rgba(255, 255, 255, 0.52);
+            }
+
+            .pain-conclusion {
+                font-size: 15px;
+                line-height: 1.55;
+                max-width: 30ch;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .pain-section {
+                padding: 80px 20px 64px;
+            }
+
+            .pain-list {
+                margin-top: 28px;
+            }
+
+            .pain-item {
+                grid-template-columns: 44px 1fr;
+                gap: 14px;
+                padding: 24px 0;
+            }
+
+            .pain-number {
+                font-size: 16px;
+            }
+
+            .pain-title {
+                font-size: 19px;
+                max-width: 13ch;
+            }
+
+            .pain-icon {
+                width: 30px;
+                height: 30px;
+            }
+
+            .pain-body {
+                font-size: 13px;
+                max-width: 29ch;
+            }
+
+            .pain-conclusion {
+                font-size: 14px;
+                max-width: 28ch;
             }
         }
