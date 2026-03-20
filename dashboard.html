@@ -893,6 +893,69 @@
         // ──────────────────────────────────────────────────────────
         // KPI CHART
         // ──────────────────────────────────────────────────────────
+        const axisArrowsPlugin = {
+            id: 'axisArrows',
+            afterDraw(chart) {
+                const ctx = chart.ctx;
+                const area = chart.chartArea;
+                if (!area) return;
+                const { left, right, top, bottom } = area;
+                const unit = chart.options?.plugins?.axisArrows?.unit || '';
+
+                ctx.save();
+                const color = 'rgba(255,255,255,0.38)';
+                ctx.strokeStyle = color;
+                ctx.fillStyle = color;
+                ctx.lineWidth = 1;
+                const AS = 5;
+
+                // Y axis line + flèche ↑
+                ctx.beginPath();
+                ctx.moveTo(left, bottom);
+                ctx.lineTo(left, top - 5);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(left, top - 10);
+                ctx.lineTo(left - AS * 0.55, top - 4);
+                ctx.lineTo(left + AS * 0.55, top - 4);
+                ctx.closePath();
+                ctx.fill();
+
+                // label unité (Y)
+                if (unit) {
+                    ctx.font = 'bold 8px Inter, sans-serif';
+                    ctx.textAlign = 'left';
+                    ctx.textBaseline = 'bottom';
+                    ctx.fillStyle = 'rgba(255,255,255,0.32)';
+                    ctx.fillText(unit.toUpperCase(), left + 6, top - 2);
+                }
+
+                // X axis line + flèche →
+                ctx.strokeStyle = color;
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.moveTo(left, bottom);
+                ctx.lineTo(right + 5, bottom);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(right + 10, bottom);
+                ctx.lineTo(right + 4, bottom - AS * 0.55);
+                ctx.lineTo(right + 4, bottom + AS * 0.55);
+                ctx.closePath();
+                ctx.fill();
+
+                // label TEMPS (X)
+                ctx.font = 'bold 8px Inter, sans-serif';
+                ctx.textAlign = 'right';
+                ctx.textBaseline = 'top';
+                ctx.fillStyle = 'rgba(255,255,255,0.32)';
+                ctx.fillText('TEMPS', chart.width - 2, bottom + 5);
+
+                ctx.restore();
+            }
+        };
+        Chart.register(axisArrowsPlugin);
+
         function initKPIChart(i, obj) {
             const canvas = document.getElementById(`kpiChart-${i}`);
             const wrap   = document.getElementById(`kpiWrap-${i}`);
@@ -928,7 +991,8 @@
                         responsive: true,
                         maintainAspectRatio: false,
                         animation: { duration: 0 },
-                        plugins: { legend: { display: false }, tooltip: { enabled: false } },
+                        layout: { padding: { top: 14, right: 16, bottom: 2 } },
+                        plugins: { legend: { display: false }, tooltip: { enabled: false }, axisArrows: { unit: kpiUnit } },
                         scales: {
                             x: {
                                 grid: { color: 'rgba(255,255,255,0.06)', drawTicks: false },
@@ -1012,6 +1076,7 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     animation: { duration: 400 },
+                    layout: { padding: { top: 14, right: 16, bottom: 2 } },
                     onHover: (evt, elements) => {
                         const canvasEl = evt?.native?.target;
                         if (canvasEl) canvasEl.style.cursor = elements.length ? 'pointer' : 'default';
@@ -1024,6 +1089,7 @@
                     },
                     plugins: {
                         legend: { display: false },
+                        axisArrows: { unit: kpiUnit },
                         tooltip: {
                             backgroundColor: 'rgba(8,8,9,0.95)',
                             titleColor: '#FFFDF6',

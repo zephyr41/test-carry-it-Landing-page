@@ -456,8 +456,16 @@
 
         .hero-title-mobile .hero-title-line:first-child {
             white-space: nowrap;
-            font-size: 0.84em;
-            letter-spacing: -0.035em;
+            font-size: 1em;
+            letter-spacing: -0.04em;
+        }
+
+        .hero-title-mobile .hero-title-line:nth-child(2) {
+            margin-top: 0.16em;
+        }
+
+        .hero-title-mobile .hero-title-line:nth-child(3) {
+            margin-top: 0.24em;
         }
 
         .hero-title-accent {
@@ -9305,7 +9313,7 @@
             }
 
             .hero-title {
-                font-size: 29px;
+                font-size: 32px;
                 line-height: 0.96;
                 max-width: none;
                 text-wrap: unset;
@@ -9558,7 +9566,7 @@
             }
 
             .hero-title {
-                font-size: 27px;
+                font-size: 29px;
             }
 
             .hero-subtitle {
