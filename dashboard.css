@@ -17,7 +17,7 @@ body::before {
 .dashboard-section.active {
     display: block !important;
     min-height: 0 !important;
-    padding: 32px 40px 80px !important;
+    padding: 14px 40px 80px !important;
     background: transparent;
     position: relative;
     z-index: 1;
@@ -50,8 +50,8 @@ body::before {
 }
 
 .proj-header {
-    padding: 14px 20px 12px;
-    border-bottom: 1px solid rgba(255,255,255,0.055);
+    padding: 14px 20px 28px;
+    border-bottom: none;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
