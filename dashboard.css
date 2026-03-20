@@ -473,8 +473,6 @@ body::before {
     align-items: center;
     justify-content: center;
     position: relative;
-    border: 1px solid #2a2a2a;
-    border-radius: 4px;
     padding: 14px 20px 12px 6px;
 }
 

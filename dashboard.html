@@ -265,7 +265,7 @@
                     <div class="db-row-kpi-smart">
                         <div class="kpi-panel" id="kpiPanel-${i}">
                             <div class="kpi-panel-top">
-                                <span class="kpi-panel-label">${(obj.mesurable || 'Mesure KPI').split(' ').slice(0,5).join(' ')}${(obj.mesurable || '').split(' ').length > 5 ? '…' : ''}</span>
+                                <span class="kpi-panel-label">ÉVOLUTION · KPI</span>
                                 <button class="kpi-add-btn" onclick="openAddMeasureModal(${i})">+ Mesure</button>
                             </div>
                             <div class="kpi-chart-area" id="kpiWrap-${i}">
@@ -1153,7 +1153,7 @@
                     interaction: { mode: 'nearest', intersect: true },
                     scales: {
                         x: {
-                            grid: { display: false },
+                            grid: { color: 'rgba(255,255,255,0.04)', lineWidth: 1, drawTicks: false, borderDash: [3, 5] },
                             ticks: {
                                 color: 'rgba(255,255,255,0.50)',
                                 font: { family: 'Inter', size: 9, weight: '600' },
@@ -1166,11 +1166,17 @@
                                     return p.length === 3 ? `${p[0]}/${p[1]}` : lbl;
                                 }
                             },
-                            title: { display: false },
+                            title: {
+                                display: true,
+                                text: obj.mesurable || kpiUnit || '',
+                                color: 'rgba(255,255,255,0.35)',
+                                font: { family: 'Inter', size: 9, weight: '400' },
+                                padding: { top: 6 }
+                            },
                             border: { display: false }
                         },
                         y: {
-                            grid: { color: 'rgba(255,255,255,0.10)', lineWidth: 1, drawTicks: false },
+                            grid: { color: 'rgba(255,255,255,0.12)', lineWidth: 1, drawTicks: false, borderDash: [3, 5] },
                             ticks: {
                                 color: 'rgba(255,255,255,0.65)',
                                 font: { family: 'Inter', size: 10, weight: '600' },
