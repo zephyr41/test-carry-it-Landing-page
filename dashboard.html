@@ -265,7 +265,7 @@
                     <div class="db-row-kpi-smart">
                         <div class="kpi-panel" id="kpiPanel-${i}">
                             <div class="kpi-panel-top">
-                                <span class="kpi-panel-label">Mesurable</span>
+                                <span class="kpi-panel-label">ÉVOLUTION DE LA MESURE</span>
                                 <button class="kpi-add-btn" onclick="openAddMeasureModal(${i})">+ Mesure</button>
                             </div>
                             <div class="kpi-chart-area" id="kpiWrap-${i}">
@@ -903,10 +903,12 @@
                 const unit = chart.options?.plugins?.axisArrows?.unit || '';
 
                 ctx.save();
-                const color = 'rgba(255,255,255,0.38)';
+                const color = 'rgba(255,255,255,0.8)';
                 ctx.strokeStyle = color;
                 ctx.fillStyle = color;
-                ctx.lineWidth = 1;
+                ctx.lineWidth = 1.2;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
                 const AS = 5;
 
                 // Y axis line + flèche ↑
@@ -914,20 +916,22 @@
                 ctx.moveTo(left, bottom);
                 ctx.lineTo(left, top - 5);
                 ctx.stroke();
+                // tête de flèche ↑
                 ctx.beginPath();
-                ctx.moveTo(left, top - 10);
-                ctx.lineTo(left - AS * 0.55, top - 4);
-                ctx.lineTo(left + AS * 0.55, top - 4);
+                ctx.moveTo(left, top - 11);
+                ctx.lineTo(left - AS * 0.6, top - 4);
+                ctx.lineTo(left + AS * 0.6, top - 4);
                 ctx.closePath();
                 ctx.fill();
 
-                // label unité (Y)
-                if (unit) {
-                    ctx.font = 'bold 8px Inter, sans-serif';
+                // label unité (Y) — seulement si court (≤12 chars)
+                if (unit && unit.length > 0) {
+                    const shortUnit = unit.length <= 12 ? unit.toUpperCase() : unit.slice(0, 10).toUpperCase() + '…';
+                    ctx.font = '700 8px Inter, sans-serif';
                     ctx.textAlign = 'left';
                     ctx.textBaseline = 'bottom';
-                    ctx.fillStyle = 'rgba(255,255,255,0.32)';
-                    ctx.fillText(unit.toUpperCase(), left + 6, top - 2);
+                    ctx.fillStyle = 'rgba(255,255,255,0.55)';
+                    ctx.fillText(shortUnit, left + 6, top - 2);
                 }
 
                 // X axis line + flèche →
@@ -937,19 +941,20 @@
                 ctx.moveTo(left, bottom);
                 ctx.lineTo(right + 5, bottom);
                 ctx.stroke();
+                // tête de flèche →
                 ctx.beginPath();
-                ctx.moveTo(right + 10, bottom);
-                ctx.lineTo(right + 4, bottom - AS * 0.55);
-                ctx.lineTo(right + 4, bottom + AS * 0.55);
+                ctx.moveTo(right + 11, bottom);
+                ctx.lineTo(right + 4, bottom - AS * 0.6);
+                ctx.lineTo(right + 4, bottom + AS * 0.6);
                 ctx.closePath();
                 ctx.fill();
 
-                // label TEMPS (X)
-                ctx.font = 'bold 8px Inter, sans-serif';
-                ctx.textAlign = 'right';
+                // label TEMPS (X) — centré sous la pointe de la flèche
+                ctx.font = '700 8px Inter, sans-serif';
+                ctx.textAlign = 'center';
                 ctx.textBaseline = 'top';
-                ctx.fillStyle = 'rgba(255,255,255,0.32)';
-                ctx.fillText('TEMPS', chart.width - 2, bottom + 5);
+                ctx.fillStyle = 'rgba(255,255,255,0.55)';
+                ctx.fillText('TEMPS', right + 8, bottom + 8);
 
                 ctx.restore();
             }
@@ -971,63 +976,71 @@
                 (a.timestamp || parseDateString(a.date)) - (b.timestamp || parseDateString(b.date))
             );
 
-            if (measures.length === 0) {
+            // Considéré "vide" si aucune mesure manuelle (seulement auto avec value=0)
+            const hasRealMeasures = measures.some(m => !m.auto);
+
+            if (measures.length === 0 || !hasRealMeasures) {
                 canvas.style.display = 'block';
-                wrap.querySelectorAll('.kpi-empty-cta, .kpi-empty-overlay, .kpi-single-overlay, .kpi-empty-label, .kpi-mesurable-label').forEach(el => el.remove());
-                // Generate 5 future month labels as ghost X axis
-                const monthNames = ['Janv','Févr','Mars','Avr','Mai','Juin','Juil','Août','Sept','Oct','Nov','Déc'];
-                const now = new Date();
-                const ghostLabels = Array.from({length: 5}, (_, k) => {
-                    const d = new Date(now.getFullYear(), now.getMonth() + k, 1);
-                    return monthNames[d.getMonth()];
-                });
+                wrap.querySelectorAll('.kpi-empty-cta, .kpi-empty-overlay, .kpi-single-overlay, .kpi-empty-label, .kpi-mesurable-label, .kpi-empty-center, .kpi-empty-backdrop').forEach(el => el.remove());
+                // Ghost chart — axes visibles, aucun tick, aucune donnée
                 kpiCharts[i] = new Chart(canvas.getContext('2d'), {
                     type: 'line',
                     data: {
-                        labels: ghostLabels,
-                        datasets: [{ data: new Array(5).fill(null), borderWidth: 0, pointRadius: 0 }]
+                        labels: ['', '', '', '', ''],
+                        datasets: [{ data: [null, null, null, null, null], borderWidth: 0, pointRadius: 0 }]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
                         animation: { duration: 0 },
-                        layout: { padding: { top: 14, right: 16, bottom: 2 } },
-                        plugins: { legend: { display: false }, tooltip: { enabled: false }, axisArrows: { unit: kpiUnit } },
+                        layout: { padding: { top: 30, right: 40, bottom: 8, left: 4 } },
+                        plugins: { legend: { display: false }, tooltip: { enabled: false }, axisArrows: { unit: '' } },
                         scales: {
                             x: {
-                                grid: { color: 'rgba(255,255,255,0.06)', drawTicks: false },
-                                ticks: { color: 'rgba(255,255,255,0.20)', font: { family: 'Inter', size: 9 }, maxRotation: 0 },
+                                grid: { color: 'rgba(255,255,255,0.02)', drawTicks: false },
+                                ticks: { display: false },
                                 border: { display: false }
                             },
                             y: {
-                                grid: { color: 'rgba(255,255,255,0.09)', drawTicks: false },
-                                ticks: { color: 'rgba(255,255,255,0.20)', font: { family: 'Inter', size: 9 }, maxTicksLimit: 4, precision: 0 },
+                                grid: { color: 'rgba(255,255,255,0.02)', drawTicks: false },
+                                ticks: {
+                                    color: 'rgba(255,255,255,0.20)',
+                                    font: { family: 'Inter', size: 9 },
+                                    stepSize: 25,
+                                    padding: 15
+                                },
                                 beginAtZero: true,
                                 min: 0,
-                                max: target || 10,
-                                title: { display: false },
+                                max: 100,
                                 border: { display: false }
                             }
                         }
                     }
                 });
-                // Label "MESURABLE : unit" — top-left
-                if (kpiUnit) {
-                    const mesLabel = document.createElement('div');
-                    mesLabel.className = 'kpi-mesurable-label';
-                    mesLabel.textContent = `MESURABLE : ${kpiUnit}`;
-                    wrap.appendChild(mesLabel);
-                }
-                // CTA centré — orange
-                const emptyLabel = document.createElement('div');
-                emptyLabel.className = 'kpi-empty-label';
-                emptyLabel.textContent = 'Ajoute ta première mesure pour tracer ta route →';
-                wrap.appendChild(emptyLabel);
+                // Backdrop radial — masque grille + blur derrière le texte
+                const backdrop = document.createElement('div');
+                backdrop.className = 'kpi-empty-backdrop';
+                wrap.appendChild(backdrop);
+
+                // Overlay centré — icône TrendingUp 48px orange + texte 22px blanc
+                const center = document.createElement('div');
+                center.className = 'kpi-empty-center';
+                center.innerHTML = `
+                    <svg width="48" height="48" fill="none" stroke="#EE4408" viewBox="0 0 24 24" style="flex-shrink:0;filter:drop-shadow(0 0 8px rgba(238,68,8,0.6));">
+                        <polyline stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" points="22,7 13,16 8,11 2,17"/>
+                        <polyline stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" points="16,7 22,7 22,13"/>
+                    </svg>
+                    <span>AJOUTEZ VOTRE PREMIÈRE MESURE</span>
+                `;
+                wrap.appendChild(center);
                 return;
             }
 
+            // Filtered pour le chart : exclure les auto-mesures à 0
+            measures = measures.filter(m => !m.auto || m.value !== 0);
+
             // Remove any overlays — measures now exist
-            wrap.querySelectorAll('.kpi-empty-cta, .kpi-empty-overlay, .kpi-single-overlay, .kpi-empty-label, .kpi-mesurable-label').forEach(el => el.remove());
+            wrap.querySelectorAll('.kpi-empty-cta, .kpi-empty-overlay, .kpi-single-overlay, .kpi-empty-label, .kpi-mesurable-label, .kpi-empty-center, .kpi-empty-backdrop').forEach(el => el.remove());
             canvas.style.display = 'block';
 
             // 1+ measures — always Chart.js (1 measure = 1 visible dot)
@@ -1076,7 +1089,7 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     animation: { duration: 400 },
-                    layout: { padding: { top: 14, right: 16, bottom: 2 } },
+                    layout: { padding: { top: 30, right: 40, bottom: 8, left: 4 } },
                     onHover: (evt, elements) => {
                         const canvasEl = evt?.native?.target;
                         if (canvasEl) canvasEl.style.cursor = elements.length ? 'pointer' : 'default';
@@ -1110,7 +1123,7 @@
                     interaction: { mode: 'nearest', intersect: true },
                     scales: {
                         x: {
-                            grid: { color: 'rgba(255,255,255,0.04)', drawTicks: false },
+                            grid: { color: 'rgba(255,255,255,0.03)', drawTicks: false },
                             ticks: {
                                 color: 'rgba(255,255,255,0.22)',
                                 font: { family: 'Inter', size: 9 },
@@ -1127,7 +1140,7 @@
                             border: { display: false }
                         },
                         y: {
-                            grid: { color: 'rgba(255,255,255,0.05)', drawTicks: false },
+                            grid: { color: 'rgba(255,255,255,0.03)', drawTicks: false },
                             ticks: {
                                 color: 'rgba(255,255,255,0.22)',
                                 font: { family: 'Inter', size: 9 },

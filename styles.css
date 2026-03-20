@@ -1891,6 +1891,10 @@
             font-weight: 700;
         }
 
+        .pain-mobile {
+            display: none;
+        }
+
         /* Pain Section — Liste pure */
         .pain-section {
             padding: 120px 0;
@@ -9702,9 +9706,9 @@
             }
 
             .pain-title {
-                font-size: clamp(20px, 5.8vw, 28px);
-                line-height: 1.08;
-                max-width: 15ch;
+                font-size: clamp(18px, 5vw, 24px);
+                line-height: 1.1;
+                max-width: 14ch;
             }
 
             .pain-icon {
@@ -9714,16 +9718,25 @@
             }
 
             .pain-body {
-                font-size: 14px;
-                line-height: 1.6;
-                max-width: 32ch;
-                color: rgba(255, 255, 255, 0.52);
+                font-size: 13px;
+                line-height: 1.5;
+                max-width: 26ch;
+                color: rgba(255, 255, 255, 0.56);
             }
 
             .pain-conclusion {
-                font-size: 15px;
-                line-height: 1.55;
-                max-width: 30ch;
+                font-size: 14px;
+                line-height: 1.45;
+                max-width: 24ch;
+                margin-top: 8px;
+            }
+
+            .pain-desktop {
+                display: none;
+            }
+
+            .pain-mobile {
+                display: inline;
             }
         }
 
@@ -9747,8 +9760,8 @@
             }
 
             .pain-title {
-                font-size: 19px;
-                max-width: 13ch;
+                font-size: 17px;
+                max-width: 12ch;
             }
 
             .pain-icon {
@@ -9757,13 +9770,12 @@
             }
 
             .pain-body {
-                font-size: 13px;
-                line-height: 1.62;
-                max-width: 29ch;
+                font-size: 12px;
+                line-height: 1.45;
+                max-width: 24ch;
             }
 
             .pain-conclusion {
-                font-size: 14px;
-                max-width: 28ch;
+                display: none;
             }
         }
