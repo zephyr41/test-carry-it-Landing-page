@@ -266,7 +266,7 @@
                         <div class="kpi-panel" id="kpiPanel-${i}">
                             <div class="kpi-panel-top">
                                 <span class="kpi-panel-label">ÉVOLUTION · KPI</span>
-                                <button class="kpi-add-btn" onclick="openAddMeasureModal(${i})">+ Mesure</button>
+                                <button class="kpi-add-btn" onclick="openAddMeasureModal(${i})">+ Ajouter une mesure</button>
                             </div>
                             <div class="kpi-chart-area" id="kpiWrap-${i}">
                                 <canvas id="kpiChart-${i}"></canvas>
@@ -950,13 +950,15 @@
                 ctx.closePath();
                 ctx.fill();
 
-                // Label FIN à droite — seulement en mode showFin
+                // Date du jour à droite de la flèche X — seulement en mode showFin
                 if (showFin) {
-                    ctx.font = '700 9px Inter, sans-serif';
-                    ctx.textAlign = 'right';
-                    ctx.textBaseline = 'top';
-                    ctx.fillStyle = 'rgba(255,255,255,0.40)';
-                    ctx.fillText('FIN', right, bottom + 8);
+                    const _n = new Date();
+                    const _todayLabel = `${String(_n.getDate()).padStart(2,'0')}/${String(_n.getMonth()+1).padStart(2,'0')}`;
+                    ctx.font = '600 9px Inter, sans-serif';
+                    ctx.textAlign = 'left';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillStyle = 'rgba(255,255,255,0.50)';
+                    ctx.fillText(_todayLabel, right + 15, bottom);
                 }
 
 
@@ -1119,7 +1121,7 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     animation: { duration: 400 },
-                    layout: { padding: { top: 30, right: 18, bottom: 24, left: 8 } },
+                    layout: { padding: { top: 30, right: 60, bottom: 24, left: 8 } },
                     onHover: (evt, elements) => {
                         const canvasEl = evt?.native?.target;
                         if (canvasEl) canvasEl.style.cursor = elements.length ? 'pointer' : 'default';
@@ -1159,6 +1161,7 @@
                                 font: { family: 'Inter', size: 9, weight: '600' },
                                 maxRotation: 0,
                                 maxTicksLimit: 5,
+                                padding: 10,
                                 callback: function(val, idx) {
                                     const lbl = this.getLabelForValue(val);
                                     if (!lbl) return '';

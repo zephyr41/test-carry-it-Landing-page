@@ -9722,10 +9722,10 @@
             }
 
             .pain-body {
-                font-size: 13px;
-                line-height: 1.5;
-                max-width: 26ch;
-                color: rgba(255, 255, 255, 0.56);
+                font-size: 13.5px;
+                line-height: 1.58;
+                max-width: 30ch;
+                color: rgba(255, 255, 255, 0.58);
             }
 
             .pain-conclusion {
@@ -9774,9 +9774,9 @@
             }
 
             .pain-body {
-                font-size: 12px;
-                line-height: 1.45;
-                max-width: 24ch;
+                font-size: 12.5px;
+                line-height: 1.56;
+                max-width: 28ch;
             }
 
             .pain-conclusion {
@@ -9805,10 +9805,10 @@
             }
 
             .mg-subtitle {
-                max-width: 20em;
+                max-width: 22em;
                 margin-left: auto;
                 margin-right: auto;
-                line-height: 1.6;
+                line-height: 1.55;
             }
 
             .problem-copy-desktop {
@@ -9836,7 +9836,7 @@
 
             .problem-visual,
             .problem-text {
-                width: min(100%, 348px);
+                width: min(100%, 356px);
                 margin-left: auto;
                 margin-right: auto;
             }
@@ -9853,26 +9853,28 @@
                 padding: 0 2px;
                 display: flex;
                 flex-direction: column;
+                align-items: flex-start;
             }
 
             .problem-title {
-                font-size: 1.56rem;
-                line-height: 1.08;
-                margin-bottom: 24px;
-                letter-spacing: -0.03em;
+                font-size: 1.42rem;
+                line-height: 1.12;
+                margin-bottom: 22px;
+                letter-spacing: -0.025em;
             }
 
             .problem-highlight {
-                font-size: 0.98rem;
+                font-size: 1rem;
                 font-weight: 600;
-                line-height: 1.4;
-                margin-bottom: 6px;
-                color: rgba(255, 255, 255, 0.84);
+                line-height: 1.38;
+                margin-bottom: 8px;
+                color: rgba(255, 255, 255, 0.82);
             }
 
             .problem-desc {
-                font-size: 0.92rem;
+                font-size: 0.95rem;
                 line-height: 1.68;
+                max-width: 31ch;
                 color: rgba(255, 255, 255, 0.46);
             }
 
@@ -9902,7 +9904,8 @@
             }
 
             .mg-subtitle {
-                max-width: 18em;
+                max-width: 19.5em;
+                font-size: 0.95rem;
             }
 
             .problem-list {
@@ -9911,7 +9914,7 @@
 
             .problem-visual,
             .problem-text {
-                width: min(100%, 314px);
+                width: min(100%, 326px);
             }
 
             .problem-visual {
@@ -9921,21 +9924,22 @@
             }
 
             .problem-title {
-                font-size: 1.28rem;
-                line-height: 1.1;
-                margin-bottom: 22px;
+                font-size: 1.18rem;
+                line-height: 1.14;
+                margin-bottom: 20px;
             }
 
             .problem-highlight {
-                font-size: 0.88rem;
+                font-size: 0.92rem;
                 font-weight: 600;
                 line-height: 1.4;
-                margin-bottom: 4px;
+                margin-bottom: 6px;
             }
 
             .problem-desc {
-                font-size: 0.84rem;
+                font-size: 0.88rem;
                 line-height: 1.66;
+                max-width: 30ch;
             }
 
             .prob-grid-dots {
