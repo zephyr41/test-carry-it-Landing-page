@@ -2178,6 +2178,10 @@
             line-height: 1.6;
         }
 
+        .problem-copy-mobile {
+            display: none;
+        }
+
         /* Statement — replaces bento */
         .mg-statement {
             margin-bottom: 52px;
@@ -9776,6 +9780,193 @@
             }
 
             .pain-conclusion {
+                display: block;
+                font-size: 13px;
+                line-height: 1.5;
+                max-width: 24ch;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .market-gap-section {
+                padding: 48px 20px 36px;
+            }
+
+            .mg-header {
+                margin-bottom: 52px;
+            }
+
+            .mg-overline {
+                margin-bottom: 14px;
+            }
+
+            .mg-title {
+                margin-bottom: 26px;
+            }
+
+            .mg-subtitle {
+                max-width: 20em;
+                margin-left: auto;
+                margin-right: auto;
+                line-height: 1.6;
+            }
+
+            .problem-copy-desktop {
                 display: none;
+            }
+
+            .problem-copy-mobile {
+                display: inline;
+            }
+
+            .problem-list {
+                gap: 56px;
+                margin-bottom: 28px;
+            }
+
+            .problem-item {
+                align-items: center;
+                gap: 22px;
+            }
+
+            .problem-item:not(:last-child) {
+                padding-bottom: 18px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            }
+
+            .problem-visual,
+            .problem-text {
+                width: min(100%, 348px);
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .problem-visual {
+                min-height: 132px;
+                aspect-ratio: 16 / 8.8;
+                padding: 18px 20px;
+                border-radius: 18px;
+            }
+
+            .problem-text {
+                text-align: left;
+                padding: 0 2px;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .problem-title {
+                font-size: 1.56rem;
+                line-height: 1.08;
+                margin-bottom: 20px;
+                letter-spacing: -0.03em;
+            }
+
+            .problem-highlight {
+                font-size: 0.98rem;
+                font-weight: 600;
+                line-height: 1.4;
+                margin-bottom: 6px;
+                color: rgba(255, 255, 255, 0.84);
+            }
+
+            .problem-desc {
+                font-size: 0.92rem;
+                line-height: 1.68;
+                color: rgba(255, 255, 255, 0.46);
+            }
+
+            .prob-grid-dots {
+                gap: 6px;
+                max-width: 100%;
+            }
+
+            .prob-streak-cards {
+                gap: 8px;
+            }
+
+            .prob-scard {
+                width: 42px;
+                height: 58px;
+                border-radius: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .market-gap-section {
+                padding: 44px 20px 36px;
+            }
+
+            .mg-header {
+                margin-bottom: 46px;
+            }
+
+            .mg-subtitle {
+                max-width: 18em;
+            }
+
+            .problem-list {
+                gap: 44px;
+            }
+
+            .problem-visual,
+            .problem-text {
+                width: min(100%, 314px);
+            }
+
+            .problem-visual {
+                min-height: 122px;
+                padding: 16px 18px;
+                border-radius: 16px;
+            }
+
+            .problem-title {
+                font-size: 1.28rem;
+                line-height: 1.1;
+                margin-bottom: 18px;
+            }
+
+            .problem-highlight {
+                font-size: 0.88rem;
+                font-weight: 600;
+                line-height: 1.4;
+                margin-bottom: 4px;
+            }
+
+            .problem-desc {
+                font-size: 0.84rem;
+                line-height: 1.66;
+            }
+
+            .prob-grid-dots {
+                gap: 6px;
+            }
+
+            .prob-todo {
+                gap: 8px;
+            }
+
+            .prob-todo-row {
+                gap: 8px;
+            }
+
+            .prob-todo-check {
+                width: 11px;
+                height: 11px;
+            }
+
+            .prob-todo-bar {
+                height: 8px;
+            }
+
+            .prob-scard {
+                width: 40px;
+                height: 56px;
+                border-radius: 9px;
+            }
+
+            .prob-sunburst svg {
+                width: 50px;
+                height: 48px;
             }
         }
