@@ -19,19 +19,11 @@
         /* ── DASHBOARD PAGE ── */
         body {
             padding-top: var(--navbar-height, 72px);
-            background: #070708;
+            background: #0d0d0f;
         }
 
         body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            background-image:
-                linear-gradient(rgba(255,255,255,0.011) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.011) 1px, transparent 1px);
-            background-size: 40px 40px;
-            pointer-events: none;
-            z-index: 0;
+            display: none;
         }
 
         .dashboard-section,
@@ -68,7 +60,6 @@
             overflow: hidden;
             margin-bottom: 0;
             transition: none;
-            box-shadow: 0 40px 80px rgba(0,0,0,0.45), 0 1px 0 rgba(255,255,255,0.04) inset;
         }
 
         .proj-header {
@@ -79,7 +70,7 @@
             align-items: flex-start;
             gap: 20px;
             position: relative;
-            background: linear-gradient(180deg, rgba(238,68,8,0.035) 0%, transparent 100%);
+            background: transparent;
         }
 
         .proj-header::after {
@@ -197,7 +188,7 @@
 
         /* ── SMART PANEL ── */
         .smart-panel {
-            background: rgba(255,255,255,0.018);
+            background: transparent;
             border: 1px solid rgba(255,255,255,0.06);
             border-radius: 12px;
             padding: 20px 22px;
@@ -365,7 +356,7 @@
 
         /* ── KPI PANEL ── */
         .kpi-panel {
-            background: rgba(255,255,255,0.018);
+            background: transparent;
             border: 1px solid rgba(255,255,255,0.06);
             border-radius: 12px;
             padding: 20px 22px;
@@ -527,7 +518,7 @@
         }
 
         .todo-panel {
-            background: rgba(255,255,255,0.018);
+            background: transparent;
             border: 1px solid rgba(255,255,255,0.06);
             border-radius: 12px;
             padding: 20px 22px;
@@ -991,7 +982,7 @@
 
         /* ── JALONS HORIZONTAL TIMELINE ── */
         .jalons-panel {
-            background: rgba(255,255,255,0.018);
+            background: transparent;
             border: 1px solid rgba(255,255,255,0.06);
             border-radius: 12px;
             padding: 20px 22px;
