@@ -358,11 +358,9 @@ body::before {
 
 .kpi-panel-top {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
-    gap: 12px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+    padding-bottom: 6px;
 }
 
 .kpi-title {

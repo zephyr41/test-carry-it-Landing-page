@@ -265,11 +265,7 @@
                     <div class="db-row-kpi-smart">
                         <div class="kpi-panel" id="kpiPanel-${i}">
                             <div class="kpi-panel-top">
-                                <div>
-                                    <div class="kpi-title">${escHtml(obj.titre || 'Progression')}</div>
-                                    <div class="kpi-unit-label">${escHtml(kpiLabel.toUpperCase())}</div>
-                                </div>
-                                <button class="kpi-add-btn" onclick="openAddMeasureModal(${i})">+ Ajouter une mesure</button>
+                                <button class="kpi-add-btn" onclick="openAddMeasureModal(${i})">+ Mesure</button>
                             </div>
                             <div class="kpi-chart-area" id="kpiWrap-${i}">
                                 <canvas id="kpiChart-${i}"></canvas>
@@ -948,30 +944,7 @@
             wrap.querySelectorAll('.kpi-empty-cta, .kpi-empty-overlay, .kpi-single-overlay').forEach(el => el.remove());
             canvas.style.display = 'block';
 
-            if (measures.length === 1) {
-                const m = measures[0];
-                const pct = target ? Math.round((m.value / target) * 100) : null;
-                canvas.style.display = 'none';
-                // Use a sibling div, not innerHTML (to preserve canvas)
-                let single = wrap.querySelector('.kpi-single-overlay');
-                if (!single) {
-                    single = document.createElement('div');
-                    single.className = 'kpi-single-overlay';
-                    wrap.appendChild(single);
-                }
-                single.innerHTML = `
-                    <div class="kpi-single-wrap">
-                        <div class="kpi-big-val">${m.value}</div>
-                        <div class="kpi-big-unit">${escHtml(kpiUnit)}</div>
-                        ${pct !== null ? `<span class="kpi-prog-badge">${pct}% de l'objectif</span>` : ''}
-                        <div class="kpi-single-hint">Ajoutez une 2e mesure pour voir l'évolution</div>
-                    </div>`;
-                return;
-            }
-            // Multiple measures — remove any single overlay
-            wrap.querySelectorAll('.kpi-single-overlay').forEach(el => el.remove());
-
-            // Multiple measures — Chart.js
+            // 1+ measures — always Chart.js (1 measure = 1 visible dot)
             canvas.style.display = 'block';
 
             const labels = measures.map(m => m.date);
@@ -1076,10 +1049,10 @@
             stats.className = 'kpi-stats';
             stats.innerHTML = `
                 <div>
-                    <div class="kpi-current-val">${last.value} ${escHtml(kpiUnit)}</div>
+                    <div class="kpi-current-val">${last.value}</div>
                     <div class="kpi-current-label">Dernière mesure · ${last.date}</div>
                 </div>
-                ${pct !== null ? `<span class="kpi-prog-badge">${pct}% de l'objectif</span>` : ''}
+                ${pct !== null ? `<span class="kpi-prog-badge">${pct}%</span>` : ''}
             `;
             panel.appendChild(stats);
         }

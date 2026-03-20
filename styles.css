@@ -9607,7 +9607,7 @@
 
         @media (max-width: 768px) {
             .pain-section {
-                padding: 88px 20px 72px;
+                padding: 96px 20px 80px;
                 border-top: 1px solid rgba(255, 255, 255, 0.05);
             }
 
@@ -9624,13 +9624,13 @@
             }
 
             .pain-list {
-                margin: 34px 0 24px;
+                margin: 40px 0 28px;
             }
 
             .pain-item {
                 grid-template-columns: 52px 1fr;
                 gap: 18px;
-                padding: 28px 0;
+                padding: 34px 0;
                 align-items: start;
             }
 
@@ -9643,7 +9643,7 @@
 
             .pain-row {
                 gap: 14px;
-                margin-bottom: 10px;
+                margin-bottom: 14px;
                 align-items: flex-start;
             }
 
@@ -9661,7 +9661,7 @@
 
             .pain-body {
                 font-size: 14px;
-                line-height: 1.55;
+                line-height: 1.6;
                 max-width: 32ch;
                 color: rgba(255, 255, 255, 0.52);
             }
@@ -9675,17 +9675,17 @@
 
         @media (max-width: 480px) {
             .pain-section {
-                padding: 80px 20px 64px;
+                padding: 88px 20px 72px;
             }
 
             .pain-list {
-                margin-top: 28px;
+                margin-top: 34px;
             }
 
             .pain-item {
                 grid-template-columns: 44px 1fr;
                 gap: 14px;
-                padding: 24px 0;
+                padding: 30px 0;
             }
 
             .pain-number {
@@ -9704,6 +9704,7 @@
 
             .pain-body {
                 font-size: 13px;
+                line-height: 1.62;
                 max-width: 29ch;
             }
 
