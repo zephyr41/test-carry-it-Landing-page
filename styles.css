@@ -9509,6 +9509,7 @@
                 max-width: 100%;
                 margin: 0 auto 36px;
                 padding: 0;
+                text-align: center;
             }
 
             .sol-header .section-overline {
@@ -9767,7 +9768,7 @@
             }
 
             .sol-header .section-subtitle {
-                max-width: 24ch;
+                max-width: 18.5em;
                 font-size: 13px;
                 line-height: 1.48;
             }
