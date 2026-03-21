@@ -1810,6 +1810,7 @@
                 var(--color-background-base) 100%
             );
             position: relative;
+            overflow: hidden;
         }
 
         .pain-section .section-overline {
@@ -2148,6 +2149,7 @@
             background: #080809;
             padding: 72px 24px 32px;
             position: relative;
+            overflow: hidden;
         }
 
         .mg-container {
@@ -2963,6 +2965,8 @@
             background: #000;
             padding: 80px 64px 96px;
             border-top: 1px solid rgba(255,255,255,0.07);
+            position: relative;
+            overflow: hidden;
         }
 
         .vals-tag {
@@ -3368,6 +3372,7 @@
                 var(--color-background-base) 100%
             );
             position: relative;
+            overflow: hidden;
         }
 
         .solution-section .section-overline {
@@ -5067,6 +5072,7 @@
                 var(--color-background-base) 100%
             );
             position: relative;
+            overflow: hidden;
         }
 
         .demo-section .section-overline {
@@ -5273,6 +5279,7 @@
                 var(--color-background-base) 100%
             );
             position: relative;
+            overflow: hidden;
         }
 
         .differentiation-section .section-overline {
@@ -5505,6 +5512,7 @@
                 var(--color-background-base) 100%
             );
             position: relative;
+            overflow: hidden;
         }
 
         .philosophy-section .section-overline {
@@ -5674,6 +5682,7 @@
                 var(--color-background-base) 100%
             );
             position: relative;
+            overflow: hidden;
         }
 
         .proof-section .section-overline {
@@ -6977,6 +6986,8 @@
             background: #050505;
             border-top: 1px solid rgba(255,255,255,0.05);
             padding: 120px 80px;
+            position: relative;
+            overflow: hidden;
         }
 
         .founder-inner {
