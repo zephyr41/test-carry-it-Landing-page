@@ -160,16 +160,19 @@
         }
 
         .navbar-link.cta {
-            background-color: var(--color-accent-action);
-            color: var(--color-text-primary);
+            background-color: transparent;
+            color: rgba(255,255,255,0.70);
             padding: 8px 18px;
             border-radius: var(--btn-radius);
+            border: 1px solid rgba(255,255,255,0.18);
             font-weight: 600;
         }
 
         .navbar-link.cta:hover {
-            background-color: #ff5d1a;
-            transform: translateY(-2px);
+            background-color: rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.90);
+            border-color: rgba(255,255,255,0.30);
+            transform: none;
         }
 
         /* Container System */
@@ -3406,6 +3409,10 @@
             color: rgba(255,255,255,0.45);
             margin: 0;
             line-height: 1.6;
+        }
+
+        .sol-subtitle-mobile {
+            display: none;
         }
 
         .feature-blocks {
@@ -6940,6 +6947,19 @@
             .diff-features { padding: 0 24px 64px; max-width: 100%; }
             .diff-feat { padding: 32px 0; }
             .diff-feat-desc { padding-left: 0; }
+            .diff-feat-name {
+                max-width: none;
+                width: 100%;
+                text-wrap: balance;
+            }
+            .diff-feat-desc {
+                max-width: none;
+                width: 100%;
+            }
+            .diff-nord-line {
+                max-width: none;
+                width: 100%;
+            }
             .sk-week { width: 22px; height: 22px; }
         }
 
@@ -9493,21 +9513,32 @@
             }
 
             .feature-blocks {
-                gap: 44px;
+                gap: 60px;
             }
 
             .feature-block {
-                gap: 18px;
+                gap: 22px;
+            }
+
+            .solution-section .feature-block:nth-child(even) .feature-text,
+            .differentiation-section .feature-block:nth-child(even) .feature-text {
+                order: 2;
+            }
+
+            .solution-section .feature-block:nth-child(even) .feature-visual,
+            .differentiation-section .feature-block:nth-child(even) .feature-visual {
+                order: 1;
             }
 
             .solution-section {
-                padding-top: 10px;
+                padding-top: 20px;
                 padding-bottom: 84px;
             }
 
             .sol-header {
+                width: min(100%, 326px);
                 max-width: 100%;
-                margin: 0 auto 36px;
+                margin: 0 auto 34px;
                 padding: 0;
                 text-align: center;
             }
@@ -9521,23 +9552,34 @@
                 line-height: 1.04;
                 letter-spacing: -0.04em;
                 margin-bottom: 10px;
-                max-width: 10ch;
+                max-width: none;
+                width: 100%;
                 margin-left: auto;
                 margin-right: auto;
+                text-wrap: balance;
             }
 
             .sol-header .section-subtitle {
-                max-width: 24ch;
+                max-width: none;
+                width: 100%;
                 margin: 0 auto;
-                font-size: 14px;
-                line-height: 1.5;
-                color: rgba(255, 255, 255, 0.56);
+                font-size: 13px;
+                line-height: 1.46;
+                color: rgba(255, 255, 255, 0.54);
                 text-wrap: balance;
+            }
+
+            .sol-subtitle-desktop {
+                display: none;
+            }
+
+            .sol-subtitle-mobile {
+                display: inline;
             }
 
             .feature-text,
             .feature-visual {
-                width: min(100%, 356px);
+                width: min(100%, 326px);
                 margin-left: auto;
                 margin-right: auto;
             }
@@ -9554,22 +9596,28 @@
             }
 
             .feature-step {
-                margin-bottom: 10px;
+                margin-bottom: 7px;
+                font-size: 10px;
+                letter-spacing: 0.14em;
+                color: rgba(255, 255, 255, 0.48);
             }
 
             .feature-title {
-                font-size: 1.4rem;
-                line-height: 1.1;
+                font-size: 1.32rem;
+                line-height: 1.06;
                 letter-spacing: -0.03em;
                 margin-bottom: 12px;
-                max-width: 17ch;
+                max-width: none;
+                width: 100%;
+                text-wrap: balance;
             }
 
             .feature-desc {
-                font-size: 0.95rem;
-                line-height: 1.6;
-                max-width: 33ch;
-                color: rgba(255, 255, 255, 0.56);
+                font-size: 0.88rem;
+                line-height: 1.48;
+                max-width: none;
+                width: 100%;
+                color: rgba(255, 255, 255, 0.48);
             }
 
             .sk-card {
@@ -9748,16 +9796,19 @@
             }
 
             .feature-step {
-                margin-bottom: 14px;
+                margin-bottom: 8px;
+                font-size: 10px;
+                letter-spacing: 0.14em;
+                color: rgba(255, 255, 255, 0.48);
             }
 
             .solution-section {
-                padding-top: 4px;
+                padding-top: 14px;
                 padding-bottom: 76px;
             }
 
             .sol-header {
-                margin-bottom: 30px;
+                margin-bottom: 28px;
             }
 
             .sol-header h2 {
@@ -9768,17 +9819,28 @@
             }
 
             .sol-header .section-subtitle {
-                max-width: 18.5em;
-                font-size: 13px;
-                line-height: 1.48;
+                max-width: none;
+                width: 100%;
+                font-size: 12px;
+                line-height: 1.42;
             }
 
             .feature-blocks {
-                gap: 38px;
+                gap: 48px;
             }
 
             .feature-block {
-                gap: 16px;
+                gap: 18px;
+            }
+
+            .solution-section .feature-block:nth-child(even) .feature-text,
+            .differentiation-section .feature-block:nth-child(even) .feature-text {
+                order: 2;
+            }
+
+            .solution-section .feature-block:nth-child(even) .feature-visual,
+            .differentiation-section .feature-block:nth-child(even) .feature-visual {
+                order: 1;
             }
 
             .feature-text,
@@ -9803,14 +9865,18 @@
             .feature-title {
                 font-size: 1.18rem;
                 line-height: 1.12;
-                margin-bottom: 10px;
-                max-width: 17ch;
+                margin-bottom: 12px;
+                max-width: none;
+                width: 100%;
+                text-wrap: balance;
             }
 
             .feature-desc {
-                font-size: 0.9rem;
-                line-height: 1.58;
-                max-width: 32ch;
+                font-size: 0.88rem;
+                line-height: 1.52;
+                max-width: none;
+                width: 100%;
+                color: rgba(255, 255, 255, 0.5);
             }
 
             .sk-card-dashboard {
@@ -9904,7 +9970,8 @@
                 flex: 1;
                 font-size: clamp(18px, 4.8vw, 23px);
                 line-height: 1.06;
-                max-width: 15.5ch;
+                max-width: none;
+                width: 100%;
                 letter-spacing: -0.04em;
                 text-wrap: balance;
             }
@@ -9918,7 +9985,8 @@
             .pain-body {
                 font-size: 13.5px;
                 line-height: 1.6;
-                max-width: 31ch;
+                max-width: none;
+                width: 100%;
                 color: rgba(255, 255, 255, 0.58);
             }
 
@@ -9959,7 +10027,8 @@
 
             .pain-title {
                 font-size: 18px;
-                max-width: 15ch;
+                max-width: none;
+                width: 100%;
             }
 
             .pain-icon {
@@ -9970,7 +10039,8 @@
             .pain-body {
                 font-size: 13px;
                 line-height: 1.58;
-                max-width: 30ch;
+                max-width: none;
+                width: 100%;
             }
 
             .pain-conclusion {
@@ -9996,10 +10066,14 @@
 
             .mg-title {
                 margin-bottom: 26px;
+                max-width: none;
+                width: 100%;
+                text-wrap: balance;
             }
 
             .mg-subtitle {
-                max-width: 22em;
+                max-width: none;
+                width: 100%;
                 margin-left: auto;
                 margin-right: auto;
                 line-height: 1.55;
@@ -10060,6 +10134,9 @@
                 line-height: 1.12;
                 margin-bottom: 22px;
                 letter-spacing: -0.025em;
+                max-width: none;
+                width: 100%;
+                text-wrap: balance;
             }
 
             .problem-highlight {
@@ -10068,12 +10145,14 @@
                 line-height: 1.38;
                 margin-bottom: 8px;
                 color: rgba(255, 255, 255, 0.82);
+                width: 100%;
             }
 
             .problem-desc {
                 font-size: 0.95rem;
                 line-height: 1.68;
-                max-width: 31ch;
+                max-width: none;
+                width: 100%;
                 color: rgba(255, 255, 255, 0.46);
             }
 
@@ -10103,7 +10182,8 @@
             }
 
             .mg-subtitle {
-                max-width: 19.5em;
+                max-width: none;
+                width: 100%;
                 font-size: 0.95rem;
             }
 
@@ -10136,6 +10216,9 @@
                 font-size: 1.18rem;
                 line-height: 1.14;
                 margin-bottom: 20px;
+                max-width: none;
+                width: 100%;
+                text-wrap: balance;
             }
 
             .problem-highlight {
@@ -10143,12 +10226,14 @@
                 font-weight: 600;
                 line-height: 1.4;
                 margin-bottom: 6px;
+                width: 100%;
             }
 
             .problem-desc {
                 font-size: 0.88rem;
                 line-height: 1.66;
-                max-width: 30ch;
+                max-width: none;
+                width: 100%;
             }
 
             .prob-grid-dots {

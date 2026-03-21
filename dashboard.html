@@ -16,6 +16,16 @@
     <!-- Navbar -->
     <nav class="navbar">
         <a href="index.html" class="navbar-logo">Carry It</a>
+        <!-- Project dropdown (centre navbar) -->
+        <div class="db-nav-dropdown" id="dbNavDropdown">
+            <button class="db-nav-trigger" id="dbNavTrigger" onclick="toggleNavDropdown()">
+                <span id="dbNavLabel">—</span>
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="2,3 5,7 8,3"/>
+                </svg>
+            </button>
+            <ul class="db-nav-list" id="dbNavList"></ul>
+        </div>
         <div class="navbar-links">
             <a href="objectif.html" class="navbar-link cta">+ Nouveau projet</a>
         </div>
@@ -161,29 +171,37 @@
         function renderCarousel() { renderDashboard(); } // alias pour compatibilité
 
         function renderDashboard() {
-            const switcher = document.getElementById('dbSwitcher');
-            const panels   = document.getElementById('dbPanels');
-            switcher.innerHTML = '';
-            panels.innerHTML   = '';
+            const panels  = document.getElementById('dbPanels');
+            const dropdown = document.getElementById('dbNavDropdown');
+            const navList  = document.getElementById('dbNavList');
+            const navLabel = document.getElementById('dbNavLabel');
+            panels.innerHTML  = '';
+            navList.innerHTML = '';
 
             if (allObjectifs.length === 0) {
-                switcher.style.display = 'none';
+                dropdown.style.display = 'none';
                 panels.innerHTML = buildEmptyState();
                 return;
             }
 
-            switcher.style.display = allObjectifs.length > 1 ? 'flex' : 'none';
             currentCarouselIndex = Math.min(currentCarouselIndex, allObjectifs.length - 1);
+
+            // Show dropdown only when multiple projects
+            dropdown.style.display = allObjectifs.length > 1 ? 'flex' : 'none';
 
             allObjectifs.forEach((obj, i) => {
                 enforceKpiCadence(obj);
-                // Tab
+
+                // Dropdown item
                 if (allObjectifs.length > 1) {
-                    const tab = document.createElement('button');
-                    tab.className = 'db-tab' + (i === currentCarouselIndex ? ' active' : '');
-                    tab.textContent = obj.titre || `Projet ${i + 1}`;
-                    tab.onclick = () => switchProject(i);
-                    switcher.appendChild(tab);
+                    const li = document.createElement('li');
+                    li.style.listStyle = 'none';
+                    const btn = document.createElement('button');
+                    btn.className = 'db-nav-item' + (i === currentCarouselIndex ? ' active' : '');
+                    btn.textContent = obj.titre || `Projet ${i + 1}`;
+                    btn.onclick = () => { switchProject(i); closeNavDropdown(); };
+                    li.appendChild(btn);
+                    navList.appendChild(li);
                 }
 
                 // Panel
@@ -194,6 +212,10 @@
                 panels.appendChild(panel);
             });
 
+            // Update navbar label
+            const active = allObjectifs[currentCarouselIndex];
+            if (navLabel) navLabel.textContent = active?.titre || `Projet ${currentCarouselIndex + 1}`;
+
             // init charts only for visible panel
             setTimeout(() => initKPIChart(currentCarouselIndex, allObjectifs[currentCarouselIndex]), 0);
         }
@@ -201,9 +223,13 @@
         function switchProject(i) {
             currentCarouselIndex = i;
 
-            // Update tabs
-            document.querySelectorAll('.db-tab').forEach((t, idx) =>
+            // Update dropdown items
+            document.querySelectorAll('.db-nav-item').forEach((t, idx) =>
                 t.classList.toggle('active', idx === i));
+
+            // Update navbar label
+            const navLabel = document.getElementById('dbNavLabel');
+            if (navLabel) navLabel.textContent = allObjectifs[i]?.titre || `Projet ${i + 1}`;
 
             // Update panels
             document.querySelectorAll('.db-panel').forEach((p, idx) =>
@@ -215,6 +241,19 @@
             // Scroll to top of content
             window.scrollTo({ top: document.getElementById('dashboardSection').offsetTop - 80, behavior: 'smooth' });
         }
+
+        function toggleNavDropdown() {
+            document.getElementById('dbNavDropdown').classList.toggle('open');
+        }
+
+        function closeNavDropdown() {
+            document.getElementById('dbNavDropdown').classList.remove('open');
+        }
+
+        // Close dropdown on outside click
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('#dbNavDropdown')) closeNavDropdown();
+        });
 
         function buildEmptyState() {
             return `
@@ -1017,7 +1056,7 @@
                         responsive: true,
                         maintainAspectRatio: false,
                         animation: { duration: 0 },
-                        layout: { padding: { top: 30, right: 18, bottom: 24, left: 8 } },
+                        layout: { padding: { top: 30, right: 18, bottom: 30, left: 8 } },
                         plugins: { legend: { display: false }, tooltip: { enabled: false }, axisArrows: { unit: '' } },
                         scales: {
                             x: {
@@ -1121,7 +1160,7 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     animation: { duration: 400 },
-                    layout: { padding: { top: 30, right: 60, bottom: 24, left: 8 } },
+                    layout: { padding: { top: 30, right: 60, bottom: 30, left: 8 } },
                     onHover: (evt, elements) => {
                         const canvasEl = evt?.native?.target;
                         if (canvasEl) canvasEl.style.cursor = elements.length ? 'pointer' : 'default';
@@ -1171,11 +1210,7 @@
                                 }
                             },
                             title: {
-                                display: true,
-                                text: obj.mesurable || kpiUnit || '',
-                                color: 'rgba(255,255,255,0.50)',
-                                font: { family: 'Inter', size: 9, weight: '400' },
-                                padding: { top: 6 }
+                                display: false,
                             },
                             border: { display: false }
                         },
