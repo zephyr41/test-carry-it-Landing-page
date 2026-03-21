@@ -261,10 +261,7 @@
                 <!-- Body -->
                 <div class="proj-body">
 
-                    <!-- Row 1 : Todo — moteur d'exécution, priorité absolue -->
-                    ${buildTodoPanel(obj, i)}
-
-                    <!-- Row 2 : KPI + SMART côte à côte -->
+                    <!-- Row 1 : KPI + SMART côte à côte -->
                     <div class="db-row-kpi-smart">
                         <div class="kpi-panel" id="kpiPanel-${i}">
                             <div class="kpi-panel-top">
@@ -307,6 +304,9 @@
                             </form>
                         </div>
                     </div>
+
+                    <!-- Row 2 : Todo — moteur d'exécution -->
+                    ${buildTodoPanel(obj, i)}
 
                     <!-- Row 3 : Jalons GPS — priorité basse -->
                     ${buildJalonsPanel(obj, i)}
@@ -388,7 +388,7 @@
                     <div class="todo-done-header">
                         <span class="section-lbl" style="margin-bottom:0;">Terminées (${doneCount})</span>
                         <button class="todo-done-toggle" onclick="toggleDoneBlock(${i})">
-                            ${collapsed ? 'Afficher' : 'Masquer'}
+                            <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor" style="transition:transform 0.2s;transform:${collapsed ? 'rotate(0deg)' : 'rotate(90deg)'}"><path d="M3 2l4 3-4 3V2z"/></svg>
                         </button>
                     </div>
                     <div style="display:${collapsed ? 'none' : 'block'};margin-top:6px;">

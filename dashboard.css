@@ -602,17 +602,18 @@ body::before {
     background: transparent;
     border: 1px solid rgba(255,255,255,0.06);
     border-radius: 12px;
-    padding: 16px 18px;
+    padding: 24px 24px 28px;
+    min-height: 240px;
 }
 
 /* Label principal de la todo — section header principale */
 .todo-panel > .section-lbl {
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 800;
     color: rgba(255,255,255,0.92);
     letter-spacing: 0.02em;
     text-transform: none;
-    margin-bottom: 14px;
+    margin-bottom: 18px;
 }
 
 /* Jalon dynamique sous le header todo */
@@ -751,11 +752,11 @@ body::before {
 .todo-input {
     flex: 1;
     height: 44px;
-    background: #FFFDF6;
-    border: 1.5px solid rgba(255,253,246,0.9);
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.22);
     border-radius: 10px;
     padding: 0 14px;
-    color: #0d0d0f;
+    color: #F5F3EC;
     font-size: 14px;
     font-family: var(--mono);
     outline: none;
@@ -763,17 +764,17 @@ body::before {
 }
 
 .todo-input:focus {
-    border-color: #EE4408;
-    box-shadow: 0 0 0 3px rgba(238,68,8,0.12);
+    border-color: rgba(238,68,8,0.70);
+    box-shadow: 0 0 0 3px rgba(238,68,8,0.08);
 }
-.todo-input::placeholder { color: rgba(13,13,15,0.40); font-style: italic; }
+.todo-input::placeholder { color: rgba(255,255,255,0.50); font-style: italic; }
 
 .todo-plus-btn {
     width: 44px;
     height: 44px;
-    background: #FFFDF6;
-    border: 1.5px solid rgba(255,253,246,0.9);
-    color: #0d0d0f;
+    background: rgba(238,68,8,0.12);
+    border: 1px solid rgba(238,68,8,0.40);
+    color: #EE4408;
     border-radius: 10px;
     cursor: pointer;
     display: flex;
@@ -783,9 +784,9 @@ body::before {
     flex-shrink: 0;
 }
 
-.todo-plus-btn:hover { background: #ffffff; box-shadow: 0 2px 12px rgba(255,253,246,0.18); }
+.todo-plus-btn:hover { background: rgba(238,68,8,0.22); border-color: rgba(238,68,8,0.65); }
 
-.todo-list { display: flex; flex-direction: column; gap: 0; }
+.todo-list { display: flex; flex-direction: column; gap: 2px; }
 
 .todo-empty {
     text-align: center;
@@ -799,13 +800,11 @@ body::before {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 7px 8px;
-    border-bottom: 1px solid rgba(255,255,255,0.04);
+    padding: 8px 10px;
+    border-radius: 8px;
     transition: background 0.15s;
     cursor: default;
 }
-
-.todo-item:last-child { border-bottom: none; }
 .todo-item:hover { background: rgba(255,255,255,0.03); }
 .todo-item:hover .todo-del { opacity: 1; }
 .todo-item:hover .todo-edit { opacity: 1; }
@@ -960,30 +959,28 @@ body::before {
 .todo-done-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
+    gap: 6px;
     margin-top: 12px;
     padding-top: 12px;
     border-top: 1px dashed rgba(255,255,255,0.07);
+    cursor: pointer;
 }
 
 .todo-done-toggle {
-    font-size: 10px;
-    font-weight: 600;
     color: rgba(255,255,255,0.50);
-    border: 1px solid rgba(255,255,255,0.07);
+    border: none;
     background: transparent;
-    border-radius: 5px;
-    padding: 4px 8px;
+    padding: 4px;
     cursor: pointer;
-    transition: all 0.2s;
-    font-family: var(--mono);
-    letter-spacing: 0.04em;
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .todo-done-toggle:hover {
     color: #EE4408;
-    border-color: rgba(238,68,8,0.28);
-    background: rgba(238,68,8,0.06);
 }
 
 .subtasks {

@@ -9493,11 +9493,11 @@
             }
 
             .feature-blocks {
-                gap: 56px;
+                gap: 44px;
             }
 
             .feature-block {
-                gap: 24px;
+                gap: 18px;
             }
 
             .solution-section {
@@ -9507,7 +9507,7 @@
 
             .sol-header {
                 max-width: 100%;
-                margin: 0 auto 44px;
+                margin: 0 auto 36px;
                 padding: 0;
             }
 
@@ -9519,17 +9519,17 @@
                 font-size: clamp(26px, 6.2vw, 38px);
                 line-height: 1.04;
                 letter-spacing: -0.04em;
-                margin-bottom: 12px;
+                margin-bottom: 10px;
                 max-width: 10ch;
                 margin-left: auto;
                 margin-right: auto;
             }
 
             .sol-header .section-subtitle {
-                max-width: 21em;
+                max-width: 24ch;
                 margin: 0 auto;
                 font-size: 14px;
-                line-height: 1.55;
+                line-height: 1.5;
                 color: rgba(255, 255, 255, 0.56);
                 text-wrap: balance;
             }
@@ -9541,28 +9541,33 @@
                 margin-right: auto;
             }
 
+            .feature-visual {
+                order: 1;
+            }
+
             .feature-text {
+                order: 2;
                 display: flex;
                 flex-direction: column;
                 align-items: flex-start;
             }
 
             .feature-step {
-                margin-bottom: 12px;
+                margin-bottom: 10px;
             }
 
             .feature-title {
                 font-size: 1.4rem;
                 line-height: 1.1;
                 letter-spacing: -0.03em;
-                margin-bottom: 14px;
-                max-width: 15ch;
+                margin-bottom: 12px;
+                max-width: 17ch;
             }
 
             .feature-desc {
                 font-size: 0.95rem;
-                line-height: 1.62;
-                max-width: 31ch;
+                line-height: 1.6;
+                max-width: 33ch;
                 color: rgba(255, 255, 255, 0.56);
             }
 
@@ -9751,7 +9756,7 @@
             }
 
             .sol-header {
-                margin-bottom: 38px;
+                margin-bottom: 30px;
             }
 
             .sol-header h2 {
@@ -9762,17 +9767,17 @@
             }
 
             .sol-header .section-subtitle {
-                max-width: 18.5em;
+                max-width: 24ch;
                 font-size: 13px;
-                line-height: 1.52;
+                line-height: 1.48;
             }
 
             .feature-blocks {
-                gap: 48px;
+                gap: 38px;
             }
 
             .feature-block {
-                gap: 20px;
+                gap: 16px;
             }
 
             .feature-text,
@@ -9780,23 +9785,31 @@
                 width: min(100%, 326px);
             }
 
+            .feature-visual {
+                order: 1;
+            }
+
+            .feature-text {
+                order: 2;
+            }
+
             .feature-step {
                 font-size: 12px;
                 letter-spacing: 0.11em;
-                margin-bottom: 12px;
+                margin-bottom: 10px;
             }
 
             .feature-title {
                 font-size: 1.18rem;
                 line-height: 1.12;
-                margin-bottom: 12px;
-                max-width: 15ch;
+                margin-bottom: 10px;
+                max-width: 17ch;
             }
 
             .feature-desc {
-                font-size: 0.88rem;
-                line-height: 1.62;
-                max-width: 30ch;
+                font-size: 0.9rem;
+                line-height: 1.58;
+                max-width: 32ch;
             }
 
             .sk-card-dashboard {
