@@ -107,30 +107,6 @@
             line-height: 1.6;
         }
 
-        body.is-scaled-mobile {
-            overflow-x: hidden;
-        }
-
-        .viewport-debug {
-            position: fixed;
-            top: calc(env(safe-area-inset-top, 0px) + 54px);
-            left: 10px;
-            right: auto;
-            z-index: 2147483647;
-            min-width: 170px;
-            max-width: calc(100vw - 20px);
-            padding: 8px 10px;
-            border-radius: 10px;
-            background: rgba(238, 68, 8, 0.92);
-            border: 1px solid rgba(255, 255, 255, 0.22);
-            color: #fff;
-            font: 11px/1.35 'Roboto Mono', ui-monospace, monospace;
-            white-space: pre-wrap;
-            pointer-events: none;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
-
         html {
             width: 100%;
             min-width: 0;

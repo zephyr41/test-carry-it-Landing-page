@@ -2,7 +2,22 @@
 <html lang="fr" class="dark-mode">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <script>
+        (function normalizePhoneViewport() {
+            const viewport = document.querySelector('meta[name="viewport"]');
+            if (!viewport) return;
+
+            const isTouchPhone =
+                (navigator.maxTouchPoints > 0 || /iPhone|Android/i.test(navigator.userAgent)) &&
+                Math.min(window.screen?.width || 0, window.screen?.height || Number.POSITIVE_INFINITY) <= 430;
+
+            if (!isTouchPhone) return;
+
+            const phoneWidth = Math.min(window.screen.width, window.screen.height);
+            viewport.setAttribute('content', `width=${phoneWidth}, initial-scale=1, viewport-fit=cover`);
+        })();
+    </script>
     <title>Carry It</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,8 +27,6 @@
 
 </head>
 <body>
-    <div id="viewportDebug" class="viewport-debug">debug init...</div>
-
     <!-- Navbar -->
     <nav class="navbar">
         <a href="#" class="navbar-logo" onclick="goToHome()">Carry It</a>
@@ -1034,86 +1047,6 @@
             mobileQuery.addEventListener?.('change', apply);
             window.addEventListener('resize', apply, { passive: true });
             window.addEventListener('orientationchange', apply, { passive: true });
-        })();
-
-        // Some iPhone browsers keep a desktop-sized layout viewport and then
-        // scale the whole page down. When that happens, CSS can swap to the
-        // mobile copy but the entire interface still renders tiny. Detect that
-        // mismatch and clamp the document width to the real visible viewport.
-        (function syncScaledMobileViewport() {
-            const root = document.documentElement;
-            const body = document.body;
-            if (!root || !body) return;
-
-            const isTouchDevice = () =>
-                navigator.maxTouchPoints > 0 ||
-                window.matchMedia('(pointer: coarse)').matches ||
-                /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-            const getVisibleWidth = () => {
-                const visualWidth = window.visualViewport?.width || Number.POSITIVE_INFINITY;
-                const screenWidth = window.screen?.width || Number.POSITIVE_INFINITY;
-                return Math.min(window.innerWidth, visualWidth, screenWidth);
-            };
-
-            const apply = () => {
-                const visibleWidth = getVisibleWidth();
-                const scaledLayout = isTouchDevice() && window.innerWidth > visibleWidth * 1.2;
-
-                body.classList.toggle('is-scaled-mobile', scaledLayout);
-
-                if (scaledLayout) {
-                    const width = `${visibleWidth}px`;
-                    root.style.width = width;
-                    root.style.maxWidth = width;
-                    body.style.width = width;
-                    body.style.maxWidth = width;
-                    body.style.margin = '0 auto';
-                } else {
-                    root.style.width = '';
-                    root.style.maxWidth = '';
-                    body.style.width = '';
-                    body.style.maxWidth = '';
-                    body.style.margin = '';
-                }
-            };
-
-            apply();
-            window.visualViewport?.addEventListener('resize', apply);
-            window.visualViewport?.addEventListener('scroll', apply);
-            window.addEventListener('resize', apply, { passive: true });
-            window.addEventListener('orientationchange', apply, { passive: true });
-            window.addEventListener('pageshow', apply, { passive: true });
-        })();
-
-        (function showViewportDebug() {
-            const body = document.body;
-            const debug = document.getElementById('viewportDebug');
-            if (!body || !debug) return;
-
-            const render = () => {
-                const vv = window.visualViewport;
-                const innerWidth = Math.round(window.innerWidth);
-                const clientWidth = Math.round(document.documentElement.clientWidth);
-                const screenWidth = Math.round(window.screen?.width || 0);
-                const visualWidth = Math.round(vv?.width || 0);
-                const visualScale = vv?.scale ? vv.scale.toFixed(2) : 'n/a';
-                const mobile = body.classList.contains('is-mobile') ? '1' : '0';
-                const scaled = body.classList.contains('is-scaled-mobile') ? '1' : '0';
-                const bodyWidth = Math.round(body.getBoundingClientRect().width);
-
-                debug.textContent =
-`iw:${innerWidth} cw:${clientWidth} sw:${screenWidth}
-vw:${visualWidth} vs:${visualScale}
-bw:${bodyWidth} mobile:${mobile} scaled:${scaled}`;
-            };
-
-            render();
-            window.visualViewport?.addEventListener('resize', render);
-            window.visualViewport?.addEventListener('scroll', render);
-            window.addEventListener('resize', render, { passive: true });
-            window.addEventListener('orientationchange', render, { passive: true });
-            window.addEventListener('pageshow', render, { passive: true });
         })();
 
         // ── Mental States Oscillator ─────────────────────────────────────
