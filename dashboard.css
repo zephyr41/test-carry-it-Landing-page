@@ -863,6 +863,14 @@ body::before {
     line-height: 1.4;
     user-select: none;
     font-family: var(--mono);
+    cursor: text;
+    outline: none;
+    border-radius: 3px;
+}
+.todo-text.editing {
+    user-select: text;
+    background: rgba(255,255,255,0.04);
+    outline: none;
 }
 
 .todo-item.done .todo-text {
@@ -922,7 +930,8 @@ body::before {
     border: none;
     background: transparent;
     color: rgba(255,255,255,0.50);
-    font-size: 12px;
+    font-size: 16px;
+    letter-spacing: 0.5px;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -1241,24 +1250,14 @@ body::before {
     flex-shrink: 0;
 }
 
-.cp-task-title-input {
+.cp-task-title {
     font-size: 16px;
     font-weight: 700;
     color: #F5F3EC;
     margin: 0 0 18px;
     font-family: var(--mono);
     line-height: 1.4;
-    padding: 2px 36px 4px 0;
-    width: 100%;
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid transparent;
-    outline: none;
-    transition: border-color 0.15s;
-    display: block;
-}
-.cp-task-title-input:focus {
-    border-bottom-color: rgba(255,255,255,0.18);
+    padding-right: 36px;
 }
 
 .cp-fields {

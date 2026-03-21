@@ -457,13 +457,13 @@
             }
             const subOpen = todoSubOpen[`${i}-${task.id}`];
             return `
-                <div class="todo-item ${isDone ? 'done' : ''}" onclick="openTaskPanel(${i}, ${task.id})">
+                <div class="todo-item ${isDone ? 'done' : ''}" data-taskid="${task.id}">
                     <button class="todo-drop ${subOpen ? 'open' : ''}" onclick="toggleSubtasks(${i}, ${task.id}); event.stopPropagation();">
                         <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M5 7L1 3h8L5 7z"/></svg>
                     </button>
                     <div class="todo-cb" onclick="toggleTask(${i}, ${task.id}); event.stopPropagation();"></div>
-                    <span class="todo-text">${escHtml(task.text)}</span>
-                    <button class="todo-edit" onclick="editTask(${i}, ${task.id}); event.stopPropagation();">✎</button>
+                    <span class="todo-text" onclick="clickTask(${i}, ${task.id}); event.stopPropagation();">${escHtml(task.text)}</span>
+                    <button class="todo-edit" onclick="openTaskPanel(${i}, ${task.id}); event.stopPropagation();" title="Ouvrir le détail">⋯</button>
                     <button class="todo-del" onclick="deleteTask(event, ${i}, ${task.id})">×</button>
                 </div>
                 ${renderSubtasksInline(task, i)}
@@ -646,10 +646,6 @@
             document.getElementById('taskPanelOverlay').classList.add('open');
             document.body.classList.add('panel-open');
             refreshTodoList(i);
-            setTimeout(() => {
-                const input = document.getElementById('cpTitleInput');
-                if (input) { input.focus(); input.select(); }
-            }, 60);
         }
 
         function closeTaskPanel() {
@@ -679,14 +675,7 @@
                         ${task.done ? 'Terminée' : 'À faire'}
                     </span>
                 </div>
-                <input
-                    id="cpTitleInput"
-                    class="cp-task-title-input"
-                    value="${escHtml(task.text)}"
-                    onkeydown="if(event.key==='Enter'){this.blur();}if(event.key==='Escape'){this.value=this.dataset.orig;this.blur();}"
-                    onblur="savePanelTitle(${i}, ${task.id}, this.value)"
-                    data-orig="${escHtml(task.text)}"
-                >
+                <h3 class="cp-task-title">${escHtml(task.text)}</h3>
                 <div class="cp-fields">
                     ${nextJalon ? `
                     <div class="cp-field-row">
@@ -745,14 +734,48 @@
             refreshTodoList(i);
         }
 
-        function savePanelTitle(i, taskId, value) {
-            const text = (value || '').trim();
-            if (!text) return;
-            const task = getTaskById(i, taskId);
-            if (!task) return;
-            task.text = text;
-            saveAllObjectifs();
-            refreshTodoList(i);
+        function clickTask(i, taskId) {
+            openTaskPanel(i, taskId);
+            // openTaskPanel → refreshTodoList re-rend la liste → el serait mort
+            // On trouve le span frais dans le DOM après le re-render
+            setTimeout(() => {
+                const item = document.querySelector(`[data-taskid="${taskId}"]`);
+                const span = item ? item.querySelector('.todo-text') : null;
+                if (span) inlineEditTask(i, taskId, span);
+            }, 0);
+        }
+
+        function inlineEditTask(i, taskId, el) {
+            const orig = el.textContent;
+            el.contentEditable = 'true';
+            el.classList.add('editing');
+            el.focus();
+            // curseur en fin de texte
+            const range = document.createRange();
+            range.selectNodeContents(el);
+            range.collapse(false);
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+
+            el.onkeydown = (e) => {
+                if (e.key === 'Enter') { e.preventDefault(); el.blur(); }
+                if (e.key === 'Escape') { el.textContent = orig; el.blur(); }
+                e.stopPropagation();
+            };
+            el.onblur = () => {
+                el.contentEditable = 'false';
+                el.classList.remove('editing');
+                const text = el.textContent.trim();
+                if (text && text !== orig) {
+                    const task = getTaskById(i, taskId);
+                    if (task) { task.text = text; saveAllObjectifs(); refreshTodoList(i); }
+                } else {
+                    el.textContent = orig;
+                }
+                el.onblur = null;
+                el.onkeydown = null;
+            };
         }
 
         function updateTaskNotes(i, taskId, value) {

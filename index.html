@@ -1084,6 +1084,46 @@
             window.addEventListener('pageshow', apply, { passive: true });
         })();
 
+        (function showViewportDebug() {
+            const body = document.body;
+            if (!body) return;
+
+            const isTouchDevice = () =>
+                navigator.maxTouchPoints > 0 ||
+                window.matchMedia('(pointer: coarse)').matches ||
+                /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+            if (!isTouchDevice()) return;
+
+            const debug = document.createElement('div');
+            debug.className = 'viewport-debug';
+            body.appendChild(debug);
+
+            const render = () => {
+                const vv = window.visualViewport;
+                const innerWidth = Math.round(window.innerWidth);
+                const clientWidth = Math.round(document.documentElement.clientWidth);
+                const screenWidth = Math.round(window.screen?.width || 0);
+                const visualWidth = Math.round(vv?.width || 0);
+                const visualScale = vv?.scale ? vv.scale.toFixed(2) : 'n/a';
+                const mobile = body.classList.contains('is-mobile') ? '1' : '0';
+                const scaled = body.classList.contains('is-scaled-mobile') ? '1' : '0';
+                const fix = getComputedStyle(body).getPropertyValue('--mobile-scale-fix').trim() || '1';
+
+                debug.textContent =
+`iw:${innerWidth} cw:${clientWidth} sw:${screenWidth}
+vw:${visualWidth} vs:${visualScale}
+mobile:${mobile} scaled:${scaled} fix:${fix}`;
+            };
+
+            render();
+            window.visualViewport?.addEventListener('resize', render);
+            window.visualViewport?.addEventListener('scroll', render);
+            window.addEventListener('resize', render, { passive: true });
+            window.addEventListener('orientationchange', render, { passive: true });
+            window.addEventListener('pageshow', render, { passive: true });
+        })();
+
         // ── Mental States Oscillator ─────────────────────────────────────
         (function() {
             const low     = document.getElementById('statelow');
