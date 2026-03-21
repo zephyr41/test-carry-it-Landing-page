@@ -3,21 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <script>
-        (function normalizePhoneViewport() {
-            const viewport = document.querySelector('meta[name="viewport"]');
-            if (!viewport) return;
-
-            const isTouchPhone =
-                (navigator.maxTouchPoints > 0 || /iPhone|Android/i.test(navigator.userAgent)) &&
-                Math.min(window.screen?.width || 0, window.screen?.height || Number.POSITIVE_INFINITY) <= 430;
-
-            if (!isTouchPhone) return;
-
-            const phoneWidth = Math.min(window.screen.width, window.screen.height);
-            viewport.setAttribute('content', `width=${phoneWidth}, initial-scale=1, viewport-fit=cover`);
-        })();
-    </script>
     <title>Carry It</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1047,62 +1032,6 @@
             mobileQuery.addEventListener?.('change', apply);
             window.addEventListener('resize', apply, { passive: true });
             window.addEventListener('orientationchange', apply, { passive: true });
-        })();
-
-        // Some iOS browsers force a desktop layout viewport of 980px on phones.
-        // When that happens, the page is rendered correctly but scaled down by
-        // the browser, which makes the whole interface tiny. Compensate for
-        // that imposed desktop viewport by scaling the document back up.
-        (function compensateDesktopViewportOnPhone() {
-            const body = document.body;
-            const root = document.documentElement;
-            if (!body || !root) return;
-
-            const isTouchPhone = () =>
-                (navigator.maxTouchPoints > 0 || /iPhone|Android/i.test(navigator.userAgent)) &&
-                Math.min(window.screen?.width || Number.POSITIVE_INFINITY, window.screen?.height || Number.POSITIVE_INFINITY) <= 430;
-
-            const apply = () => {
-                const screenWidth = Math.min(window.screen?.width || window.innerWidth, window.screen?.height || window.innerWidth);
-                const layoutWidth = window.innerWidth;
-                const forcedDesktopViewport = isTouchPhone() && layoutWidth > screenWidth * 1.2;
-
-                body.classList.toggle('desktop-viewport-mobile', forcedDesktopViewport);
-
-                if (!forcedDesktopViewport) {
-                    body.style.zoom = '';
-                    body.style.transform = '';
-                    body.style.transformOrigin = '';
-                    body.style.width = '';
-                    body.style.maxWidth = '';
-                    body.style.minHeight = '';
-                    root.style.removeProperty('--desktop-viewport-scale');
-                    root.style.removeProperty('--desktop-viewport-width');
-                    return;
-                }
-
-                const scale = layoutWidth / screenWidth;
-                root.style.setProperty('--desktop-viewport-scale', String(scale));
-                root.style.setProperty('--desktop-viewport-width', `${screenWidth}px`);
-
-                body.style.width = `${screenWidth}px`;
-                body.style.maxWidth = `${screenWidth}px`;
-                body.style.transformOrigin = 'top left';
-                body.style.minHeight = `${Math.ceil(document.body.scrollHeight * scale)}px`;
-
-                if (window.CSS && CSS.supports && CSS.supports('zoom', '2')) {
-                    body.style.zoom = String(scale);
-                    body.style.transform = '';
-                } else {
-                    body.style.zoom = '';
-                    body.style.transform = `scale(${scale})`;
-                }
-            };
-
-            apply();
-            window.addEventListener('resize', apply, { passive: true });
-            window.addEventListener('orientationchange', apply, { passive: true });
-            window.addEventListener('pageshow', apply, { passive: true });
         })();
 
         // ── Mental States Oscillator ─────────────────────────────────────
