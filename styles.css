@@ -9374,12 +9374,13 @@
             .hero-section {
                 min-height: 100svh;
                 height: 100svh;
-                padding: calc(var(--navbar-height) + 10px) 16px 20px;
+                padding: calc(var(--navbar-height) + 10px) 0 20px;
             }
 
             .hero-content {
                 width: 100%;
                 max-width: 100%;
+                padding: 0 16px;
                 min-height: calc(100svh - var(--navbar-height) - 30px);
                 justify-content: center;
                 gap: 14px;
@@ -10330,12 +10331,13 @@
             .hero-section {
                 min-height: 100svh;
                 height: 100svh;
-                padding: calc(var(--navbar-height) + 10px) 16px 20px;
+                padding: calc(var(--navbar-height) + 10px) 0 20px;
             }
 
             .hero-content {
                 width: 100%;
                 max-width: 100%;
+                padding: 0 16px;
                 min-height: calc(100svh - var(--navbar-height) - 30px);
                 justify-content: center;
                 gap: 14px;
@@ -10632,12 +10634,13 @@
         body.is-mobile .hero-section {
             min-height: 100svh;
             height: 100svh;
-            padding: calc(var(--navbar-height) + 10px) 16px 20px;
+            padding: calc(var(--navbar-height) + 10px) 0 20px;
         }
 
         body.is-mobile .hero-content {
             width: 100%;
             max-width: 100%;
+            padding: 0 16px;
             min-height: calc(100svh - var(--navbar-height) - 30px);
             justify-content: center;
             gap: 14px;
