@@ -447,7 +447,7 @@
             const isEditing = todoEditState[i] === task.id;
             if (isEditing) {
                 return `
-                <div class="todo-item">
+                <div class="todo-item" onclick="event.stopPropagation()">
                     <div class="todo-edit-row">
                         <input class="todo-edit-input" id="todoEditInput-${i}-${task.id}" value="${escHtml(task.text)}">
                         <button class="todo-mini-btn primary" onclick="saveTaskEdit(${i}, ${task.id})">OK</button>
@@ -455,12 +455,15 @@
                     </div>
                 </div>`;
             }
+            const subOpen = todoSubOpen[`${i}-${task.id}`];
             return `
-                <div class="todo-item ${isDone ? 'done' : ''}">
-                    <button class="todo-drop" onclick="toggleSubtasks(${i}, ${task.id})">▾</button>
-                    <div class="todo-cb" onclick="toggleTask(${i}, ${task.id})"></div>
-                    <span class="todo-text" onclick="openTaskPanel(${i}, ${task.id})">${escHtml(task.text)}</span>
-                    <button class="todo-edit" onclick="editTask(${i}, ${task.id})">✎</button>
+                <div class="todo-item ${isDone ? 'done' : ''}" onclick="openTaskPanel(${i}, ${task.id})">
+                    <button class="todo-drop ${subOpen ? 'open' : ''}" onclick="toggleSubtasks(${i}, ${task.id}); event.stopPropagation();">
+                        <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M5 7L1 3h8L5 7z"/></svg>
+                    </button>
+                    <div class="todo-cb" onclick="toggleTask(${i}, ${task.id}); event.stopPropagation();"></div>
+                    <span class="todo-text">${escHtml(task.text)}</span>
+                    <button class="todo-edit" onclick="editTask(${i}, ${task.id}); event.stopPropagation();">✎</button>
                     <button class="todo-del" onclick="deleteTask(event, ${i}, ${task.id})">×</button>
                 </div>
                 ${renderSubtasksInline(task, i)}
@@ -663,7 +666,6 @@
             alignPanelWithColumn();
             document.getElementById('taskPanelOverlay').classList.add('open');
             document.body.classList.add('panel-open');
-            todoSubOpen[`${i}-${taskId}`] = true;
             refreshTodoList(i);
         }
 
