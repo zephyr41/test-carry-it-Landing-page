@@ -2,7 +2,7 @@
 <html lang="fr" class="dark-mode">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, shrink-to-fit=no">
     <title>Carry It</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1399,27 +1399,23 @@
 <script>
 (function(){
     function findOverflow(){
-        var w = document.documentElement.scrollWidth;
+        var sw = document.documentElement.scrollWidth;
         var vw = window.innerWidth;
-        if(w <= vw) return;
         var offenders = [];
         document.querySelectorAll('*').forEach(function(el){
             var r = el.getBoundingClientRect();
             if(r.right > vw + 1){
-                offenders.push({ tag: el.tagName, cls: el.className.toString().slice(0,60), right: Math.round(r.right), id: el.id });
+                offenders.push(el.tagName + (el.id?'#'+el.id:'') + (el.className?' .'+el.className.toString().trim().split(' ')[0]:'') + ' right=' + Math.round(r.right));
                 el.style.outline = '2px solid red';
             }
         });
-        // Affiche un overlay en haut de page
         var div = document.createElement('div');
-        div.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99999;background:rgba(0,0,0,0.9);color:#f00;font-size:11px;padding:8px;overflow:auto;max-height:40vh;font-family:monospace;';
-        div.innerHTML = '<b>OVERFLOW DETECTE (scrollWidth='+w+'px, vw='+vw+'px)</b><br>' +
-            offenders.map(function(o){ return o.tag + (o.id?'#'+o.id:'') + ' .' + o.cls + ' → right:' + o.right + 'px'; }).join('<br>');
+        div.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99999;background:rgba(0,0,0,0.92);color:lime;font-size:10px;padding:6px 8px;overflow:auto;max-height:45vh;font-family:monospace;word-break:break-all;';
+        div.innerHTML = '<b style="color:#f00">DBG: scrollW='+sw+' innerW='+vw+' screen='+screen.width+'</b><br>' +
+            (offenders.length ? offenders.join('<br>') : '<span style="color:lime">✓ Aucun element ne depasse vw</span>');
         document.body.appendChild(div);
     }
-    if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', findOverflow);
-    else findOverflow();
-    setTimeout(findOverflow, 1500);
+    setTimeout(findOverflow, 800);
 })();
 </script>
 </body>
