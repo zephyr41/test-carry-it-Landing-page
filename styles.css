@@ -9606,7 +9606,7 @@
                 font-size: 1.32rem;
                 line-height: 1.06;
                 letter-spacing: -0.03em;
-                margin-bottom: 12px;
+                margin-bottom: 10px;
                 max-width: none;
                 width: 100%;
                 text-wrap: balance;
@@ -9614,9 +9614,9 @@
 
             .feature-desc {
                 font-size: 0.88rem;
-                line-height: 1.48;
+                line-height: 1.56;
                 max-width: none;
-                width: 100%;
+                width: 92%;
                 color: rgba(255, 255, 255, 0.48);
             }
 
@@ -9984,9 +9984,9 @@
 
             .pain-body {
                 font-size: 13.5px;
-                line-height: 1.6;
+                line-height: 1.66;
                 max-width: none;
-                width: 100%;
+                width: 92%;
                 color: rgba(255, 255, 255, 0.58);
             }
 
@@ -10038,9 +10038,9 @@
 
             .pain-body {
                 font-size: 13px;
-                line-height: 1.58;
+                line-height: 1.64;
                 max-width: none;
-                width: 100%;
+                width: 92%;
             }
 
             .pain-conclusion {
@@ -10132,7 +10132,7 @@
             .problem-title {
                 font-size: 1.42rem;
                 line-height: 1.12;
-                margin-bottom: 22px;
+                margin-bottom: 16px;
                 letter-spacing: -0.025em;
                 max-width: none;
                 width: 100%;
@@ -10150,9 +10150,9 @@
 
             .problem-desc {
                 font-size: 0.95rem;
-                line-height: 1.68;
+                line-height: 1.72;
                 max-width: none;
-                width: 100%;
+                width: 92%;
                 color: rgba(255, 255, 255, 0.46);
             }
 
@@ -10215,7 +10215,7 @@
             .problem-title {
                 font-size: 1.18rem;
                 line-height: 1.14;
-                margin-bottom: 20px;
+                margin-bottom: 16px;
                 max-width: none;
                 width: 100%;
                 text-wrap: balance;
@@ -10231,9 +10231,9 @@
 
             .problem-desc {
                 font-size: 0.88rem;
-                line-height: 1.66;
+                line-height: 1.7;
                 max-width: none;
-                width: 100%;
+                width: 92%;
             }
 
             .prob-grid-dots {

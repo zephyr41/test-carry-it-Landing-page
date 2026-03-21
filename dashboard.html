@@ -272,6 +272,7 @@
 
         function buildProjectCard(obj, i) {
             const kpiLabel = extractKPI(obj.mesurable) || 'Indicateur';
+            const kpiDesc  = extractKPIDesc(obj.mesurable);
             const freqLabel = formatFrequence(obj.frequence, obj.jour);
             const dateLabel = formatDateBadge(obj.temporel);
 
@@ -304,7 +305,10 @@
                     <div class="db-row-kpi-smart">
                         <div class="kpi-panel" id="kpiPanel-${i}">
                             <div class="kpi-panel-top">
-                                <span class="kpi-panel-label">ÉVOLUTION · KPI</span>
+                                <div class="kpi-panel-top-left">
+                                    <span class="kpi-panel-label">ÉVOLUTION · KPI</span>
+                                    ${kpiDesc ? `<span class="kpi-panel-desc">${escHtml(kpiDesc)}</span>` : ''}
+                                </div>
                                 <button class="kpi-add-btn" onclick="openAddMeasureModal(${i})">+ Ajouter une mesure</button>
                             </div>
                             <div class="kpi-chart-area" id="kpiWrap-${i}">
@@ -1029,7 +1033,7 @@
             // Destroy previous
             if (kpiCharts[i]) { kpiCharts[i].destroy(); delete kpiCharts[i]; }
 
-            const kpiUnit   = extractKPI(obj.mesurable) || '';
+            const kpiUnit   = extractKPIUnit(obj.mesurable);
             const target    = extractTargetValue(obj.mesurable);
             const _cd = new Date(obj.createdAt || obj.id || Date.now());
             const _mo = ['Jan','Fév','Mar','Avr','Mai','Juin','Juil','Août','Sep','Oct','Nov','Déc'];
@@ -1221,7 +1225,10 @@
                                 font: { family: 'Inter', size: 10, weight: '600' },
                                 maxTicksLimit: 5,
                                 precision: 0,
-                                padding: 12
+                                padding: 12,
+                                callback: function(val) {
+                                    return kpiUnit ? val + ' ' + kpiUnit : val;
+                                }
                             },
                             beginAtZero: true,
                             max: target ? Math.max(target, Math.max(...data)) * 1.05 : undefined,
@@ -1473,6 +1480,17 @@
             if (!text) return '';
             const m = text.match(/^\[([^\]]+)\]/);
             return m ? m[1] : text;
+        }
+
+        function extractKPIUnit(text) {
+            if (!text) return '';
+            const m = text.match(/^\[([^\]]+)\]/);
+            return m ? m[1] : '';
+        }
+
+        function extractKPIDesc(text) {
+            if (!text) return '';
+            return text.replace(/^\[[^\]]*\]\s*/, '').trim();
         }
 
         function extractTargetValue(text) {

@@ -379,6 +379,24 @@ body::before {
     padding-bottom: 6px;
 }
 
+.kpi-panel-top-left {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.kpi-panel-desc {
+    font-size: 10px;
+    color: rgba(255,255,255,0.35);
+    font-family: var(--mono);
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 280px;
+}
+
 .kpi-panel-label {
     font-size: 11px;
     font-weight: 700;
