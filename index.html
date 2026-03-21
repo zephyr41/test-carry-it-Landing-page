@@ -12,6 +12,8 @@
 
 </head>
 <body>
+    <div id="viewportDebug" class="viewport-debug">debug init...</div>
+
     <!-- Navbar -->
     <nav class="navbar">
         <a href="#" class="navbar-logo" onclick="goToHome()">Carry It</a>
@@ -1086,18 +1088,8 @@
 
         (function showViewportDebug() {
             const body = document.body;
-            if (!body) return;
-
-            const isTouchDevice = () =>
-                navigator.maxTouchPoints > 0 ||
-                window.matchMedia('(pointer: coarse)').matches ||
-                /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-            if (!isTouchDevice()) return;
-
-            const debug = document.createElement('div');
-            debug.className = 'viewport-debug';
-            body.appendChild(debug);
+            const debug = document.getElementById('viewportDebug');
+            if (!body || !debug) return;
 
             const render = () => {
                 const vv = window.visualViewport;
@@ -1108,12 +1100,12 @@
                 const visualScale = vv?.scale ? vv.scale.toFixed(2) : 'n/a';
                 const mobile = body.classList.contains('is-mobile') ? '1' : '0';
                 const scaled = body.classList.contains('is-scaled-mobile') ? '1' : '0';
-                const fix = getComputedStyle(body).getPropertyValue('--mobile-scale-fix').trim() || '1';
+                const bodyWidth = Math.round(body.getBoundingClientRect().width);
 
                 debug.textContent =
 `iw:${innerWidth} cw:${clientWidth} sw:${screenWidth}
 vw:${visualWidth} vs:${visualScale}
-mobile:${mobile} scaled:${scaled} fix:${fix}`;
+bw:${bodyWidth} mobile:${mobile} scaled:${scaled}`;
             };
 
             render();
