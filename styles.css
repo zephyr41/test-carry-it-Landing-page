@@ -9832,7 +9832,9 @@
                 font-size: 1.7rem;
                 line-height: 1.02;
                 margin-bottom: 10px;
-                max-width: 9ch;
+                max-width: none;
+                width: 100%;
+                text-wrap: balance;
             }
 
             .sol-header .section-subtitle {
@@ -10291,5 +10293,308 @@
             .prob-sunburst svg {
                 width: 50px;
                 height: 48px;
+            }
+        }
+
+        @media (hover: none) and (pointer: coarse) {
+            .hero-title-desktop,
+            .hero-subtitle-desktop,
+            .btn-label-desktop,
+            .hero-description,
+            .hero-reassurance,
+            .features-grid,
+            .pain-desktop,
+            .problem-copy-desktop,
+            .sol-subtitle-desktop,
+            .feature-desc-desktop {
+                display: none !important;
+            }
+
+            .hero-title-mobile,
+            .hero-subtitle-mobile,
+            .btn-label-mobile,
+            .pain-mobile,
+            .problem-copy-mobile,
+            .sol-subtitle-mobile,
+            .feature-desc-mobile {
+                display: inline !important;
+            }
+
+            .hero-title-mobile {
+                display: block !important;
+            }
+
+            .hero-section {
+                min-height: 100svh;
+                height: 100svh;
+                padding: calc(var(--navbar-height) + 10px) 16px 20px;
+            }
+
+            .hero-content {
+                width: 100%;
+                max-width: 100%;
+                min-height: calc(100svh - var(--navbar-height) - 30px);
+                justify-content: center;
+                gap: 14px;
+            }
+
+            .hero-title {
+                font-size: 32px;
+                line-height: 0.96;
+                max-width: none;
+                text-wrap: unset;
+                letter-spacing: -0.03em;
+            }
+
+            .hero-title-mobile .hero-title-line:first-child {
+                font-size: 0.84em;
+                opacity: 0.68;
+            }
+
+            .hero-title-mobile .hero-title-line:nth-child(2) {
+                font-size: 0.94em;
+                opacity: 0.9;
+            }
+
+            .hero-title-mobile .hero-title-line:nth-child(3) {
+                font-size: 1.12em;
+            }
+
+            .hero-title + .hero-subtitle {
+                margin-top: 4px;
+            }
+
+            .hero-subtitle {
+                font-size: 14px;
+                line-height: 1.5;
+                max-width: 18em;
+                text-wrap: balance;
+            }
+
+            .hero-ctas {
+                width: 100%;
+                max-width: 280px;
+                align-self: center;
+                gap: 10px;
+                margin-top: 8px;
+            }
+
+            .btn {
+                width: 100%;
+                min-height: 46px;
+                height: 46px;
+                padding: 0 18px;
+                font-size: 15px;
+            }
+
+            .hero-section .scroll-indicator {
+                position: absolute;
+                left: 0;
+                right: 0;
+                bottom: 34px;
+                padding: 0;
+                width: 100%;
+                height: auto;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+            }
+
+            .hero-scroll-label {
+                display: inline;
+                font-size: 13px;
+                font-weight: 600;
+                color: rgba(255, 255, 255, 0.82);
+                letter-spacing: -0.01em;
+                max-width: 240px;
+                line-height: 1.35;
+            }
+
+            .pain-section,
+            .market-gap-section,
+            .solution-section,
+            .differentiation-section,
+            .vals-section,
+            .founder-section,
+            .manifest-section {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+
+            .pain-inner,
+            .mg-container,
+            .feature-blocks,
+            .founder-inner {
+                max-width: 100%;
+                padding-left: 0;
+                padding-right: 0;
+            }
+
+            .pain-item {
+                grid-template-columns: 44px 1fr;
+                gap: 14px;
+                padding: 30px 0;
+            }
+
+            .pain-title {
+                font-size: 18px;
+                max-width: none;
+                width: 100%;
+            }
+
+            .pain-body {
+                font-size: 13px;
+                line-height: 1.64;
+                max-width: none;
+                width: 92%;
+            }
+
+            .market-gap-section {
+                padding-top: 44px;
+                padding-bottom: 12px;
+            }
+
+            .mg-header {
+                margin-bottom: 46px;
+            }
+
+            .mg-title,
+            .mg-subtitle {
+                max-width: none;
+                width: 100%;
+            }
+
+            .problem-list {
+                gap: 44px;
+            }
+
+            .problem-item {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .problem-visual,
+            .problem-text {
+                width: min(100%, 326px);
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .problem-visual {
+                min-height: 122px;
+                padding: 16px 18px;
+                border-radius: 16px;
+            }
+
+            .problem-title {
+                font-size: 1.18rem;
+                line-height: 1.14;
+                margin-bottom: 16px;
+                max-width: none;
+                width: 100%;
+                text-wrap: balance;
+            }
+
+            .problem-highlight {
+                font-size: 0.92rem;
+                line-height: 1.4;
+                margin-bottom: 6px;
+                width: 100%;
+            }
+
+            .problem-desc {
+                font-size: 0.88rem;
+                line-height: 1.7;
+                max-width: none;
+                width: 92%;
+            }
+
+            .solution-section {
+                padding-top: 14px;
+                padding-bottom: 76px;
+            }
+
+            .sol-header {
+                width: min(100%, 326px);
+                margin: 0 auto 28px;
+                padding: 0;
+                text-align: center;
+            }
+
+            .sol-header h2 {
+                font-size: 1.7rem;
+                line-height: 1.02;
+                margin-bottom: 10px;
+                max-width: none;
+                width: 100%;
+                text-wrap: balance;
+            }
+
+            .sol-header .section-subtitle {
+                max-width: none;
+                width: 100%;
+                font-size: 12px;
+                line-height: 1.42;
+            }
+
+            .feature-blocks {
+                gap: 48px;
+            }
+
+            .feature-block {
+                gap: 18px;
+            }
+
+            .solution-section .feature-block:nth-child(even) .feature-text,
+            .differentiation-section .feature-block:nth-child(even) .feature-text {
+                order: 2;
+            }
+
+            .solution-section .feature-block:nth-child(even) .feature-visual,
+            .differentiation-section .feature-block:nth-child(even) .feature-visual {
+                order: 1;
+            }
+
+            .feature-text,
+            .feature-visual {
+                width: min(100%, 326px);
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .feature-step {
+                font-size: 10px;
+                letter-spacing: 0.14em;
+                margin-bottom: 8px;
+            }
+
+            .feature-title {
+                font-size: 1.18rem;
+                line-height: 1.12;
+                margin-bottom: 12px;
+                max-width: none;
+                width: 100%;
+                text-wrap: balance;
+            }
+
+            .feature-desc {
+                font-size: 0.88rem;
+                line-height: 1.52;
+                max-width: none;
+                width: 92%;
+            }
+
+            .diff-statement,
+            .diff-nord,
+            .differentiation-section .feature-blocks {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+
+            .diff-feat-name,
+            .diff-feat-desc,
+            .diff-nord-line {
+                max-width: none;
+                width: 100%;
             }
         }
