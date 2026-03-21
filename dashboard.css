@@ -907,8 +907,8 @@ body::before {
     transition: color 0.15s, background 0.15s, transform 0.18s;
 }
 
-.todo-drop svg { pointer-events: none; transition: transform 0.18s; }
-.todo-drop.open svg { transform: rotate(180deg); }
+.todo-drop svg { pointer-events: none; transition: transform 0.18s; transform: rotate(-90deg); }
+.todo-drop.open svg { transform: rotate(0deg); }
 
 .todo-drop:hover {
     color: #EE4408;
@@ -1003,127 +1003,102 @@ body::before {
     color: #EE4408;
 }
 
+/* ── SUBTASKS — style ClickUp ── */
 .subtasks {
-    margin: 0 0 0 26px;
-    padding: 6px 0 10px 12px;
-    border-left: 2px solid rgba(255,255,255,0.07);
+    margin: 0 0 0 32px;
+    padding-bottom: 10px;
     display: flex;
     flex-direction: column;
-    gap: 0;
 }
-
-.subtask-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin: 2px 0 6px;
-}
-
-.subtask-title {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.50);
-    font-family: var(--mono);
-}
-
-.subtask-count {
-    font-size: 10px;
-    color: rgba(255,255,255,0.50);
-    font-family: var(--mono);
-}
-
-.subtask-toggle {
-    font-size: 10px;
-    color: rgba(255,255,255,0.50);
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-family: var(--mono);
-}
-
-.subtask-toggle:hover { color: #EE4408; }
 
 .subtask-item {
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 12px;
-    color: rgba(255,255,255,0.62);
-    font-family: var(--mono);
-    padding: 7px 0 7px 4px;
-    border-bottom: 1px solid rgba(255,255,255,0.04);
+    padding: 7px 10px 7px 12px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    transition: background 0.12s;
+    cursor: default;
 }
-.subtask-item:last-child { border-bottom: none; }
+.subtask-item:hover { background: rgba(255,255,255,0.025); }
+.subtask-item:hover .subtask-del { opacity: 1; }
 
-.subtask-cb {
-    width: 14px;
-    height: 14px;
-    border-radius: 4px;
-    border: 1.5px solid rgba(255,255,255,0.18);
+/* Icône cercle loop — bouton status */
+.subtask-icon-btn {
+    border: none;
     background: transparent;
+    padding: 0;
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
+    flex-shrink: 0;
+    color: rgba(255,255,255,0.28);
+    transition: color 0.15s;
 }
+.subtask-icon-btn:hover { color: rgba(255,255,255,0.65); }
 
-.subtask-item.done .subtask-cb {
-    background: rgba(10,42,83,0.35);
-    border-color: #0A2A53;
+/* SVG cercle — état pending */
+.subtask-icon-svg { display: block; }
+.subtask-icon-svg .subtask-check { opacity: 0; }
+
+/* État done */
+.subtask-item.done .subtask-icon-btn { color: #0A2A53; }
+.subtask-item.done .subtask-icon-svg circle { fill: #0A2A53; stroke: #0A2A53; }
+.subtask-item.done .subtask-icon-svg .subtask-check { opacity: 1; stroke: #FFFDF6; }
+
+.subtask-text {
+    flex: 1;
+    font-size: 12px;
+    color: rgba(255,255,255,0.70);
+    font-family: var(--mono);
 }
-
-.subtask-item.done .subtask-cb::after {
-    content: '';
-    width: 7px;
-    height: 4px;
-    border-left: 1.5px solid #FFFDF6;
-    border-bottom: 1.5px solid #FFFDF6;
-    transform: rotate(-45deg) translateY(-1px);
-}
-
-.subtask-text { flex: 1; }
-
 .subtask-item.done .subtask-text {
     text-decoration: line-through;
-    color: rgba(255,255,255,0.50);
+    color: rgba(255,255,255,0.35);
 }
 
 .subtask-del {
     border: none;
     background: transparent;
-    color: rgba(255,255,255,0.50);
+    color: rgba(255,255,255,0.35);
     cursor: pointer;
-    font-size: 12px;
+    font-size: 14px;
+    line-height: 1;
+    opacity: 0;
+    transition: color 0.12s, opacity 0.12s;
+    padding: 0 2px;
 }
-
 .subtask-del:hover { color: #EE4408; }
 
+/* Row "Ajouter" — toujours visible */
 .subtask-add-row {
     display: flex;
-    gap: 6px;
-    margin-top: 6px;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 10px 7px 12px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+.subtask-add-icon {
+    display: flex;
+    align-items: center;
+    color: rgba(255,255,255,0.20);
+    flex-shrink: 0;
 }
 
 .subtask-input {
     flex: 1;
-    height: 28px;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 5px;
-    padding: 0 8px;
-    color: #F5F3EC;
-    font-size: 11px;
+    height: 20px;
+    background: transparent;
+    border: none;
+    padding: 0;
+    color: rgba(255,255,255,0.70);
+    font-size: 12px;
     font-family: var(--mono);
     outline: none;
 }
-
-.subtask-input::placeholder {
-    color: rgba(255,255,255,0.50);
-}
+.subtask-input::placeholder { color: rgba(255,255,255,0.28); font-style: italic; }
 
 /* ── SIDE PANEL — non-bloquant, dashboard toujours visible ── */
 .side-panel-overlay {
@@ -1266,14 +1241,24 @@ body::before {
     flex-shrink: 0;
 }
 
-.cp-task-title {
+.cp-task-title-input {
     font-size: 16px;
     font-weight: 700;
     color: #F5F3EC;
     margin: 0 0 18px;
     font-family: var(--mono);
     line-height: 1.4;
-    padding-right: 36px;
+    padding: 2px 36px 4px 0;
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid transparent;
+    outline: none;
+    transition: border-color 0.15s;
+    display: block;
+}
+.cp-task-title-input:focus {
+    border-bottom-color: rgba(255,255,255,0.18);
 }
 
 .cp-fields {

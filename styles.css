@@ -107,6 +107,10 @@
             line-height: 1.6;
         }
 
+        body.is-scaled-mobile {
+            overflow-x: hidden;
+        }
+
         html {
             width: 100%;
             min-width: 0;

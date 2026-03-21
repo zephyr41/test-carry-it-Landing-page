@@ -470,50 +470,29 @@
             `;
         }
 
+        const SUBTASK_ICON = `<svg class="subtask-icon-svg" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.4"/><path class="subtask-check" d="M4.5 7l1.8 1.8 3.2-3.2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
         function renderSubtasksInline(task, i) {
             const open = todoSubOpen[`${i}-${task.id}`];
             if (!open) return '';
             const subs = task.subtasks || [];
-            const key = `${i}-${task.id}`;
-            const doneCollapsed = subtaskDoneCollapsed[key] !== false;
-            const openItems = subs.filter(s => !s.done);
-            const doneItems = subs.filter(s => s.done);
-            const items = openItems.length
-                ? openItems.map(s => `
-                    <div class="subtask-item ${s.done ? 'done' : ''}">
-                        <div class="subtask-cb" onclick="toggleSubtask(${i}, ${task.id}, ${s.id})"></div>
-                        <span class="subtask-text">${escHtml(s.text)}</span>
-                        <button class="subtask-del" onclick="deleteSubtask(${i}, ${task.id}, ${s.id})">×</button>
-                    </div>
-                  `).join('')
-                : '<div class="todo-empty" style="padding:4px 0;">Aucune sous-tâche</div>';
 
-            const doneBlock = doneItems.length ? `
-                <button class="subtask-toggle" onclick="toggleDoneSubtasks(${i}, ${task.id})">
-                    ${doneCollapsed ? `Afficher terminées (${doneItems.length})` : `Masquer terminées (${doneItems.length})`}
-                </button>
-                <div style="display:${doneCollapsed ? 'none' : 'block'};margin-top:4px;">
-                    ${doneItems.map(s => `
-                        <div class="subtask-item ${s.done ? 'done' : ''}">
-                            <div class="subtask-cb" onclick="toggleSubtask(${i}, ${task.id}, ${s.id})"></div>
-                            <span class="subtask-text">${escHtml(s.text)}</span>
-                            <button class="subtask-del" onclick="deleteSubtask(${i}, ${task.id}, ${s.id})">×</button>
-                        </div>
-                    `).join('')}
+            const rows = subs.map(s => `
+                <div class="subtask-item ${s.done ? 'done' : ''}" onclick="event.stopPropagation()">
+                    <button class="subtask-icon-btn" onclick="toggleSubtask(${i}, ${task.id}, ${s.id})">${SUBTASK_ICON}</button>
+                    <span class="subtask-text">${escHtml(s.text)}</span>
+                    <button class="subtask-del" onclick="deleteSubtask(${i}, ${task.id}, ${s.id})">×</button>
                 </div>
-            ` : '';
+            `).join('');
 
             return `
-                <div class="subtasks">
-                    <div class="subtask-head">
-                        <span class="subtask-title">Checklist</span>
-                        <span class="subtask-count">${openItems.length} open</span>
-                    </div>
-                    ${items}
-                    ${doneBlock}
+                <div class="subtasks" onclick="event.stopPropagation()">
+                    ${rows}
                     <div class="subtask-add-row">
-                        <input class="subtask-input" id="subtaskInput-${i}-${task.id}" placeholder="+ Ajouter un item" onkeydown="if(event.key==='Enter'){addSubtask(${i}, ${task.id});event.preventDefault();}">
-                        <button class="todo-mini-btn primary" onclick="addSubtask(${i}, ${task.id})">+</button>
+                        <span class="subtask-add-icon">${SUBTASK_ICON}</span>
+                        <input class="subtask-input" id="subtaskInput-${i}-${task.id}"
+                            placeholder="Ajouter une sous-tâche..."
+                            onkeydown="if(event.key==='Enter'){addSubtask(${i}, ${task.id});event.preventDefault();}">
                     </div>
                 </div>
             `;
@@ -667,6 +646,10 @@
             document.getElementById('taskPanelOverlay').classList.add('open');
             document.body.classList.add('panel-open');
             refreshTodoList(i);
+            setTimeout(() => {
+                const input = document.getElementById('cpTitleInput');
+                if (input) { input.focus(); input.select(); }
+            }, 60);
         }
 
         function closeTaskPanel() {
@@ -696,7 +679,14 @@
                         ${task.done ? 'Terminée' : 'À faire'}
                     </span>
                 </div>
-                <h3 class="cp-task-title">${escHtml(task.text)}</h3>
+                <input
+                    id="cpTitleInput"
+                    class="cp-task-title-input"
+                    value="${escHtml(task.text)}"
+                    onkeydown="if(event.key==='Enter'){this.blur();}if(event.key==='Escape'){this.value=this.dataset.orig;this.blur();}"
+                    onblur="savePanelTitle(${i}, ${task.id}, this.value)"
+                    data-orig="${escHtml(task.text)}"
+                >
                 <div class="cp-fields">
                     ${nextJalon ? `
                     <div class="cp-field-row">
@@ -720,46 +710,22 @@
 
         function renderSubtasksPanel(task, i) {
             const subs = task.subtasks || [];
-            const key = `${i}-${task.id}`;
-            const doneCollapsed = subtaskDoneCollapsed[key] !== false;
-            const openItems = subs.filter(s => !s.done);
-            const doneItems = subs.filter(s => s.done);
-            const items = openItems.length
-                ? openItems.map(s => `
-                    <div class="subtask-item ${s.done ? 'done' : ''}">
-                        <div class="subtask-cb" onclick="toggleSubtask(${i}, ${task.id}, ${s.id}); renderTaskPanel();"></div>
-                        <span class="subtask-text">${escHtml(s.text)}</span>
-                        <button class="subtask-del" onclick="deleteSubtask(${i}, ${task.id}, ${s.id}); renderTaskPanel();">×</button>
-                    </div>
-                  `).join('')
-                : '<div class="todo-empty" style="padding:4px 0;">Aucune sous-tâche</div>';
-
-            const doneBlock = doneItems.length ? `
-                <button class="subtask-toggle" onclick="toggleDoneSubtasks(${i}, ${task.id}); renderTaskPanel();">
-                    ${doneCollapsed ? `Afficher terminées (${doneItems.length})` : `Masquer terminées (${doneItems.length})`}
-                </button>
-                <div style="display:${doneCollapsed ? 'none' : 'block'};margin-top:4px;">
-                    ${doneItems.map(s => `
-                        <div class="subtask-item ${s.done ? 'done' : ''}">
-                            <div class="subtask-cb" onclick="toggleSubtask(${i}, ${task.id}, ${s.id}); renderTaskPanel();"></div>
-                            <span class="subtask-text">${escHtml(s.text)}</span>
-                            <button class="subtask-del" onclick="deleteSubtask(${i}, ${task.id}, ${s.id}); renderTaskPanel();">×</button>
-                        </div>
-                    `).join('')}
+            const rows = subs.map(s => `
+                <div class="subtask-item ${s.done ? 'done' : ''}">
+                    <button class="subtask-icon-btn" onclick="toggleSubtask(${i}, ${task.id}, ${s.id}); renderTaskPanel();">${SUBTASK_ICON}</button>
+                    <span class="subtask-text">${escHtml(s.text)}</span>
+                    <button class="subtask-del" onclick="deleteSubtask(${i}, ${task.id}, ${s.id}); renderTaskPanel();">×</button>
                 </div>
-            ` : '';
+            `).join('');
 
             return `
                 <div class="subtasks">
-                    <div class="subtask-head">
-                        <span class="subtask-title">Checklist</span>
-                        <span class="subtask-count">${openItems.length} open</span>
-                    </div>
-                    ${items}
-                    ${doneBlock}
+                    ${rows}
                     <div class="subtask-add-row">
-                        <input class="subtask-input" id="panelSubtaskInput-${i}-${task.id}" placeholder="+ Ajouter un item" onkeydown="if(event.key==='Enter'){addSubtaskFromPanel(${i}, ${task.id});event.preventDefault();}">
-                        <button class="todo-mini-btn primary" onclick="addSubtaskFromPanel(${i}, ${task.id})">+</button>
+                        <span class="subtask-add-icon">${SUBTASK_ICON}</span>
+                        <input class="subtask-input" id="panelSubtaskInput-${i}-${task.id}"
+                            placeholder="Ajouter une sous-tâche..."
+                            onkeydown="if(event.key==='Enter'){addSubtaskFromPanel(${i}, ${task.id});event.preventDefault();}">
                     </div>
                 </div>
             `;
@@ -776,6 +742,16 @@
             saveAllObjectifs();
             if (input) input.value = '';
             renderTaskPanel();
+            refreshTodoList(i);
+        }
+
+        function savePanelTitle(i, taskId, value) {
+            const text = (value || '').trim();
+            if (!text) return;
+            const task = getTaskById(i, taskId);
+            if (!task) return;
+            task.text = text;
+            saveAllObjectifs();
             refreshTodoList(i);
         }
 
