@@ -1418,7 +1418,7 @@
             }
         });
         var div=document.createElement('div');
-        div.style.cssText='position:fixed;top:0;left:0;right:0;z-index:99999;background:#000;color:lime;font-size:9px;padding:4px 6px;overflow:auto;max-height:60vh;font-family:monospace;word-break:break-all;';
+        div.style.cssText='position:fixed;bottom:0;left:0;right:0;z-index:99999;background:#000;color:lime;font-size:9px;padding:4px 6px;overflow:auto;max-height:60vh;font-family:monospace;word-break:break-all;';
         div.innerHTML='<b style="color:#f55">scrollW='+sw+' vw='+vw+' screen='+real+'</b><br>'
             +'<b style="color:#ff0">OVERFLOW INTERNE:</b><br>'+(overflow.length?overflow.slice(0,20).join('<br>'):'aucun')
             +'<br><b style="color:#f55">BEYOND DEVICE:</b><br>'+(beyond.length?beyond.slice(0,20).join('<br>'):'<b style="color:lime">✓ RIEN</b>');
