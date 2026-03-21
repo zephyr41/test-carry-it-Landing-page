@@ -85,11 +85,6 @@
             box-sizing: border-box;
         }
 
-        html {
-            -webkit-text-size-adjust: 100%;
-            text-size-adjust: 100%;
-        }
-
         /* Color System Override Rules - Enforce semantic color usage */
         /* Primary text color override */
         h1, h2, h3, p, label, span {
@@ -101,16 +96,7 @@
             color: var(--color-text-primary);
             font-family: var(--font-primary);
             font-size: var(--text-body);
-            width: 100%;
-            min-width: 0;
-            overflow-x: hidden;
             line-height: 1.6;
-        }
-
-        html {
-            width: 100%;
-            min-width: 0;
-            overflow-x: clip;
         }
 
         /* Navbar */
@@ -9289,11 +9275,6 @@
            RESPONSIVE HARDENING - INDEX
            ============================================================ */
 
-        html,
-        body {
-            max-width: 100%;
-        }
-
         img,
         svg,
         video,
@@ -9346,10 +9327,6 @@
         }
 
         @media (max-width: 768px) {
-            body {
-                overflow-x: clip;
-            }
-
             .navbar {
                 min-height: var(--navbar-height);
                 padding: 12px 16px;

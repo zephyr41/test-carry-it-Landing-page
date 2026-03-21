@@ -1012,28 +1012,6 @@
             document.getElementById('manifestSection').scrollIntoView({ behavior: 'smooth' });
         }
 
-        // Force a stable mobile mode on touch devices so Safari/ARC cannot
-        // fall back to desktop-like rendering when media queries are flaky.
-        (function syncMobileMode() {
-            const root = document.body;
-            if (!root) return;
-
-            const mobileQuery = window.matchMedia('(pointer: coarse), (hover: none), (max-width: 900px)');
-            const isMobileDevice = () =>
-                mobileQuery.matches ||
-                navigator.maxTouchPoints > 0 ||
-                /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-            const apply = () => {
-                root.classList.toggle('is-mobile', isMobileDevice());
-            };
-
-            apply();
-            mobileQuery.addEventListener?.('change', apply);
-            window.addEventListener('resize', apply, { passive: true });
-            window.addEventListener('orientationchange', apply, { passive: true });
-        })();
-
         // ── Mental States Oscillator ─────────────────────────────────────
         (function() {
             const low     = document.getElementById('statelow');
