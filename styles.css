@@ -85,6 +85,11 @@
             box-sizing: border-box;
         }
 
+        html {
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+        }
+
         /* Color System Override Rules - Enforce semantic color usage */
         /* Primary text color override */
         h1, h2, h3, p, label, span {
@@ -3458,6 +3463,10 @@
             color: rgba(255,255,255,0.45);
             line-height: 1.7;
             margin: 0;
+        }
+
+        .feature-desc-mobile {
+            display: none;
         }
 
         /* Skeleton card base */
@@ -9620,6 +9629,14 @@
                 color: rgba(255, 255, 255, 0.48);
             }
 
+            .feature-desc-desktop {
+                display: none;
+            }
+
+            .feature-desc-mobile {
+                display: inline;
+            }
+
             .sk-card {
                 padding: 20px;
                 border-radius: 18px;
@@ -9877,6 +9894,14 @@
                 max-width: none;
                 width: 100%;
                 color: rgba(255, 255, 255, 0.5);
+            }
+
+            .feature-desc-desktop {
+                display: none;
+            }
+
+            .feature-desc-mobile {
+                display: inline;
             }
 
             .sk-card-dashboard {
