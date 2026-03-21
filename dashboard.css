@@ -91,7 +91,7 @@ body::before {
     border-radius: 4px;
     font-size: 10px;
     font-weight: 600;
-    color: rgba(255,255,255,0.38);
+    color: rgba(255,255,255,0.50);
     letter-spacing: 0.07em;
     text-transform: uppercase;
     font-family: var(--mono);
@@ -100,7 +100,7 @@ body::before {
 .proj-badge-t {
     background: transparent;
     border-color: rgba(255,255,255,0.07);
-    color: rgba(255,255,255,0.38);
+    color: rgba(255,255,255,0.50);
 }
 
 .proj-actions {
@@ -114,7 +114,7 @@ body::before {
 .proj-edit-link {
     font-size: 11px;
     font-weight: 600;
-    color: rgba(255,255,255,0.28);
+    color: rgba(255,255,255,0.50);
     text-decoration: none;
     padding: 6px 12px;
     border-radius: 6px;
@@ -137,7 +137,7 @@ body::before {
     border-radius: 6px;
     border: 1px solid rgba(255,255,255,0.07);
     background: transparent;
-    color: rgba(255,255,255,0.22);
+    color: rgba(255,255,255,0.50);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -202,7 +202,7 @@ body::before {
 .smart-edit-btn {
     font-size: 10px;
     font-weight: 600;
-    color: rgba(255,255,255,0.28);
+    color: rgba(255,255,255,0.50);
     text-decoration: none;
     display: inline-flex;
     align-items: center;
@@ -248,7 +248,7 @@ body::before {
     border-radius: 3px;
     font-size: 9px;
     font-weight: 700;
-    color: rgba(238,68,8,0.6);
+    color: #EE4408;
     font-family: var(--mono);
 }
 
@@ -265,7 +265,7 @@ body::before {
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.22);
+    color: rgba(255,255,255,0.50);
     margin-bottom: 2px;
     line-height: 1;
     font-family: var(--mono);
@@ -399,7 +399,7 @@ body::before {
     font-weight: 600;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.28);
+    color: rgba(255,255,255,0.50);
     font-family: var(--mono);
 }
 
@@ -451,7 +451,7 @@ body::before {
     font-size: 12px;
     font-weight: 500;
     font-style: normal;
-    color: rgba(255,255,255,0.38);
+    color: rgba(255,255,255,0.50);
     letter-spacing: 0;
 }
 
@@ -466,7 +466,7 @@ body::before {
 
 .kpih-goal {
     font-size: 10px;
-    color: rgba(255,255,255,0.28);
+    color: rgba(255,255,255,0.50);
     font-family: var(--mono);
     letter-spacing: 0.05em;
     margin-top: 4px;
@@ -500,7 +500,7 @@ body::before {
     border-radius: 8px;
     cursor: pointer;
     font-size: 12px;
-    color: rgba(255,255,255,0.28);
+    color: rgba(255,255,255,0.50);
     font-family: var(--mono);
     transition: all 0.2s;
     letter-spacing: 0.02em;
@@ -537,7 +537,7 @@ body::before {
 
 .kpi-big-unit {
     font-size: 11px;
-    color: rgba(255,255,255,0.28);
+    color: rgba(255,255,255,0.50);
     margin-top: 8px;
     font-family: var(--mono);
     letter-spacing: 0.1em;
@@ -546,7 +546,7 @@ body::before {
 
 .kpi-single-hint {
     font-size: 11px;
-    color: rgba(255,255,255,0.18);
+    color: rgba(255,255,255,0.50);
     margin-top: 14px;
     font-family: var(--mono);
 }
@@ -568,7 +568,7 @@ body::before {
 
 .kpi-current-label {
     font-size: 10px;
-    color: rgba(255,255,255,0.26);
+    color: rgba(255,255,255,0.50);
     margin-top: 2px;
     font-family: var(--mono);
     letter-spacing: 0.03em;
@@ -592,7 +592,7 @@ body::before {
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.32);
+    color: rgba(255,255,255,0.50);
     margin-bottom: 8px;
     font-family: var(--mono);
 }
@@ -708,7 +708,7 @@ body::before {
     font-weight: 500;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.35);
+    color: rgba(255,255,255,0.50);
     white-space: nowrap;
     text-shadow: none;
     margin-top: -8px;
@@ -724,7 +724,7 @@ body::before {
     letter-spacing: 0.08em;
     text-transform: uppercase;
     font-family: var(--mono);
-    color: rgba(255,255,255,0.35);
+    color: rgba(255,255,255,0.50);
     pointer-events: none;
 }
 
@@ -736,7 +736,7 @@ body::before {
     right: 0;
     text-align: center;
     font-size: 10px;
-    color: rgba(255,255,255,0.18);
+    color: rgba(255,255,255,0.50);
     font-family: var(--mono);
     pointer-events: none;
     letter-spacing: 0.04em;
@@ -766,7 +766,7 @@ body::before {
     border-color: rgba(238,68,8,0.70);
     box-shadow: 0 0 0 3px rgba(238,68,8,0.08);
 }
-.todo-input::placeholder { color: rgba(255,255,255,0.38); font-style: italic; }
+.todo-input::placeholder { color: rgba(255,255,255,0.50); font-style: italic; }
 
 .todo-plus-btn {
     width: 44px;
@@ -791,7 +791,7 @@ body::before {
     text-align: center;
     padding: 20px;
     font-size: 11px;
-    color: rgba(255,255,255,0.18);
+    color: rgba(255,255,255,0.50);
     font-family: var(--mono);
 }
 
@@ -849,7 +849,7 @@ body::before {
 
 .todo-item.done .todo-text {
     text-decoration: line-through;
-    color: rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.50);
 }
 
 .todo-del {
@@ -858,7 +858,7 @@ body::before {
     border-radius: 4px;
     border: none;
     background: transparent;
-    color: rgba(255,255,255,0.35);
+    color: rgba(255,255,255,0.50);
     font-size: 14px;
     cursor: pointer;
     display: flex;
@@ -880,7 +880,7 @@ body::before {
     border-radius: 4px;
     border: none;
     background: transparent;
-    color: rgba(255,255,255,0.38);
+    color: rgba(255,255,255,0.50);
     font-size: 14px;
     cursor: pointer;
     display: flex;
@@ -902,7 +902,7 @@ body::before {
     border-radius: 4px;
     border: none;
     background: transparent;
-    color: rgba(255,255,255,0.35);
+    color: rgba(255,255,255,0.50);
     font-size: 12px;
     cursor: pointer;
     display: flex;
@@ -969,7 +969,7 @@ body::before {
 .todo-done-toggle {
     font-size: 10px;
     font-weight: 600;
-    color: rgba(255,255,255,0.28);
+    color: rgba(255,255,255,0.50);
     border: 1px solid rgba(255,255,255,0.07);
     background: transparent;
     border-radius: 5px;
@@ -1007,19 +1007,19 @@ body::before {
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.26);
+    color: rgba(255,255,255,0.50);
     font-family: var(--mono);
 }
 
 .subtask-count {
     font-size: 10px;
-    color: rgba(255,255,255,0.22);
+    color: rgba(255,255,255,0.50);
     font-family: var(--mono);
 }
 
 .subtask-toggle {
     font-size: 10px;
-    color: rgba(255,255,255,0.26);
+    color: rgba(255,255,255,0.50);
     border: none;
     background: transparent;
     cursor: pointer;
@@ -1069,13 +1069,13 @@ body::before {
 
 .subtask-item.done .subtask-text {
     text-decoration: line-through;
-    color: rgba(255,255,255,0.28);
+    color: rgba(255,255,255,0.50);
 }
 
 .subtask-del {
     border: none;
     background: transparent;
-    color: rgba(255,255,255,0.35);
+    color: rgba(255,255,255,0.50);
     cursor: pointer;
     font-size: 12px;
 }
@@ -1102,7 +1102,7 @@ body::before {
 }
 
 .subtask-input::placeholder {
-    color: rgba(255,255,255,0.28);
+    color: rgba(255,255,255,0.50);
 }
 
 /* ── SIDE PANEL — non-bloquant, dashboard toujours visible ── */
@@ -1158,7 +1158,7 @@ body::before {
     right: 16px;
     border: none;
     background: rgba(255,255,255,0.04);
-    color: rgba(255,255,255,0.4);
+    color: rgba(255,255,255,0.50);
     font-size: 16px;
     cursor: pointer;
     width: 28px;
@@ -1180,7 +1180,7 @@ body::before {
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.28);
+    color: rgba(255,255,255,0.50);
     margin: 20px 0 8px;
     font-family: var(--mono);
 }
@@ -1278,7 +1278,7 @@ body::before {
 .cp-field-key {
     font-size: 11px;
     font-weight: 600;
-    color: rgba(255,255,255,0.32);
+    color: rgba(255,255,255,0.50);
     font-family: var(--mono);
     letter-spacing: 0.02em;
     padding-top: 1px;
@@ -1294,7 +1294,7 @@ body::before {
 .cp-field-jalon { color: rgba(255,255,255,0.8); }
 
 .cp-field-date {
-    color: rgba(255,255,255,0.35);
+    color: rgba(255,255,255,0.50);
     font-size: 11px;
 }
 
@@ -1312,7 +1312,7 @@ body::before {
     line-height: 1.6;
 }
 
-.cp-notes-textarea::placeholder { color: rgba(255,255,255,0.2); font-style: italic; }
+.cp-notes-textarea::placeholder { color: rgba(255,255,255,0.50); font-style: italic; }
 
 .cp-section-header {
     display: flex;
@@ -1326,20 +1326,20 @@ body::before {
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.35);
+    color: rgba(255,255,255,0.50);
     font-family: var(--mono);
 }
 
 .cp-section-count {
     font-size: 10px;
-    color: rgba(255,255,255,0.22);
+    color: rgba(255,255,255,0.50);
     font-family: var(--mono);
 }
 
 /* date on jalon hint */
 .todo-jalon-date {
     font-size: 10px;
-    color: rgba(255,255,255,0.32);
+    color: rgba(255,255,255,0.50);
     font-family: var(--mono);
     white-space: nowrap;
     margin-left: auto;
@@ -1357,7 +1357,7 @@ body::before {
 .jalons-manage-link {
     font-size: 10px;
     font-weight: 600;
-    color: rgba(255,255,255,0.26);
+    color: rgba(255,255,255,0.50);
     text-decoration: none;
     padding: 4px 8px;
     border-radius: 4px;
@@ -1429,14 +1429,14 @@ body::before {
     font-weight: 700;
     letter-spacing: 0.11em;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.24);
+    color: rgba(255,255,255,0.50);
     font-family: var(--mono);
 }
 
 .jt-date {
     font-size: 10px;
     font-weight: 500;
-    color: rgba(255,255,255,0.36);
+    color: rgba(255,255,255,0.50);
     font-family: var(--mono);
 }
 
@@ -1504,7 +1504,7 @@ body::before {
 
 .jt-kpi {
     font-size: 10px;
-    color: rgba(255,255,255,0.24);
+    color: rgba(255,255,255,0.50);
     line-height: 1.3;
     font-family: var(--mono);
 }
@@ -1525,7 +1525,7 @@ body::before {
     text-align: center;
     padding: 20px;
     font-size: 11px;
-    color: rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.50);
     font-family: var(--mono);
 }
 
@@ -1536,7 +1536,7 @@ body::before {
     text-align: center;
     font-size: 11px;
     font-style: italic;
-    color: rgba(255,255,255,0.35);
+    color: rgba(255,255,255,0.50);
     padding-top: 4px;
     font-family: var(--mono);
     letter-spacing: 0.03em;
@@ -1558,13 +1558,13 @@ body::before {
     font-weight: 800;
     font-style: italic;
     font-size: 26px;
-    color: rgba(255,255,255,0.25);
+    color: rgba(255,255,255,0.50);
     margin: 0 0 10px;
 }
 
 .db-empty-sub {
     font-size: 13px;
-    color: rgba(255,255,255,0.18);
+    color: rgba(255,255,255,0.50);
     margin: 0 0 28px;
     font-family: var(--mono);
 }
@@ -1610,7 +1610,7 @@ body::before {
 
 .m-sub {
     font-size: 12px;
-    color: rgba(255,255,255,0.36);
+    color: rgba(255,255,255,0.50);
     margin: 0 0 24px;
     line-height: 1.65;
     font-family: var(--mono);
@@ -1624,7 +1624,7 @@ body::before {
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    color: rgba(255,255,255,0.36);
+    color: rgba(255,255,255,0.50);
     margin-bottom: 6px;
     font-family: var(--mono);
 }
@@ -1722,7 +1722,7 @@ body::before {
     border-radius: 8px;
     border: 1px solid rgba(255,255,255,0.07);
     background: transparent;
-    color: rgba(255,255,255,0.32);
+    color: rgba(255,255,255,0.50);
     font-size: 12px;
     font-weight: 600;
     cursor: pointer;
