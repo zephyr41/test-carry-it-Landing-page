@@ -479,9 +479,9 @@
 
             const rows = subs.map(s => `
                 <div class="subtask-item ${s.done ? 'done' : ''}" onclick="event.stopPropagation()">
-                    <button class="subtask-icon-btn" onclick="toggleSubtask(${i}, ${task.id}, ${s.id})">${SUBTASK_ICON}</button>
-                    <span class="subtask-text">${escHtml(s.text)}</span>
-                    <button class="subtask-del" onclick="deleteSubtask(${i}, ${task.id}, ${s.id})">×</button>
+                    <button class="subtask-icon-btn" onclick="toggleSubtask(${i}, ${task.id}, ${s.id}); event.stopPropagation();">${SUBTASK_ICON}</button>
+                    <span class="subtask-text" onclick="inlineEditSubtask(${i}, ${task.id}, ${s.id}, this); event.stopPropagation();">${escHtml(s.text)}</span>
+                    <button class="subtask-del" onclick="deleteSubtask(${i}, ${task.id}, ${s.id}); event.stopPropagation();">×</button>
                 </div>
             `).join('');
 
@@ -702,7 +702,7 @@
             const rows = subs.map(s => `
                 <div class="subtask-item ${s.done ? 'done' : ''}">
                     <button class="subtask-icon-btn" onclick="toggleSubtask(${i}, ${task.id}, ${s.id}); renderTaskPanel();">${SUBTASK_ICON}</button>
-                    <span class="subtask-text">${escHtml(s.text)}</span>
+                    <span class="subtask-text" onclick="inlineEditSubtask(${i}, ${task.id}, ${s.id}, this); event.stopPropagation();">${escHtml(s.text)}</span>
                     <button class="subtask-del" onclick="deleteSubtask(${i}, ${task.id}, ${s.id}); renderTaskPanel();">×</button>
                 </div>
             `).join('');
@@ -732,6 +732,39 @@
             if (input) input.value = '';
             renderTaskPanel();
             refreshTodoList(i);
+        }
+
+        function inlineEditSubtask(i, taskId, subId, el) {
+            const orig = el.textContent;
+            el.contentEditable = 'true';
+            el.classList.add('editing');
+            el.focus();
+            const range = document.createRange();
+            range.selectNodeContents(el);
+            range.collapse(false);
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+
+            el.onkeydown = (e) => {
+                if (e.key === 'Enter') { e.preventDefault(); el.blur(); }
+                if (e.key === 'Escape') { el.textContent = orig; el.blur(); }
+                e.stopPropagation();
+            };
+            el.onblur = () => {
+                el.contentEditable = 'false';
+                el.classList.remove('editing');
+                const text = el.textContent.trim();
+                if (text && text !== orig) {
+                    const task = getTaskById(i, taskId);
+                    const sub = task?.subtasks?.find(s => s.id === subId);
+                    if (sub) { sub.text = text; saveAllObjectifs(); }
+                } else {
+                    el.textContent = orig;
+                }
+                el.onblur = null;
+                el.onkeydown = null;
+            };
         }
 
         function clickTask(i, taskId) {
