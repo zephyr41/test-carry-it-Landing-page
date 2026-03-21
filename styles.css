@@ -2225,6 +2225,22 @@
             transition: opacity 0.65s cubic-bezier(0.16,1,0.3,1), transform 0.65s cubic-bezier(0.16,1,0.3,1);
         }
 
+        .section-bridge {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            margin-top: 28px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .section-bridge-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+
         .mg-tools-list {
             display: flex;
             flex-direction: column;
@@ -3337,7 +3353,6 @@
 
         /* SECTION 5: SOLUTION - CarryIT Architecture */
         .solution-section {
-            border-top: 1px solid rgba(255,255,255,0.07);
             padding: 64px var(--space-24) var(--space-96);
             background: linear-gradient(
                 180deg,
@@ -9485,6 +9500,72 @@
                 gap: 24px;
             }
 
+            .solution-section {
+                padding-top: 10px;
+                padding-bottom: 84px;
+            }
+
+            .sol-header {
+                max-width: 100%;
+                margin: 0 auto 44px;
+                padding: 0;
+            }
+
+            .sol-header .section-overline {
+                margin-bottom: 10px;
+            }
+
+            .sol-header h2 {
+                font-size: clamp(26px, 6.2vw, 38px);
+                line-height: 1.04;
+                letter-spacing: -0.04em;
+                margin-bottom: 12px;
+                max-width: 10ch;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .sol-header .section-subtitle {
+                max-width: 21em;
+                margin: 0 auto;
+                font-size: 14px;
+                line-height: 1.55;
+                color: rgba(255, 255, 255, 0.56);
+                text-wrap: balance;
+            }
+
+            .feature-text,
+            .feature-visual {
+                width: min(100%, 356px);
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .feature-text {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .feature-step {
+                margin-bottom: 12px;
+            }
+
+            .feature-title {
+                font-size: 1.4rem;
+                line-height: 1.1;
+                letter-spacing: -0.03em;
+                margin-bottom: 14px;
+                max-width: 15ch;
+            }
+
+            .feature-desc {
+                font-size: 0.95rem;
+                line-height: 1.62;
+                max-width: 31ch;
+                color: rgba(255, 255, 255, 0.56);
+            }
+
             .sk-card {
                 padding: 20px;
                 border-radius: 18px;
@@ -9664,6 +9745,60 @@
                 margin-bottom: 14px;
             }
 
+            .solution-section {
+                padding-top: 4px;
+                padding-bottom: 76px;
+            }
+
+            .sol-header {
+                margin-bottom: 38px;
+            }
+
+            .sol-header h2 {
+                font-size: 1.7rem;
+                line-height: 1.02;
+                margin-bottom: 10px;
+                max-width: 9ch;
+            }
+
+            .sol-header .section-subtitle {
+                max-width: 18.5em;
+                font-size: 13px;
+                line-height: 1.52;
+            }
+
+            .feature-blocks {
+                gap: 48px;
+            }
+
+            .feature-block {
+                gap: 20px;
+            }
+
+            .feature-text,
+            .feature-visual {
+                width: min(100%, 326px);
+            }
+
+            .feature-step {
+                font-size: 12px;
+                letter-spacing: 0.11em;
+                margin-bottom: 12px;
+            }
+
+            .feature-title {
+                font-size: 1.18rem;
+                line-height: 1.12;
+                margin-bottom: 12px;
+                max-width: 15ch;
+            }
+
+            .feature-desc {
+                font-size: 0.88rem;
+                line-height: 1.62;
+                max-width: 30ch;
+            }
+
             .sk-card-dashboard {
                 min-height: 280px;
             }
@@ -9834,7 +9969,7 @@
 
         @media (max-width: 768px) {
             .market-gap-section {
-                padding: 48px 20px 36px;
+                padding: 48px 20px 18px;
             }
 
             .mg-header {
@@ -9867,6 +10002,11 @@
             .problem-list {
                 gap: 56px;
                 margin-bottom: 28px;
+            }
+
+            .section-bridge {
+                display: flex;
+                margin-top: 10px;
             }
 
             .problem-item {
@@ -9941,7 +10081,7 @@
 
         @media (max-width: 480px) {
             .market-gap-section {
-                padding: 44px 20px 36px;
+                padding: 44px 20px 12px;
             }
 
             .mg-header {
@@ -9955,6 +10095,16 @@
 
             .problem-list {
                 gap: 44px;
+            }
+
+            .section-bridge {
+                margin-top: 8px;
+                gap: 6px;
+            }
+
+            .section-bridge-label {
+                font-size: 10px;
+                letter-spacing: 0.13em;
             }
 
             .problem-visual,

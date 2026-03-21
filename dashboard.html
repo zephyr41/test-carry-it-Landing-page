@@ -261,7 +261,10 @@
                 <!-- Body -->
                 <div class="proj-body">
 
-                    <!-- Row 1 : KPI + SMART côte à côte -->
+                    <!-- Row 1 : Todo — moteur d'exécution, priorité absolue -->
+                    ${buildTodoPanel(obj, i)}
+
+                    <!-- Row 2 : KPI + SMART côte à côte -->
                     <div class="db-row-kpi-smart">
                         <div class="kpi-panel" id="kpiPanel-${i}">
                             <div class="kpi-panel-top">
@@ -275,7 +278,7 @@
 
                         <div class="smart-panel">
                             <div class="smart-header">
-                                <span style="font-size:9px;font-weight:600;letter-spacing:0.10em;text-transform:uppercase;color:rgba(255,255,255,0.45);">Objectif SMART</span>
+                                <span style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.70);">Objectif SMART</span>
                                 <button class="smart-edit-btn" type="button" onclick="enterSmartEdit(${i})">
                                     <svg width="10" height="10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
@@ -305,10 +308,7 @@
                         </div>
                     </div>
 
-                    <!-- Row 2 : Todo — moteur d'exécution -->
-                    ${buildTodoPanel(obj, i)}
-
-                    <!-- Row 3 : Jalons GPS -->
+                    <!-- Row 3 : Jalons GPS — priorité basse -->
                     ${buildJalonsPanel(obj, i)}
 
                     <!-- Citation -->
@@ -1155,6 +1155,7 @@
                     interaction: { mode: 'nearest', intersect: true },
                     scales: {
                         x: {
+                            offset: true,
                             grid: { color: 'rgba(255,255,255,0.04)', lineWidth: 1, drawTicks: false, borderDash: [3, 5] },
                             ticks: {
                                 color: 'rgba(255,255,255,0.50)',
@@ -1172,7 +1173,7 @@
                             title: {
                                 display: true,
                                 text: obj.mesurable || kpiUnit || '',
-                                color: 'rgba(255,255,255,0.35)',
+                                color: 'rgba(255,255,255,0.50)',
                                 font: { family: 'Inter', size: 9, weight: '400' },
                                 padding: { top: 6 }
                             },

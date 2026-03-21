@@ -7,6 +7,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
 
     <style>
         @font-face {
@@ -352,24 +353,30 @@
         .ai-trigger {
             display: inline-flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            background: transparent;
-            color: #dcb08a;
-            border: 1px solid rgba(238, 68, 8, 0.3);
-            padding: 10px 20px;
-            border-radius: 30px;
+            gap: 8px;
+            margin-bottom: 24px;
+            background: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: #111111;
+            padding: 16px 30px;
+            border-radius: 999px;
             font-size: 15px;
-            font-weight: 500;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.2s;
+            white-space: nowrap;
+            font-family: var(--font-primary);
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25), 0 0 0 6px rgba(238, 68, 8, 0.18);
+            letter-spacing: 0.2px;
         }
         .ai-trigger:hover {
-            background: rgba(238, 68, 8, 0.1);
-            color: var(--accent-color);
-            border-color: var(--accent-color);
+            transform: translateY(-1px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3), 0 0 0 8px rgba(238, 68, 8, 0.25);
         }
-        .ai-trigger svg { width: 18px; height: 18px; }
+        .ai-trigger i {
+            font-size: 18px;
+            line-height: 1;
+        }
 
         /* --- NAVIGATION BUTTONS --- */
         .footer-container {
@@ -458,6 +465,7 @@
             .footer-container { padding: 0 10px; }
             .btn-back { padding: 8px 16px; font-size: 12px; }
             .btn-next { padding: 12px 28px; font-size: 14px; }
+            .ai-trigger { width: 100%; justify-content: center; }
 
             h1 { font-size: 28px; }
             .description { font-size: 16px; }
@@ -500,8 +508,7 @@
             <p class="description">Utilise l'assistant pour définir un objectif précis, factuel et motivant. Ne laisse rien au hasard.</p>
 
             <button class="ai-trigger" onclick="openAIModal('specifique')">
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6-4.8-6 4.8 2.4-7.2-6-4.8h7.6z"/></svg>
-                Ouvrir l'assistant
+                <i class="ri-openai-fill"></i> Lancer l'Assistant Stratégique
             </button>
 
             <div class="input-group">
@@ -520,8 +527,7 @@
             <p class="description">Quel est l'indicateur unique (KPI) qui te permettra de savoir si tu progresses chaque semaine ?</p>
 
             <button class="ai-trigger" onclick="openAIModal('mesurable')">
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6-4.8-6 4.8 2.4-7.2-6-4.8h7.6z"/></svg>
-                Ouvrir l'assistant
+                <i class="ri-openai-fill"></i> Lancer l'Assistant Stratégique
             </button>
 
             <div class="input-group">
@@ -579,8 +585,7 @@
             <p class="description">Fais l'inventaire de tes ressources. As-tu tout ce qu'il faut pour commencer dès maintenant ?</p>
 
             <button class="ai-trigger" onclick="openAIModal('atteignable')">
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6-4.8-6 4.8 2.4-7.2-6-4.8h7.6z"/></svg>
-                Ouvrir l'assistant
+                <i class="ri-openai-fill"></i> Lancer l'Assistant Stratégique
             </button>
 
             <div class="input-group">
@@ -599,8 +604,7 @@
             <p class="description">Cet objectif est-il réaliste par rapport à ta charge de travail actuelle et tes obligations ?</p>
 
             <button class="ai-trigger" onclick="openAIModal('realiste')">
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6-4.8-6 4.8 2.4-7.2-6-4.8h7.6z"/></svg>
-                Ouvrir l'assistant
+                <i class="ri-openai-fill"></i> Lancer l'Assistant Stratégique
             </button>
 
             <div class="input-group">
@@ -619,8 +623,7 @@
             <p class="description">Fixe une date de fin précise. L'urgence crée l'action.</p>
 
             <button class="ai-trigger" onclick="openAIModal('temporel')">
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6-4.8-6 4.8 2.4-7.2-6-4.8h7.6z"/></svg>
-                Ouvrir l'assistant
+                <i class="ri-openai-fill"></i> Lancer l'Assistant Stratégique
             </button>
 
             <div class="input-group">
@@ -638,8 +641,7 @@
             <p class="description">Donne un nom court et percutant à ce projet pour l'identifier sur ton Dashboard.</p>
 
             <button class="ai-trigger" onclick="openAIModal('titre')">
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6-4.8-6 4.8 2.4-7.2-6-4.8h7.6z"/></svg>
-                Ouvrir l'assistant
+                <i class="ri-openai-fill"></i> Lancer l'Assistant Stratégique
             </button>
 
             <div class="input-group">
