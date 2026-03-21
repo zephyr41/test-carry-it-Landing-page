@@ -1822,8 +1822,18 @@ body::before {
     .db-2col { grid-template-columns: 1fr; }
     .db-row-kpi-smart { grid-template-columns: 1fr; }
     .proj-header { padding: 22px 22px 18px; flex-direction: column; }
-    .proj-body { padding: 20px 22px 24px; gap: 16px; }
+    .proj-body {
+        padding: 20px 22px 24px;
+        gap: 16px;
+        display: flex;
+        flex-direction: column;
+    }
     .proj-actions { padding-top: 0; }
+    /* Reorder mobile : Tâches → KPI+SMART → Jalons */
+    .todo-panel        { order: 1; }
+    .db-row-kpi-smart  { order: 2; }
+    .jalons-panel      { order: 3; }
+    .db-citation       { order: 4; }
 }
 
 /* ── PANEL OUVERT : dim contexte (KPI+SMART et Jalons) ── */
