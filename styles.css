@@ -85,6 +85,11 @@
             box-sizing: border-box;
         }
 
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
         /* Color System Override Rules - Enforce semantic color usage */
         /* Primary text color override */
         h1, h2, h3, p, label, span {
@@ -5968,7 +5973,8 @@
 
         @media (max-width: 768px) {
             .douleurs-blur-dome {
-                width: 600px;
+                width: 100%;
+                max-width: 600px;
                 height: 300px;
             }
 
