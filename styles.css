@@ -9732,8 +9732,10 @@
             }
 
             .cin-scroll-hint {
-                bottom: 24px;
+                position: relative;
+                bottom: auto;
                 padding: 0 20px;
+                margin-top: 32px;
             }
 
             .cin-scroll-label {
