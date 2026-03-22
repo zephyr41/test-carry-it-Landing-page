@@ -9676,6 +9676,9 @@
                 height: auto;
                 min-height: auto;
                 overflow: visible;
+                flex-direction: column;
+                align-items: stretch;
+                justify-content: flex-start;
                 padding-top: calc(var(--navbar-height) + 32px);
                 padding-bottom: 60px;
             }
