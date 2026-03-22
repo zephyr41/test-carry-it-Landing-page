@@ -27,6 +27,8 @@
 
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
 
+        html, body { overflow-x: hidden; }
+
         body {
             background-color: var(--bg-primary);
             color: var(--text-primary);
@@ -1017,25 +1019,89 @@
 
 
         @media (max-width: 768px) {
+            /* INTRO */
             .intro-section {
                 flex-direction: column;
                 gap: 20px;
-                padding: 80px 18px 40px;
+                padding: 80px 18px 60px;
                 min-height: auto;
             }
-
+            .intro-section h2 {
+                font-size: clamp(28px, 8vw, 40px);
+            }
+            .intro-section p {
+                font-size: 15px;
+            }
             .btn-gpt {
                 width: 100%;
                 justify-content: center;
+                padding: 14px 20px;
+                font-size: 14px;
             }
-
             .scroll-hint {
-                bottom: 20px;
+                position: relative;
+                bottom: auto;
+                left: auto;
+                transform: none;
+                margin-top: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                animation: none;
             }
 
+            /* TIMELINE */
             .timeline-list {
                 transform: none;
+                --rail-offset: 56px;
+                --card-gap: 16px;
             }
+            .timeline-item {
+                margin-bottom: 60px;
+            }
+            .item-rail-date {
+                width: var(--rail-offset);
+                padding-right: 10px;
+                padding-top: 14px;
+            }
+            .rail-year { font-size: 14px; letter-spacing: 0.5px; }
+            .rail-month { font-size: 10px; letter-spacing: 1px; }
+            .item-card {
+                padding: 16px;
+            }
+            .input-title {
+                font-size: 15px;
+            }
+            .input-desc {
+                font-size: 13px;
+                min-height: 60px;
+            }
+            .kpi-label { font-size: 10px; }
+            .input-kpi { font-size: 13px; }
+            .main-container {
+                padding: 0 14px 20px 14px;
+            }
+
+            /* BRIEFING */
+            .briefing-shell {
+                padding: 20px 16px 32px;
+                gap: 20px;
+            }
+            .navigation-map {
+                padding: 24px 16px 20px;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                border-radius: 14px;
+            }
+            .map-svg {
+                min-width: 560px;
+                width: 560px;
+                height: 224px;
+            }
+            .attempts-title { font-size: 18px; }
+            .attempts-subtitle { font-size: 13px; }
+            .quit-check { font-size: 11px; }
+            .btn-launch { padding: 12px 28px; font-size: 12px; }
         }
 
         @media (min-width: 900px) {
