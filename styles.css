@@ -9346,7 +9346,7 @@
             }
 
             .cinema-section {
-                height: clamp(820px, 110svh, 980px);
+                height: clamp(700px, 100svh, 960px);
             }
         }
 
@@ -9672,7 +9672,8 @@
             }
 
             .cinema-section {
-                height: clamp(820px, 135svh, 1100px);
+                height: 100svh;
+                min-height: 600px;
             }
 
             .cin-header {
@@ -9687,13 +9688,17 @@
             }
 
             .cin-dashboard-wrap {
-                padding: 148px 20px 104px;
+                padding: 110px 0 70px;
             }
 
             .cin-db-inner,
             .cin-dashboard {
                 width: 100%;
                 max-width: 100%;
+            }
+
+            .cin-db-inner {
+                padding: 0 16px;
             }
 
             .cin-dashboard {
@@ -9955,11 +9960,15 @@
             }
 
             .cin-dashboard-wrap {
-                padding: 148px 16px 100px;
+                padding: 100px 0 60px;
+            }
+
+            .cin-db-inner {
+                padding: 0 14px;
             }
 
             .cin-dashboard {
-                padding: 16px !important;
+                padding: 14px !important;
             }
 
             .cin-smart-header {
