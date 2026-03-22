@@ -9671,25 +9671,35 @@
                 grid-template-columns: 1fr;
             }
 
+            /* ── Cinema section mobile : layout normal flow ── */
             .cinema-section {
-                height: 100svh;
-                min-height: 600px;
+                height: auto;
+                min-height: auto;
+                overflow: visible;
+                padding-top: calc(var(--navbar-height) + 32px);
+                padding-bottom: 60px;
+            }
+
+            .cin-quote-wrap {
+                display: none;
             }
 
             .cin-header {
-                top: 32px;
-                padding: 0 20px;
-            }
-
-            .cin-quote {
-                font-size: clamp(22px, 8vw, 34px);
-                max-width: 320px;
-                margin: 0 24px;
+                position: relative;
+                top: auto;
+                padding: 0 20px 28px;
+                text-align: center;
             }
 
             .cin-dashboard-wrap {
-                padding: 110px 0 70px;
-                align-items: flex-start;
+                position: relative;
+                inset: auto;
+                display: block;
+                padding: 0;
+                opacity: 1 !important;
+                filter: none !important;
+                transform: none !important;
+                pointer-events: auto !important;
             }
 
             .cin-db-inner,
@@ -9962,10 +9972,6 @@
 
             .sk-ml-lbl {
                 font-size: 8px;
-            }
-
-            .cin-dashboard-wrap {
-                padding: 100px 0 60px;
             }
 
             .cin-db-inner {
