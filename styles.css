@@ -1,4 +1,4 @@
-        @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+        /* Fonts chargées via <link> dans HTML — @import supprimé (bloquait le rendu) */
 
         @font-face {
             font-family: 'Rifton';
@@ -7533,7 +7533,7 @@
             height: 100vh;
             margin-left: calc(-50vw + 50%);
             margin-right: calc(-50vw + 50%);
-            background-image: url('Images/5years.jpg');
+            background-image: image-set(url('Images/5years.webp') type('image/webp'), url('Images/5years.jpg') type('image/jpeg'));
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
