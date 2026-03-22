@@ -21,19 +21,17 @@
 <body>
     <!-- Navbar -->
     <nav class="navbar">
-        <a href="#" class="navbar-logo" onclick="goToHome()">Carry It</a>
+        <a href="index.html" class="navbar-logo" onclick="goToHome(event)">Carry It</a>
         <div class="navbar-links">
-            <a href="#" class="navbar-link" onclick="goToHome()">Accueil</a>
-            <a href="#" class="navbar-link cta" onclick="goToDashboard()">Dashboard</a>
+            <a href="index.html" class="navbar-link" onclick="goToHome(event)">Accueil</a>
+            <a href="dashboard.html" class="navbar-link cta">Dashboard</a>
         </div>
     </nav>
 
     <section class="hero-section" id="heroSection">
         <!-- Vidéo Background -->
-        <video class="hero-video-bg" autoplay muted loop playsinline preload="none" poster="Images/heropage/poster.jpg">
-            <source src="Images/heropage/heropage.webm" type="video/webm">
-            <source src="Images/heropage/heropage-compressed.mp4" type="video/mp4">
-            Your browser does not support the video tag.
+        <!-- Sources injectées par JS seulement sur desktop — évite 1.3MB sur mobile -->
+        <video class="hero-video-bg" muted loop playsinline preload="none" poster="Images/heropage/poster.jpg" id="heroVideo">
         </video>
         
         <!-- Flou radial externe -->
@@ -1007,8 +1005,36 @@
             });
         })();
 
-        function goToHome() {
-            window.location.href = 'index.html';
+        // Vidéo hero : chargée uniquement sur desktop (économise 1.3MB sur mobile)
+        (function() {
+            const isDesktop = window.matchMedia('(min-width: 769px)').matches;
+            const isFastConn = !navigator.connection ||
+                !['slow-2g','2g','3g'].includes(navigator.connection.effectiveType);
+            if (isDesktop && isFastConn) {
+                const video = document.getElementById('heroVideo');
+                if (video) {
+                    const srcWebm = document.createElement('source');
+                    srcWebm.src = 'Images/heropage/heropage.webm';
+                    srcWebm.type = 'video/webm';
+                    const srcMp4 = document.createElement('source');
+                    srcMp4.src = 'Images/heropage/heropage-compressed.mp4';
+                    srcMp4.type = 'video/mp4';
+                    video.appendChild(srcWebm);
+                    video.appendChild(srcMp4);
+                    video.setAttribute('autoplay', '');
+                    video.load();
+                }
+            }
+        })();
+
+        function goToHome(e) {
+            if (e) e.preventDefault();
+            // Si déjà sur index, scroll to top — pas de reload
+            if (window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname.endsWith('/')) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                window.location.href = 'index.html';
+            }
         }
         
         function showObjectif() {
