@@ -1395,36 +1395,5 @@
         </div>
     </footer>
 
-<!-- DEBUG v2 — compare vs screen.width -->
-<script>
-(function(){
-    setTimeout(function(){
-        var sw = document.documentElement.scrollWidth;
-        var vw = window.innerWidth;
-        var real = screen.width;
-        // Méthode 1 : overflow interne (scrollWidth > clientWidth)
-        var overflow = [];
-        // Méthode 2 : right edge > real
-        var beyond = [];
-        document.querySelectorAll('*').forEach(function(el){
-            if(el.scrollWidth > el.clientWidth + 2){
-                var name = el.tagName+(el.id?'#'+el.id:'')+(el.className&&el.className.toString?' .'+el.className.toString().trim().split(/\s+/)[0]:'');
-                overflow.push(name+' [sw='+el.scrollWidth+' cw='+el.clientWidth+']');
-            }
-            var r = el.getBoundingClientRect();
-            if(r.right > real + 1){
-                beyond.push(el.tagName+(el.id?'#'+el.id:'')+(el.className&&el.className.toString?' .'+el.className.toString().trim().split(/\s+/)[0]:'')+' r='+Math.round(r.right));
-                el.style.outline='2px solid red';
-            }
-        });
-        var div=document.createElement('div');
-        div.style.cssText='position:fixed;bottom:0;left:0;right:0;z-index:99999;background:#000;color:lime;font-size:9px;padding:4px 6px;overflow:auto;max-height:60vh;font-family:monospace;word-break:break-all;';
-        div.innerHTML='<b style="color:#f55">scrollW='+sw+' vw='+vw+' screen='+real+'</b><br>'
-            +'<b style="color:#ff0">OVERFLOW INTERNE:</b><br>'+(overflow.length?overflow.slice(0,20).join('<br>'):'aucun')
-            +'<br><b style="color:#f55">BEYOND DEVICE:</b><br>'+(beyond.length?beyond.slice(0,20).join('<br>'):'<b style="color:lime">✓ RIEN</b>');
-        document.body.prepend(div);
-    }, 1000);
-})();
-</script>
 </body>
 </html>

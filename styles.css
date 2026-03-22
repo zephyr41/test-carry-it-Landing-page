@@ -86,8 +86,10 @@
         }
 
         html, body {
-            overflow-x: hidden;
+            overflow-x: hidden; /* fallback iOS <16 */
+            overflow-x: clip;   /* iOS 16+ : clip ne crée pas de scroll context (> hidden) */
             width: 100%;
+            max-width: 100%;
         }
 
         /* Color System Override Rules - Enforce semantic color usage */
@@ -9347,7 +9349,7 @@
         @media (max-width: 768px) {
             .navbar {
                 min-height: var(--navbar-height);
-                padding: 12px 16px;
+                padding: max(12px, env(safe-area-inset-top)) 16px 12px;
                 gap: 10px;
             }
 
@@ -9355,6 +9357,9 @@
                 font-size: 0.98rem;
                 white-space: nowrap;
                 letter-spacing: -0.04em;
+                min-height: 44px;
+                display: inline-flex;
+                align-items: center;
             }
 
             .navbar-links {
@@ -9365,23 +9370,29 @@
 
             .navbar-link {
                 font-size: 11px;
+                min-height: 44px;
+                display: inline-flex;
+                align-items: center;
+                padding-left: 4px;
+                padding-right: 4px;
             }
 
             .navbar-link.cta {
-                padding: 7px 11px;
+                padding: 0 11px;
+                min-height: 44px;
             }
 
             .hero-section {
                 min-height: 100svh;
                 height: 100svh;
-                padding: calc(var(--navbar-height) + 10px) 0 20px;
+                padding: calc(var(--navbar-height) + env(safe-area-inset-top, 0px) + 10px) 0 20px;
             }
 
             .hero-content {
                 width: 100%;
                 max-width: 100%;
                 padding: 0 16px;
-                min-height: calc(100svh - var(--navbar-height) - 30px);
+                min-height: calc(100svh - var(--navbar-height) - env(safe-area-inset-top, 0px) - 30px);
                 justify-content: center;
                 gap: 14px;
             }
@@ -9742,6 +9753,22 @@
                 white-space: normal;
                 text-align: center;
             }
+
+            .site-footer .footer-nav a {
+                padding: 12px 0;
+                display: inline-flex;
+                align-items: center;
+                min-height: 44px;
+            }
+
+            .site-footer .footer-social a {
+                padding: 14px;
+                min-height: 44px;
+                min-width: 44px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
         }
 
         @media (max-width: 480px) {
@@ -9853,6 +9880,7 @@
             }
 
             .feature-block {
+                grid-template-columns: 1fr;
                 gap: 18px;
             }
 
@@ -10331,14 +10359,14 @@
             .hero-section {
                 min-height: 100svh;
                 height: 100svh;
-                padding: calc(var(--navbar-height) + 10px) 0 20px;
+                padding: calc(var(--navbar-height) + env(safe-area-inset-top, 0px) + 10px) 0 20px;
             }
 
             .hero-content {
                 width: 100%;
                 max-width: 100%;
                 padding: 0 16px;
-                min-height: calc(100svh - var(--navbar-height) - 30px);
+                min-height: calc(100svh - var(--navbar-height) - env(safe-area-inset-top, 0px) - 30px);
                 justify-content: center;
                 gap: 14px;
             }
@@ -10469,6 +10497,16 @@
                 width: 100%;
             }
 
+            .mg-bento {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto;
+            }
+
+            .mg-card--large,
+            .mg-card--tall,
+            .mg-card--small,
+            .mg-card--mini { grid-column: 1; grid-row: auto; }
+
             .problem-list {
                 gap: 44px;
             }
@@ -10547,6 +10585,7 @@
             }
 
             .feature-block {
+                grid-template-columns: 1fr;
                 gap: 18px;
             }
 
@@ -10634,14 +10673,14 @@
         body.is-mobile .hero-section {
             min-height: 100svh;
             height: 100svh;
-            padding: calc(var(--navbar-height) + 10px) 0 20px;
+            padding: calc(var(--navbar-height) + env(safe-area-inset-top, 0px) + 10px) 0 20px;
         }
 
         body.is-mobile .hero-content {
             width: 100%;
             max-width: 100%;
             padding: 0 16px;
-            min-height: calc(100svh - var(--navbar-height) - 30px);
+            min-height: calc(100svh - var(--navbar-height) - env(safe-area-inset-top, 0px) - 30px);
             justify-content: center;
             gap: 14px;
         }
