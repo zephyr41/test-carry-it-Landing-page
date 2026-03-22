@@ -300,6 +300,11 @@
             .hero-section .scroll-indicator svg {
                 color: rgba(255, 255, 255, 0.62);
             }
+
+            .feature-text { order: 1; }
+            .feature-visual { order: 2; }
+            .solution-section .feature-block:nth-child(even) .feature-text { order: 1; }
+            .solution-section .feature-block:nth-child(even) .feature-visual { order: 2; }
         }
 
         body.is-mobile .hero-clarity-block {
