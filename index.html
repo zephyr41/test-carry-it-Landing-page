@@ -303,8 +303,10 @@
 
             .feature-text { order: 1; }
             .feature-visual { order: 2; }
-            .solution-section .feature-block:nth-child(even) .feature-text { order: 1; }
-            .solution-section .feature-block:nth-child(even) .feature-visual { order: 2; }
+            .solution-section .feature-block:nth-child(even) .feature-text,
+            .differentiation-section .feature-block:nth-child(even) .feature-text { order: 1; }
+            .solution-section .feature-block:nth-child(even) .feature-visual,
+            .differentiation-section .feature-block:nth-child(even) .feature-visual { order: 2; }
         }
 
         body.is-mobile .hero-clarity-block {
