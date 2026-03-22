@@ -9689,6 +9689,7 @@
 
             .cin-dashboard-wrap {
                 padding: 110px 0 70px;
+                align-items: flex-start;
             }
 
             .cin-db-inner,
@@ -9699,6 +9700,10 @@
 
             .cin-db-inner {
                 padding: 0 16px;
+            }
+
+            .cin-db-epic-title {
+                display: none;
             }
 
             .cin-dashboard {
