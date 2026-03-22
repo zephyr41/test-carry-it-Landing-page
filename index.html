@@ -6,8 +6,11 @@
     <title>Carry It</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <!-- Fonts chargées de façon non-bloquante -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Roboto+Mono:wght@400;500&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet"></noscript>
+    <!-- Chart.js différé — pas nécessaire au premier rendu -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
     <link rel="stylesheet" href="styles.css?v=4">
 
 </head>
@@ -23,8 +26,9 @@
 
     <section class="hero-section" id="heroSection">
         <!-- Vidéo Background -->
-        <video class="hero-video-bg" autoplay muted loop playsinline preload="auto">
-            <source src="Images/heropage/heropage.mp4" type="video/mp4">
+        <video class="hero-video-bg" autoplay muted loop playsinline preload="none">
+            <source src="Images/heropage/heropage.webm" type="video/webm">
+            <source src="Images/heropage/heropage-compressed.mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
         
@@ -117,7 +121,7 @@
                                 <span class="pain-desktop">T'es occupé. Mais t'avances pas ?</span>
                                 <span class="pain-mobile">T'es occupé. Mais avances-tu vraiment&nbsp;?</span>
                             </h3>
-                            <img src="Images/icon/vision_icon.png" alt="" class="pain-icon">
+                            <img src="Images/icon/vision_icon.png" alt="" class="pain-icon" loading="lazy">
                         </div>
                         <p class="pain-body">
                             <span class="pain-desktop">Tu bosses. Tu fais des sacrifices. Mais t'as aucun moyen de savoir si t'es vraiment en train d'avancer — ou juste occupé.</span>
@@ -136,7 +140,7 @@
                                 <span class="pain-desktop">T'as tout fait. Mais t'as aucune preuve.</span>
                                 <span class="pain-mobile">Tu fais les efforts. Sans preuve concrète.</span>
                             </h3>
-                            <img src="Images/icon/struggle_icon.png" alt="" class="pain-icon">
+                            <img src="Images/icon/struggle_icon.png" alt="" class="pain-icon" loading="lazy">
                         </div>
                         <p class="pain-body">
                             <span class="pain-desktop">T'as bossé. T'as sacrifié. Mais à la fin de la semaine, t'as rien pour te dire que t'es plus proche. Juste une intuition — ou un doute.</span>
@@ -155,7 +159,7 @@
                                 <span class="pain-desktop">Tu construis quelque chose qui prend des années.</span>
                                 <span class="pain-mobile">Tu construis sur plusieurs années.</span>
                             </h3>
-                            <img src="Images/icon/recul_icon.png" alt="" class="pain-icon">
+                            <img src="Images/icon/recul_icon.png" alt="" class="pain-icon" loading="lazy">
                         </div>
                         <p class="pain-body">
                             <span class="pain-desktop">Mais ton environnement veut des résultats en 3 mois. Ce décalage — entre le temps qu'il faut vraiment et celui qu'on t'accorde — c'est lui qui tue la plupart des projets.</span>
@@ -174,7 +178,7 @@
                                 <span class="pain-desktop">T'as déjà vécu le cycle. Tu refuses de le revivre.</span>
                                 <span class="pain-mobile">Tu refuses de revivre ce cycle.</span>
                             </h3>
-                            <img src="Images/icon/cycle_pain.png" alt="" class="pain-icon">
+                            <img src="Images/icon/cycle_pain.png" alt="" class="pain-icon" loading="lazy">
                         </div>
                         <p class="pain-body">
                             <span class="pain-desktop">T'as déjà quitté un projet. Pas parce que t'étais nul. Parce que dans le vide, sans signal clair, le doute gagne toujours. Et cette fois — tu refuses que ça recommence.</span>
@@ -893,7 +897,10 @@
     <!-- SECTION: QUI EST DERRIÈRE -->
     <section class="founder-section">
         <div class="founder-inner">
-            <img src="Images/moi.PNG" alt="Nils" class="founder-photo">
+            <picture>
+                <source srcset="Images/moi.webp" type="image/webp">
+                <img src="Images/moi.PNG" alt="Nils" class="founder-photo" loading="lazy">
+            </picture>
             <div class="founder-text">
                 <p class="founder-tag">QUI EST DERRIÈRE</p>
 
@@ -1368,7 +1375,10 @@
     <footer class="site-footer">
         <div class="footer-inner">
             <div class="footer-brand">
-                <img src="Images/logo_png.png" alt="CarryIT" class="footer-logo">
+                <picture>
+                    <source srcset="Images/logo_png.webp" type="image/webp">
+                    <img src="Images/logo_png.png" alt="CarryIT" class="footer-logo" loading="lazy">
+                </picture>
                 <span class="footer-tagline">De l'ambition à l'exécution.</span>
             </div>
             <nav class="footer-nav">
