@@ -27,7 +27,8 @@
 
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
 
-        html, body { overflow-x: hidden; }
+        html { overflow-x: hidden; }
+        body { overflow-x: clip; }
 
         body {
             background-color: var(--bg-primary);
@@ -1097,6 +1098,7 @@
                 min-width: 560px;
                 width: 560px;
                 height: 224px;
+                overflow: hidden;
             }
             .attempts-title { font-size: 18px; }
             .attempts-subtitle { font-size: 13px; }
