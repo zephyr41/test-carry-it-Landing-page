@@ -489,16 +489,11 @@
             }
             const subOpen = todoSubOpen[`${i}-${task.id}`];
             return `
-                <div class="todo-item ${isDone ? 'done' : ''}" data-taskid="${task.id}" onclick="clickTask(${i}, ${task.id})" ontouchstart="todoTouchStart(event)" ontouchend="todoTouchEnd(event, ${i}, ${task.id})">
-                    <button class="todo-drop ${subOpen ? 'open' : ''}"
-                        onclick="toggleSubtasks(${i}, ${task.id}); event.stopPropagation();"
-                        ontouchend="toggleSubtasks(${i}, ${task.id}); event.stopPropagation(); event.preventDefault();">
+                <div class="todo-item ${isDone ? 'done' : ''}" data-taskid="${task.id}" onclick="clickTask(${i}, ${task.id})">
+                    <button class="todo-drop ${subOpen ? 'open' : ''}" onclick="toggleSubtasks(${i}, ${task.id}); event.stopPropagation();">
                         <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M5 7L1 3h8L5 7z"/></svg>
                     </button>
-                    <div class="todo-cb"
-                        onclick="toggleTask(${i}, ${task.id}); event.stopPropagation();"
-                        ontouchstart="event.stopPropagation();"
-                        ontouchend="toggleTask(${i}, ${task.id}); event.stopPropagation(); event.preventDefault();"></div>
+                    <div class="todo-cb" onclick="toggleTask(${i}, ${task.id}); event.stopPropagation();"></div>
                     <span class="todo-text">${escHtml(task.text)}</span>
                     <button class="todo-edit" onclick="openTaskPanel(${i}, ${task.id}); event.stopPropagation();" title="Ouvrir le détail">⋯</button>
                     <button class="todo-del" onclick="deleteTask(event, ${i}, ${task.id})">×</button>
@@ -675,17 +670,6 @@
         }
 
         let _panelOpenedAt = 0;
-        let _todoTouchStartY = 0;
-
-        function todoTouchStart(e) {
-            _todoTouchStartY = e.touches[0].clientY;
-        }
-        function todoTouchEnd(e, i, taskId) {
-            if (e.target.closest('.todo-drop,.todo-cb,.todo-del,.todo-edit')) return;
-            if (Math.abs(e.changedTouches[0].clientY - _todoTouchStartY) > 10) return;
-            e.preventDefault(); // tue le synthetic click — plus de ghost click
-            clickTask(i, taskId);
-        }
         let _panelScrollY = 0;
 
         function openTaskPanel(i, taskId) {
