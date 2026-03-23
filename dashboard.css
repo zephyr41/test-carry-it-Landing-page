@@ -1204,12 +1204,18 @@ body::before {
 /* ── SIDE PANEL MOBILE — full screen ── */
 @media (hover: none) and (pointer: coarse) {
     .side-panel-overlay {
-        inset: 0;
-        width: 100%;
-        background: transparent;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: #0d0d0f;
+        opacity: 0;
+        transition: opacity 0.18s ease;
         pointer-events: none;
+        overflow: hidden;
     }
     .side-panel-overlay.open {
+        opacity: 1;
         pointer-events: auto;
     }
     body.panel-open {
@@ -1217,13 +1223,19 @@ body::before {
         width: 100%;
     }
     .side-panel {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
         width: 100%;
         max-width: 100%;
         height: 100%;
         border-left: none;
         border-top: none;
         border-radius: 0;
-        padding: 0 0 40px;
+        box-shadow: none;
+        padding: 0 0 env(safe-area-inset-bottom, 40px);
         transform: translateY(100%);
         transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
         overscroll-behavior: contain;
