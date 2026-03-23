@@ -704,6 +704,8 @@
             if (!overlay || !panelEl) return;
 
             if (isTaskPanelMobile()) {
+                overlay.style.width = '100vw';
+                overlay.style.left = '0';
                 overlay.style.top = '';
                 overlay.style.right = '';
                 panelEl.style.width = '';
@@ -744,6 +746,8 @@
             }
             overlay.style.top   = '';
             overlay.style.right = '';
+            overlay.style.left  = '';
+            overlay.style.width = '';
             const panelEl = overlay.querySelector('.side-panel');
             if (panelEl) panelEl.style.width = '';
             taskPanelState = { projectIndex: null, taskId: null };
