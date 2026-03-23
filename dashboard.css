@@ -1202,7 +1202,7 @@ body::before {
 }
 
 /* ── SIDE PANEL MOBILE — full screen ── */
-@media (hover: none) and (pointer: coarse) {
+@media (max-width: 768px), (hover: none) and (pointer: coarse) {
     .side-panel-overlay {
         top: 0;
         left: 0;
