@@ -695,7 +695,6 @@
 
         function handleTaskRowClick(event, i, taskId) {
             if (event.target.closest('.todo-drop,.todo-cb,.todo-del,.todo-edit,.subtask-icon-btn,.subtask-del,.subtask-input')) return;
-            if (isTaskPanelMobile()) return;
             clickTask(i, taskId);
         }
 
