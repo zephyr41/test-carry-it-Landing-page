@@ -618,10 +618,10 @@ body::before {
 
 .todo-panel {
     background: transparent;
-    border: 1px solid rgba(255,255,255,0.16);
-    border-radius: 12px;
-    padding: 24px 24px 40px;
-    min-height: 560px;
+    border: none;
+    border-radius: 0;
+    padding: 8px 0 28px;
+    min-height: unset;
 }
 
 /* Label principal de la todo — section header principale */
@@ -1945,10 +1945,14 @@ body::before {
         border-bottom: 1px solid rgba(255,255,255,0.06);
         padding: 14px 16px;
     }
-    /* Touch targets mobile */
-    .todo-item, .todo-cb, .todo-drop, .todo-del, .todo-edit,
-    .cp-status-badge, .side-panel-back {
+    /* Touch targets mobile — PAS sur todo-item (casse le scroll) */
+    .todo-cb, .todo-drop, .todo-del, .todo-edit,
+    .cp-status-badge, .side-panel-back,
+    .subtask-icon-btn, .todo-plus-btn {
         touch-action: manipulation;
+    }
+    .todo-edit {
+        opacity: 1;
     }
     /* Checkbox plus grand sur mobile */
     .todo-cb {
