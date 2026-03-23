@@ -765,7 +765,8 @@
                         <input class="subtask-input" id="panelSubtaskInput-${i}-${task.id}"
                             placeholder="Ajouter une sous-tâche..."
                             enterkeyhint="go"
-                            type="text">
+                            type="text"
+                            onblur="addSubtaskFromPanel(${i}, ${task.id});">
                         <button type="submit" style="position:absolute;opacity:0;pointer-events:none;width:0;height:0;"></button>
                     </form>
                 </div>
