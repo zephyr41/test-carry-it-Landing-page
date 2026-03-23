@@ -1946,6 +1946,9 @@ body::before {
         padding: 14px 16px;
     }
     /* Touch targets mobile — PAS sur todo-item (casse le scroll) */
+    .todo-list, .todo-item, .subtasks, .subtask-item {
+        touch-action: pan-y;
+    }
     .todo-cb, .todo-drop, .todo-del, .todo-edit,
     .cp-status-badge, .side-panel-back,
     .subtask-icon-btn, .todo-plus-btn {
