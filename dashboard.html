@@ -131,6 +131,12 @@
     <!-- ── TASK SIDE PANEL ── -->
     <div id="taskPanelOverlay" class="side-panel-overlay" onclick="closeTaskPanel()">
         <div class="side-panel" onclick="event.stopPropagation()">
+            <button class="side-panel-back" onclick="closeTaskPanel()">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="12,4 6,10 12,16"/>
+                </svg>
+                Retour
+            </button>
             <button class="side-panel-close" onclick="closeTaskPanel()">×</button>
             <div id="taskPanelBody"></div>
         </div>

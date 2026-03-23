@@ -1196,6 +1196,64 @@ body::before {
     color: rgba(255,255,255,0.8);
 }
 
+/* Back button — mobile only */
+.side-panel-back {
+    display: none;
+}
+
+/* ── SIDE PANEL MOBILE — full screen ── */
+@media (hover: none) and (pointer: coarse) {
+    .side-panel-overlay {
+        top: 0;
+        width: 100%;
+        background: rgba(0,0,0,0.5);
+        pointer-events: none;
+    }
+    .side-panel-overlay.open {
+        pointer-events: auto;
+    }
+    .side-panel {
+        width: 100%;
+        max-width: 100%;
+        height: 100%;
+        border-left: none;
+        border-top: none;
+        border-radius: 0;
+        padding: 0 0 40px;
+        transform: translateY(100%);
+        transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
+    }
+    .side-panel-overlay.open .side-panel {
+        transform: translateY(0);
+    }
+    .side-panel-back {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        width: 100%;
+        padding: 16px 20px;
+        background: #0e0e11;
+        border: none;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+        color: rgba(255,255,255,0.6);
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        text-align: left;
+    }
+    .side-panel-close {
+        display: none;
+    }
+    #taskPanelBody {
+        padding: 20px 20px 40px;
+    }
+}
+
 .side-panel-label {
     font-size: 10px;
     font-weight: 700;
