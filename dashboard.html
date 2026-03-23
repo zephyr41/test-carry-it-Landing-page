@@ -33,7 +33,7 @@
     </nav>
 
     <!-- ── MODAL: Sync données ── -->
-    <div id="syncModalOverlay" class="m-overlay" onclick="if(event.target===this)closeSyncModal()" style="display:none;align-items:center;justify-content:center;">
+    <div id="syncModalOverlay" class="m-overlay" onclick="if(event.target===this)closeSyncModal()">
         <div class="m-box" onclick="event.stopPropagation()" style="max-width:360px;width:90%;">
             <h3 class="m-title">Synchroniser mes données</h3>
             <p class="m-sub" style="margin-bottom:24px;">Transfère tes données entre appareils via un fichier JSON.</p>
@@ -1753,12 +1753,11 @@
 
     <script>
         function openSyncModal() {
-            const el = document.getElementById('syncModalOverlay');
-            el.style.display = 'flex';
+            document.getElementById('syncModalOverlay').classList.add('open');
         }
 
         function closeSyncModal() {
-            document.getElementById('syncModalOverlay').style.display = 'none';
+            document.getElementById('syncModalOverlay').classList.remove('open');
         }
 
         function exportData() {
