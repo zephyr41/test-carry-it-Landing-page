@@ -430,7 +430,9 @@
                 <div class="todo-row">
                     <input class="todo-input" type="text" id="todoInput-${i}"
                         placeholder="Quelle action aujourd'hui ?"
-                        onkeydown="if(event.key==='Enter'){addTask(${i});event.preventDefault();}">
+                        enterkeyhint="go"
+                        onkeydown="if(event.key==='Enter'){addTask(${i});event.preventDefault();}"
+                        onblur="addTask(${i});">
                     <button class="todo-plus-btn" onclick="addTask(${i})">
                         <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
@@ -522,7 +524,9 @@
                         <span class="subtask-add-icon">${SUBTASK_ICON}</span>
                         <input class="subtask-input" id="subtaskInput-${i}-${task.id}"
                             placeholder="Ajouter une sous-tâche..."
-                            onkeydown="if(event.key==='Enter'){addSubtask(${i}, ${task.id});event.preventDefault();}">
+                            enterkeyhint="go"
+                            onkeydown="if(event.key==='Enter'){addSubtask(${i}, ${task.id});event.preventDefault();}"
+                            onblur="addSubtask(${i}, ${task.id});">
                     </div>
                 </div>
             `;
