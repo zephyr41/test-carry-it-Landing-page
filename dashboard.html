@@ -760,12 +760,13 @@
             return `
                 <div class="subtasks">
                     ${rows}
-                    <form class="subtask-add-row" onsubmit="addSubtaskFromPanel(${i}, ${task.id}); return false;">
+                    <form class="subtask-add-row" action="javascript:void(0)" onsubmit="addSubtaskFromPanel(${i}, ${task.id});">
                         <span class="subtask-add-icon">${SUBTASK_ICON}</span>
                         <input class="subtask-input" id="panelSubtaskInput-${i}-${task.id}"
                             placeholder="Ajouter une sous-tâche..."
                             enterkeyhint="go"
                             type="text">
+                        <button type="submit" style="position:absolute;opacity:0;pointer-events:none;width:0;height:0;"></button>
                     </form>
                 </div>
             `;
