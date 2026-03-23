@@ -1216,7 +1216,10 @@ body::before {
     }
     .side-panel-overlay.open {
         opacity: 1;
-        pointer-events: auto;
+        pointer-events: none; /* overlay ne capture pas les clics — ghost click ignoré */
+    }
+    .side-panel-overlay.open .side-panel {
+        pointer-events: auto; /* le panel lui-même reste cliquable */
     }
     body.panel-open {
         overflow: hidden;
