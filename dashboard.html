@@ -490,7 +490,10 @@
             const subOpen = todoSubOpen[`${i}-${task.id}`];
             return `
                 <div class="todo-item ${isDone ? 'done' : ''}" data-taskid="${task.id}"
-                    onclick="handleTaskRowClick(event, ${i}, ${task.id})">
+                    onclick="handleTaskRowClick(event, ${i}, ${task.id})"
+                    ontouchstart="todoTouchStart(event)"
+                    ontouchmove="todoTouchMove(event)"
+                    ontouchend="todoTouchEnd(event, ${i}, ${task.id})">
                     <button class="todo-drop ${subOpen ? 'open' : ''}"
                         onclick="toggleSubtasks(${i}, ${task.id}); event.stopPropagation();"
                         ontouchstart="event.stopPropagation();"
@@ -688,13 +691,41 @@
 
         let _panelOpenedAt = 0;
         let _panelScrollY = 0;
+        let _todoTouchStartX = 0;
+        let _todoTouchStartY = 0;
+        let _todoTouchMoved = false;
 
         function isTaskPanelMobile() {
             return window.matchMedia('(max-width: 768px), (hover: none) and (pointer: coarse)').matches;
         }
 
+        function todoTouchStart(event) {
+            const touch = event.touches?.[0];
+            _todoTouchStartX = touch?.clientX || 0;
+            _todoTouchStartY = touch?.clientY || 0;
+            _todoTouchMoved = false;
+        }
+
+        function todoTouchMove(event) {
+            const touch = event.touches?.[0];
+            const dx = Math.abs((touch?.clientX || 0) - _todoTouchStartX);
+            const dy = Math.abs((touch?.clientY || 0) - _todoTouchStartY);
+            if (dx > 8 || dy > 8) {
+                _todoTouchMoved = true;
+            }
+        }
+
+        function todoTouchEnd(event, i, taskId) {
+            if (!isTaskPanelMobile()) return;
+            if (_todoTouchMoved) return;
+            if (event.target.closest('.todo-drop,.todo-cb,.todo-del,.todo-edit,.subtask-icon-btn,.subtask-del,.subtask-input')) return;
+            event.preventDefault();
+            clickTask(i, taskId);
+        }
+
         function handleTaskRowClick(event, i, taskId) {
             if (event.target.closest('.todo-drop,.todo-cb,.todo-del,.todo-edit,.subtask-icon-btn,.subtask-del,.subtask-input')) return;
+            if (isTaskPanelMobile()) return;
             clickTask(i, taskId);
         }
 
