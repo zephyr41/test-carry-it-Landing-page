@@ -699,7 +699,7 @@
                         ${task.done ? 'Terminée' : 'À faire'}
                     </span>
                 </div>
-                <h3 class="cp-task-title">${escHtml(task.text)}</h3>
+                <h3 class="cp-task-title" onclick="inlineEditPanelTitle(${i}, ${taskId}, this)" title="Modifier le titre">${escHtml(task.text)}</h3>
                 <div class="cp-fields">
                     ${nextJalon ? `
                     <div class="cp-field-row">
@@ -734,12 +734,14 @@
             return `
                 <div class="subtasks">
                     ${rows}
-                    <div class="subtask-add-row">
+                    <form class="subtask-add-row" onsubmit="addSubtaskFromPanel(${i}, ${task.id}); return false;">
                         <span class="subtask-add-icon">${SUBTASK_ICON}</span>
                         <input class="subtask-input" id="panelSubtaskInput-${i}-${task.id}"
                             placeholder="Ajouter une sous-tâche..."
-                            onkeydown="if(event.key==='Enter'){addSubtaskFromPanel(${i}, ${task.id});event.preventDefault();}">
-                    </div>
+                            enterkeyhint="done"
+                            type="text">
+                        <button type="submit" class="subtask-add-btn">+</button>
+                    </form>
                 </div>
             `;
         }
@@ -815,6 +817,37 @@
             sel.removeAllRanges();
             sel.addRange(range);
 
+            el.onkeydown = (e) => {
+                if (e.key === 'Enter') { e.preventDefault(); el.blur(); }
+                if (e.key === 'Escape') { el.textContent = orig; el.blur(); }
+                e.stopPropagation();
+            };
+            el.onblur = () => {
+                el.contentEditable = 'false';
+                el.classList.remove('editing');
+                const text = el.textContent.trim();
+                if (text && text !== orig) {
+                    const task = getTaskById(i, taskId);
+                    if (task) { task.text = text; saveAllObjectifs(); refreshTodoList(i); }
+                } else {
+                    el.textContent = orig;
+                }
+                el.onblur = null;
+                el.onkeydown = null;
+            };
+        }
+
+        function inlineEditPanelTitle(i, taskId, el) {
+            const orig = el.textContent;
+            el.contentEditable = 'true';
+            el.classList.add('editing');
+            el.focus();
+            const range = document.createRange();
+            range.selectNodeContents(el);
+            range.collapse(false);
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
             el.onkeydown = (e) => {
                 if (e.key === 'Enter') { e.preventDefault(); el.blur(); }
                 if (e.key === 'Escape') { el.textContent = orig; el.blur(); }

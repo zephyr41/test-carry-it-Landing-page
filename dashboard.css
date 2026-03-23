@@ -1113,6 +1113,19 @@ body::before {
 }
 .subtask-input::placeholder { color: rgba(255,255,255,0.28); font-style: italic; }
 
+.subtask-add-btn {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.35);
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 4px;
+    flex-shrink: 0;
+    transition: color 0.15s;
+}
+.subtask-add-btn:hover { color: #EE4408; }
+
 /* ── SIDE PANEL — non-bloquant, dashboard toujours visible ── */
 .side-panel-overlay {
     position: fixed;
