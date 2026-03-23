@@ -1214,7 +1214,6 @@ body::before {
     }
     body.panel-open {
         overflow: hidden;
-        position: fixed;
         width: 100%;
     }
     .side-panel {
