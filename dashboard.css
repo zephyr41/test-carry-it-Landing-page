@@ -1129,16 +1129,19 @@ body::before {
 /* ── SIDE PANEL — non-bloquant, dashboard toujours visible ── */
 .side-panel-overlay {
     position: fixed;
-    top: var(--navbar-height, 72px);
+    inset: 0;
+    width: 100vw;
+    max-width: 100vw;
+    opacity: 0;
+    transition: opacity 0.18s ease;
     right: 0;
-    bottom: 0;
-    width: 0;
     pointer-events: none;   /* jamais bloquant — le dashboard reste cliquable */
     z-index: 9000;
     /* Aucun backdrop, aucun blur, aucun fond sombre */
 }
 
 .side-panel-overlay.open {
+    opacity: 1;
     pointer-events: none;   /* l'overlay wrapper ne bloque jamais */
 }
 
@@ -1146,13 +1149,14 @@ body::before {
     position: absolute;
     top: 0;
     right: 0;
-    height: 100%;
-    width: 480px;
-    max-width: min(480px, 90vw);
+    bottom: 0;
+    height: 100vh;
+    width: min(560px, 42vw);
+    max-width: min(560px, 100vw);
     background: #0e0e11;
     border-left: 1px solid rgba(238,68,8,0.4);
-    padding: 20px 20px 40px;
-    box-shadow: -16px 0 40px rgba(0,0,0,0.7);
+    padding: 28px 24px 40px;
+    box-shadow: -24px 0 60px rgba(0,0,0,0.78);
     transform: translateX(100%);
     transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1);
     pointer-events: auto;   /* le panneau lui-même est interactif */

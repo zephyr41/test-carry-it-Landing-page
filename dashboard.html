@@ -675,20 +675,6 @@
             refreshTodoList(i);
         }
 
-        function alignPanelWithColumn() {
-            const activePanel = document.querySelector('.db-panel.active');
-            const overlay = document.getElementById('taskPanelOverlay');
-            if (!activePanel || !overlay) return;
-            // Cible la todo-panel (layout vertical) ou la colonne droite si layout 2-col
-            const target = activePanel.querySelector('.todo-panel') || activePanel.querySelector('.db-col-right');
-            if (!target) return;
-            const rect = target.getBoundingClientRect();
-            const panelEl = overlay.querySelector('.side-panel');
-            overlay.style.top    = rect.top + 'px';
-            overlay.style.right  = (window.innerWidth - rect.right) + 'px';
-            if (panelEl) panelEl.style.width = rect.width + 'px';
-        }
-
         let _panelOpenedAt = 0;
         let _panelScrollY = 0;
         let _todoTouchStartX = 0;
@@ -745,9 +731,13 @@
                 return;
             }
 
+            overlay.style.left = '0';
+            overlay.style.top = '0';
+            overlay.style.right = '0';
+            overlay.style.width = '100vw';
+            panelEl.style.width = '';
             document.body.style.position = '';
             document.body.style.top = '';
-            alignPanelWithColumn();
         }
 
         function openTaskPanel(i, taskId) {
