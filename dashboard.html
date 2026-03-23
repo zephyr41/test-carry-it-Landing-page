@@ -131,13 +131,13 @@
     <!-- ── TASK SIDE PANEL ── -->
     <div id="taskPanelOverlay" class="side-panel-overlay" onclick="closeTaskPanel()">
         <div class="side-panel" onclick="event.stopPropagation()">
-            <button class="side-panel-back" onclick="closeTaskPanel()">
+            <button class="side-panel-back" onclick="forceCloseTaskPanel()">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="12,4 6,10 12,16"/>
                 </svg>
                 Retour
             </button>
-            <button class="side-panel-close" onclick="closeTaskPanel()">×</button>
+            <button class="side-panel-close" onclick="forceCloseTaskPanel()">×</button>
             <div id="taskPanelBody"></div>
         </div>
     </div>
@@ -665,6 +665,8 @@
             if (panelEl) panelEl.style.width = rect.width + 'px';
         }
 
+        let _panelOpenedAt = 0;
+
         function openTaskPanel(i, taskId) {
             const task = getTaskById(i, taskId);
             if (!task) return;
@@ -672,13 +674,16 @@
             if (!task.notes) task.notes = '';
             taskPanelState = { projectIndex: i, taskId };
             renderTaskPanel();
-            alignPanelWithColumn();
+            const isTouch = !window.matchMedia('(hover: hover)').matches;
+            if (!isTouch) alignPanelWithColumn();
+            _panelOpenedAt = Date.now();
             document.getElementById('taskPanelOverlay').classList.add('open');
             document.body.classList.add('panel-open');
             refreshTodoList(i);
         }
 
         function closeTaskPanel() {
+            if (Date.now() - _panelOpenedAt < 400) return;
             const overlay = document.getElementById('taskPanelOverlay');
             overlay.classList.remove('open');
             document.body.classList.remove('panel-open');
@@ -687,6 +692,11 @@
             const panelEl = overlay.querySelector('.side-panel');
             if (panelEl) panelEl.style.width = '';
             taskPanelState = { projectIndex: null, taskId: null };
+        }
+
+        function forceCloseTaskPanel() {
+            _panelOpenedAt = 0;
+            closeTaskPanel();
         }
 
         function renderTaskPanel() {
@@ -1776,7 +1786,7 @@
                     closeMeasureModal();
                     closeEditMeasureModal();
                     cancelDelete();
-                    closeTaskPanel();
+                    forceCloseTaskPanel();
                     closeSyncModal();
                 }
             });

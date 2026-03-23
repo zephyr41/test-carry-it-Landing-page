@@ -1204,13 +1204,18 @@ body::before {
 /* ── SIDE PANEL MOBILE — full screen ── */
 @media (hover: none) and (pointer: coarse) {
     .side-panel-overlay {
-        top: 0;
+        inset: 0;
         width: 100%;
-        background: rgba(0,0,0,0.5);
+        background: transparent;
         pointer-events: none;
     }
     .side-panel-overlay.open {
         pointer-events: auto;
+    }
+    body.panel-open {
+        overflow: hidden;
+        position: fixed;
+        width: 100%;
     }
     .side-panel {
         width: 100%;
