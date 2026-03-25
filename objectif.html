@@ -212,7 +212,7 @@
             display: flex;
             align-items: flex-start;
             justify-content: center;
-            padding: 200px 20px 110px 20px;
+            padding: 200px 20px 180px 20px;
             position: relative;
             min-height: 100vh;
             overflow: visible;
@@ -222,8 +222,9 @@
 
         .step-wrapper {
             width: 100%;
-            max-width: 640px; /* Largeur de lecture idéale */
-            margin-top: 24px;
+            max-width: 700px; /* Un peu plus d'air pour la partie Mesurable */
+            margin-top: 28px;
+            padding-bottom: 40px;
             opacity: 0;
             transform: translateY(20px);
             transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -396,19 +397,20 @@
         /* --- NAVIGATION BUTTONS --- */
         .footer-container {
             width: 100%;
-            max-width: 640px;
+            max-width: 700px;
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-end;
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            padding: 0 40px;
-            height: 100px;
+            padding: 0 24px 26px;
+            height: 132px;
             z-index: 500;
             margin: 0 auto;
             justify-self: center;
+            pointer-events: none;
         }
 
         .btn-back {
@@ -417,6 +419,7 @@
             font-size: 16px; cursor: pointer;
             padding: 12px 24px;
             transition: color 0.2s;
+            pointer-events: auto;
         }
         .btn-back:hover { color: var(--text-primary); }
 
@@ -431,6 +434,7 @@
             cursor: pointer;
             box-shadow: 0 8px 24px rgba(238, 68, 8, 0.3);
             transition: transform 0.1s, box-shadow 0.2s, background-color 0.2s;
+            pointer-events: auto;
         }
         .btn-next:hover {
             background-color: #ff551a;
@@ -451,7 +455,7 @@
             .header-title { font-size: 12px; margin-top: 10px; }
 
             .app-footer { padding: 0 20px; height: 80px; }
-            .footer-container { padding: 0 10px; }
+            .footer-container { padding: 0 10px 18px; height: 102px; }
             .btn-back { padding: 8px 16px; font-size: 12px; }
             .btn-next { padding: 12px 28px; font-size: 14px; }
             .ai-trigger { width: 100%; justify-content: center; }
@@ -459,7 +463,8 @@
 
             h1 { font-size: 28px; margin-top: 20px; }
             .description { font-size: 16px; margin-bottom: 32px; }
-            .main-stage { padding-top: 175px; padding-bottom: 100px; }
+            .main-stage { padding-top: 175px; padding-bottom: 148px; }
+            .step-wrapper { max-width: 100%; padding-bottom: 24px; }
             .input-group-row { grid-template-columns: 1fr; }
             select { font-size: 17px; }
             .step-indicator { font-size: 12px; margin-bottom: 8px; }
