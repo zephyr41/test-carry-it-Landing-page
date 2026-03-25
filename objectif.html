@@ -151,11 +151,12 @@
             background-color: var(--bg-body);
             color: var(--text-primary);
             font-family: var(--font-stack);
-            height: 100vh;
-            width: 100vw;
+            min-height: 100vh;
+            width: 100%;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: auto;
         }
 
         /* --- HEADER (Fixe haut, sous navbar) --- */
@@ -213,9 +214,10 @@
             justify-content: center;
             padding: 200px 20px 110px 20px;
             position: relative;
-            overflow-y: auto;
-            overflow-x: hidden;
+            min-height: 100vh;
+            overflow: visible;
             -webkit-overflow-scrolling: touch;
+            touch-action: pan-y;
         }
 
         .step-wrapper {
@@ -340,6 +342,8 @@
             background-position: right 0 center;
             background-size: 20px;
             padding-right: 25px;
+            min-height: 44px;
+            touch-action: pan-y;
         }
 
         textarea::placeholder, input::placeholder {
@@ -456,6 +460,8 @@
             h1 { font-size: 28px; margin-top: 20px; }
             .description { font-size: 16px; margin-bottom: 32px; }
             .main-stage { padding-top: 175px; padding-bottom: 100px; }
+            .input-group-row { grid-template-columns: 1fr; }
+            select { font-size: 17px; }
             .step-indicator { font-size: 12px; margin-bottom: 8px; }
         }
 
@@ -529,7 +535,7 @@
             <div class="input-group">
                 <div class="input-row">
                     <span class="input-label">FRÉQUENCE DE MESURE</span>
-                    <select id="frequenceSelect" onchange="updateDayLabel()">
+                    <select id="frequenceSelect" onchange="handleFrequencyChange()">
                         <option value="quotidien">Quotidien</option>
                         <option value="hebdomadaire" selected>Hebdomadaire</option>
                         <option value="mensuel">Mensuel</option>
@@ -543,7 +549,7 @@
                 <div class="input-group">
                     <div class="input-row">
                         <span class="input-label">TYPE DE KPI</span>
-                        <select id="kpiTypeSelect">
+                        <select id="kpiTypeSelect" onchange="saveDraft(2)">
                             <option value="cumulatif" selected>Cumulatif</option>
                             <option value="cadence">Cadencé</option>
                         </select>
@@ -552,7 +558,7 @@
                 <div class="input-group">
                     <div class="input-row">
                         <span class="input-label" id="dayLabel">QUEL JOUR DE LA SEMAINE ?</span>
-                        <select id="daySelect">
+                        <select id="daySelect" onchange="saveDraft(2)">
                             <option value="lundi">Lundi</option>
                             <option value="mardi">Mardi</option>
                             <option value="mercredi">Mercredi</option>
@@ -660,6 +666,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             loadSmartData();
             updateUI();
+            bindMesurableFieldUX();
         });
 
         function navigate(direction) {
@@ -741,6 +748,26 @@
             if(data['kpiType']) {
                 document.getElementById('kpiTypeSelect').value = data['kpiType'];
             }
+        }
+
+        function bindMesurableFieldUX() {
+            const measurableInput = document.getElementById('mesurableInput');
+            if (measurableInput) {
+                measurableInput.addEventListener('input', () => saveDraft(2));
+            }
+
+            document.querySelectorAll('#step-2 select').forEach(select => {
+                select.addEventListener('wheel', handleSelectWheelScroll, { passive: false });
+            });
+        }
+
+        function handleSelectWheelScroll(event) {
+            event.preventDefault();
+            window.scrollBy({
+                top: event.deltaY,
+                left: event.deltaX,
+                behavior: 'auto'
+            });
         }
 
         function finalizeObjectif() {
@@ -826,6 +853,11 @@
                 dayLabel.textContent = 'QUEL MOIS ?';
                 daySelect.innerHTML = '<option value="janvier">Janvier</option><option value="fevrier">Février</option><option value="mars">Mars</option><option value="avril">Avril</option><option value="mai">Mai</option><option value="juin">Juin</option><option value="juillet">Juillet</option><option value="aout">Août</option><option value="septembre">Septembre</option><option value="octobre">Octobre</option><option value="novembre">Novembre</option><option value="decembre">Décembre</option>';
             }
+        }
+
+        function handleFrequencyChange() {
+            updateDayLabel();
+            saveDraft(2);
         }
 
         function goToHome() {
