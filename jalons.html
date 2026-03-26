@@ -656,30 +656,15 @@
             margin: 0 auto;
         }
 
-        .btn-gpt {
+        .intro-followup {
             margin-top: 32px;
-            flex-shrink: 0;
-            background: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            color: #111111;
-            padding: 16px 30px;
-            border-radius: 999px;
+            color: rgba(255,255,255,0.9);
             font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-            white-space: nowrap;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+            line-height: 1.6;
             font-family: var(--font-stack);
-            box-shadow: 0 10px 24px rgba(0,0,0,0.25), 0 0 0 6px rgba(255, 77, 0, 0.18);
-            letter-spacing: 0.2px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-gpt:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 12px 28px rgba(0,0,0,0.3), 0 0 0 8px rgba(255, 77, 0, 0.25);
+            text-transform: uppercase;
         }
 
         .scroll-hint {
@@ -1081,10 +1066,8 @@
             .intro-section p {
                 font-size: 15px;
             }
-            .btn-gpt {
+            .intro-followup {
                 width: 100%;
-                justify-content: center;
-                padding: 14px 20px;
                 font-size: 14px;
             }
             .scroll-hint {
@@ -1175,9 +1158,7 @@
         <div>
             <h2>Planifier l'impossible.</h2>
             <p>Ne laissez pas le chaos dicter votre rythme. Utilisez l'IA pour transformer votre vision abstraite en une séquence tactique précise.</p>
-            <button onclick="window.open('https://chatgpt.com/g/g-692ca373fe108191a36c15ad1250a4a8-carry-it-ai', '_blank')" class="btn-gpt">
-                <i class="ri-openai-fill"></i> Lancer l'Assistant Stratégique
-            </button>
+            <p class="intro-followup">Continue la conversation avec l'IA.</p>
         </div>
         <div class="scroll-hint" onclick="document.getElementById('timelineStart').scrollIntoView({behavior:'smooth'})">
             <span>Pose tes jalons</span>
