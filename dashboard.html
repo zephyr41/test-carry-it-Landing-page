@@ -165,16 +165,27 @@
             if (stored) {
                 try {
                     allObjectifs = JSON.parse(stored);
+                    let changed = false;
+                    const sharedMilestones = loadSharedMilestones();
                     // backward compat: ensure tasks array exists
-                    allObjectifs.forEach(obj => {
+                    allObjectifs.forEach((obj, objIndex) => {
                         if (!obj.tasks) obj.tasks = [];
+                        if (sharedMilestones.length > 0 && objIndex === allObjectifs.length - 1) {
+                            const normalizedShared = sharedMilestones.map(m => ({ ...m }));
+                            if (JSON.stringify(obj.jalons || []) !== JSON.stringify(normalizedShared)) {
+                                obj.jalons = normalizedShared;
+                                changed = true;
+                            }
+                        }
                         obj.tasks.forEach(t => {
                             if (!t.subtasks) t.subtasks = [];
                             if (!t.notes) t.notes = '';
+                            if (ensureTaskTarget(obj, t)) changed = true;
                         });
                         if (!obj.createdAt) obj.createdAt = obj.id || Date.now();
                         if (!obj.kpiType) obj.kpiType = 'cumulatif';
                     });
+                    if (changed) saveAllObjectifs();
                 } catch(e) {
                     allObjectifs = [];
                 }
@@ -419,14 +430,104 @@
         // ──────────────────────────────────────────────────────────
         // TODO LIST
         // ──────────────────────────────────────────────────────────
+        function loadSharedMilestones() {
+            try {
+                const parsed = JSON.parse(localStorage.getItem('carryItMilestones') || '[]');
+                return Array.isArray(parsed) ? parsed : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function getJalonLabel(jalon) {
+            return jalon?.titre || jalon?.title || 'prochain jalon';
+        }
+
+        function getSortedProjectJalons(obj) {
+            return [...(obj?.jalons || [])].sort((a, b) => {
+                const timeA = new Date(a?.date || '').getTime();
+                const timeB = new Date(b?.date || '').getTime();
+                if (Number.isNaN(timeA) && Number.isNaN(timeB)) return 0;
+                if (Number.isNaN(timeA)) return 1;
+                if (Number.isNaN(timeB)) return -1;
+                return timeA - timeB;
+            });
+        }
+
+        function getNextActiveJalon(obj) {
+            return getSortedProjectJalons(obj).find(j => (j.statut || 'pending') !== 'completed') || null;
+        }
+
+        function findTaskLinkedJalon(obj, task) {
+            if (!task) return null;
+            const jalons = obj?.jalons || [];
+            if (task.jalonId) {
+                const byId = jalons.find(j => j.id === task.jalonId);
+                if (byId) return byId;
+            }
+            if (task.jalonDate || task.jalonTitle) {
+                const byMeta = jalons.find(j => {
+                    const sameDate = !task.jalonDate || j.date === task.jalonDate;
+                    const sameTitle = !task.jalonTitle || getJalonLabel(j) === task.jalonTitle;
+                    return sameDate && sameTitle;
+                });
+                if (byMeta) return byMeta;
+            }
+            return null;
+        }
+
+        function ensureTaskTarget(obj, task) {
+            if (!task) return false;
+            const linked = findTaskLinkedJalon(obj, task);
+            if (linked) {
+                const linkedTitle = getJalonLabel(linked);
+                const linkedDate = linked.date || '';
+                if (task.jalonId === linked.id && task.jalonTitle === linkedTitle && task.jalonDate === linkedDate) {
+                    return false;
+                }
+                task.jalonId = linked.id || '';
+                task.jalonTitle = linkedTitle;
+                task.jalonDate = linkedDate;
+                return true;
+            }
+
+            const nextJalon = getNextActiveJalon(obj);
+            if (!nextJalon) return false;
+            task.jalonId = nextJalon.id || '';
+            task.jalonTitle = getJalonLabel(nextJalon);
+            task.jalonDate = nextJalon.date || '';
+            return true;
+        }
+
+        function getTaskTargetJalon(obj, task) {
+            return findTaskLinkedJalon(obj, task) || getNextActiveJalon(obj);
+        }
+
+        function getTodoPanelTargetJalon(obj) {
+            const pendingTargets = (obj?.tasks || [])
+                .filter(task => !task.done)
+                .map(task => getTaskTargetJalon(obj, task))
+                .filter(Boolean)
+                .sort((a, b) => {
+                    const timeA = new Date(a.date || '').getTime();
+                    const timeB = new Date(b.date || '').getTime();
+                    if (Number.isNaN(timeA) && Number.isNaN(timeB)) return 0;
+                    if (Number.isNaN(timeA)) return 1;
+                    if (Number.isNaN(timeB)) return -1;
+                    return timeA - timeB;
+                });
+
+            return pendingTargets[0] || getNextActiveJalon(obj);
+        }
+
         function buildTodoPanel(obj, i) {
-            const firstJalon = (obj.jalons || []).find(j => (j.statut || 'pending') !== 'completed');
-            const headerLabel = firstJalon
-                ? `Tâches vers · ${escHtml(firstJalon.titre || firstJalon.title || 'prochain jalon')}`
+            const targetJalon = getTodoPanelTargetJalon(obj);
+            const headerLabel = targetJalon
+                ? `Tâches vers · ${escHtml(getJalonLabel(targetJalon))}`
                 : 'Exécution quotidienne';
             return `
             <div class="todo-panel">
-                <div class="section-lbl">${headerLabel}</div>
+                <div class="section-lbl" id="todoHeaderLabel-${i}">${headerLabel}</div>
                 <div class="todo-row">
                     <input class="todo-input" type="text" id="todoInput-${i}"
                         placeholder="Quelle action aujourd'hui ?"
@@ -555,14 +656,16 @@
             if (!text) return;
 
             if (!allObjectifs[i].tasks) allObjectifs[i].tasks = [];
-            allObjectifs[i].tasks.push({
+            const task = {
                 id: Date.now(),
                 text,
                 done: false,
                 createdAt: Date.now(),
                 notes: '',
                 subtasks: []
-            });
+            };
+            ensureTaskTarget(allObjectifs[i], task);
+            allObjectifs[i].tasks.push(task);
             saveAllObjectifs();
 
             input.value = '';
@@ -593,6 +696,13 @@
         function refreshTodoList(i) {
             const el = document.getElementById(`todoList-${i}`);
             if (el) el.innerHTML = renderTasksList(allObjectifs[i].tasks || [], i);
+            const headerEl = document.getElementById(`todoHeaderLabel-${i}`);
+            if (headerEl) {
+                const targetJalon = getTodoPanelTargetJalon(allObjectifs[i]);
+                headerEl.textContent = targetJalon
+                    ? `Tâches vers · ${getJalonLabel(targetJalon)}`
+                    : 'Exécution quotidienne';
+            }
         }
 
         function getTaskById(i, taskId) {
@@ -784,7 +894,7 @@
             const task = getTaskById(i, taskId);
             if (!task) return;
             const obj = allObjectifs[i];
-            const nextJalon = (obj.jalons || []).find(j => (j.statut || 'pending') !== 'completed');
+            const nextJalon = getTaskTargetJalon(obj, task);
             const openCount = (task.subtasks || []).filter(s => !s.done).length;
             const panel = document.getElementById('taskPanelBody');
             panel.innerHTML = `
@@ -801,7 +911,7 @@
                     ${nextJalon ? `
                     <div class="cp-field-row">
                         <span class="cp-field-key">Jalon</span>
-                        <span class="cp-field-val cp-field-jalon">${escHtml(nextJalon.titre || nextJalon.title || '')}${nextJalon.date ? ` <span class="cp-field-date">· ${formatDateJalonCourt(nextJalon.date)}</span>` : ''}</span>
+                        <span class="cp-field-val cp-field-jalon">${escHtml(getJalonLabel(nextJalon))}${nextJalon.date ? ` <span class="cp-field-date">· ${formatDateJalonCourt(nextJalon.date)}</span>` : ''}</span>
                     </div>` : ''}
                     <div class="cp-field-row">
                         <span class="cp-field-key">Notes</span>
