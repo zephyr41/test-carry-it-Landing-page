@@ -96,7 +96,7 @@
 
         .content-block {
             max-width: var(--max-width-content);
-            padding-bottom: 15px; /* Espace pour desktop */
+            padding-bottom: 24px;
             padding-top: 16px;
         }
 
@@ -187,16 +187,18 @@
             color: #fff;
         }
 
-        /* ZONE D'ACTION : REMONTÉE ET ALIGNÉE */
+        /* ZONE D'ACTION : Footer fixe du panel gauche */
         .action-section {
-            margin-top: 20px; /* Séparation pour desktop */
-            max-width: var(--max-width-content);
-            padding: 0 0 0 0; /* Alignement sur l'axe */
+            flex-shrink: 0;
+            padding: 16px var(--margin-axis) 28px;
+            max-width: 100%;
+            border-top: 1px solid var(--border-subtle);
+            background: var(--bg-panel);
         }
 
         .action-text {
             color: var(--text-secondary);
-            font-size: 15px; /* Taille desktop */
+            font-size: 15px;
             margin-bottom: 20px;
             line-height: 1.6;
             font-weight: 500;
@@ -447,8 +449,9 @@
 
                 <!-- Titre (Hiérarchie Maximale) -->
                 <header>
-                    <span class="phase-label">Phase 1 : Synthèse</span>
+                    <span class="phase-label">Ton objectif SMART · Récapitulatif</span>
                     <h1>Ton Cap</h1>
+                    <p style="font-size:15px; color:rgba(255,255,255,0.7); margin-top:10px; font-weight:500; line-height:1.5;">Voici ton ambition sur les prochaines années. Vérifie, puis pose tes jalons.</p>
                 </header>
 
                 <!-- S.M.A.R.T Grid (Material System) -->
@@ -485,20 +488,16 @@
                     </div>
                 </div>
 
-                <!-- Action Primaire (Remontée et Directe) - DESKTOP -->
-                <div class="action-section desktop-only">
-                    <p class="action-text">
-                        La vision est claire. Pour que cet objectif prenne forme, il est essentiel de le transformer en plan d'action structuré.
-                    </p>
-                    <button class="btn-primary" onclick="goToJalons()">
-                        <span>Définir les Jalons</span>
-                        <i class="ri-arrow-right-line"></i>
-                    </button>
-                </div>
             </div>
         </div>
 
-        <!-- Le footer flottant est supprimé pour le point 2c -->
+        <!-- Action Primaire — footer fixe du panel gauche, toujours visible -->
+        <div class="action-section desktop-only">
+            <button class="btn-primary" onclick="goToJalons()">
+                <span>Définir les Jalons</span>
+                <i class="ri-arrow-right-line"></i>
+            </button>
+        </div>
     </div>
 
     <!-- Right Panel (Ambiance - Non-concurentielle) -->
