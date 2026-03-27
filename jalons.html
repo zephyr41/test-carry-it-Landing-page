@@ -657,14 +657,28 @@
         }
 
         .intro-followup {
-            margin-top: 32px;
-            color: rgba(255,255,255,0.9);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 48px;
+            margin-bottom: 16px;
+            background: var(--accent);
+            color: #fff;
             font-size: 15px;
-            font-weight: 600;
-            letter-spacing: 0.01em;
-            line-height: 1.6;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            line-height: 1;
             font-family: var(--font-stack);
-            text-transform: uppercase;
+            text-transform: none;
+            padding: 14px 24px;
+            border-radius: 999px;
+            box-shadow: 0 0 0 6px rgba(255, 90, 31, 0.2);
+        }
+
+        .intro-followup::before {
+            content: '↗';
+            font-size: 16px;
+            font-weight: 700;
         }
 
         .scroll-hint {
@@ -1067,7 +1081,6 @@
                 font-size: 15px;
             }
             .intro-followup {
-                width: 100%;
                 font-size: 14px;
             }
             .scroll-hint {
@@ -1158,7 +1171,7 @@
         <div>
             <h2>Planifier l'impossible.</h2>
             <p>Ne laissez pas le chaos dicter votre rythme. Utilisez l'IA pour transformer votre vision abstraite en une séquence tactique précise.</p>
-            <p class="intro-followup">Continue la conversation avec l'IA.</p>
+            <p class="intro-followup">Retourne sur ChatGPT — continue la conversation avec l'IA.</p>
         </div>
         <div class="scroll-hint" onclick="document.getElementById('timelineStart').scrollIntoView({behavior:'smooth'})">
             <span>Pose tes jalons</span>
