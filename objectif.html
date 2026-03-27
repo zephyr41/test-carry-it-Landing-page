@@ -394,6 +394,213 @@
             max-width: 40ch;
         }
 
+        /* --- INTRO SCREEN --- */
+        .intro-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 152px 24px 80px;
+            text-align: center;
+            max-width: 480px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .intro-glow {
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 500px;
+            height: 220px;
+            background: radial-gradient(ellipse, rgba(238, 68, 8, 0.09) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .intro-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent-color);
+            border: 1px solid rgba(238, 68, 8, 0.35);
+            background: rgba(238, 68, 8, 0.07);
+            border-radius: 100px;
+            padding: 5px 12px;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .intro-badge::before {
+            content: '';
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            display: inline-block;
+        }
+
+        .intro-screen h1 {
+            font-size: 30px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            line-height: 1.2;
+            position: relative;
+            z-index: 1;
+        }
+
+        .intro-demo-note {
+            color: var(--text-tertiary);
+            font-size: 13px;
+            line-height: 1.55;
+            margin-bottom: 32px;
+            max-width: 42ch;
+            position: relative;
+            z-index: 1;
+        }
+
+        .intro-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 36px;
+            width: 100%;
+            max-width: 340px;
+            text-align: left;
+            position: relative;
+            z-index: 1;
+        }
+
+        .intro-step {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid var(--color-border-subtle);
+            background: rgba(255,255,255,0.02);
+        }
+
+        .intro-step-num {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: rgba(238, 68, 8, 0.1);
+            border: 1px solid rgba(238, 68, 8, 0.25);
+            color: var(--accent-color);
+            font-size: 10px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .intro-step span:last-child {
+            line-height: 1.4;
+        }
+
+        .intro-steps-label {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+            margin-bottom: 10px;
+            text-align: left;
+            width: 100%;
+            max-width: 340px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-start-ai {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            background: #ffffff;
+            border: none;
+            color: #111111;
+            padding: 16px 36px;
+            border-radius: 999px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: var(--font-primary);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 0 5px rgba(238, 68, 8, 0.15);
+            letter-spacing: 0.1px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-start-ai:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28), 0 0 0 7px rgba(238, 68, 8, 0.22);
+        }
+
+        /* --- GPT REDIRECT SCREEN --- */
+        .redirect-icon {
+            font-size: 44px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .redirect-desc {
+            color: var(--text-secondary);
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 16px;
+            max-width: 40ch;
+        }
+
+        .redirect-countdown {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            letter-spacing: 0.5px;
+            margin-bottom: 20px;
+        }
+
+        .redirect-back-btn {
+            margin-top: 12px;
+        }
+
+        .btn-open-gpt {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: #111111;
+            padding: 16px 30px;
+            border-radius: 999px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: var(--font-primary);
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25), 0 0 0 6px rgba(238, 68, 8, 0.18);
+            letter-spacing: 0.2px;
+            width: 100%;
+            justify-content: center;
+            margin-bottom: 14px;
+        }
+
+        .btn-open-gpt:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3), 0 0 0 8px rgba(238, 68, 8, 0.25);
+        }
+
         /* --- NAVIGATION BUTTONS --- */
         .footer-container {
             width: 100%;
@@ -495,19 +702,60 @@
         <div style="width: 40px;"></div>
     </header>
 
+    <!-- Intro Screen (Gate obligatoire) -->
+    <div id="intro-screen" class="intro-screen">
+        <div class="intro-glow" aria-hidden="true"></div>
+        <span class="intro-badge">DÉMO</span>
+        <h1>Structurer ton objectif avec l'IA</h1>
+        <p class="intro-demo-note">Version démo — l'IA sera intégrée directement dans l'app au lancement. Pour l'instant, tu vas faire des allers-retours avec ChatGPT.</p>
+        <p class="intro-steps-label">Process · 6 étapes</p>
+        <div class="intro-steps">
+            <div class="intro-step">
+                <span class="intro-step-num">1</span>
+                <span>Parle à l'IA sur ChatGPT</span>
+            </div>
+            <div class="intro-step">
+                <span class="intro-step-num">2</span>
+                <span>Copie sa réponse</span>
+            </div>
+            <div class="intro-step">
+                <span class="intro-step-num">3</span>
+                <span>Reviens ici · colle dans le champ</span>
+            </div>
+            <div class="intro-step">
+                <span class="intro-step-num">4</span>
+                <span>Continue à l'étape suivante</span>
+            </div>
+        </div>
+        <button class="btn-start-ai" onclick="startWithAI()">
+            <i class="ri-openai-fill"></i> Ouvrir ChatGPT pour commencer
+        </button>
+    </div>
+
     <!-- Scène Principale (Centrée) -->
     <main class="main-stage">
-        
+
+        <!-- GPT Redirect Screen (entre chaque étape) -->
+        <div class="step-wrapper" id="gpt-redirect-screen" style="display:none;">
+            <span class="step-indicator" id="redirect-step-label">Étape X sur 6</span>
+            <div class="redirect-icon">⟳</div>
+            <h1>Retourne sur ChatGPT</h1>
+            <p class="redirect-desc">
+                Pour l'étape <strong id="redirect-step-name">Mesurable</strong>,
+                ouvre ChatGPT, copie la réponse de l'IA, reviens ici et colle-la dans le champ.
+            </p>
+            <p class="redirect-countdown" id="redirect-countdown">Continue dans <span id="redirect-timer">20</span>s</p>
+            <button class="btn-next" id="redirect-continue-btn" onclick="confirmGPTRedirect()">
+                J'ai ma réponse, continuer
+            </button>
+            <button class="btn-back redirect-back-btn" onclick="cancelGPTRedirect()">← Retour</button>
+        </div>
+
         <!-- STEP 1 -->
-        <div class="step-wrapper active" id="step-1">
+        <div class="step-wrapper" id="step-1">
             <span class="step-indicator">Étape 1 sur 6</span>
             <h1>Spécifique</h1>
             <p class="description">Utilise l'assistant pour définir un objectif précis, factuel et motivant. Ne laisse rien au hasard.</p>
-
-            <button class="ai-trigger" onclick="openAIModal('specifique')">
-                <i class="ri-openai-fill"></i> Lancer l'Assistant Stratégique
-            </button>
-            <p class="ai-helper">Ouvre l'assistant, puis reviens copier sa réponse ici.</p>
 
             <div class="input-group">
                 <div class="input-row">
@@ -523,11 +771,6 @@
             <span class="step-indicator">Étape 2 sur 6</span>
             <h1>Mesurable</h1>
             <p class="description">Quel est l'indicateur unique (KPI) qui te permettra de savoir si tu progresses chaque semaine ?</p>
-
-            <button class="ai-trigger" onclick="openAIModal('mesurable')">
-                <i class="ri-openai-fill"></i> Lancer l'Assistant Stratégique
-            </button>
-            <p class="ai-helper">Ouvre l'assistant, puis reviens copier sa réponse ici.</p>
 
             <div class="input-group">
                 <div class="input-row">
@@ -550,29 +793,18 @@
                 </div>
             </div>
 
-            <div class="input-group-row">
-                <div class="input-group">
-                    <div class="input-row">
-                        <span class="input-label">TYPE DE KPI</span>
-                        <select id="kpiTypeSelect" onchange="saveDraft(2)">
-                            <option value="cumulatif" selected>Cumulatif</option>
-                            <option value="cadence">Cadencé</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="input-group">
-                    <div class="input-row">
-                        <span class="input-label" id="dayLabel">QUEL JOUR DE LA SEMAINE ?</span>
-                        <select id="daySelect" onchange="saveDraft(2)">
-                            <option value="lundi">Lundi</option>
-                            <option value="mardi">Mardi</option>
-                            <option value="mercredi">Mercredi</option>
-                            <option value="jeudi">Jeudi</option>
-                            <option value="vendredi">Vendredi</option>
-                            <option value="samedi">Samedi</option>
-                            <option value="dimanche">Dimanche</option>
-                        </select>
-                    </div>
+            <div class="input-group">
+                <div class="input-row">
+                    <span class="input-label" id="dayLabel">QUEL JOUR DE LA SEMAINE ?</span>
+                    <select id="daySelect" onchange="saveDraft(2)">
+                        <option value="lundi">Lundi</option>
+                        <option value="mardi">Mardi</option>
+                        <option value="mercredi">Mercredi</option>
+                        <option value="jeudi">Jeudi</option>
+                        <option value="vendredi">Vendredi</option>
+                        <option value="samedi">Samedi</option>
+                        <option value="dimanche">Dimanche</option>
+                    </select>
                 </div>
             </div>
         </div>
@@ -582,11 +814,6 @@
             <span class="step-indicator">Étape 3 sur 6</span>
             <h1>Atteignable</h1>
             <p class="description">Fais l'inventaire de tes ressources. As-tu tout ce qu'il faut pour commencer dès maintenant ?</p>
-
-            <button class="ai-trigger" onclick="openAIModal('atteignable')">
-                <i class="ri-openai-fill"></i> Lancer l'Assistant Stratégique
-            </button>
-            <p class="ai-helper">Ouvre l'assistant, puis reviens copier sa réponse ici.</p>
 
             <div class="input-group">
                 <div class="input-row">
@@ -603,11 +830,6 @@
             <h1>Réaliste</h1>
             <p class="description">Cet objectif est-il réaliste par rapport à ta charge de travail actuelle et tes obligations ?</p>
 
-            <button class="ai-trigger" onclick="openAIModal('realiste')">
-                <i class="ri-openai-fill"></i> Lancer l'Assistant Stratégique
-            </button>
-            <p class="ai-helper">Ouvre l'assistant, puis reviens copier sa réponse ici.</p>
-
             <div class="input-group">
                 <div class="input-row">
                     <span class="input-label">CONFIRMATION</span>
@@ -623,11 +845,6 @@
             <h1>Temporel</h1>
             <p class="description">Fixe une date de fin précise. L'urgence crée l'action.</p>
 
-            <button class="ai-trigger" onclick="openAIModal('temporel')">
-                <i class="ri-openai-fill"></i> Lancer l'Assistant Stratégique
-            </button>
-            <p class="ai-helper">Ouvre l'assistant, puis reviens copier sa réponse ici.</p>
-
             <div class="input-group">
                 <div class="input-row">
                     <span class="input-label">DATE CIBLE</span>
@@ -641,11 +858,6 @@
             <span class="step-indicator">Dernière étape</span>
             <h1>Identité</h1>
             <p class="description">Donne un nom court et percutant à ce projet pour l'identifier sur ton Dashboard.</p>
-
-            <button class="ai-trigger" onclick="openAIModal('titre')">
-                <i class="ri-openai-fill"></i> Lancer l'Assistant Stratégique
-            </button>
-            <p class="ai-helper">Ouvre l'assistant, puis reviens copier sa réponse ici.</p>
 
             <div class="input-group">
                 <div class="input-row">
@@ -668,11 +880,27 @@
         const totalSteps = 6;
         const GPT_URL = 'https://chatgpt.com/g/g-692ca373fe108191a36c15ad1250a4a8-carry-it-ai';
         
+        const STEP_NAMES = ['', 'Spécifique', 'Mesurable', 'Atteignable', 'Réaliste', 'Temporel', 'Identité'];
+        let redirectAutoTimer = null;
+
         document.addEventListener('DOMContentLoaded', () => {
+            // Cacher le footer et le step-1 au départ — l'intro screen est la gate
+            document.querySelector('.footer-container').style.display = 'none';
+            const step1 = document.getElementById('step-1');
+            step1.classList.remove('active');
+            step1.style.display = 'none';
+
             loadSmartData();
             updateUI();
             bindMesurableFieldUX();
         });
+
+        function startWithAI() {
+            document.getElementById('intro-screen').style.display = 'none';
+            document.querySelector('.footer-container').style.display = 'flex';
+            window.open(GPT_URL, 'carry-it-gpt');
+            transitionToStep(1);
+        }
 
         function navigate(direction) {
             const nextStep = currentStep + direction;
@@ -681,28 +909,111 @@
 
             saveDraft(currentStep);
 
-            // Animation Sortie
+            if (direction > 0 && nextStep < totalSteps) {
+                // Aller vers l'étape suivante → passer par l'écran redirect (sauf dernière étape)
+                showGPTRedirect(nextStep);
+            } else {
+                // Retour → transition directe sans redirect
+                const currentEl = document.getElementById(`step-${currentStep}`);
+                currentEl.style.opacity = '0';
+                currentEl.style.transform = 'translateY(-20px)';
+                setTimeout(() => {
+                    currentEl.classList.remove('active');
+                    currentEl.style.display = 'none';
+                    transitionToStep(nextStep);
+                }, 300);
+            }
+        }
+
+        function showGPTRedirect(nextStep) {
+            // Cacher le step courant
             const currentEl = document.getElementById(`step-${currentStep}`);
             currentEl.style.opacity = '0';
             currentEl.style.transform = 'translateY(-20px)';
-            
             setTimeout(() => {
                 currentEl.classList.remove('active');
-                currentEl.style.display = 'none'; // Clean reset style
-                
-                // Animation Entrée
-                const nextEl = document.getElementById(`step-${nextStep}`);
-                nextEl.style.display = 'block';
-                // Force Reflow
-                void nextEl.offsetWidth;
-                
-                nextEl.classList.add('active');
-                nextEl.style.opacity = '1';
-                nextEl.style.transform = 'translateY(0)';
-                
-                currentStep = nextStep;
+                currentEl.style.display = 'none';
+
+                // Mettre à jour le contenu de l'écran redirect
+                document.getElementById('redirect-step-label').textContent = `Étape ${nextStep} sur ${totalSteps}`;
+                document.getElementById('redirect-step-name').textContent = STEP_NAMES[nextStep];
+
+                // Cacher le footer pendant l'écran redirect
+                document.querySelector('.footer-container').style.display = 'none';
+
+                // Afficher l'écran redirect
+                const redirectScreen = document.getElementById('gpt-redirect-screen');
+                redirectScreen.style.display = 'block';
+                redirectScreen._nextStep = nextStep;
+                redirectScreen._prevStep = currentStep;
+                void redirectScreen.offsetWidth;
+                redirectScreen.classList.add('active');
+                redirectScreen.style.opacity = '1';
+                redirectScreen.style.transform = 'translateY(0)';
+
+                // Countdown 20s → auto-avance
+                if (redirectAutoTimer) clearInterval(redirectAutoTimer);
+                let remaining = 20;
+                document.getElementById('redirect-timer').textContent = remaining;
+                document.getElementById('redirect-countdown').style.display = 'block';
+                redirectAutoTimer = setInterval(() => {
+                    remaining--;
+                    document.getElementById('redirect-timer').textContent = remaining;
+                    if (remaining <= 0) {
+                        clearInterval(redirectAutoTimer);
+                        redirectAutoTimer = null;
+                        confirmGPTRedirect();
+                    }
+                }, 1000);
+
                 updateUI();
             }, 300);
+        }
+
+        function openGPTManual() {
+            window.open(GPT_URL, 'carry-it-gpt');
+        }
+
+        function confirmGPTRedirect() {
+            if (redirectAutoTimer) { clearInterval(redirectAutoTimer); redirectAutoTimer = null; }
+            const redirectScreen = document.getElementById('gpt-redirect-screen');
+            const nextStep = redirectScreen._nextStep;
+            redirectScreen.style.opacity = '0';
+            redirectScreen.style.transform = 'translateY(-20px)';
+            setTimeout(() => {
+                redirectScreen.classList.remove('active');
+                redirectScreen.style.display = 'none';
+                transitionToStep(nextStep);
+            }, 300);
+        }
+
+        function cancelGPTRedirect() {
+            if (redirectAutoTimer) { clearInterval(redirectAutoTimer); redirectAutoTimer = null; }
+            const redirectScreen = document.getElementById('gpt-redirect-screen');
+            const prevStep = redirectScreen._prevStep;
+            redirectScreen.style.opacity = '0';
+            redirectScreen.style.transform = 'translateY(-20px)';
+            setTimeout(() => {
+                redirectScreen.classList.remove('active');
+                redirectScreen.style.display = 'none';
+                // Revenir au step précédent sans re-déclencher showGPTRedirect
+                currentStep = prevStep;
+                transitionToStep(prevStep);
+            }, 300);
+        }
+
+        function transitionToStep(nextStep) {
+            // Réafficher le footer quand on arrive sur un step normal
+            document.querySelector('.footer-container').style.display = 'flex';
+
+            const nextEl = document.getElementById(`step-${nextStep}`);
+            nextEl.style.display = 'block';
+            void nextEl.offsetWidth;
+            nextEl.classList.add('active');
+            nextEl.style.opacity = '1';
+            nextEl.style.transform = 'translateY(0)';
+            currentStep = nextStep;
+            updateUI();
         }
 
         function updateUI() {
@@ -728,7 +1039,7 @@
             if(step === 2) {
                 data['frequence'] = document.getElementById('frequenceSelect').value;
                 data['jour'] = document.getElementById('daySelect').value;
-                data['kpiType'] = document.getElementById('kpiTypeSelect').value;
+                data['kpiType'] = 'cadence';
             }
 
             localStorage.setItem('carryItObjectifSMART', JSON.stringify(data));
@@ -749,9 +1060,6 @@
             }
             if(data['jour']) {
                 document.getElementById('daySelect').value = data['jour'];
-            }
-            if(data['kpiType']) {
-                document.getElementById('kpiTypeSelect').value = data['kpiType'];
             }
         }
 
