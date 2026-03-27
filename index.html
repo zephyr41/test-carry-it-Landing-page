@@ -496,11 +496,11 @@
 
             <div class="hero-cta-cluster">
                 <div class="hero-ctas">
-                    <button class="btn btn-primary" onclick="scrollToManifest()">
+                    <button class="btn btn-primary" onclick="document.getElementById('painSection').scrollIntoView({behavior:'smooth'})">
                         <span class="btn-label-desktop">Commencer maintenant</span>
                         <span class="btn-label-mobile">Commencer</span>
                     </button>
-                    <button class="btn btn-secondary" onclick="scrollToManifest()">
+                    <button class="btn btn-secondary" onclick="document.getElementById('presentationSection').scrollIntoView({behavior:'smooth'})">
                         <span class="btn-label-desktop">Voir le manifeste</span>
                         <span class="btn-label-mobile">Voir le manifeste</span>
                     </button>
@@ -519,7 +519,7 @@
     </section>
 
     <!-- SECTION 2: DOULEURS (PAIN) - Apple-style numbered list -->
-    <section class="pain-section">
+    <section class="pain-section" id="painSection">
         <div class="pain-inner">
             <p class="section-overline">TU TE RECONNAIS ?</p>
 
@@ -1288,7 +1288,7 @@
     </section>
 
     <!-- SECTION: QUI EST DERRIÈRE -->
-    <section class="founder-section">
+    <section class="founder-section" id="presentationSection">
         <div class="founder-inner">
             <picture>
                 <source srcset="Images/moi.webp" type="image/webp">
