@@ -1460,6 +1460,9 @@
                 });
             }
 
+            const _yMax = target ? Math.max(target, Math.max(...data)) * 1.05 : Math.max(...data) > 0 ? Math.max(...data) * 1.15 : 1;
+            const _yMin = -(_yMax * 0.08);
+
             kpiCharts[i] = new Chart(canvas.getContext('2d'), {
                 type: 'line',
                 data: { labels, datasets },
@@ -1534,8 +1537,8 @@
                                     return kpiUnit ? val + ' ' + kpiUnit : val;
                                 }
                             },
-                            min: -(Math.max(...data, target || 0) * 0.10 || 0.5),
-                            max: target ? Math.max(target, Math.max(...data)) * 1.05 : Math.max(...data) > 0 ? Math.max(...data) * 1.15 : 1,
+                            min: _yMin,
+                            max: _yMax,
                             title: { display: false },
                             border: { display: false }
                         }
