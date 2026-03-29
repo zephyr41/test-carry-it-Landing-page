@@ -1430,15 +1430,15 @@
             const datasets = [{
                 label: 'Progression',
                 data,
-                borderColor: '#404025',
+                borderColor: '#EE4408',
                 borderWidth: 2,
                 tension: 0,
                 fill: false,
-                pointBackgroundColor: '#404025',
-                pointBorderColor: '#111113',
+                pointBackgroundColor: '#EE4408',
+                pointBorderColor: '#0d0d0f',
                 pointBorderWidth: 2,
-                pointRadius: 4,
-                pointHoverRadius: 6
+                pointRadius: 5,
+                pointHoverRadius: 7
             }];
 
             // Ligne cible diagonale : 0 → target sur la plage X
@@ -1534,6 +1534,7 @@
                                 }
                             },
                             beginAtZero: true,
+                            grace: '8%',
                             max: target ? Math.max(target, Math.max(...data)) * 1.05 : undefined,
                             title: { display: false },
                             border: { display: false }
