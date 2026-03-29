@@ -1535,7 +1535,7 @@
                                 }
                             },
                             min: -(Math.max(...data, target || 0) * 0.10 || 0.5),
-                            max: target ? Math.max(target, Math.max(...data)) * 1.05 : undefined,
+                            max: target ? Math.max(target, Math.max(...data)) * 1.05 : Math.max(...data) > 0 ? Math.max(...data) * 1.15 : 1,
                             title: { display: false },
                             border: { display: false }
                         }
