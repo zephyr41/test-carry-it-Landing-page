@@ -1530,11 +1530,11 @@
                                 precision: 0,
                                 padding: 12,
                                 callback: function(val) {
+                                    if (val < 0) return '';
                                     return kpiUnit ? val + ' ' + kpiUnit : val;
                                 }
                             },
-                            beginAtZero: true,
-                            grace: '8%',
+                            min: -(Math.max(...data, target || 0) * 0.10 || 0.5),
                             max: target ? Math.max(target, Math.max(...data)) * 1.05 : undefined,
                             title: { display: false },
                             border: { display: false }
