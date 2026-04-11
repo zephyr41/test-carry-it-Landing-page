@@ -1163,8 +1163,11 @@
 <body>
 
     <nav class="navbar">
-        <div class="navbar-logo">CARRY IT</div>
-        <button class="btn-reset" onclick="resetMilestones()">Réinitialiser tout</button>
+        <a class="navbar-logo" href="index.html" style="text-decoration:none; color:inherit;">CARRY IT</a>
+        <div style="display:flex; gap:8px; align-items:center;">
+            <a href="dashboard.html" class="btn-reset" style="text-decoration:none;">Dashboard</a>
+            <button class="btn-reset" onclick="resetMilestones()">Réinitialiser tout</button>
+        </div>
     </nav>
 
     <div class="intro-section">
@@ -1431,7 +1434,7 @@ Elles exigent des preuves immédiates là où il n’y a encore que des fondatio
                                 <span class="card-tag">${m.tag}</span>
                                 <input class="input-title" value="${m.title}"
                                        placeholder="Titre..."
-                                       disabled>
+                                       oninput="update('${m.id}', 'title', this.value)">
                             </div>
                             <div class="date-input-wrapper">
                                 <i class="ri-calendar-line" style="font-size:12px; color:var(--text-secondary)"></i>

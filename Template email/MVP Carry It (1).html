@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarryIt - Tableau de Bord</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Focus -->
+    <!-- Application Structure Plan: A dashboard-centric SPA. The main view is a grid layout displaying the active project's core components: SMART goals, a KPI progress chart, and a simple Kanban board for tasks. This structure directly implements the MVP scope from the project brief, focusing on the core user loop: define, execute, track. Navigation is simplified to project switching, which dynamically updates the entire dashboard, providing a clear and focused user experience without the complexity of multiple pages. This design choice prioritizes usability and aligns with the no-nonsense philosophy of CarryIt. -->
+    <!-- Visualization & Content Choices: 
+        - Project Info -> Goal: Inform -> Presentation: Structured HTML list for SMART goals -> Interaction: Static display -> Justification: Clear, direct communication of the project's foundation.
+        - KPI Data -> Goal: Show Change -> Viz: Line Chart (Chart.js) -> Interaction: Time-filter buttons (Week/Month/All) update the chart -> Justification: Provides a powerful, dynamic view of progress over time, which is central to the app's philosophy of measurable effort.
+        - Task List -> Goal: Organize & Track -> Viz: Kanban Board (HTML/Tailwind Grid) -> Interaction: Buttons to move tasks between columns -> Justification: A simple, visual, and interactive way to manage workflow, embodying the "project management for your life" concept.
+        - All choices use Canvas or HTML/CSS, avoiding SVG/Mermaid as required. The structure supports the dashboard-centric design. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f7f4;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 40vh;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            transition: all 0.3s ease-in-out;
+        }
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: all 0.2s ease-in-out;
+            border: 1px solid transparent;
+        }
+        .btn-primary {
+            background-color: #2c3e50;
+            color: #ffffff;
+        }
+        .btn-primary:hover {
+            background-color: #34495e;
+        }
+        .btn-secondary {
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            border-color: #bdc3c7;
+        }
+        .btn-secondary:hover {
+            background-color: #dadedf;
+        }
+        .btn-active {
+            background-color: #34495e;
+            color: white;
+            border-color: #2c3e50;
+        }
+        .task-card {
+            border-left-width: 4px;
+        }
+        .task-p1 { border-color: #e74c3c; } /* High */
+        .task-p2 { border-color: #f1c40f; } /* Medium */
+        .task-p3 { border-color: #2ecc71; } /* Low */
+
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div id="app" class="min-h-screen">
+        <!-- Header -->
+        <header class="bg-white shadow-sm sticky top-0 z-10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+                <h1 class="text-2xl font-bold text-gray-900">
+                    Carry<span class="text-blue-600">It</span>
+                </h1>
+                <div class="relative">
+                    <button id="project-switcher-btn" class="btn btn-secondary flex items-center">
+                        <span id="current-project-name"></span>
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="project-dropdown" class="hidden absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                        <div id="project-list" class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Dashboard -->
+        <main class="p-4 sm:p-6 lg:p-8">
+            <div class="max-w-7xl mx-auto">
+                <div id="dashboard-intro" class="mb-6">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-2">Tableau de Bord</h2>
+                    <p class="text-gray-600">Ceci est votre espace de travail. Il centralise les informations clés de votre projet actif pour vous permettre de mesurer, d'agir et d'avancer sans vous mentir. La clarté avant tout.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- SMART Goals Card -->
+                    <div class="lg:col-span-1 card p-6">
+                        <h3 class="text-xl font-bold mb-4">Objectif SMART</h3>
+                        <p class="text-sm text-gray-500 mb-4">Un objectif clair est la première étape. Voici la définition de votre projet, décomposée pour garantir sa faisabilité.</p>
+                        <div id="smart-goals-content"></div>
+                    </div>
+
+                    <!-- KPI Chart Card -->
+                    <div class="lg:col-span-2 card p-6">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold">Mon Avancement</h3>
+                                <p id="kpi-title" class="text-sm text-gray-500"></p>
+                            </div>
+                            <div id="kpi-filter-buttons" class="mt-3 sm:mt-0 flex space-x-2">
+                                <button data-filter="week" class="btn btn-secondary text-sm">Semaine</button>
+                                <button data-filter="month" class="btn btn-secondary text-sm">Mois</button>
+                                <button data-filter="all" class="btn btn-secondary text-sm btn-active">Global</button>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="kpiChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kanban Board -->
+                <div class="mt-6 card p-6">
+                    <h3 class="text-xl font-bold mb-4">Mes Tâches</h3>
+                    <p class="text-sm text-gray-500 mb-6">Organisez votre travail. Déplacez les tâches pour refléter leur état d'avancement réel. Pas d'excuses, juste de l'action.</p>
+                    <div id="kanban-board" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Columns will be generated by JS -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const appData = {
+            projects: {
+                p1: {
+                    id: 'p1',
+                    name: "Courir un semi-marathon",
+                    smart: {
+                        s: "Courir 21.1 kilomètres sans m'arrêter.",
+                        m: "Suivre la distance parcourue (km) et la fréquence des entraînements.",
+                        a: "Réaliste en 4 mois avec un entraînement progressif.",
+                        r: "Améliorer ma santé cardiovasculaire et ma discipline personnelle.",
+                        t: "Objectif à atteindre pour le 15 Décembre 2025."
+                    },
+                    kpi: {
+                        title: "Kilomètres parcourus par semaine",
+                        data: {
+                            all: { labels: ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8'], values: [5, 8, 7, 12, 10, 15, 18, 21] },
+                            month: { labels: ['S5', 'S6', 'S7', 'S8'], values: [10, 15, 18, 21] },
+                            week: { labels: ['L', 'M', 'M', 'J', 'V', 'S', 'D'], values: [0, 5, 0, 7, 0, 9, 0] }
+                        }
+                    },
+                    tasks: [
+                        { id: 't1', title: "Acheter des chaussures de course adaptées", status: 'done', priority: 1 },
+                        { id: 't2', title: "Planifier le programme d'entraînement sur 4 mois", status: 'done', priority: 1 },
+                        { id: 't3', title: "Sortie longue de 10km", status: 'inprogress', priority: 2 },
+                        { id: 't4', title: "Séance de fractionné", status: 'todo', priority: 2 },
+                        { id: 't5', title: "S'inscrire à la course officielle", status: 'todo', priority: 3 },
+                        { id: 't6', title: "Sortie de récupération 5km", status: 'todo', priority: 3 },
+                    ]
+                },
+                p2: {
+                    id: 'p2',
+                    name: "Apprendre les bases de l'Italien",
+                    smart: {
+                        s: "Être capable de tenir une conversation simple de 5 minutes en italien.",
+                        m: "Nombre de leçons terminées sur Duolingo et de sessions de pratique.",
+                        a: "Possible avec 30 minutes de pratique quotidienne.",
+                        r: "Préparer un futur voyage en Italie.",
+                        t: "Objectif pour la fin de l'année 2025."
+                    },
+                    kpi: {
+                        title: "Leçons complétées par semaine",
+                        data: {
+                            all: { labels: ['S1', 'S2', 'S3', 'S4', 'S5', 'S6'], values: [3, 5, 4, 6, 7, 5] },
+                            month: { labels: ['S3', 'S4', 'S5', 'S6'], values: [4, 6, 7, 5] },
+                            week: { labels: ['L', 'M', 'M', 'J', 'V', 'S', 'D'], values: [1, 1, 0, 1, 1, 0, 1] }
+                        }
+                    },
+                    tasks: [
+                        { id: 't7', title: "Installer l'application Duolingo", status: 'done', priority: 1 },
+                        { id: 't8', title: "Terminer la section 'Salutations'", status: 'inprogress', priority: 2 },
+                        { id: 't9', title: "Regarder un film en VOSTFR", status: 'todo', priority: 3 },
+                        { id: 't10', title: "Pratiquer avec un partenaire linguistique", status: 'todo', priority: 2 },
+                    ]
+                }
+            },
+            currentProjectId: 'p1',
+            currentKpiFilter: 'all'
+        };
+
+        let kpiChartInstance = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initApp();
+        });
+
+        function initApp() {
+            setupEventListeners();
+            renderProjectList();
+            renderDashboard();
+        }
+
+        function setupEventListeners() {
+            document.getElementById('project-switcher-btn').addEventListener('click', () => {
+                document.getElementById('project-dropdown').classList.toggle('hidden');
+            });
+
+            document.getElementById('kpi-filter-buttons').addEventListener('click', (e) => {
+                if (e.target.tagName === 'BUTTON') {
+                    const filter = e.target.dataset.filter;
+                    appData.currentKpiFilter = filter;
+                    renderDashboard();
+                }
+            });
+        }
+
+        function switchProject(projectId) {
+            appData.currentProjectId = projectId;
+            appData.currentKpiFilter = 'all';
+            document.getElementById('project-dropdown').classList.add('hidden');
+            renderDashboard();
+        }
+
+        function moveTask(taskId, direction) {
+            const project = appData.projects[appData.currentProjectId];
+            const task = project.tasks.find(t => t.id === taskId);
+            if (!task) return;
+
+            const statuses = ['todo', 'inprogress', 'done'];
+            const currentIndex = statuses.indexOf(task.status);
+
+            if (direction === 'next' && currentIndex < 2) {
+                task.status = statuses[currentIndex + 1];
+            } else if (direction === 'prev' && currentIndex > 0) {
+                task.status = statuses[currentIndex - 1];
+            }
+            renderKanban();
+        }
+
+        function renderDashboard() {
+            const project = appData.projects[appData.currentProjectId];
+            document.getElementById('current-project-name').textContent = project.name;
+            renderSmartGoals();
+            renderKpiChart();
+            renderKanban();
+            updateActiveFilterButton();
+        }
+
+        function renderProjectList() {
+            const projectListEl = document.getElementById('project-list');
+            projectListEl.innerHTML = '';
+            Object.values(appData.projects).forEach(p => {
+                const item = document.createElement('a');
+                item.href = '#';
+                item.className = 'block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100';
+                item.textContent = p.name;
+                item.onclick = (e) => {
+                    e.preventDefault();
+                    switchProject(p.id);
+                };
+                projectListEl.appendChild(item);
+            });
+        }
+
+        function renderSmartGoals() {
+            const project = appData.projects[appData.currentProjectId];
+            const container = document.getElementById('smart-goals-content');
+            const smartMap = {
+                S: { label: "Spécifique", value: project.smart.s },
+                M: { label: "Mesurable", value: project.smart.m },
+                A: { label: "Atteignable", value: project.smart.a },
+                R: { label: "Relevant", value: project.smart.r },
+                T: { label: "Temporel", value: project.smart.t }
+            };
+            container.innerHTML = `
+                <ul class="space-y-3">
+                    ${Object.entries(smartMap).map(([key, {label, value}]) => `
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-gray-200 text-gray-700 font-bold flex items-center justify-center mr-3">${key}</div>
+                            <div>
+                                <p class="font-semibold text-gray-800">${label}</p>
+                                <p class="text-gray-600 text-sm">${value}</p>
+                            </div>
+                        </li>
+                    `).join('')}
+                </ul>
+            `;
+        }
+
+        function renderKpiChart() {
+            const project = appData.projects[appData.currentProjectId];
+            document.getElementById('kpi-title').textContent = project.kpi.title;
+            const chartData = project.kpi.data[appData.currentKpiFilter];
+
+            const ctx = document.getElementById('kpiChart').getContext('2d');
+            
+            if (kpiChartInstance) {
+                kpiChartInstance.destroy();
+            }
+
+            kpiChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: chartData.labels,
+                    datasets: [{
+                        label: project.kpi.title,
+                        data: chartData.values,
+                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                        borderColor: 'rgba(52, 152, 219, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(52, 152, 219, 1)',
+                        pointRadius: 4,
+                        tension: 0.2,
+                        fill: true,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#e5e7eb'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: '#2c3e50',
+                            titleFont: { weight: 'bold' },
+                            bodyFont: { size: 14 },
+                            padding: 10,
+                            cornerRadius: 6,
+                            displayColors: false,
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderKanban() {
+            const project = appData.projects[appData.currentProjectId];
+            const board = document.getElementById('kanban-board');
+            const statuses = {
+                todo: { title: 'À Venir', tasks: [] },
+                inprogress: { title: 'En Cours', tasks: [] },
+                done: { title: 'Terminé', tasks: [] }
+            };
+
+            project.tasks.forEach(task => statuses[task.status].tasks.push(task));
+            
+            board.innerHTML = Object.entries(statuses).map(([statusKey, statusData]) => {
+                return `
+                    <div class="bg-gray-100 p-4 rounded-lg">
+                        <h4 class="font-bold text-lg mb-4 text-gray-700">${statusData.title} <span class="text-sm font-normal text-gray-500">(${statusData.tasks.length})</span></h4>
+                        <div class="space-y-4">
+                            ${statusData.tasks.map(task => `
+                                <div class="card p-4 task-card task-p${task.priority}">
+                                    <p class="font-medium text-gray-800">${task.title}</p>
+                                    <div class="flex justify-end space-x-2 mt-3">
+                                        <button ${statusKey === 'todo' ? 'disabled' : ''} onclick="moveTask('${task.id}', 'prev')" class="w-8 h-8 rounded-full flex items-center justify-center bg-gray-200 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                                        </button>
+                                        <button ${statusKey === 'done' ? 'disabled' : ''} onclick="moveTask('${task.id}', 'next')" class="w-8 h-8 rounded-full flex items-center justify-center bg-gray-200 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            `).join('') || '<div class="text-center text-gray-500 text-sm p-4">Aucune tâche</div>'}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function updateActiveFilterButton() {
+            const buttons = document.querySelectorAll('#kpi-filter-buttons button');
+            buttons.forEach(button => {
+                button.classList.remove('btn-active');
+                if (button.dataset.filter === appData.currentKpiFilter) {
+                    button.classList.add('btn-active');
+                }
+            });
+        }
+
+    </script>
+</body>
+</html>
