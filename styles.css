@@ -9043,11 +9043,11 @@
 
         .manifest-headline {
             font-family: var(--font-display);
-            font-size: clamp(38px, 5vw, 60px);
+            font-size: clamp(24px, 3vw, 36px);
             font-weight: normal;
             font-style: italic;
             color: var(--color-text-primary);
-            line-height: 1.08;
+            line-height: 1.12;
             letter-spacing: -0.025em;
             margin-bottom: 24px;
         }
@@ -9098,7 +9098,7 @@
                 padding: 120px var(--space-24) 80px;
             }
             .manifest-headline {
-                font-size: clamp(32px, 8vw, 44px);
+                font-size: clamp(20px, 5vw, 28px);
             }
             .manifest-sub {
                 font-size: 15px;
