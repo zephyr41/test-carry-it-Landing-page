@@ -3834,26 +3834,72 @@
 
 
 /* ─── Bloc 3 rôles — sk-card visual ─────────────────────────────── */
-.sk-role-row {
+.sk-team {
     display: flex;
     align-items: center;
-    gap: 16px;
-    padding: 14px 0;
+    gap: 0;
+    justify-content: center;
+    width: 100%;
 }
 
-.sk-role-label {
+.sk-team-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.sk-team-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(255, 59, 31, 0.12);
+    border: 1.5px solid rgba(255, 59, 31, 0.35);
+}
+
+.sk-team-avatar--secondary {
+    width: 36px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1.5px solid rgba(255, 255, 255, 0.12);
+}
+
+.sk-team-node--main .sk-team-avatar {
+    background: rgba(255, 59, 31, 0.15);
+    border-color: rgba(255, 59, 31, 0.5);
+}
+
+.sk-team-label {
     font-size: 11px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    color: #ff3b1f;
+    color: rgba(255, 255, 255, 0.4);
     font-family: var(--font-primary);
-    min-width: 28px;
 }
 
-.sk-role-sep {
+.sk-team-node--main .sk-team-label {
+    color: #ff3b1f;
+}
+
+.sk-team-connectors {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 0 16px;
+    margin-top: -20px;
+}
+
+.sk-team-line {
+    width: 40px;
     height: 1px;
-    background: rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.sk-team-sides {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 /* ─── Ancien bloc 3 rôles standalone (nettoyage) ────────────────── */
