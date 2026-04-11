@@ -3836,9 +3836,9 @@
 /* ─── Bloc 3 rôles — sk-card visual ─────────────────────────────── */
 .sk-role-row {
     display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    padding: 12px 0;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 0;
 }
 
 .sk-role-label {
@@ -3848,24 +3848,7 @@
     letter-spacing: 0.1em;
     color: #ff3b1f;
     font-family: var(--font-primary);
-    min-width: 32px;
-    padding-top: 3px;
-}
-
-.sk-role-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-}
-
-.sk-role-tag {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.45);
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 6px;
-    padding: 4px 10px;
-    font-family: var(--font-primary);
+    min-width: 28px;
 }
 
 .sk-role-sep {
