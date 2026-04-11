@@ -9027,18 +9027,15 @@
         }
 
         .manifest-overline {
-            display: inline-block;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            color: var(--color-accent-action);
-            margin-bottom: 32px;
+            display: block;
+            font-size: 13px;
+            font-weight: 400;
+            text-transform: none;
+            letter-spacing: 0;
+            color: rgba(238, 68, 8, 0.8);
+            margin-bottom: 20px;
             font-family: var(--font-primary);
-            padding: 6px 16px;
-            border: 1px solid rgba(238, 68, 8, 0.2);
-            border-radius: 100px;
-            background: rgba(238, 68, 8, 0.06);
+            font-style: italic;
         }
 
         .manifest-headline {
@@ -9047,18 +9044,18 @@
             font-weight: normal;
             font-style: italic;
             color: var(--color-text-primary);
-            line-height: 1.12;
+            line-height: 1.2;
             letter-spacing: -0.025em;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .manifest-sub {
-            font-size: 17px;
-            color: var(--color-text-secondary);
-            line-height: 1.7;
-            margin-bottom: 52px;
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.45);
+            line-height: 1.6;
+            margin-bottom: 48px;
             font-family: var(--font-primary);
-            max-width: 480px;
+            max-width: 420px;
             margin-left: auto;
             margin-right: auto;
         }
