@@ -3835,29 +3835,27 @@
 
 /* ─── Bloc 3 rôles ───────────────────────────────────────────────── */
 .roles-block {
-    max-width: 860px;
-    margin: 0 auto 80px;
+    max-width: 960px;
+    margin: 0 auto 100px;
     padding: 0 var(--space-24);
-    text-align: center;
 }
 
 .roles-title {
-    font-family: var(--font-display);
     font-size: 13px;
-    font-weight: normal;
-    font-style: italic;
-    color: rgba(238, 68, 8, 0.7);
-    text-transform: none;
-    letter-spacing: 0;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #ff3b1f;
     margin-bottom: 12px;
+    font-family: var(--font-primary);
 }
 
 .roles-intro {
     font-size: 15px;
-    color: rgba(255, 255, 255, 0.5);
-    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.45);
+    line-height: 1.7;
     max-width: 560px;
-    margin: 0 auto 40px;
+    margin: 0 0 40px;
     font-family: var(--font-primary);
 }
 
@@ -3868,28 +3866,28 @@
 }
 
 .role-card {
-    background: rgba(255, 255, 255, 0.03);
+    background: #111113;
     border: 1px solid rgba(255, 255, 255, 0.07);
-    border-radius: 12px;
-    padding: 24px 20px;
-    text-align: left;
+    border-radius: 20px;
+    padding: 32px;
 }
 
 .role-label {
-    display: block;
-    font-size: 12px;
-    font-weight: 600;
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: var(--color-accent-action);
-    margin-bottom: 12px;
+    letter-spacing: 0.12em;
+    color: #ff3b1f;
+    margin-bottom: 16px;
     font-family: var(--font-primary);
 }
 
 .role-desc {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.55);
-    line-height: 1.65;
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.45);
+    line-height: 1.7;
+    margin: 0;
     font-family: var(--font-primary);
 }
 
