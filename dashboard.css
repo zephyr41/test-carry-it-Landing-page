@@ -764,36 +764,37 @@ body::before {
 .todo-row {
     display: flex;
     gap: 8px;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
 }
 
 .todo-input {
     flex: 1;
     height: 46px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.32);
-    border-radius: 10px;
+    background: #101214;
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 8px;
     padding: 0 14px;
     color: #FFFDF6;
-    font-size: 16px;
+    font-size: 14px;
     font-family: var(--mono);
     outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
 }
 
 .todo-input:focus {
+    background: #121518;
     border-color: rgba(238,68,8,0.70);
     box-shadow: 0 0 0 3px rgba(238,68,8,0.08);
 }
 .todo-input::placeholder { color: rgba(255,253,246,0.35); font-style: italic; font-weight: 400; }
 
 .todo-plus-btn {
-    width: 44px;
-    height: 44px;
+    width: 46px;
+    height: 46px;
     background: #EE4408;
     border: 1px solid #EE4408;
     color: #fff;
-    border-radius: 10px;
+    border-radius: 8px;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -803,6 +804,92 @@ body::before {
 }
 
 .todo-plus-btn:hover { background: #ff5d1a; border-color: #ff5d1a; }
+
+.task-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin: -2px 0 12px;
+}
+
+.task-toolbar-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+.task-toolbar-label {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.78);
+    font-family: var(--mono);
+    line-height: 1.1;
+}
+
+.task-toolbar-sub {
+    font-size: 11px;
+    color: rgba(255,255,255,0.38);
+    font-family: var(--mono);
+    line-height: 1.35;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.task-view-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.task-view-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.28);
+    font-family: var(--mono);
+}
+
+.task-view-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 2px;
+    border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 8px;
+    background: #111315;
+    flex-shrink: 0;
+}
+
+.task-view-btn {
+    height: 30px;
+    padding: 0 12px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: rgba(255,255,255,0.45);
+    font-size: 11px;
+    font-weight: 700;
+    font-family: var(--mono);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+
+.task-view-btn:hover {
+    color: rgba(255,255,255,0.75);
+}
+
+.task-view-btn.active {
+    background: #25282c;
+    color: #F5F3EC;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.05) inset;
+}
 
 .todo-list { display: flex; flex-direction: column; gap: 0; }
 
@@ -842,11 +929,27 @@ body::before {
     cursor: pointer;
 }
 
+/* ── Checkbox 3 états ── */
+.todo-cb.doing {
+    border-color: #EE4408;
+    background: transparent;
+    position: relative;
+}
+.todo-cb.doing::after {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #EE4408;
+}
+
+.todo-cb.done,
 .todo-item.done .todo-cb {
     background: #0A2A53;
     border-color: #0A2A53;
 }
 
+.todo-cb.done::after,
 .todo-item.done .todo-cb::after {
     content: '';
     width: 7px;
@@ -854,6 +957,315 @@ body::before {
     border-left: 1.5px solid #fff;
     border-bottom: 1.5px solid #fff;
     transform: rotate(-45deg) translateY(-1px);
+}
+
+/* ── Item "en cours" ── */
+.todo-item.doing {
+    border-left: 2px solid rgba(238,68,8,0.5);
+    padding-left: 9px;
+}
+
+/* ── Labels de section ── */
+.todo-section-lbl {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.2);
+    padding: 10px 0 4px;
+    display: block;
+}
+.todo-section-lbl.doing {
+    color: #EE4408;
+}
+
+.kanban-board {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    align-items: start;
+    margin-top: 8px;
+}
+
+.kanban-column {
+    min-width: 0;
+    min-height: 230px;
+    display: flex;
+    flex-direction: column;
+    background: #111315;
+    border: 1px solid rgba(255,255,255,0.075);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 18px 44px rgba(0,0,0,0.18);
+    transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+}
+
+.kanban-column.drag-over {
+    background: #151719;
+    border-color: rgba(238,68,8,0.34);
+    box-shadow: 0 0 0 1px rgba(238,68,8,0.12), 0 20px 48px rgba(0,0,0,0.24);
+}
+
+.kanban-column-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 12px 12px 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.055);
+    color: rgba(255,255,255,0.72);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    font-family: var(--mono);
+}
+
+.kanban-column-title {
+    min-width: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.kanban-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #88A9C6;
+    box-shadow: 0 0 0 3px rgba(136,169,198,0.09);
+    flex-shrink: 0;
+}
+
+.kanban-column.doing .kanban-dot {
+    background: #EE4408;
+    box-shadow: 0 0 0 3px rgba(238,68,8,0.10);
+}
+
+.kanban-column.done .kanban-dot {
+    background: #72B77B;
+    box-shadow: 0 0 0 3px rgba(114,183,123,0.10);
+}
+
+.kanban-count {
+    min-width: 20px;
+    height: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 7px;
+    background: rgba(255,255,255,0.055);
+    color: rgba(255,255,255,0.56);
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.kanban-column-body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    flex: 1;
+}
+
+.kanban-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.075);
+    background: #181a1d;
+    cursor: pointer;
+    overflow: hidden;
+    transition: border-color 0.15s, background 0.15s, transform 0.15s, opacity 0.15s, box-shadow 0.15s;
+    user-select: none;
+}
+
+.kanban-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: rgba(136,169,198,0.75);
+}
+
+.kanban-card.doing::before {
+    background: #EE4408;
+}
+
+.kanban-card.done::before {
+    background: #72B77B;
+}
+
+.kanban-card:hover {
+    border-color: rgba(255,255,255,0.16);
+    background: #1d2024;
+    box-shadow: 0 16px 34px rgba(0,0,0,0.24);
+}
+
+.kanban-card.dragging {
+    opacity: 0.42;
+    transform: scale(0.98);
+}
+
+.kanban-card.done .kanban-card-title {
+    text-decoration: line-through;
+    color: rgba(255,255,255,0.50);
+}
+
+.kanban-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.kanban-status-pill {
+    min-width: 0;
+    height: 24px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 8px;
+    border-radius: 6px;
+    border: 1px solid rgba(136,169,198,0.16);
+    background: rgba(136,169,198,0.08);
+    color: rgba(218,232,244,0.72);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-family: var(--mono);
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.kanban-status-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: currentColor;
+    flex-shrink: 0;
+}
+
+.kanban-status-pill.doing {
+    color: #EE4408;
+    background: rgba(238,68,8,0.08);
+    border-color: rgba(238,68,8,0.24);
+}
+
+.kanban-status-pill.done {
+    color: #95D09B;
+    background: rgba(114,183,123,0.08);
+    border-color: rgba(114,183,123,0.24);
+}
+
+.kanban-card-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    flex-shrink: 0;
+}
+
+.kanban-card-menu,
+.kanban-card-del {
+    width: 24px;
+    height: 24px;
+    border-radius: 5px;
+    border: none;
+    background: transparent;
+    color: rgba(255,255,255,0.42);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: color 0.15s, background 0.15s, opacity 0.15s;
+}
+
+.kanban-card-menu {
+    font-size: 16px;
+    letter-spacing: 0.5px;
+}
+
+.kanban-card-del {
+    font-size: 14px;
+}
+
+.kanban-card:hover .kanban-card-menu,
+.kanban-card:hover .kanban-card-del {
+    opacity: 1;
+}
+
+.kanban-card-menu:hover,
+.kanban-card-del:hover {
+    color: #EE4408;
+    background: rgba(238,68,8,0.08);
+}
+
+.kanban-card-title {
+    color: rgba(255,255,255,0.86);
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.32;
+    font-family: var(--mono);
+    overflow-wrap: anywhere;
+}
+
+.kanban-card-progress {
+    width: 100%;
+    height: 3px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.07);
+    overflow: hidden;
+}
+
+.kanban-card-progress span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: #8F6EF6;
+}
+
+.kanban-card.done .kanban-card-progress span {
+    background: #72B77B;
+}
+
+.kanban-card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.kanban-card-meta span {
+    padding: 4px 6px;
+    border-radius: 5px;
+    background: rgba(255,255,255,0.05);
+    color: rgba(255,255,255,0.48);
+    font-size: 10px;
+    font-weight: 600;
+    font-family: var(--mono);
+}
+
+.kanban-empty {
+    min-height: 92px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    border: 1px dashed rgba(255,255,255,0.10);
+    border-radius: 8px;
+    color: rgba(255,255,255,0.34);
+    text-align: center;
+    font-size: 11px;
+    font-family: var(--mono);
+    line-height: 1.4;
 }
 
 .todo-text {
@@ -1328,10 +1740,17 @@ body::before {
     border: 1px solid;
 }
 
-.cp-status-badge.pending {
+.cp-status-badge.pending,
+.cp-status-badge.todo {
     color: rgba(255,255,255,0.55);
     background: rgba(255,255,255,0.04);
     border-color: rgba(255,255,255,0.1);
+}
+
+.cp-status-badge.doing {
+    color: #EE4408;
+    background: rgba(238,68,8,0.08);
+    border-color: rgba(238,68,8,0.22);
 }
 
 .cp-status-badge.done {
@@ -1450,7 +1869,244 @@ body::before {
     flex-shrink: 0;
 }
 
-/* ── JALONS HORIZONTAL TIMELINE ── */
+/* ── Section wrapper ── */
+.jt-section {
+    display: flex;
+    flex-direction: column;
+}
+
+/* ── BLOC UNIFIÉ JALON + TÂCHES ── */
+.jt-block {
+    background: #141619;
+    border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 0 0 8px 8px;
+    padding: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+.jt-jalon-card {
+    padding-bottom: 18px;
+    margin-bottom: 18px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.jt-jalon-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.jt-jalon-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+}
+
+.jt-jalon-card.active .jt-jalon-label {
+    color: #EE4408;
+}
+
+.jt-manage-link {
+    font-size: 11px;
+    color: rgba(255,255,255,0.25);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.jt-manage-link:hover { color: #EE4408; }
+
+.jt-jalon-title {
+    font-size: 20px;
+    font-weight: 800;
+    color: #F5F3EC;
+    margin-bottom: 5px;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+}
+
+.jt-jalon-date {
+    font-size: 12px;
+    color: rgba(255,255,255,0.35);
+}
+
+/* ── TABS — au-dessus de la carte, pattern dossier ── */
+.jt-tabs {
+    display: flex;
+    gap: 3px;
+    margin-bottom: -1px;
+    position: relative;
+    z-index: 2;
+    overflow: visible;
+}
+
+.jt-tab {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    padding: 7px 10px 8px;
+    background: #0d0d0f;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+    cursor: pointer;
+    flex: 1;
+    min-width: 0;
+    transition: background 0.18s;
+    text-align: left;
+    margin-top: 5px;
+    position: relative;
+    z-index: 1;
+}
+
+.jt-tab-date {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.18);
+    font-family: var(--mono);
+    white-space: nowrap;
+}
+
+.jt-tab-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.28);
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.jt-tab.active {
+    background: #141619; /* identique à .jt-block */
+    border-color: rgba(255,255,255,0.1);
+    border-top: 2px solid #EE4408;
+    border-bottom: 1px solid #141619; /* efface le bord haut de la carte */
+    border-radius: 8px 8px 0 0;
+    margin-top: 0;
+    position: relative;
+    z-index: 20;
+}
+
+/* Courbes concaves — uniquement sur le premier onglet actif (bord gauche carte) */
+.jt-tab:first-child.active::before {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: -10px;
+    width: 10px;
+    height: 10px;
+    background: radial-gradient(circle at 100% 0%, transparent 10px, #141619 10px);
+    pointer-events: none;
+    z-index: 21;
+}
+
+/* Courbes concaves — uniquement sur le dernier onglet actif (bord droit carte) */
+.jt-tab:last-child.active::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    right: -10px;
+    width: 10px;
+    height: 10px;
+    background: radial-gradient(circle at 0% 0%, transparent 10px, #141619 10px);
+    pointer-events: none;
+    z-index: 21;
+}
+
+.jt-tab.active .jt-tab-date { color: #EE4408; }
+.jt-tab.active .jt-tab-title { color: #F5F3EC; font-weight: 700; }
+.jt-tab.completed .jt-tab-title { color: rgba(255,255,255,0.15); }
+.jt-tab:hover:not(.active) { background: #111315; }
+
+/* ── Skeleton ── */
+.jt-skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 4px 0 8px;
+}
+
+.jt-skeleton-row {
+    height: 36px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+.jt-skeleton-row::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.04) 50%, transparent 100%);
+    animation: skeleton-shimmer 1.8s infinite;
+}
+
+@keyframes skeleton-shimmer {
+    from { transform: translateX(-100%); }
+    to   { transform: translateX(100%); }
+}
+
+.jmt-line {
+    flex: 1;
+    height: 1px;
+    background: rgba(255,255,255,0.08);
+    min-width: 12px;
+}
+
+.jmt-dot-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    padding: 0 2px;
+}
+
+.jmt-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    border: 1.5px solid rgba(255,255,255,0.18);
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.jmt-dot.active {
+    background: #EE4408;
+    border-color: #EE4408;
+}
+
+.jmt-dot.completed {
+    background: rgba(255,255,255,0.25);
+    border-color: rgba(255,255,255,0.25);
+}
+
+.jmt-dot.viewed {
+    border-color: #EE4408;
+    background: transparent;
+}
+
+.jmt-dot-wrap:hover .jmt-dot:not(.active) {
+    border-color: rgba(238,68,8,0.5);
+}
+
+.jmt-label {
+    font-size: 9px;
+    color: rgba(255,255,255,0.25);
+    white-space: nowrap;
+    letter-spacing: 0.04em;
+}
+
+/* ── JALONS HORIZONTAL TIMELINE (legacy) ── */
 .jalons-panel {
     background: transparent;
     border: 1px solid rgba(255,255,255,0.06);
@@ -1951,13 +2607,59 @@ body::before {
         border-bottom: 1px solid rgba(255,255,255,0.06);
         padding: 14px 16px;
     }
+    .task-toolbar {
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 12px;
+        padding-top: 2px;
+    }
+    .task-toolbar-sub {
+        white-space: normal;
+    }
+    .task-view-label {
+        display: none;
+    }
+    .task-view-btn {
+        height: 32px;
+        padding: 0 10px;
+    }
+    .todo-input {
+        font-size: 16px;
+    }
+    .kanban-board {
+        display: flex;
+        overflow-x: auto;
+        gap: 10px;
+        padding: 2px 0 12px;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+    .kanban-board::-webkit-scrollbar {
+        display: none;
+    }
+    .kanban-column {
+        min-width: min(84vw, 360px);
+        min-height: 280px;
+        scroll-snap-align: start;
+    }
+    .kanban-card-menu,
+    .kanban-card-del {
+        opacity: 1;
+    }
     /* Touch targets mobile — PAS sur todo-item (casse le scroll) */
     .todo-list, .todo-item, .subtasks, .subtask-item, .todo-done-header {
         touch-action: pan-y;
     }
+    .kanban-board,
+    .kanban-card,
+    .kanban-column-body {
+        touch-action: pan-x pan-y;
+    }
     .todo-cb, .todo-drop, .todo-del, .todo-edit,
     .cp-status-badge, .side-panel-back, .todo-done-toggle,
-    .subtask-icon-btn, .todo-plus-btn {
+    .subtask-icon-btn, .todo-plus-btn, .task-view-btn,
+    .kanban-status-pill, .kanban-card-menu, .kanban-card-del {
         touch-action: manipulation;
     }
     .todo-edit {
@@ -1972,19 +2674,16 @@ body::before {
         width: 9px;
         height: 5px;
     }
-    /* Reorder mobile : Tâches → KPI+SMART → Jalons */
-    .todo-panel        { order: 1; }
+    /* Reorder mobile : Jalon+Tâches → KPI+SMART → Citation */
+    .jt-block          { order: 1; border-radius: 0; border-left: none; border-right: none; }
     .db-row-kpi-smart  { order: 2; }
-    .jalons-panel      { order: 3; }
-    .db-citation       { order: 4; }
+    .db-citation       { order: 3; }
 }
 
-/* ── PANEL OUVERT : dim contexte (KPI+SMART et Jalons) ── */
-.db-row-kpi-smart,
-.jalons-panel {
+/* ── PANEL OUVERT : dim contexte (KPI+SMART) ── */
+.db-row-kpi-smart {
     transition: opacity 0.24s ease;
 }
-body.panel-open .db-row-kpi-smart,
-body.panel-open .jalons-panel {
+body.panel-open .db-row-kpi-smart {
     opacity: 0.32;
 }

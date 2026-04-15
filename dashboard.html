@@ -156,6 +156,9 @@
         let todoSubOpen = {};
         let subtaskDoneCollapsed = {};
         let taskPanelState = { projectIndex: null, taskId: null };
+        let activeJalonView = {}; // { projectIndex: viewedJalonIndex }
+        let taskViewMode = {}; // { projectIndex: 'list' | 'kanban' }
+        let kanbanDragState = { projectIndex: null, taskId: null };
 
         // ──────────────────────────────────────────────────────────
         // STORAGE
@@ -389,10 +392,10 @@
                         </div>
                     </div>
 
-                    <!-- Row 2 : Todo — moteur d'exécution -->
-                    ${buildTodoPanel(obj, i)}
+                    <!-- Bloc unifié : Jalon actif + Tâches -->
+                    ${buildJalonTaskBlock(obj, i)}
 
-                    <!-- Row 3 : Jalons GPS — priorité basse -->
+                    <!-- Timeline globale -->
                     ${buildJalonsPanel(obj, i)}
 
                     <!-- Citation -->
@@ -547,36 +550,235 @@
             `;
         }
 
+        function getTaskViewMode(i) {
+            return taskViewMode[i] === 'kanban' ? 'kanban' : 'list';
+        }
+
+        function setTaskViewMode(i, mode) {
+            taskViewMode[i] = mode === 'kanban' ? 'kanban' : 'list';
+            const toggle = document.getElementById(`taskViewToggle-${i}`);
+            if (toggle) {
+                toggle.querySelectorAll('.task-view-btn').forEach(btn => {
+                    const isActive = btn.dataset.view === taskViewMode[i];
+                    btn.classList.toggle('active', isActive);
+                    btn.setAttribute('aria-selected', String(isActive));
+                });
+            }
+            refreshTodoList(i);
+        }
+
+        function getTaskCounts(tasks) {
+            const base = { total: 0, todo: 0, doing: 0, done: 0 };
+            (tasks || []).forEach(task => {
+                const status = getTaskStatus(task);
+                base.total += 1;
+                if (base[status] !== undefined) base[status] += 1;
+            });
+            return base;
+        }
+
+        function renderTaskViewToggle(i) {
+            const mode = getTaskViewMode(i);
+            return `
+                <div class="task-view-toggle" id="taskViewToggle-${i}" role="tablist" aria-label="Vue des tâches">
+                    <button class="task-view-btn ${mode === 'list' ? 'active' : ''}" data-view="list" role="tab" aria-selected="${mode === 'list'}" onclick="setTaskViewMode(${i}, 'list')">Liste</button>
+                    <button class="task-view-btn ${mode === 'kanban' ? 'active' : ''}" data-view="kanban" role="tab" aria-selected="${mode === 'kanban'}" onclick="setTaskViewMode(${i}, 'kanban')">Kanban</button>
+                </div>`;
+        }
+
+        function renderTaskToolbar(obj, i) {
+            const tasks = getFilteredTasksForView(obj, i);
+            const counts = getTaskCounts(tasks);
+            const taskLabel = `${counts.total} tâche${counts.total !== 1 ? 's' : ''}`;
+            return `
+                <div class="task-toolbar">
+                    <div class="task-toolbar-copy">
+                        <span class="task-toolbar-label">Actions</span>
+                        <span class="task-toolbar-sub">${taskLabel} · ${counts.doing} en cours · ${counts.done} terminée${counts.done !== 1 ? 's' : ''}</span>
+                    </div>
+                    <div class="task-view-group">
+                        <span class="task-view-label">Vue</span>
+                        ${renderTaskViewToggle(i)}
+                    </div>
+                </div>`;
+        }
+
         function renderTasksList(tasks, i) {
             if (!tasks || tasks.length === 0) {
                 return '<div class="todo-empty">Aucune action — ajoutez votre première</div>';
             }
-            const active = tasks.filter(t => !t.done);
-            const done = tasks.filter(t => t.done);
-            const activeHtml = active.length
-                ? active.map((t, ti) => renderTaskItem(t, i, ti, false)).join('')
-                : '<div class="todo-empty">Aucune action — ajoutez votre première</div>';
+            const doing = tasks.filter(t => getTaskStatus(t) === 'doing');
+            const todo  = tasks.filter(t => getTaskStatus(t) === 'todo');
+            const done  = tasks.filter(t => getTaskStatus(t) === 'done');
 
-            const doneCount = done.length;
-            const collapsed = todoDoneCollapsed[i] === true;
-            const doneHtml = doneCount
-                ? `
+            let html = '';
+
+            if (doing.length) {
+                html += `<div class="todo-section-lbl doing">En cours</div>`;
+                html += doing.map((t, ti) => renderTaskItem(t, i, ti)).join('');
+            }
+
+            if (todo.length) {
+                if (doing.length) html += `<div class="todo-section-lbl">À faire</div>`;
+                html += todo.map((t, ti) => renderTaskItem(t, i, ti)).join('');
+            }
+
+            if (!doing.length && !todo.length) {
+                html += '<div class="todo-empty">Aucune action — ajoutez votre première</div>';
+            }
+
+            if (done.length) {
+                const collapsed = todoDoneCollapsed[i] === true;
+                html += `
                     <div class="todo-done-header">
-                        <span class="section-lbl" style="margin-bottom:0;">Terminées (${doneCount})</span>
+                        <span class="section-lbl" style="margin-bottom:0;">Terminées (${done.length})</span>
                         <button class="todo-done-toggle" onclick="toggleDoneBlock(${i})">
                             <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor" style="transition:transform 0.2s;transform:${collapsed ? 'rotate(0deg)' : 'rotate(90deg)'}"><path d="M3 2l4 3-4 3V2z"/></svg>
                         </button>
                     </div>
                     <div style="display:${collapsed ? 'none' : 'block'};margin-top:6px;">
-                        ${done.map((t, ti) => renderTaskItem(t, i, ti, true)).join('')}
-                    </div>
-                  `
-                : '';
+                        ${done.map((t, ti) => renderTaskItem(t, i, ti)).join('')}
+                    </div>`;
+            }
 
-            return activeHtml + doneHtml;
+            return html;
         }
 
-        function renderTaskItem(task, i, ti, isDone) {
+        function renderTasksKanban(tasks, i) {
+            const columns = [
+                { status: 'todo', label: 'À faire', empty: 'Aucune action à lancer' },
+                { status: 'doing', label: 'En cours', empty: 'Rien en mouvement' },
+                { status: 'done', label: 'Terminé', empty: 'Rien terminé pour l’instant' }
+            ];
+
+            return `
+                <div class="kanban-board" id="kanbanBoard-${i}">
+                    ${columns.map(col => {
+                        const colTasks = (tasks || []).filter(t => getTaskStatus(t) === col.status);
+                        return `
+                            <section class="kanban-column ${col.status}"
+                                data-status="${col.status}"
+                                ondragover="kanbanDragOver(event)"
+                                ondragleave="kanbanDragLeave(event)"
+                                ondrop="dropKanbanTask(event, ${i}, '${col.status}')">
+                                <div class="kanban-column-head">
+                                    <span class="kanban-column-title"><span class="kanban-dot"></span>${col.label}</span>
+                                    <span class="kanban-count">${colTasks.length}</span>
+                                </div>
+                                <div class="kanban-column-body">
+                                    ${colTasks.length
+                                        ? colTasks.map(task => renderKanbanTaskCard(task, i)).join('')
+                                        : `<div class="kanban-empty">${col.empty}</div>`}
+                                </div>
+                            </section>`;
+                    }).join('')}
+                </div>`;
+        }
+
+        function renderKanbanTaskCard(task, i) {
+            const status = getTaskStatus(task);
+            const subtasks = task.subtasks || [];
+            const doneSubtasks = subtasks.filter(s => s.done).length;
+            const progress = subtasks.length ? Math.round((doneSubtasks / subtasks.length) * 100) : 0;
+            const meta = [];
+            if (subtasks.length) meta.push(`${doneSubtasks}/${subtasks.length} checklist`);
+            if ((task.notes || '').trim()) meta.push('Note');
+
+            return `
+                <article class="kanban-card ${status}" data-taskid="${task.id}" draggable="true"
+                    onclick="openTaskPanel(${i}, ${task.id})"
+                    ondragstart="startKanbanDrag(event, ${i}, ${task.id})"
+                    ondragend="endKanbanDrag(event)"
+                    ontouchstart="todoTouchStart(event)"
+                    ontouchmove="todoTouchMove(event)"
+                    ontouchend="todoTouchEnd(event, ${i}, ${task.id})">
+                    <div class="kanban-card-top">
+                        <button class="kanban-status-pill ${status}"
+                            onclick="toggleTask(${i}, ${task.id}); event.stopPropagation();"
+                            ontouchstart="event.stopPropagation();"
+                            ontouchend="toggleTask(${i}, ${task.id}); event.stopPropagation(); event.preventDefault();">
+                            <span class="kanban-status-dot"></span>
+                            ${getTaskStatusLabel(status)}
+                        </button>
+                        <div class="kanban-card-actions">
+                            <button class="kanban-card-menu"
+                                onclick="openTaskPanel(${i}, ${task.id}); event.stopPropagation();"
+                                ontouchstart="event.stopPropagation();"
+                                ontouchend="openTaskPanel(${i}, ${task.id}); event.stopPropagation(); event.preventDefault();"
+                                title="Ouvrir le détail">⋯</button>
+                            <button class="kanban-card-del"
+                                onclick="deleteTask(event, ${i}, ${task.id}); event.stopPropagation();"
+                                ontouchstart="event.stopPropagation();"
+                                ontouchend="deleteTask(event, ${i}, ${task.id}); event.stopPropagation(); event.preventDefault();"
+                                title="Supprimer">×</button>
+                        </div>
+                    </div>
+                    <div class="kanban-card-title">${escHtml(task.text)}</div>
+                    ${subtasks.length ? `
+                        <div class="kanban-card-progress" aria-label="${progress}% de checklist terminé">
+                            <span style="width:${progress}%"></span>
+                        </div>` : ''}
+                    ${meta.length ? `<div class="kanban-card-meta">${meta.map(item => `<span>${escHtml(item)}</span>`).join('')}</div>` : ''}
+                </article>`;
+        }
+
+        function getTaskStatusLabel(status) {
+            return { todo: 'À faire', doing: 'En cours', done: 'Terminée' }[status] || 'À faire';
+        }
+
+        function setTaskStatus(i, taskId, status) {
+            if (!['todo', 'doing', 'done'].includes(status)) return;
+            const task = (allObjectifs[i]?.tasks || []).find(t => t.id === taskId);
+            if (!task) return;
+            task.status = status;
+            task.done = status === 'done';
+            if (task.done) todoDoneCollapsed[i] = false;
+            saveAllObjectifs();
+            refreshTodoList(i);
+            if (taskPanelState.projectIndex === i && taskPanelState.taskId === taskId) {
+                renderTaskPanel();
+            }
+        }
+
+        function startKanbanDrag(event, i, taskId) {
+            kanbanDragState = { projectIndex: i, taskId };
+            event.currentTarget.classList.add('dragging');
+            if (event.dataTransfer) {
+                event.dataTransfer.effectAllowed = 'move';
+                event.dataTransfer.setData('text/plain', String(taskId));
+            }
+        }
+
+        function kanbanDragOver(event) {
+            event.preventDefault();
+            if (event.dataTransfer) event.dataTransfer.dropEffect = 'move';
+            event.currentTarget.classList.add('drag-over');
+        }
+
+        function kanbanDragLeave(event) {
+            if (!event.currentTarget.contains(event.relatedTarget)) {
+                event.currentTarget.classList.remove('drag-over');
+            }
+        }
+
+        function dropKanbanTask(event, i, status) {
+            event.preventDefault();
+            event.currentTarget.classList.remove('drag-over');
+            const rawTaskId = event.dataTransfer?.getData('text/plain') || kanbanDragState.taskId;
+            const taskId = Number(rawTaskId);
+            if (!Number.isFinite(taskId)) return;
+            setTaskStatus(i, taskId, status);
+        }
+
+        function endKanbanDrag(event) {
+            event.currentTarget.classList.remove('dragging');
+            document.querySelectorAll('.kanban-column.drag-over').forEach(col => col.classList.remove('drag-over'));
+            kanbanDragState = { projectIndex: null, taskId: null };
+        }
+
+        function renderTaskItem(task, i, ti) {
+            const status = getTaskStatus(task);
+            const isDone = status === 'done';
             const isEditing = todoEditState[i] === task.id;
             if (isEditing) {
                 return `
@@ -590,7 +792,7 @@
             }
             const subOpen = todoSubOpen[`${i}-${task.id}`];
             return `
-                <div class="todo-item ${isDone ? 'done' : ''}" data-taskid="${task.id}"
+                <div class="todo-item ${status}" data-taskid="${task.id}"
                     onclick="handleTaskRowClick(event, ${i}, ${task.id})"
                     ontouchstart="todoTouchStart(event)"
                     ontouchmove="todoTouchMove(event)"
@@ -601,7 +803,7 @@
                         ontouchend="toggleSubtasks(${i}, ${task.id}); event.stopPropagation(); event.preventDefault();">
                         <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M5 7L1 3h8L5 7z"/></svg>
                     </button>
-                    <div class="todo-cb"
+                    <div class="todo-cb ${status}"
                         onclick="toggleTask(${i}, ${task.id}); event.stopPropagation();"
                         ontouchstart="event.stopPropagation();"
                         ontouchend="toggleTask(${i}, ${task.id}); event.stopPropagation(); event.preventDefault();"></div>
@@ -660,11 +862,20 @@
                 id: Date.now(),
                 text,
                 done: false,
+                status: 'todo',
                 createdAt: Date.now(),
                 notes: '',
                 subtasks: []
             };
-            ensureTaskTarget(allObjectifs[i], task);
+            const obj = allObjectifs[i];
+            const viewedJalon = getViewedJalon(obj, i);
+            if (viewedJalon) {
+                task.jalonId    = viewedJalon.id || '';
+                task.jalonTitle = getJalonLabel(viewedJalon);
+                task.jalonDate  = viewedJalon.date || '';
+            } else {
+                ensureTaskTarget(obj, task);
+            }
             allObjectifs[i].tasks.push(task);
             saveAllObjectifs();
 
@@ -672,15 +883,15 @@
             refreshTodoList(i);
         }
 
+        function getTaskStatus(task) {
+            return task.status || (task.done ? 'done' : 'todo');
+        }
+
         function toggleTask(i, taskId) {
             const task = (allObjectifs[i]?.tasks || []).find(t => t.id === taskId);
             if (!task) return;
-            task.done = !task.done;
-            if (task.done) {
-                todoDoneCollapsed[i] = false;
-            }
-            saveAllObjectifs();
-            refreshTodoList(i);
+            const cycle = { todo: 'doing', doing: 'done', done: 'todo' };
+            setTaskStatus(i, taskId, cycle[getTaskStatus(task)]);
         }
 
         function deleteTask(event, i, taskId) {
@@ -695,13 +906,8 @@
 
         function refreshTodoList(i) {
             const el = document.getElementById(`todoList-${i}`);
-            if (el) el.innerHTML = renderTasksList(allObjectifs[i].tasks || [], i);
-            const headerEl = document.getElementById(`todoHeaderLabel-${i}`);
-            if (headerEl) {
-                const targetJalon = getTodoPanelTargetJalon(allObjectifs[i]);
-                headerEl.textContent = targetJalon
-                    ? `Tâches vers · ${getJalonLabel(targetJalon)}`
-                    : 'Exécution quotidienne';
+            if (el) {
+                el.innerHTML = renderTasksContent(allObjectifs[i], i);
             }
         }
 
@@ -814,13 +1020,13 @@
         function todoTouchEnd(event, i, taskId) {
             if (!isTaskPanelMobile()) return;
             if (_todoTouchMoved) return;
-            if (event.target.closest('.todo-drop,.todo-cb,.todo-del,.todo-edit,.subtask-icon-btn,.subtask-del,.subtask-input')) return;
+            if (event.target.closest('.todo-drop,.todo-cb,.todo-del,.todo-edit,.subtask-icon-btn,.subtask-del,.subtask-input,.kanban-status-pill,.kanban-card-menu,.kanban-card-del')) return;
             event.preventDefault();
             clickTask(i, taskId);
         }
 
         function handleTaskRowClick(event, i, taskId) {
-            if (event.target.closest('.todo-drop,.todo-cb,.todo-del,.todo-edit,.subtask-icon-btn,.subtask-del,.subtask-input')) return;
+            if (event.target.closest('.todo-drop,.todo-cb,.todo-del,.todo-edit,.subtask-icon-btn,.subtask-del,.subtask-input,.kanban-status-pill,.kanban-card-menu,.kanban-card-del')) return;
             if (isTaskPanelMobile()) return;
             clickTask(i, taskId);
         }
@@ -899,11 +1105,11 @@
             const panel = document.getElementById('taskPanelBody');
             panel.innerHTML = `
                 <div class="cp-status-row">
-                    <span class="cp-status-badge ${task.done ? 'done' : 'pending'}"
+                    <span class="cp-status-badge ${getTaskStatus(task)}"
                         onclick="toggleTask(${i}, ${task.id}); renderTaskPanel(); refreshTodoList(${i});"
                         ontouchend="toggleTask(${i}, ${task.id}); renderTaskPanel(); refreshTodoList(${i}); event.preventDefault();">
                         <span class="cp-status-dot"></span>
-                        ${task.done ? 'Terminée' : 'À faire'}
+                        ${getTaskStatusLabel(getTaskStatus(task))}
                     </span>
                 </div>
                 <h3 class="cp-task-title" onclick="inlineEditPanelTitle(${i}, ${taskId}, this)" title="Modifier le titre">${escHtml(task.text)}</h3>
@@ -1231,6 +1437,142 @@
                         <div style="display:flex;align-items:flex-end;">${topCols}</div>
                         <div style="display:flex;align-items:center;">${midCols}</div>
                         <div style="display:flex;align-items:flex-start;">${botCols}</div>
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        // ──────────────────────────────────────────────────────────
+        // JALON TASK BLOCK — bloc unifié jalon actif + tâches
+        // ──────────────────────────────────────────────────────────
+
+        function getViewedJalonIndex(obj, i) {
+            const sorted = getSortedProjectJalons(obj);
+            if (activeJalonView[i] !== undefined && activeJalonView[i] < sorted.length) {
+                return activeJalonView[i];
+            }
+            const idx = sorted.findIndex(j => (j.statut || 'pending') !== 'completed');
+            return idx >= 0 ? idx : 0;
+        }
+
+        function getViewedJalon(obj, i) {
+            const sorted = getSortedProjectJalons(obj);
+            if (!sorted.length) return null;
+            return sorted[getViewedJalonIndex(obj, i)] || sorted[0];
+        }
+
+        function switchJalonView(i, ji) {
+            activeJalonView[i] = ji;
+            renderDashboard();
+            setTimeout(() => initKPIChart(i, allObjectifs[i]), 0);
+        }
+
+        function getFilteredTasksForView(obj, i) {
+            const viewedJalon = getViewedJalon(obj, i);
+            const activeJalon = getNextActiveJalon(obj);
+            const isActiveViewed = viewedJalon && activeJalon && viewedJalon.id === activeJalon.id;
+            return (obj.tasks || []).filter(t => {
+                if (!viewedJalon) return true;
+                if (!t.jalonId) return isActiveViewed;
+                return t.jalonId === viewedJalon.id;
+            });
+        }
+
+        function shouldShowTaskSkeleton(obj, i, filteredTasks) {
+            const viewedJalon = getViewedJalon(obj, i);
+            const activeJalon = getNextActiveJalon(obj);
+            const isActiveViewed = viewedJalon && activeJalon && viewedJalon.id === activeJalon.id;
+            return filteredTasks.length === 0 && viewedJalon && !isActiveViewed;
+        }
+
+        function renderTaskSkeleton() {
+            return `
+                <div class="jt-skeleton">
+                    <div class="jt-skeleton-row" style="width:72%"></div>
+                    <div class="jt-skeleton-row" style="width:55%"></div>
+                    <div class="jt-skeleton-row" style="width:63%"></div>
+                </div>`;
+        }
+
+        function renderTasksContent(obj, i) {
+            const filteredTasks = getFilteredTasksForView(obj, i);
+            if (shouldShowTaskSkeleton(obj, i, filteredTasks)) return renderTaskSkeleton();
+            return getTaskViewMode(i) === 'kanban'
+                ? renderTasksKanban(filteredTasks, i)
+                : renderTasksList(filteredTasks, i);
+        }
+
+        function buildJalonTaskBlock(obj, i) {
+            const sorted = getSortedProjectJalons(obj);
+            const activeJalon = getNextActiveJalon(obj);
+            const viewedIdx = getViewedJalonIndex(obj, i);
+            const viewedJalon = sorted[viewedIdx] || null;
+            const total = sorted.length;
+            const isActiveViewed = viewedJalon && activeJalon && viewedJalon.id === activeJalon.id;
+
+            // ── Jalon card ──
+            let jalonCard = '';
+            if (viewedJalon) {
+                const posLabel = isActiveViewed
+                    ? `JALON ACTIF · ${viewedIdx + 1}/${total}`
+                    : `JALON ${viewedIdx + 1}/${total}`;
+                const dateFormatted = formatDateJalonCourt(viewedJalon.date);
+                jalonCard = `
+                    <div class="jt-jalon-card ${isActiveViewed ? 'active' : ''}">
+                        <div class="jt-jalon-top">
+                            <span class="jt-jalon-label">${posLabel}</span>
+                            <a href="jalons.html" class="jt-manage-link">Gérer →</a>
+                        </div>
+                        <div class="jt-jalon-title">${escHtml(getJalonLabel(viewedJalon))}</div>
+                        ${dateFormatted ? `<div class="jt-jalon-date">→ ${dateFormatted}</div>` : ''}
+                    </div>`;
+            } else {
+                jalonCard = `<div style="text-align:center;padding:4px 0 12px;">
+                    <a href="jalons.html" style="font-size:12px;color:rgba(255,255,255,0.25);text-decoration:none;border-bottom:1px dashed rgba(255,255,255,0.12);padding-bottom:2px;">+ Planifier les jalons de ce projet</a>
+                </div>`;
+            }
+
+            // ── Tabs (chronological left→right) ──
+            let timelineHtml = '';
+            if (sorted.length > 0) {
+                let tabs = '';
+                sorted.forEach((jalon, ji) => {
+                    const isActive = activeJalon && jalon.id === activeJalon.id;
+                    const isViewed = ji === viewedIdx;
+                    const isCompleted = jalon.statut === 'completed';
+                    let tabClass = 'jt-tab';
+                    if (isViewed) tabClass += ' active';
+                    if (isCompleted) tabClass += ' completed';
+                    const dateLabel = formatDateJalonCourt(jalon.date);
+                    tabs += `
+                        <button class="${tabClass}" onclick="switchJalonView(${i}, ${ji})">
+                            <span class="jt-tab-date">${escHtml(dateLabel)}</span>
+                            <span class="jt-tab-title">${escHtml(getJalonLabel(jalon))}</span>
+                        </button>`;
+                });
+                timelineHtml = `<div class="jt-tabs">${tabs}</div>`;
+            }
+
+            return `
+            <div class="jt-section">
+                ${timelineHtml}
+                <div class="jt-block">
+                    ${jalonCard}
+                    ${renderTaskToolbar(obj, i)}
+                    <div class="todo-row">
+                        <input class="todo-input" type="text" id="todoInput-${i}"
+                            placeholder="Quelle action pour ce jalon ?"
+                            enterkeyhint="go"
+                            onkeydown="if(event.key==='Enter'){addTask(${i});event.preventDefault();}"
+                            onblur="addTask(${i});">
+                        <button class="todo-plus-btn" onclick="addTask(${i})">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="todo-list" id="todoList-${i}">
+                        ${renderTasksContent(obj, i)}
                     </div>
                 </div>
             </div>`;
