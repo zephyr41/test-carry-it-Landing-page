@@ -3694,6 +3694,111 @@
         .sk-check.sk-check-empty::after { display: none; }
         .sk-task-done .sk-bar { background: rgba(255,59,31,0.2); }
 
+        /* ── Empty state styles (nouvelle section) ── */
+        .sk-empty-field {
+            flex: 1;
+            height: 9px;
+            border-radius: 3px;
+            border: 1px dashed rgba(255,255,255,0.10);
+            background: transparent;
+        }
+
+        .sk-task-field {
+            width: 80%;
+            flex: none;
+        }
+
+        .sk-dot-empty {
+            background: transparent;
+            border: 1.5px dashed rgba(255,255,255,0.18) !important;
+        }
+
+        .sk-lbl-empty {
+            color: rgba(255,255,255,0.18) !important;
+            font-style: normal;
+        }
+
+        .sk-empty-unit {
+            color: rgba(255,255,255,0.18) !important;
+            font-style: italic;
+            font-size: 11px !important;
+        }
+
+        .sk-kpi-empty-value {
+            font-size: 56px;
+            font-weight: 300;
+            color: rgba(255,255,255,0.12);
+            line-height: 1;
+            margin: 4px 0;
+            letter-spacing: -2px;
+        }
+
+        .sk-empty-sub {
+            font-size: 10px;
+            color: rgba(255,255,255,0.15) !important;
+            font-style: italic;
+            background: transparent !important;
+            height: auto !important;
+            width: auto !important;
+        }
+
+        .sk-check-empty-dashed {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 1.5px dashed rgba(255,255,255,0.18);
+            flex-shrink: 0;
+        }
+
+        .sk-add-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 6px;
+            padding-top: 6px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .sk-add-label {
+            font-size: 11px;
+            color: rgba(255,255,255,0.18);
+            font-style: italic;
+        }
+
+        /* ── Closing challenge ── */
+        .sol-challenge {
+            text-align: center;
+            max-width: 600px;
+            margin: 80px auto 0;
+            padding: 48px 32px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .sol-challenge-text {
+            font-size: clamp(18px, 2.5vw, 26px);
+            font-weight: 600;
+            color: rgba(255,255,255,0.82);
+            line-height: 1.4;
+            letter-spacing: -0.3px;
+            margin-bottom: 32px;
+        }
+
+        .sol-challenge-cta {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 28px;
+            background: #EE4408;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 700;
+            border-radius: 6px;
+            text-decoration: none;
+            letter-spacing: 0.02em;
+            transition: background 0.15s;
+        }
+
+        .sol-challenge-cta:hover { background: #ff5d1a; }
+
         /* Card 6 — Dashboard */
         .sk-card-dashboard {
             min-height: 320px;
