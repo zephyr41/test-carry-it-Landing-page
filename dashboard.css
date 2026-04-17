@@ -891,7 +891,7 @@ body::before {
     box-shadow: 0 1px 0 rgba(255,255,255,0.05) inset;
 }
 
-.todo-list { display: flex; flex-direction: column; gap: 0; }
+.todo-list { display: flex; flex-direction: column; gap: 6px; }
 
 .todo-empty {
     text-align: center;
@@ -914,6 +914,150 @@ body::before {
 .todo-item:hover { background: rgba(255,255,255,0.03); }
 .todo-item:hover .todo-del { opacity: 1; }
 .todo-item:hover .todo-edit { opacity: 1; }
+
+.task-list-item {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 10px;
+    border: 1px solid rgba(255,255,255,0.075);
+    border-radius: 8px;
+    background: #111315;
+    transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+}
+
+.task-list-item:hover {
+    background: #151719;
+    border-color: rgba(255,255,255,0.14);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+}
+
+.task-list-item.doing {
+    border-color: rgba(238,68,8,0.16);
+    box-shadow: inset 2px 0 0 rgba(238,68,8,0.65);
+}
+
+.task-list-item.done {
+    border-color: rgba(114,183,123,0.16);
+    background: rgba(17,19,21,0.72);
+}
+
+.task-list-check {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(136,169,198,0.36);
+    background: transparent;
+    cursor: pointer;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.task-list-check.doing {
+    border-color: #EE4408;
+}
+
+.task-list-check.doing::after {
+    content: '';
+    position: absolute;
+    inset: 5px;
+    border-radius: 50%;
+    background: #EE4408;
+}
+
+.task-list-check.done {
+    background: #72B77B;
+    border-color: #72B77B;
+}
+
+.task-list-check.done::after {
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: 4px;
+    width: 8px;
+    height: 5px;
+    border-left: 1.5px solid #0d0d0f;
+    border-bottom: 1.5px solid #0d0d0f;
+    transform: rotate(-45deg);
+}
+
+.task-list-status {
+    min-width: 86px;
+    height: 26px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 0 8px;
+    border-radius: 6px;
+    border: 1px solid rgba(136,169,198,0.16);
+    background: rgba(136,169,198,0.08);
+    color: rgba(218,232,244,0.72);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-family: var(--mono);
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.task-list-status.doing {
+    color: #EE4408;
+    background: rgba(238,68,8,0.08);
+    border-color: rgba(238,68,8,0.24);
+}
+
+.task-list-status.done {
+    color: #95D09B;
+    background: rgba(114,183,123,0.08);
+    border-color: rgba(114,183,123,0.24);
+}
+
+.task-list-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: currentColor;
+    flex-shrink: 0;
+}
+
+.task-list-main {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.task-list-main .todo-text {
+    font-size: 13px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.84);
+}
+
+.task-list-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.task-list-meta span {
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    color: rgba(255,255,255,0.45);
+    font-size: 10px;
+    font-weight: 600;
+    font-family: var(--mono);
+}
+
+.task-list-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+}
 
 .todo-cb {
     width: 15px;
@@ -965,18 +1109,43 @@ body::before {
     padding-left: 9px;
 }
 
+.todo-item.task-list-item.doing {
+    border-left: 1px solid rgba(238,68,8,0.16);
+    padding-left: 10px;
+}
+
 /* ── Labels de section ── */
 .todo-section-lbl {
     font-size: 9px;
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.2);
-    padding: 10px 0 4px;
-    display: block;
+    color: rgba(255,255,255,0.26);
+    padding: 12px 2px 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 .todo-section-lbl.doing {
     color: #EE4408;
+}
+
+.todo-section-lbl span {
+    min-width: 18px;
+    height: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.055);
+    color: rgba(255,255,255,0.48);
+    font-size: 9px;
+    letter-spacing: 0;
+}
+
+.todo-section-lbl.doing span {
+    color: #EE4408;
+    background: rgba(238,68,8,0.08);
 }
 
 .kanban-board {
@@ -1074,8 +1243,8 @@ body::before {
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    padding: 12px;
+    gap: 8px;
+    padding: 11px;
     border-radius: 8px;
     border: 1px solid rgba(255,255,255,0.075);
     background: #181a1d;
@@ -1119,9 +1288,10 @@ body::before {
     color: rgba(255,255,255,0.50);
 }
 
-.kanban-card-top {
+.kanban-card-top,
+.kanban-card-title-row {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     gap: 8px;
 }
@@ -1211,11 +1381,12 @@ body::before {
 
 .kanban-card-title {
     color: rgba(255,255,255,0.86);
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
     line-height: 1.32;
     font-family: var(--mono);
     overflow-wrap: anywhere;
+    min-width: 0;
 }
 
 .kanban-card-progress {
@@ -1244,9 +1415,9 @@ body::before {
 }
 
 .kanban-card-meta span {
-    padding: 4px 6px;
-    border-radius: 5px;
-    background: rgba(255,255,255,0.05);
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
     color: rgba(255,255,255,0.48);
     font-size: 10px;
     font-weight: 600;
@@ -1422,12 +1593,27 @@ body::before {
     color: #EE4408;
 }
 
+.todo-done-group {
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 6px;
+}
+
 /* ── SUBTASKS — style ClickUp ── */
 .subtasks {
     margin: 0 0 0 32px;
     padding-bottom: 10px;
     display: flex;
     flex-direction: column;
+}
+
+.task-list-item + .subtasks {
+    margin: -6px 0 4px;
+    padding: 2px 0 8px;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    background: #101214;
 }
 
 .subtask-item {
@@ -2647,6 +2833,18 @@ body::before {
     .kanban-card-del {
         opacity: 1;
     }
+    .task-list-item {
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        gap: 8px;
+        padding: 10px;
+    }
+    .task-list-main {
+        grid-column: auto;
+    }
+    .task-list-actions {
+        grid-column: auto;
+        align-self: center;
+    }
     /* Touch targets mobile — PAS sur todo-item (casse le scroll) */
     .todo-list, .todo-item, .subtasks, .subtask-item, .todo-done-header {
         touch-action: pan-y;
@@ -2658,7 +2856,7 @@ body::before {
     }
     .todo-cb, .todo-drop, .todo-del, .todo-edit,
     .cp-status-badge, .side-panel-back, .todo-done-toggle,
-    .subtask-icon-btn, .todo-plus-btn, .task-view-btn,
+    .subtask-icon-btn, .todo-plus-btn, .task-view-btn, .task-list-check,
     .kanban-status-pill, .kanban-card-menu, .kanban-card-del {
         touch-action: manipulation;
     }

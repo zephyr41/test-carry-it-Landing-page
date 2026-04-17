@@ -619,7 +619,7 @@
             }
 
             if (todo.length) {
-                if (doing.length) html += `<div class="todo-section-lbl">À faire</div>`;
+                html += `<div class="todo-section-lbl">À faire</div>`;
                 html += todo.map((t, ti) => renderTaskItem(t, i, ti)).join('');
             }
 
@@ -636,7 +636,7 @@
                             <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor" style="transition:transform 0.2s;transform:${collapsed ? 'rotate(0deg)' : 'rotate(90deg)'}"><path d="M3 2l4 3-4 3V2z"/></svg>
                         </button>
                     </div>
-                    <div style="display:${collapsed ? 'none' : 'block'};margin-top:6px;">
+                    <div class="todo-done-group" style="display:${collapsed ? 'none' : 'flex'};">
                         ${done.map((t, ti) => renderTaskItem(t, i, ti)).join('')}
                     </div>`;
             }
@@ -679,10 +679,8 @@
             const status = getTaskStatus(task);
             const subtasks = task.subtasks || [];
             const doneSubtasks = subtasks.filter(s => s.done).length;
-            const progress = subtasks.length ? Math.round((doneSubtasks / subtasks.length) * 100) : 0;
             const meta = [];
-            if (subtasks.length) meta.push(`${doneSubtasks}/${subtasks.length} checklist`);
-            if ((task.notes || '').trim()) meta.push('Note');
+            if (subtasks.length) meta.push(`${doneSubtasks}/${subtasks.length}`);
 
             return `
                 <article class="kanban-card ${status}" data-taskid="${task.id}" draggable="true"
@@ -692,14 +690,8 @@
                     ontouchstart="todoTouchStart(event)"
                     ontouchmove="todoTouchMove(event)"
                     ontouchend="todoTouchEnd(event, ${i}, ${task.id})">
-                    <div class="kanban-card-top">
-                        <button class="kanban-status-pill ${status}"
-                            onclick="toggleTask(${i}, ${task.id}); event.stopPropagation();"
-                            ontouchstart="event.stopPropagation();"
-                            ontouchend="toggleTask(${i}, ${task.id}); event.stopPropagation(); event.preventDefault();">
-                            <span class="kanban-status-dot"></span>
-                            ${getTaskStatusLabel(status)}
-                        </button>
+                    <div class="kanban-card-title-row">
+                        <div class="kanban-card-title">${escHtml(task.text)}</div>
                         <div class="kanban-card-actions">
                             <button class="kanban-card-menu"
                                 onclick="openTaskPanel(${i}, ${task.id}); event.stopPropagation();"
@@ -713,11 +705,6 @@
                                 title="Supprimer">×</button>
                         </div>
                     </div>
-                    <div class="kanban-card-title">${escHtml(task.text)}</div>
-                    ${subtasks.length ? `
-                        <div class="kanban-card-progress" aria-label="${progress}% de checklist terminé">
-                            <span style="width:${progress}%"></span>
-                        </div>` : ''}
                     ${meta.length ? `<div class="kanban-card-meta">${meta.map(item => `<span>${escHtml(item)}</span>`).join('')}</div>` : ''}
                 </article>`;
         }
@@ -791,29 +778,40 @@
                 </div>`;
             }
             const subOpen = todoSubOpen[`${i}-${task.id}`];
+            const subtasks = task.subtasks || [];
+            const doneSubtasks = subtasks.filter(s => s.done).length;
+            const meta = [];
+            if (subtasks.length) meta.push(`${doneSubtasks}/${subtasks.length}`);
             return `
-                <div class="todo-item ${status}" data-taskid="${task.id}"
+                <div class="todo-item task-list-item ${status}" data-taskid="${task.id}"
                     onclick="handleTaskRowClick(event, ${i}, ${task.id})"
                     ontouchstart="todoTouchStart(event)"
                     ontouchmove="todoTouchMove(event)"
                     ontouchend="todoTouchEnd(event, ${i}, ${task.id})">
-                    <button class="todo-drop ${subOpen ? 'open' : ''}"
-                        onclick="toggleSubtasks(${i}, ${task.id}); event.stopPropagation();"
-                        ontouchstart="event.stopPropagation();"
-                        ontouchend="toggleSubtasks(${i}, ${task.id}); event.stopPropagation(); event.preventDefault();">
-                        <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M5 7L1 3h8L5 7z"/></svg>
-                    </button>
-                    <div class="todo-cb ${status}"
+                    <button class="task-list-check ${status}"
                         onclick="toggleTask(${i}, ${task.id}); event.stopPropagation();"
                         ontouchstart="event.stopPropagation();"
-                        ontouchend="toggleTask(${i}, ${task.id}); event.stopPropagation(); event.preventDefault();"></div>
-                    <span class="todo-text">${escHtml(task.text)}</span>
-                    <button class="todo-edit"
-                        onclick="openTaskPanel(${i}, ${task.id}); event.stopPropagation();"
-                        ontouchstart="event.stopPropagation();"
-                        ontouchend="openTaskPanel(${i}, ${task.id}); event.stopPropagation(); event.preventDefault();"
-                        title="Ouvrir le détail">⋯</button>
-                    <button class="todo-del" onclick="deleteTask(event, ${i}, ${task.id})">×</button>
+                        ontouchend="toggleTask(${i}, ${task.id}); event.stopPropagation(); event.preventDefault();"
+                        aria-label="${getTaskStatusLabel(status)}"></button>
+                    <div class="task-list-main">
+                        <span class="todo-text">${escHtml(task.text)}</span>
+                        ${meta.length ? `<div class="task-list-meta">${meta.map(item => `<span>${escHtml(item)}</span>`).join('')}</div>` : ''}
+                    </div>
+                    <div class="task-list-actions">
+                        <button class="todo-drop ${subOpen ? 'open' : ''}"
+                            onclick="toggleSubtasks(${i}, ${task.id}); event.stopPropagation();"
+                            ontouchstart="event.stopPropagation();"
+                            ontouchend="toggleSubtasks(${i}, ${task.id}); event.stopPropagation(); event.preventDefault();"
+                            title="Checklist">
+                            <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M5 7L1 3h8L5 7z"/></svg>
+                        </button>
+                        <button class="todo-edit"
+                            onclick="openTaskPanel(${i}, ${task.id}); event.stopPropagation();"
+                            ontouchstart="event.stopPropagation();"
+                            ontouchend="openTaskPanel(${i}, ${task.id}); event.stopPropagation(); event.preventDefault();"
+                            title="Ouvrir le détail">⋯</button>
+                        <button class="todo-del" onclick="deleteTask(event, ${i}, ${task.id})">×</button>
+                    </div>
                 </div>
                 ${renderSubtasksInline(task, i)}
             `;
@@ -1020,13 +1018,13 @@
         function todoTouchEnd(event, i, taskId) {
             if (!isTaskPanelMobile()) return;
             if (_todoTouchMoved) return;
-            if (event.target.closest('.todo-drop,.todo-cb,.todo-del,.todo-edit,.subtask-icon-btn,.subtask-del,.subtask-input,.kanban-status-pill,.kanban-card-menu,.kanban-card-del')) return;
+            if (event.target.closest('.todo-drop,.todo-cb,.todo-del,.todo-edit,.task-list-check,.subtask-icon-btn,.subtask-del,.subtask-input,.kanban-status-pill,.kanban-card-menu,.kanban-card-del')) return;
             event.preventDefault();
             clickTask(i, taskId);
         }
 
         function handleTaskRowClick(event, i, taskId) {
-            if (event.target.closest('.todo-drop,.todo-cb,.todo-del,.todo-edit,.subtask-icon-btn,.subtask-del,.subtask-input,.kanban-status-pill,.kanban-card-menu,.kanban-card-del')) return;
+            if (event.target.closest('.todo-drop,.todo-cb,.todo-del,.todo-edit,.task-list-check,.subtask-icon-btn,.subtask-del,.subtask-input,.kanban-status-pill,.kanban-card-menu,.kanban-card-del')) return;
             if (isTaskPanelMobile()) return;
             clickTask(i, taskId);
         }
