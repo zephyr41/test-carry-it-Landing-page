@@ -158,6 +158,7 @@
         let taskPanelState = { projectIndex: null, taskId: null };
         let activeJalonView = {}; // { projectIndex: viewedJalonIndex }
         let taskViewMode = {}; // { projectIndex: 'list' | 'kanban' }
+        let jalonPopupState = {}; // { projectIndex: jalonId | null }
         let kanbanDragState = { projectIndex: null, taskId: null };
 
         // ──────────────────────────────────────────────────────────
@@ -587,25 +588,15 @@
         }
 
         function renderTaskToolbar(obj, i) {
-            const tasks = getFilteredTasksForView(obj, i);
-            const counts = getTaskCounts(tasks);
-            const taskLabel = `${counts.total} tâche${counts.total !== 1 ? 's' : ''}`;
             return `
                 <div class="task-toolbar">
-                    <div class="task-toolbar-copy">
-                        <span class="task-toolbar-label">Actions</span>
-                        <span class="task-toolbar-sub">${taskLabel} · ${counts.doing} en cours · ${counts.done} terminée${counts.done !== 1 ? 's' : ''}</span>
-                    </div>
-                    <div class="task-view-group">
-                        <span class="task-view-label">Vue</span>
-                        ${renderTaskViewToggle(i)}
-                    </div>
+                    ${renderTaskViewToggle(i)}
                 </div>`;
         }
 
         function renderTasksList(tasks, i) {
             if (!tasks || tasks.length === 0) {
-                return '<div class="todo-empty">Aucune action — ajoutez votre première</div>';
+                return '';
             }
             const doing = tasks.filter(t => getTaskStatus(t) === 'doing');
             const todo  = tasks.filter(t => getTaskStatus(t) === 'todo');
@@ -623,9 +614,7 @@
                 html += todo.map((t, ti) => renderTaskItem(t, i, ti)).join('');
             }
 
-            if (!doing.length && !todo.length) {
-                html += '<div class="todo-empty">Aucune action — ajoutez votre première</div>';
-            }
+            // no message when list is empty — input is the affordance
 
             if (done.length) {
                 const collapsed = todoDoneCollapsed[i] === true;
@@ -666,9 +655,7 @@
                                     <span class="kanban-count">${colTasks.length}</span>
                                 </div>
                                 <div class="kanban-column-body">
-                                    ${colTasks.length
-                                        ? colTasks.map(task => renderKanbanTaskCard(task, i)).join('')
-                                        : `<div class="kanban-empty">${col.empty}</div>`}
+                                    ${colTasks.map(task => renderKanbanTaskCard(task, i)).join('')}
                                 </div>
                             </section>`;
                     }).join('')}
@@ -798,6 +785,12 @@
                         ${meta.length ? `<div class="task-list-meta">${meta.map(item => `<span>${escHtml(item)}</span>`).join('')}</div>` : ''}
                     </div>
                     <div class="task-list-actions">
+                        <button class="todo-edit"
+                            onclick="openTaskPanel(${i}, ${task.id}); event.stopPropagation();"
+                            ontouchstart="event.stopPropagation();"
+                            ontouchend="openTaskPanel(${i}, ${task.id}); event.stopPropagation(); event.preventDefault();"
+                            title="Ouvrir le détail">⋯</button>
+                        <button class="todo-del" onclick="deleteTask(event, ${i}, ${task.id})">×</button>
                         <button class="todo-drop ${subOpen ? 'open' : ''}"
                             onclick="toggleSubtasks(${i}, ${task.id}); event.stopPropagation();"
                             ontouchstart="event.stopPropagation();"
@@ -805,12 +798,6 @@
                             title="Checklist">
                             <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M5 7L1 3h8L5 7z"/></svg>
                         </button>
-                        <button class="todo-edit"
-                            onclick="openTaskPanel(${i}, ${task.id}); event.stopPropagation();"
-                            ontouchstart="event.stopPropagation();"
-                            ontouchend="openTaskPanel(${i}, ${task.id}); event.stopPropagation(); event.preventDefault();"
-                            title="Ouvrir le détail">⋯</button>
-                        <button class="todo-del" onclick="deleteTask(event, ${i}, ${task.id})">×</button>
                     </div>
                 </div>
                 ${renderSubtasksInline(task, i)}
@@ -1410,10 +1397,12 @@
                         <span class="jt-date">${formatDateJalonCourt(jalon.date)}</span>
                     </div>`;
 
-                const tooltipTitle = [jalon.titre || jalon.title || '', jalon.date ? formatDateJalonCourt(jalon.date) : ''].filter(Boolean).join(' · ');
+                const isPopupOpen = jalonPopupState[i] === jalon.id;
                 midCols += midLine + `
                     <div class="jt-dot-wrap">
-                        <div class="jt-dot ${status}" title="${escHtml(tooltipTitle)}"></div>
+                        <div class="jt-dot ${status} ${isPopupOpen ? 'popup-active' : ''}"
+                            onclick="toggleJalonPopup(${i}, '${escHtml(jalon.id || '')}')"
+                            title="${escHtml(jalon.titre || jalon.title || '')}"></div>
                     </div>`;
 
                 botCols += (ji > 0 ? '<div class="jt-spacer"></div>' : '') + `
@@ -1423,6 +1412,13 @@
                         ${jalon.progression !== undefined ? `<span class="jt-prog">${jalon.progression}%</span>` : ''}
                     </div>`;
             });
+
+            // Popup card for selected jalon
+            let popupHtml = '';
+            if (jalonPopupState[i]) {
+                const pj = jalons.find(j => j.id === jalonPopupState[i]);
+                if (pj) popupHtml = buildJalonDetailCard(pj, jalons.length, jalons.indexOf(pj));
+            }
 
             return `
             <div class="jalons-panel">
@@ -1437,6 +1433,46 @@
                         <div style="display:flex;align-items:flex-start;">${botCols}</div>
                     </div>
                 </div>
+                ${popupHtml}
+            </div>`;
+        }
+
+        // ──────────────────────────────────────────────────────────
+        // JALON POPUP DETAIL
+        // ──────────────────────────────────────────────────────────
+
+        function toggleJalonPopup(i, jalonId) {
+            jalonPopupState[i] = jalonPopupState[i] === jalonId ? null : jalonId;
+            renderDashboard();
+        }
+
+        function buildJalonDetailCard(jalon, total, idx) {
+            const title = jalon.titre || jalon.title || '';
+            const tag = jalon.tag || '';
+            const date = formatDateJalonCourt(jalon.date);
+            const desc = jalon.desc || '';
+            const kpi = jalon.kpi || '';
+            const statut = jalon.statut || 'pending';
+            const num = idx + 1;
+
+            const statusLabels = { completed: 'Validé', in_progress: 'En cours', pending: 'À venir' };
+            const statusLabel = statusLabels[statut] || 'À venir';
+            const statusClass = statut === 'completed' ? 'completed' : statut === 'in_progress' ? 'in-progress' : 'pending';
+
+            return `
+            <div class="jl-detail-card">
+                <div class="jl-detail-header">
+                    <div class="jl-detail-meta">
+                        ${tag ? `<span class="jl-detail-tag">${escHtml(tag)}</span>` : ''}
+                        <span class="jl-detail-num">Jalon ${num}/${total}</span>
+                        <span class="jl-detail-status ${statusClass}">${statusLabel}</span>
+                    </div>
+                    ${date ? `<span class="jl-detail-date">${escHtml(date)}</span>` : ''}
+                </div>
+                ${title ? `<div class="jl-detail-title">${escHtml(title)}</div>` : ''}
+                ${desc ? `<div class="jl-detail-section"><span class="jl-detail-label">Description</span><p class="jl-detail-text">${escHtml(desc)}</p></div>` : ''}
+                ${kpi ? `<div class="jl-detail-section"><span class="jl-detail-label">Validation</span><p class="jl-detail-text jl-detail-kpi">${escHtml(kpi)}</p></div>` : ''}
+                ${!desc && !kpi ? `<p class="jl-detail-empty">Aucun détail — <a href="jalons.html">ajouter une description</a></p>` : ''}
             </div>`;
         }
 
@@ -1495,12 +1531,7 @@
         }
 
         function renderTaskSkeleton() {
-            return `
-                <div class="jt-skeleton">
-                    <div class="jt-skeleton-row" style="width:72%"></div>
-                    <div class="jt-skeleton-row" style="width:55%"></div>
-                    <div class="jt-skeleton-row" style="width:63%"></div>
-                </div>`;
+            return '';
         }
 
         function renderTasksContent(obj, i) {
@@ -1531,11 +1562,17 @@
                     <div class="jt-jalon-card ${isActiveViewed ? 'active' : ''} ${isViewedCompleted ? 'completed' : ''}">
                         <div class="jt-jalon-top">
                             <span class="jt-jalon-label">${posLabel}</span>
-                            <a href="jalons.html" class="jt-manage-link">Gérer →</a>
+                            <div class="jt-jalon-actions">
+                                ${!isViewedCompleted
+                                    ? `<button class="jt-validate-btn" onclick="completeJalon(${i}, '${escHtml(viewedJalon.id || '')}')">✓ Valider</button>`
+                                    : `<span class="jt-validated-badge">✓ Validé</span>`}
+                                <a href="jalons.html" class="jt-manage-link">Gérer →</a>
+                            </div>
                         </div>
-                        <div class="jt-jalon-title">${escHtml(getJalonLabel(viewedJalon))}</div>
-                        ${dateFormatted ? `<div class="jt-jalon-date">→ ${dateFormatted}</div>` : ''}
-                        ${!isViewedCompleted ? `<button class="jt-validate-btn" onclick="completeJalon(${i}, '${escHtml(viewedJalon.id || '')}')">✓ Valider ce jalon</button>` : `<div class="jt-validated-badge">✓ Jalon validé</div>`}
+                        <div class="jt-jalon-bottom">
+                            <div class="jt-jalon-title">${escHtml(getJalonLabel(viewedJalon))}</div>
+                            ${dateFormatted ? `<span class="jt-jalon-date">${escHtml(dateFormatted)}</span>` : ''}
+                        </div>
                     </div>`;
             } else {
                 jalonCard = `<div style="text-align:center;padding:4px 0 12px;">
@@ -1570,17 +1607,15 @@
                 <div class="jt-block">
                     ${jalonCard}
                     ${renderTaskToolbar(obj, i)}
-                    <div class="todo-row">
-                        <input class="todo-input" type="text" id="todoInput-${i}"
-                            placeholder="Quelle action pour ce jalon ?"
+                    <div class="todo-add-row" onclick="document.getElementById('todoInput-${i}').focus()">
+                        <svg class="todo-add-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3" stroke-dasharray="2.5 2" stroke-linecap="round"/>
+                        </svg>
+                        <input class="todo-add-input" type="text" id="todoInput-${i}"
+                            placeholder="Ajouter une action"
                             enterkeyhint="go"
                             onkeydown="if(event.key==='Enter'){addTask(${i});event.preventDefault();}"
                             onblur="addTask(${i});">
-                        <button class="todo-plus-btn" onclick="addTask(${i})">
-                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
-                            </svg>
-                        </button>
                     </div>
                     <div class="todo-list" id="todoList-${i}">
                         ${renderTasksContent(obj, i)}

@@ -761,6 +761,52 @@ body::before {
     letter-spacing: 0.04em;
 }
 
+.todo-add-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 4px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    cursor: text;
+    transition: background 0.12s;
+}
+
+.todo-add-row:hover {
+    background: rgba(255,255,255,0.02);
+}
+
+.todo-add-icon {
+    color: rgba(255,255,255,0.22);
+    flex-shrink: 0;
+    transition: color 0.15s;
+}
+
+.todo-add-row:focus-within .todo-add-icon {
+    color: rgba(238,68,8,0.6);
+}
+
+.todo-add-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 13px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.55);
+    font-family: var(--mono);
+    padding: 0;
+}
+
+.todo-add-input::placeholder {
+    color: rgba(255,255,255,0.25);
+    font-style: normal;
+}
+
+.todo-add-input:focus {
+    color: rgba(255,255,255,0.80);
+}
+
+/* legacy - keep for fallback */
 .todo-row {
     display: flex;
     gap: 8px;
@@ -803,14 +849,14 @@ body::before {
     flex-shrink: 0;
 }
 
+.todo-plus-btn { display: none; }
 .todo-plus-btn:hover { background: #ff5d1a; border-color: #ff5d1a; }
 
 .task-toolbar {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    margin: -2px 0 12px;
+    justify-content: flex-end;
+    margin: 0 0 8px;
 }
 
 .task-toolbar-copy {
@@ -821,11 +867,11 @@ body::before {
 }
 
 .task-toolbar-label {
-    font-size: 12px;
-    font-weight: 800;
-    letter-spacing: 0.08em;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.78);
+    color: rgba(255,255,255,0.42);
     font-family: var(--mono);
     line-height: 1.1;
 }
@@ -891,7 +937,7 @@ body::before {
     box-shadow: 0 1px 0 rgba(255,255,255,0.05) inset;
 }
 
-.todo-list { display: flex; flex-direction: column; gap: 6px; }
+.todo-list { display: flex; flex-direction: column; gap: 0; }
 
 .todo-empty {
     text-align: center;
@@ -920,27 +966,28 @@ body::before {
     grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
     gap: 10px;
-    padding: 9px 10px;
-    border: 1px solid rgba(255,255,255,0.075);
-    border-radius: 8px;
-    background: #111315;
-    transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+    padding: 8px 4px;
+    border: none;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    border-radius: 0;
+    background: transparent;
+    transition: background 0.12s;
+}
+
+.task-list-item:first-child {
+    border-top: 1px solid rgba(255,255,255,0.05);
 }
 
 .task-list-item:hover {
-    background: #151719;
-    border-color: rgba(255,255,255,0.14);
-    box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+    background: rgba(255,255,255,0.025);
 }
 
 .task-list-item.doing {
-    border-color: rgba(238,68,8,0.16);
-    box-shadow: inset 2px 0 0 rgba(238,68,8,0.65);
+    /* status visible via checkbox indicator only */
 }
 
 .task-list-item.done {
-    border-color: rgba(114,183,123,0.16);
-    background: rgba(17,19,21,0.72);
+    /* status visible via checkbox */
 }
 
 .task-list-check {
@@ -1033,8 +1080,8 @@ body::before {
 
 .task-list-main .todo-text {
     font-size: 13px;
-    font-weight: 700;
-    color: rgba(255,255,255,0.84);
+    font-weight: 500;
+    color: rgba(255,255,255,0.80);
 }
 
 .task-list-meta {
@@ -1120,33 +1167,17 @@ body::before {
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.26);
-    padding: 12px 2px 0;
+    color: rgba(255,255,255,0.22);
+    padding: 10px 4px 4px;
     display: flex;
     align-items: center;
     gap: 6px;
 }
 .todo-section-lbl.doing {
-    color: #EE4408;
+    color: rgba(238,68,8,0.55);
 }
 
-.todo-section-lbl span {
-    min-width: 18px;
-    height: 18px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 6px;
-    background: rgba(255,255,255,0.055);
-    color: rgba(255,255,255,0.48);
-    font-size: 9px;
-    letter-spacing: 0;
-}
-
-.todo-section-lbl.doing span {
-    color: #EE4408;
-    background: rgba(238,68,8,0.08);
-}
+.todo-section-lbl span { display: none; }
 
 .kanban-board {
     display: grid;
@@ -1161,18 +1192,16 @@ body::before {
     min-height: 230px;
     display: flex;
     flex-direction: column;
-    background: #111315;
-    border: 1px solid rgba(255,255,255,0.075);
+    background: #0e1012;
+    border: 1px solid rgba(255,255,255,0.055);
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 18px 44px rgba(0,0,0,0.18);
-    transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+    transition: border-color 0.15s, background 0.15s;
 }
 
 .kanban-column.drag-over {
     background: #151719;
-    border-color: rgba(238,68,8,0.34);
-    box-shadow: 0 0 0 1px rgba(238,68,8,0.12), 0 20px 48px rgba(0,0,0,0.24);
+    border-color: rgba(238,68,8,0.28);
 }
 
 .kanban-column-head {
@@ -1180,12 +1209,13 @@ body::before {
     align-items: center;
     justify-content: space-between;
     gap: 8px;
-    padding: 12px 12px 10px;
-    border-bottom: 1px solid rgba(255,255,255,0.055);
-    color: rgba(255,255,255,0.72);
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: 0.02em;
+    padding: 10px 12px 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    color: rgba(255,255,255,0.48);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
     font-family: var(--mono);
 }
 
@@ -1200,42 +1230,33 @@ body::before {
 }
 
 .kanban-dot {
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
     border-radius: 50%;
-    background: #88A9C6;
-    box-shadow: 0 0 0 3px rgba(136,169,198,0.09);
+    background: rgba(136,169,198,0.5);
     flex-shrink: 0;
 }
 
 .kanban-column.doing .kanban-dot {
-    background: #EE4408;
-    box-shadow: 0 0 0 3px rgba(238,68,8,0.10);
+    background: rgba(238,68,8,0.65);
 }
 
 .kanban-column.done .kanban-dot {
-    background: #72B77B;
-    box-shadow: 0 0 0 3px rgba(114,183,123,0.10);
+    background: rgba(114,183,123,0.55);
 }
 
 .kanban-count {
-    min-width: 20px;
-    height: 20px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 7px;
-    background: rgba(255,255,255,0.055);
-    color: rgba(255,255,255,0.56);
+    color: rgba(255,255,255,0.28);
     font-size: 10px;
-    font-weight: 800;
+    font-weight: 600;
+    font-family: var(--mono);
 }
 
 .kanban-column-body {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    padding: 10px;
+    gap: 7px;
+    padding: 8px 10px;
     flex: 1;
 }
 
@@ -1243,39 +1264,22 @@ body::before {
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    padding: 11px;
-    border-radius: 8px;
-    border: 1px solid rgba(255,255,255,0.075);
-    background: #181a1d;
+    gap: 6px;
+    padding: 10px 11px;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.055);
+    background: #141618;
     cursor: pointer;
     overflow: hidden;
-    transition: border-color 0.15s, background 0.15s, transform 0.15s, opacity 0.15s, box-shadow 0.15s;
+    transition: border-color 0.15s, background 0.15s, transform 0.15s, opacity 0.15s;
     user-select: none;
 }
 
-.kanban-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: rgba(136,169,198,0.75);
-}
-
-.kanban-card.doing::before {
-    background: #EE4408;
-}
-
-.kanban-card.done::before {
-    background: #72B77B;
-}
+.kanban-card::before { display: none; }
 
 .kanban-card:hover {
-    border-color: rgba(255,255,255,0.16);
-    background: #1d2024;
-    box-shadow: 0 16px 34px rgba(0,0,0,0.24);
+    border-color: rgba(255,255,255,0.12);
+    background: #1a1c1f;
 }
 
 .kanban-card.dragging {
@@ -1595,8 +1599,8 @@ body::before {
 
 .todo-done-group {
     flex-direction: column;
-    gap: 6px;
-    margin-top: 6px;
+    gap: 0;
+    margin-top: 0;
 }
 
 /* ── SUBTASKS — style ClickUp ── */
@@ -1608,12 +1612,11 @@ body::before {
 }
 
 .task-list-item + .subtasks {
-    margin: -6px 0 4px;
-    padding: 2px 0 8px;
-    border: 1px solid rgba(255,255,255,0.06);
-    border-top: none;
-    border-radius: 0 0 8px 8px;
-    background: #101214;
+    margin: 0 0 0 32px;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
 }
 
 .subtask-item {
@@ -2066,22 +2069,22 @@ body::before {
     background: #141619;
     border: 1px solid rgba(255,255,255,0.09);
     border-radius: 0 0 8px 8px;
-    padding: 20px;
+    padding: 14px 16px 16px;
     position: relative;
     z-index: 1;
 }
 
 .jt-jalon-card {
-    padding-bottom: 18px;
-    margin-bottom: 18px;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding-bottom: 12px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.055);
 }
 
 .jt-jalon-top {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 10px;
+    margin-bottom: 6px;
 }
 
 .jt-jalon-label {
@@ -2105,43 +2108,56 @@ body::before {
 
 .jt-manage-link:hover { color: #EE4408; }
 
+.jt-jalon-bottom {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.jt-jalon-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
 .jt-jalon-title {
-    font-size: 20px;
-    font-weight: 800;
-    color: #F5F3EC;
-    margin-bottom: 5px;
-    line-height: 1.15;
-    letter-spacing: -0.02em;
+    font-size: 15px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.88);
+    line-height: 1.25;
+    letter-spacing: -0.01em;
 }
 
 .jt-jalon-date {
-    font-size: 12px;
-    color: rgba(255,255,255,0.35);
+    font-size: 11px;
+    color: rgba(255,255,255,0.30);
+    font-family: var(--mono);
+    flex-shrink: 0;
 }
 
 .jt-validate-btn {
-    margin-top: 14px;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 7px 14px;
+    gap: 4px;
+    padding: 4px 10px;
     background: transparent;
-    border: 1px solid rgba(238,68,8,0.4);
-    border-radius: 6px;
-    color: #EE4408;
-    font-size: 12px;
+    border: 1px solid rgba(238,68,8,0.3);
+    border-radius: 5px;
+    color: rgba(238,68,8,0.75);
+    font-size: 11px;
     font-weight: 600;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.03em;
     cursor: pointer;
-    transition: background 0.15s, border-color 0.15s;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
 }
 .jt-validate-btn:hover {
-    background: rgba(238,68,8,0.12);
+    background: rgba(238,68,8,0.10);
     border-color: #EE4408;
+    color: #EE4408;
 }
 
 .jt-validated-badge {
-    margin-top: 12px;
     display: inline-flex;
     align-items: center;
     gap: 5px;
@@ -2249,34 +2265,6 @@ body::before {
 .jt-tab.completed .jt-tab-title { color: rgba(255,255,255,0.15); }
 .jt-tab:hover:not(.active) { background: #111315; }
 
-/* ── Skeleton ── */
-.jt-skeleton {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding: 4px 0 8px;
-}
-
-.jt-skeleton-row {
-    height: 36px;
-    background: rgba(255,255,255,0.04);
-    border-radius: 8px;
-    position: relative;
-    overflow: hidden;
-}
-
-.jt-skeleton-row::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.04) 50%, transparent 100%);
-    animation: skeleton-shimmer 1.8s infinite;
-}
-
-@keyframes skeleton-shimmer {
-    from { transform: translateX(-100%); }
-    to   { transform: translateX(100%); }
-}
 
 .jmt-line {
     flex: 1;
@@ -2447,11 +2435,15 @@ body::before {
     background: transparent;
     flex-shrink: 0;
     position: relative;
-    transition: transform 0.2s;
-    cursor: default;
+    transition: transform 0.2s, border-color 0.2s;
+    cursor: pointer;
 }
 
-.jt-dot:hover { transform: scale(1.2); }
+.jt-dot:hover { transform: scale(1.15); }
+.jt-dot.popup-active {
+    border-color: rgba(255,255,255,0.6);
+    transform: scale(1.1);
+}
 
 .jt-dot.completed {
     background: #EE4408;
@@ -2477,6 +2469,137 @@ body::before {
 @keyframes pulse-dot {
     0%, 100% { box-shadow: 0 0 0 3px rgba(238,68,8,0.12); }
     50%       { box-shadow: 0 0 0 6px rgba(238,68,8,0.05); }
+}
+
+/* ── Jalon detail popup card ── */
+.jl-detail-card {
+    margin-top: 14px;
+    padding: 14px 16px;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    background: #111315;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    animation: jl-fade-in 0.18s ease;
+}
+
+@keyframes jl-fade-in {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.jl-detail-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.jl-detail-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.jl-detail-tag {
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+    font-family: var(--mono);
+}
+
+.jl-detail-num {
+    font-size: 10px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.28);
+    font-family: var(--mono);
+}
+
+.jl-detail-status {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-family: var(--mono);
+}
+
+.jl-detail-status.completed {
+    color: #72B77B;
+    background: rgba(114,183,123,0.10);
+}
+
+.jl-detail-status.in-progress {
+    color: #EE4408;
+    background: rgba(238,68,8,0.08);
+}
+
+.jl-detail-status.pending {
+    color: rgba(255,255,255,0.32);
+    background: rgba(255,255,255,0.05);
+}
+
+.jl-detail-date {
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.38);
+    font-family: var(--mono);
+    flex-shrink: 0;
+}
+
+.jl-detail-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.88);
+    line-height: 1.3;
+}
+
+.jl-detail-section {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.jl-detail-label {
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.28);
+    font-family: var(--mono);
+}
+
+.jl-detail-text {
+    font-size: 13px;
+    color: rgba(255,255,255,0.62);
+    line-height: 1.55;
+    white-space: pre-wrap;
+}
+
+.jl-detail-kpi {
+    color: rgba(255,255,255,0.72);
+    font-weight: 500;
+}
+
+.jl-detail-empty {
+    font-size: 12px;
+    color: rgba(255,255,255,0.25);
+    font-family: var(--mono);
+}
+
+.jl-detail-empty a {
+    color: rgba(238,68,8,0.65);
+    text-decoration: none;
+}
+
+.jl-detail-empty a:hover {
+    color: #EE4408;
 }
 
 .jt-title {
@@ -2874,7 +2997,7 @@ body::before {
     .task-list-item {
         grid-template-columns: auto minmax(0, 1fr) auto;
         gap: 8px;
-        padding: 10px;
+        padding: 9px 4px;
     }
     .task-list-main {
         grid-column: auto;
