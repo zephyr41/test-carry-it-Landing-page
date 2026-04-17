@@ -1380,7 +1380,7 @@
         // JALONS HORIZONTAL TIMELINE
         // ──────────────────────────────────────────────────────────
         function buildJalonsPanel(obj, i) {
-            const jalons = obj.jalons || [];
+            const jalons = getSortedProjectJalons(obj);
 
             const manageLink = `<a href="jalons.html" class="jalons-manage-link">Gérer →</a>`;
 
@@ -1465,6 +1465,17 @@
             setTimeout(() => initKPIChart(i, allObjectifs[i]), 0);
         }
 
+        function completeJalon(i, jalonId) {
+            const obj = allObjectifs[i];
+            if (!obj || !obj.jalons) return;
+            const jalon = obj.jalons.find(j => (j.id || '') === jalonId);
+            if (!jalon) return;
+            jalon.statut = 'completed';
+            saveAllObjectifs();
+            renderDashboard();
+            setTimeout(() => initKPIChart(i, allObjectifs[i]), 0);
+        }
+
         function getFilteredTasksForView(obj, i) {
             const viewedJalon = getViewedJalon(obj, i);
             const activeJalon = getNextActiveJalon(obj);
@@ -1515,14 +1526,16 @@
                     ? `JALON ACTIF · ${viewedIdx + 1}/${total}`
                     : `JALON ${viewedIdx + 1}/${total}`;
                 const dateFormatted = formatDateJalonCourt(viewedJalon.date);
+                const isViewedCompleted = (viewedJalon.statut || 'pending') === 'completed';
                 jalonCard = `
-                    <div class="jt-jalon-card ${isActiveViewed ? 'active' : ''}">
+                    <div class="jt-jalon-card ${isActiveViewed ? 'active' : ''} ${isViewedCompleted ? 'completed' : ''}">
                         <div class="jt-jalon-top">
                             <span class="jt-jalon-label">${posLabel}</span>
                             <a href="jalons.html" class="jt-manage-link">Gérer →</a>
                         </div>
                         <div class="jt-jalon-title">${escHtml(getJalonLabel(viewedJalon))}</div>
                         ${dateFormatted ? `<div class="jt-jalon-date">→ ${dateFormatted}</div>` : ''}
+                        ${!isViewedCompleted ? `<button class="jt-validate-btn" onclick="completeJalon(${i}, '${escHtml(viewedJalon.id || '')}')">✓ Valider ce jalon</button>` : `<div class="jt-validated-badge">✓ Jalon validé</div>`}
                     </div>`;
             } else {
                 jalonCard = `<div style="text-align:center;padding:4px 0 12px;">

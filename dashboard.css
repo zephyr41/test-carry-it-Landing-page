@@ -2119,6 +2119,44 @@ body::before {
     color: rgba(255,255,255,0.35);
 }
 
+.jt-validate-btn {
+    margin-top: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    background: transparent;
+    border: 1px solid rgba(238,68,8,0.4);
+    border-radius: 6px;
+    color: #EE4408;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+}
+.jt-validate-btn:hover {
+    background: rgba(238,68,8,0.12);
+    border-color: #EE4408;
+}
+
+.jt-validated-badge {
+    margin-top: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: rgba(255,255,255,0.3);
+}
+
+.jt-jalon-card.completed .jt-jalon-title {
+    color: rgba(255,255,255,0.4);
+    text-decoration: line-through;
+    text-decoration-color: rgba(255,255,255,0.2);
+}
+
 /* ── TABS — au-dessus de la carte, pattern dossier ── */
 .jt-tabs {
     display: flex;
