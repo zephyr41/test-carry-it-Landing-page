@@ -7,6 +7,16 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        (() => {
+            let savedTheme = null;
+            try {
+                savedTheme = localStorage.getItem('carryit-dashboard-theme');
+            } catch (error) {}
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            document.documentElement.dataset.theme = savedTheme || (prefersDark ? 'dark' : 'light');
+        })();
+    </script>
     <link rel="stylesheet" href="dashboardV2.css">
 </head>
 <body>
@@ -26,6 +36,11 @@
             </div>
             <div class="nav-right">
                 <span class="nav-date">Mar. 14 Avril</span>
+                <button class="theme-toggle" id="themeToggle" type="button" aria-label="Activer le thème sombre" onclick="toggleTheme()">
+                    <svg class="icon theme-icon-sun" aria-hidden="true"><use href="#icon-sun"></use></svg>
+                    <svg class="icon theme-icon-moon" aria-hidden="true"><use href="#icon-moon"></use></svg>
+                    <span id="themeLabel">Sombre</span>
+                </button>
                 <button class="icon-button" type="button" aria-label="Notifications">
                     <svg class="icon" aria-hidden="true"><use href="#icon-bell"></use></svg>
                 </button>
@@ -327,6 +342,8 @@
         <symbol id="icon-flag" viewBox="0 0 24 24"><path d="M4 22V4"/><path d="M4 4h12l-1 5 1 5H4"/></symbol>
         <symbol id="icon-edit" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></symbol>
         <symbol id="icon-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+        <symbol id="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></symbol>
+        <symbol id="icon-moon" viewBox="0 0 24 24"><path d="M20.7 15.1A8.8 8.8 0 0 1 8.9 3.3 7 7 0 1 0 20.7 15.1Z"/></symbol>
     </svg>
 
     <script>
@@ -382,6 +399,24 @@
         ];
 
         let validationReady = false;
+
+        function applyTheme(theme) {
+            const normalizedTheme = theme === 'dark' ? 'dark' : 'light';
+            document.documentElement.dataset.theme = normalizedTheme;
+            try {
+                localStorage.setItem('carryit-dashboard-theme', normalizedTheme);
+            } catch (error) {}
+            const toggle = document.getElementById('themeToggle');
+            const label = document.getElementById('themeLabel');
+            if (!toggle || !label) return;
+            const isDark = normalizedTheme === 'dark';
+            toggle.setAttribute('aria-label', isDark ? 'Activer le thème clair' : 'Activer le thème sombre');
+            label.textContent = isDark ? 'Clair' : 'Sombre';
+        }
+
+        function toggleTheme() {
+            applyTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
+        }
 
         function switchView(viewName) {
             document.querySelectorAll('.app-view').forEach((view) => {
@@ -477,6 +512,7 @@
             input.value = '';
         }
 
+        applyTheme(document.documentElement.dataset.theme);
         selectMilestone(1);
     </script>
 </body>
