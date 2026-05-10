@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Righteous&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/styles.css">
 
-    <link rel="stylesheet" href="assets/css/dashboard.css?v=29">
+    <link rel="stylesheet" href="assets/css/dashboard.css?v=42">
     <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 </head>
 <body>
@@ -35,6 +35,15 @@
                 <div class="dashboard-project-actions" id="dashboardProjectActions"></div>
             </div>
             <div class="navbar-links dashboard-nav-right">
+                <button class="dashboard-theme-toggle" id="dashboardThemeToggle" type="button" onclick="toggleDashboardTheme()">
+                    <span class="dashboard-theme-icon" aria-hidden="true">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12Z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+                        </svg>
+                    </span>
+                    <span id="dashboardThemeLabel">Passer en clair</span>
+                </button>
                 <button class="db-sync-btn" type="button" onclick="openSyncModal()" aria-label="Synchroniser les données">
                     <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
@@ -462,6 +471,26 @@
             document.getElementById('dbNavDropdown').classList.remove('open');
         }
 
+        function getDashboardTheme() {
+            const stored = (localStorage.getItem('carryit-dashboard-theme') || '').toLowerCase();
+            return stored === 'light' ? 'light' : 'dark';
+        }
+
+        function applyDashboardTheme(theme) {
+            const mode = theme === 'light' ? 'light' : 'dark';
+            document.documentElement.classList.toggle('dark-mode', mode === 'dark');
+            document.documentElement.classList.toggle('light-mode', mode === 'light');
+            localStorage.setItem('carryit-dashboard-theme', mode);
+
+            const label = document.getElementById('dashboardThemeLabel');
+            if (label) label.textContent = mode === 'dark' ? 'Passer en clair' : 'Passer en sombre';
+        }
+
+        function toggleDashboardTheme() {
+            const next = getDashboardTheme() === 'dark' ? 'light' : 'dark';
+            applyDashboardTheme(next);
+        }
+
         function getProjectInitial(obj, i) {
             const title = (obj?.titre || `Projet ${i + 1}`).trim();
             return (title[0] || 'P').toUpperCase();
@@ -649,7 +678,8 @@
             if (!task) return null;
             const jalons = obj?.jalons || [];
             if (task.jalonId) {
-                const byId = jalons.find(j => j.id === task.jalonId);
+                const tid = String(task.jalonId || '');
+                const byId = jalons.find(j => String(j?.id || '') === tid);
                 if (byId) return byId;
             }
             if (task.jalonDate || task.jalonTitle) {
@@ -715,18 +745,6 @@
             return `
             <div class="todo-panel">
                 <div class="section-lbl" id="todoHeaderLabel-${i}">${headerLabel}</div>
-                <div class="todo-row">
-                    <input class="todo-input" type="text" id="todoInput-${i}"
-                        placeholder="Nouvelle tâche"
-                        enterkeyhint="go"
-                        onkeydown="if(event.key==='Enter'){addTask(${i});event.preventDefault();}"
-                        onblur="addTask(${i});">
-                    <button class="todo-plus-btn" onclick="addTask(${i})">
-                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
-                        </svg>
-                    </button>
-                </div>
                 <div class="todo-list" id="todoList-${i}">
                     ${renderTasksList(obj.tasks || [], i)}
                 </div>
@@ -792,9 +810,9 @@
                 </div>`;
         }
 
-        function renderTaskToolbar(obj, i) {
+        function renderTaskToolbar(i) {
             return `
-                <div class="task-toolbar">
+                <div class="tasks-toolbar" onclick="event.stopPropagation()">
                     ${renderTaskViewToggle(i)}
                 </div>`;
         }
@@ -809,7 +827,7 @@
             let html = `
                 <div class="task-list-surface">
             `;
-
+            html += renderTaskToolbar(i);
             html += renderTaskListGroup('doing', 'En cours', doing, i);
             html += renderTaskListGroup('todo', 'À faire', todo, i);
             html += renderDoneTaskGroup(done, i);
@@ -878,16 +896,42 @@
         function renderAddTaskRow(i, status = 'todo', primary = false) {
             const inputId = `todoInput-${i}-${status}`;
             return `
-                <div class="add-task-row ${status} ${primary ? 'primary' : ''}" onclick="document.getElementById('${inputId}').focus()">
-                    <svg class="icon" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v14M5 12h14"/>
-                    </svg>
-                    <input type="text" id="${inputId}"
-                        placeholder="Ajouter une action..."
-                        enterkeyhint="go"
-                        onkeydown="if(event.key==='Enter'){addTask(${i}, '${status}');event.preventDefault();}"
-                        onblur="addTask(${i}, '${status}');">
+                <div class="add-task-row ${status} ${primary ? 'primary' : ''}">
+                    <button class="add-task-ghost-btn" type="button"
+                        id="addTaskGhostBtn-${i}-${status}"
+                        onclick="openAddTaskEditor(${i}, '${status}'); event.stopPropagation();">
+                        <span class="add-task-ghost-icon" aria-hidden="true">+</span>
+                        <span class="add-task-ghost-text">Ajouter une action...</span>
+                    </button>
+                    <div class="add-task-editor" id="addTaskEditor-${i}-${status}" style="display:none;" onclick="event.stopPropagation()">
+                        <span class="add-task-ghost-icon" aria-hidden="true">+</span>
+                        <input type="text" id="${inputId}"
+                            placeholder="Ajouter une action..."
+                            enterkeyhint="go"
+                            onkeydown="if(event.key==='Enter'){addTask(${i}, '${status}');closeAddTaskEditor(${i}, '${status}');event.preventDefault();}"
+                            onblur="addTask(${i}, '${status}'); closeAddTaskEditor(${i}, '${status}');">
+                    </div>
                 </div>`;
+        }
+
+        function openAddTaskEditor(i, status) {
+            const editor = document.getElementById(`addTaskEditor-${i}-${status}`);
+            const btn = document.getElementById(`addTaskGhostBtn-${i}-${status}`);
+            const input = document.getElementById(`todoInput-${i}-${status}`);
+            if (!editor || !btn || !input) return;
+            btn.style.display = 'none';
+            editor.style.display = 'grid';
+            setTimeout(() => input.focus(), 0);
+        }
+
+        function closeAddTaskEditor(i, status) {
+            const editor = document.getElementById(`addTaskEditor-${i}-${status}`);
+            const btn = document.getElementById(`addTaskGhostBtn-${i}-${status}`);
+            const input = document.getElementById(`todoInput-${i}-${status}`);
+            if (!editor || !btn || !input) return;
+            if ((input.value || '').trim()) return;
+            editor.style.display = 'none';
+            btn.style.display = '';
         }
 
         function renderTasksKanban(tasks, i) {
@@ -898,27 +942,30 @@
             ];
 
             return `
-                <div class="kanban-board" id="kanbanBoard-${i}">
-                    ${columns.map(col => {
-                        const colTasks = (tasks || []).filter(t => getTaskStatus(t) === col.status);
-                        return `
-                            <section class="kanban-column ${col.status}"
-                                data-status="${col.status}"
-                                ondragover="kanbanDragOver(event)"
-                                ondragleave="kanbanDragLeave(event)"
-                                ondrop="dropKanbanTask(event, ${i}, '${col.status}')">
-                                <div class="kanban-column-head">
-                                    <span class="kanban-column-title"><span class="kanban-dot"></span>${col.label}</span>
-                                    <span class="kanban-count">${colTasks.length}</span>
-                                </div>
-                                <div class="kanban-column-body">
-                                    ${col.status === 'todo' ? renderKanbanAddTaskCard(i) : ''}
-                                    ${colTasks.length
-                                        ? colTasks.map(task => renderKanbanTaskCard(task, i)).join('')
-                                        : `<div class="kanban-empty">${col.empty}</div>`}
-                                </div>
-                            </section>`;
-                    }).join('')}
+                <div class="kanban-shell">
+                    ${renderTaskToolbar(i)}
+                    <div class="kanban-board" id="kanbanBoard-${i}">
+                        ${columns.map(col => {
+                            const colTasks = (tasks || []).filter(t => getTaskStatus(t) === col.status);
+                            return `
+                                <section class="kanban-column ${col.status}"
+                                    data-status="${col.status}"
+                                    ondragover="kanbanDragOver(event)"
+                                    ondragleave="kanbanDragLeave(event)"
+                                    ondrop="dropKanbanTask(event, ${i}, '${col.status}')">
+                                    <div class="kanban-column-head">
+                                        <span class="kanban-column-title"><span class="kanban-dot"></span>${col.label}</span>
+                                        <span class="kanban-count">${colTasks.length}</span>
+                                    </div>
+                                    <div class="kanban-column-body">
+                                        ${col.status === 'todo' ? renderKanbanAddTaskCard(i) : ''}
+                                        ${colTasks.length
+                                            ? colTasks.map(task => renderKanbanTaskCard(task, i)).join('')
+                                            : `<div class="kanban-empty">${col.empty}</div>`}
+                                    </div>
+                                </section>`;
+                        }).join('')}
+                    </div>
                 </div>`;
         }
 
@@ -1931,10 +1978,12 @@
             const viewedJalon = getViewedJalon(obj, i);
             const activeJalon = getNextActiveJalon(obj);
             const isActiveViewed = viewedJalon && activeJalon && viewedJalon.id === activeJalon.id;
+            const viewedId = String(viewedJalon?.id || '');
             return (obj.tasks || []).filter(t => {
                 if (!viewedJalon) return true;
-                if (!t.jalonId) return isActiveViewed;
-                return t.jalonId === viewedJalon.id;
+                const linked = findTaskLinkedJalon(obj, t);
+                if (!linked) return isActiveViewed;
+                return String(linked?.id || '') === viewedId;
             });
         }
 
@@ -2002,16 +2051,14 @@
 
             let criterionCard = '';
             if (viewedJalon) {
-                const validationText = viewedJalon.critere || viewedJalon.desc || '';
+                const validationText = viewedJalon.critere || viewedJalon.kpi || viewedJalon.desc || '';
                 criterionCard = `
                     <div class="jalon-focus ${viewedJalon.statut === 'completed' ? 'completed' : ''}">
                         <div class="criterion-card">
-                            <svg class="icon-lg" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                <circle cx="12" cy="12" r="8"/>
-                                <circle cx="12" cy="12" r="2"/>
-                                <path d="M12 2v4M12 18v4M2 12h4M18 12h4"/>
-                            </svg>
-                            <p class="criterion-text"><span class="criterion-label">Validation :</span> ${validationText ? escHtml(validationText) : '<span class="jt-empty-inline">Aucun critère défini.</span>'}</p>
+                            <p class="criterion-text">
+                                <span class="criterion-label">🎯 VALIDATION <span class="criterion-context">· ${escHtml(getJalonLabel(viewedJalon))}</span> :</span>
+                                <span class="criterion-value">${validationText ? escHtml(validationText) : '<span class="criterion-empty">—</span>'}</span>
+                            </p>
                             <button class="jalon-validate-btn" type="button"
                                 ${viewedJalon.statut === 'completed' ? 'disabled' : ''}
                                 onclick="completeJalon(${i}, '${escHtml(viewedJalon.id || '')}')">
@@ -2027,9 +2074,6 @@
                     <div class="milestone-tabs" role="tablist" aria-label="Jalons">${tabs}</div>
                 </div>
                 ${criterionCard}
-                <div class="task-toolbar">
-                    ${renderTaskViewToggle(i)}
-                </div>
                 <div class="todo-list" id="todoList-${i}">
                     ${renderTasksContent(obj, i)}
                 </div>
@@ -2641,6 +2685,7 @@
         // INIT
         // ──────────────────────────────────────────────────────────
         document.addEventListener('DOMContentLoaded', () => {
+            applyDashboardTheme(getDashboardTheme());
             loadAllObjectifs();
             renderCarousel();
 

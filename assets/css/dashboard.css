@@ -6008,7 +6008,8 @@ body {
     display: flex;
     align-items: center;
     gap: var(--tl-space-2);
-    padding: var(--tl-space-6) 0 var(--tl-space-2);
+    /* Reduce vertical crater above list groups. */
+    padding: 12px 0 var(--tl-space-2);
     border: 0;
     border-bottom: 0;
     background: transparent;
@@ -6069,7 +6070,7 @@ body {
 }
 
 .task-group.done {
-    margin-top: 10px;
+    margin-top: 8px;
     background: transparent;
     border-top: 0;
     border-bottom: 0;
@@ -6295,6 +6296,10 @@ body {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 16px;
     padding: 0;
+}
+
+.kanban-shell {
+    display: block;
 }
 
 /* Match dashboardV2 execution content scale: centered 1120px shell, not full viewport. */
@@ -7630,7 +7635,6 @@ body {
     }
 
     .dashboard-nav-date,
-    .dashboard-theme-toggle,
     .dashboard-icon-button {
         display: none;
     }
@@ -7656,7 +7660,8 @@ body {
     -webkit-overflow-scrolling: touch;
     touch-action: pan-x;
     scrollbar-width: none;
-    margin-bottom: 8px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.10);
     cursor: grab;
     user-select: none;
 }
@@ -7684,8 +7689,21 @@ body {
     align-items: center;
     gap: 28px;
     min-width: 100%;
-    padding: 0 0 14px;
+    padding: 0 0 10px;
     color: rgba(255,253,246,0.72);
+}
+
+/* "Sol" sous la validation: pas de cratere, juste une ligne fine. */
+.criterion-card {
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding-bottom: 12px;
+    margin-bottom: 0;
+}
+
+/* Nettoyage espace au-dessus de la zone de travail. */
+.jt-section {
+    padding-top: 0;
+    margin-top: 12px;
 }
 
 .jt-section .milestone-tabs-wrap > .milestone-tabs::after {
@@ -7726,8 +7744,11 @@ body {
 }
 
 .criterion-card {
-    gap: 10px;
-    padding: 6px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 0;
     margin-bottom: 0;
     background: transparent;
     border: none;
@@ -7736,8 +7757,7 @@ body {
 }
 
 .criterion-card .icon-lg {
-    width: 17px;
-    height: 17px;
+    display: none;
 }
 
 .overline {
@@ -7750,6 +7770,16 @@ body {
     color: rgba(255,253,246,0.96);
     font-size: 14.5px;
     font-weight: 540;
+    margin: 0;
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.criterion-value {
+    color: rgba(255,253,246,0.86);
 }
 
 .task-header {
@@ -7779,6 +7809,84 @@ body {
 .add-task-row:hover input::placeholder,
 .add-task-row:focus-within input::placeholder {
     color: rgba(255,253,246,0.82);
+}
+
+/* Ghost add (ClickUp-like): no input shown until click. */
+.add-task-row {
+    background: transparent !important;
+    padding: 0;
+    cursor: default;
+    display: block;
+    grid-template-columns: none;
+    align-items: unset;
+    min-height: 0;
+}
+
+.add-task-ghost-btn,
+.add-task-editor {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 38px minmax(0, 1fr);
+    align-items: center;
+    min-height: 36px;
+    padding: 8px 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+}
+
+.add-task-ghost-btn {
+    cursor: pointer;
+}
+
+.add-task-ghost-icon {
+    justify-self: center;
+    width: 16px;
+    height: 16px;
+    display: grid;
+    place-items: center;
+    color: rgba(255,253,246,0.58);
+    font-size: 16px;
+    line-height: 1;
+    /* Pull slightly left to align under status icons gutter. */
+    transform: translateX(-4px);
+}
+
+.add-task-ghost-text {
+    text-align: left;
+    color: rgba(255,253,246,0.62);
+    font-size: 13.5px;
+    font-weight: 450;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.add-task-ghost-btn:hover .add-task-ghost-text {
+    color: rgba(255,253,246,0.86);
+}
+
+.add-task-editor input {
+    width: 100%;
+    height: 28px;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: rgba(255,253,246,0.92);
+    font-size: 13.5px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.add-task-editor input::placeholder {
+    /* Lighter placeholder for WCAG on dark background. */
+    color: rgba(255,253,246,0.64);
+}
+
+.add-task-editor:focus-within .add-task-ghost-icon {
+    color: rgba(255,253,246,0.86);
 }
 
 .custom-checkbox {
@@ -7863,18 +7971,23 @@ body {
     }
 
     .criterion-card {
-        padding: 13px 14px;
+        padding: 8px 0;
     }
 }
 
 /* FINAL OVERRIDE — action-first execution UX, no data-table mental model. */
 .jt-section > .milestone-tabs {
-    margin-bottom: 18px;
+    /* Avoid double-spacing: spacing handled by .milestone-tabs-wrap. */
+    margin-bottom: 0;
 }
 
 .jalon-focus {
-    margin: 0 0 6px;
+    margin: 0;
     padding: 0;
+}
+
+.jalon-focus .criterion-card {
+    margin-bottom: 10px;
 }
 
 .jalon-focus-top {
@@ -7943,11 +8056,12 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
-    min-height: 36px;
+    min-height: 34px;
     margin: 0;
-    padding: 6px 0;
+    padding: 2px 0 8px;
     background: transparent;
     border: none;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
     border-radius: 0;
     box-shadow: none;
 }
@@ -7968,13 +8082,14 @@ body {
 .criterion-text {
     flex: 1;
     min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    gap: 6px;
     white-space: nowrap;
     color: rgba(255,253,246,0.82);
     font-size: 13px;
     font-weight: 470;
-    line-height: 1;
+    line-height: 1.2;
 }
 
 .criterion-text span:first-child {
@@ -7982,13 +8097,56 @@ body {
     font-weight: 620;
 }
 
+.criterion-text .criterion-label {
+    flex: 0 0 auto;
+    margin-right: 0;
+}
+
+.criterion-context {
+    color: rgba(255,253,246,0.52);
+    font-weight: 520;
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+.criterion-text .criterion-value {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.criterion-empty {
+    color: rgba(255,253,246,0.42);
+}
+
 .task-toolbar {
     justify-content: flex-end;
-    padding-top: 8px;
-    padding-bottom: 4px;
-    margin: 0 0 10px;
-    border-top: 1px solid rgba(255,253,246,0.08);
+    padding-top: 0;
+    padding-bottom: 0;
+    margin: 0 0 8px;
+    border-top: none;
     border-bottom: none;
+}
+
+/* Toggle (Liste/Board) must sit right above the work area, not in a no-man's-land. */
+.tasks-toolbar {
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 8px;
+    position: relative;
+    z-index: 10;
+}
+
+/* Pull the toolbar into the first group line (ClickUp-like). */
+.task-list-surface > .tasks-toolbar {
+    margin-bottom: -32px;
+}
+
+/* In kanban, toolbar sits above the board (no overlap). */
+.kanban-shell > .tasks-toolbar {
+    margin-bottom: 12px;
 }
 
 .view-toggle-btn,
@@ -7997,7 +8155,8 @@ body {
     padding-top: 0;
     background: transparent !important;
     box-shadow: none !important;
-    color: rgba(255,253,246,0.48);
+    /* Discret pour ne pas voler la vedette aux taches. */
+    color: rgba(255,253,246,0.34);
     font-size: 12.5px;
     font-weight: 500;
 }
@@ -8012,13 +8171,38 @@ body {
 .task-view-btn.view-toggle-btn.active {
     background: transparent !important;
     box-shadow: none !important;
-    color: rgba(255,253,246,0.96);
+    color: rgba(255,253,246,0.62);
     border-bottom-color: transparent;
     font-weight: 600;
 }
 
+/* Aucun cadre autour du toggle. */
+.view-toggle,
+.task-view-toggle.view-toggle {
+    border: 0 !important;
+    background: transparent !important;
+    padding: 0 !important;
+}
+
+.toggle-icon,
+.task-view-icon.toggle-icon {
+    width: 18px;
+    height: 18px;
+    border: 0 !important;
+    background: transparent !important;
+    color: rgba(255,253,246,0.30);
+}
+
+.toggle-icon.dark,
+.task-view-icon.toggle-icon.dark {
+    background: transparent !important;
+    border-color: transparent !important;
+    color: rgba(255,253,246,0.60);
+}
+
 .task-list-surface {
     overflow: hidden;
+    position: relative;
     padding: 0 0 28px;
     border: none;
     background: transparent;
@@ -8391,7 +8575,7 @@ body {
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    margin-right: 2px;
+    margin-right: 6px;
 }
 
 .cp-danger-zone {
