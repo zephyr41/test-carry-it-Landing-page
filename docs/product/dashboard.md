@@ -110,4 +110,4 @@ cahier des charges + ICP + USP finalisés et exploitables
 
 **3 documentations techniques sont faites (Cahier des charges, ICP, USP)**
 
-KPI : Nombre de document finitb
+KPI : Nombre de document finit
