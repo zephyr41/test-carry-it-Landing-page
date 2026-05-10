@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Righteous&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/styles.css">
 
-    <link rel="stylesheet" href="assets/css/dashboard.css?v=24">
+    <link rel="stylesheet" href="assets/css/dashboard.css?v=29">
     <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 </head>
 <body>
@@ -362,6 +362,52 @@
             if (currentDashboardView === 'pilotage') {
                 setTimeout(() => initKPIChart(currentCarouselIndex, allObjectifs[currentCarouselIndex]), 0);
             }
+            setTimeout(initTabsDragScroll, 0);
+        }
+
+        function initTabsDragScroll() {
+            document.querySelectorAll('.milestone-tabs-wrap').forEach(wrap => {
+                if (wrap._dragScrollInit) return;
+                wrap._dragScrollInit = true;
+
+                // Scroll active tab into view
+                const activeTab = wrap.querySelector('.milestone-tab.active');
+                if (activeTab) {
+                    const tabRight = activeTab.offsetLeft + activeTab.offsetWidth;
+                    if (tabRight > wrap.clientWidth) {
+                        wrap.scrollLeft = activeTab.offsetLeft - 16;
+                    }
+                }
+
+                // Trackpad horizontal + vertical-to-horizontal scroll
+                wrap.addEventListener('wheel', e => {
+                    const delta = e.deltaX !== 0 ? e.deltaX : e.deltaY;
+                    const atStart = wrap.scrollLeft <= 0 && delta < 0;
+                    const atEnd = wrap.scrollLeft >= wrap.scrollWidth - wrap.clientWidth - 1 && delta > 0;
+                    if (!atStart && !atEnd && wrap.scrollWidth > wrap.clientWidth) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        wrap.scrollLeft += delta;
+                    }
+                }, { passive: false });
+
+                // Mouse drag scroll
+                let isDown = false, startX = 0, baseScroll = 0;
+                wrap.addEventListener('mousedown', e => {
+                    isDown = true;
+                    startX = e.pageX;
+                    baseScroll = wrap.scrollLeft;
+                    wrap.style.cursor = 'grabbing';
+                });
+                document.addEventListener('mouseup', () => {
+                    if (isDown) { isDown = false; wrap.style.cursor = ''; }
+                });
+                document.addEventListener('mousemove', e => {
+                    if (!isDown) return;
+                    e.preventDefault();
+                    wrap.scrollLeft = baseScroll - (e.pageX - startX);
+                });
+            });
         }
 
         function switchProject(i) {
@@ -1977,7 +2023,9 @@
 
             return `
             <div class="jt-section">
-                <div class="milestone-tabs" role="tablist" aria-label="Jalons">${tabs}</div>
+                <div class="milestone-tabs-wrap">
+                    <div class="milestone-tabs" role="tablist" aria-label="Jalons">${tabs}</div>
+                </div>
                 ${criterionCard}
                 <div class="task-toolbar">
                     ${renderTaskViewToggle(i)}

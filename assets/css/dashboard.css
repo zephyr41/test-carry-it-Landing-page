@@ -7650,25 +7650,54 @@ body {
     position: relative;
 }
 
-.jt-section > .milestone-tabs {
-    position: relative;
-    display: flex;
-    flex-wrap: nowrap;
+.milestone-tabs-wrap {
+    width: 100%;
     overflow-x: auto;
-    overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x;
     scrollbar-width: none;
-    -ms-overflow-style: none;
+    margin-bottom: 8px;
+    cursor: grab;
+    user-select: none;
+}
+
+.milestone-tabs-wrap:active {
+    cursor: grabbing;
+}
+
+.milestone-tabs-wrap::-webkit-scrollbar {
+    height: 3px;
+}
+
+.milestone-tabs-wrap::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.milestone-tabs-wrap::-webkit-scrollbar-thumb {
+    background: rgba(255,253,246,0.18);
+    border-radius: 3px;
+}
+
+.jt-section .milestone-tabs-wrap > .milestone-tabs {
+    display: inline-flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 28px;
+    min-width: 100%;
+    padding: 0 0 14px;
     color: rgba(255,253,246,0.72);
 }
 
-.jt-section > .milestone-tabs::-webkit-scrollbar {
-    display: none;
+.jt-section .milestone-tabs-wrap > .milestone-tabs::after {
+    content: '';
+    flex: 0 0 24px;
+    display: block;
 }
 
 .jt-section .milestone-tab {
     flex: 0 0 auto;
     max-width: 220px;
-    min-width: 100px;
+    min-width: 80px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -7955,21 +7984,37 @@ body {
 
 .task-toolbar {
     justify-content: flex-end;
-    padding-bottom: 8px;
+    padding-top: 8px;
+    padding-bottom: 4px;
     margin: 0 0 10px;
-    border-bottom: 1px solid rgba(255,253,246,0.08);
+    border-top: 1px solid rgba(255,253,246,0.08);
+    border-bottom: none;
 }
 
 .view-toggle-btn,
 .task-view-btn.view-toggle-btn {
     padding-bottom: 0;
-    color: rgba(255,253,246,0.62);
+    padding-top: 0;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: rgba(255,253,246,0.48);
+    font-size: 12.5px;
+    font-weight: 500;
+}
+
+.view-toggle-btn:hover,
+.task-view-btn.view-toggle-btn:hover {
+    background: transparent !important;
+    color: rgba(255,253,246,0.72);
 }
 
 .view-toggle-btn.active,
 .task-view-btn.view-toggle-btn.active {
+    background: transparent !important;
+    box-shadow: none !important;
     color: rgba(255,253,246,0.96);
     border-bottom-color: transparent;
+    font-weight: 600;
 }
 
 .task-list-surface {
