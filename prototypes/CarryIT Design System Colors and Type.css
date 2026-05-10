@@ -1,0 +1,260 @@
+/* ============================================================
+   CarryIT Design System — colors_and_type.css
+   Version 1.0 — May 2026
+   ============================================================ */
+
+/* ── FONTS ───────────────────────────────────────────────── */
+@font-face {
+  font-family: "Rifton";
+  src: url("fonts/rifton-regular.woff2") format("woff2"),
+       url("fonts/rifton-regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Rifton";
+  src: url("fonts/rifton-italic.woff2") format("woff2"),
+       url("fonts/rifton-italic.otf") format("opentype");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* ── BASE COLOR PALETTE ──────────────────────────────────── */
+:root {
+  /* Core palette */
+  --c-noir:       #080809;  /* Noir profond — base bg */
+  --c-gris:       #929292;  /* Gris acier — informational text */
+  --c-blanc:      #FFFDF6;  /* Blanc cassé — primary text */
+  --c-marine:     #0A2A53;  /* Bleu marine — confirm / validity */
+  --c-nuit:       #0D1D32;  /* Bleu nuit — surfaces on dark bg */
+  --c-orange:     #EE4408;  /* Orange vif — primary action / accent */
+  --c-orange-b:   #F34C0A;  /* Orange brûlé — emotional text / secondary */
+  --c-rouge-o:    #A82B06;  /* Rouge orangé — hover/press state for orange */
+  --c-olive:      #404025;  /* Vert olive — KPI tracker / progress */
+  --c-rouge:      #A3150D;  /* Rouge alerte — friction / alert */
+
+  /* Derived neutrals */
+  --c-surface-1:  #111112;  /* Card / panel surface (slightly lifted from noir) */
+  --c-surface-2:  #1A1A1C;  /* Second-level surface (e.g. sidebar) */
+  --c-border:     rgba(255, 253, 246, 0.08); /* Subtle border on dark */
+  --c-border-med: rgba(255, 253, 246, 0.14); /* Medium border */
+  --c-overlay:    rgba(8, 8, 9, 0.72);        /* Modal backdrop */
+
+  /* ── SEMANTIC COLOR TOKENS ─────────────────────────────── */
+  --color-bg:             var(--c-noir);
+  --color-surface:        var(--c-surface-1);
+  --color-surface-raised: var(--c-surface-2);
+  --color-border:         var(--c-border);
+  --color-border-med:     var(--c-border-med);
+
+  --color-text-primary:      var(--c-blanc);       /* Main body text */
+  --color-text-secondary:    var(--c-gris);         /* Labels, meta, legends */
+  --color-text-disabled:     rgba(146, 146, 146, 0.4);
+
+  --color-accent:         var(--c-orange);     /* CTAs, primary actions */
+  --color-accent-hover:   var(--c-rouge-o);    /* Hover on accent */
+  --color-accent-press:   #C03806;             /* Press/active on accent */
+  --color-accent-text:    var(--c-orange-b);   /* Emotional text highlights */
+
+  --color-confirm:        var(--c-marine);     /* Validated states */
+  --color-tracker:        var(--c-olive);      /* Progress / KPI bars */
+  --color-alert:          var(--c-rouge);      /* Friction / warnings */
+
+  --color-overlay:        var(--c-overlay);
+
+  /* ── FONT FAMILIES ─────────────────────────────────────── */
+  --font-brand:   "Rifton", Georgia, serif;    /* Logo, display headings */
+  --font-body:    "DM Sans", "Inter", system-ui, sans-serif;  /* All UI text */
+  --font-mono:    "JetBrains Mono", "Fira Mono", "Courier New", monospace;
+
+  /* ── TYPE SCALE ─────────────────────────────────────────── */
+  --text-xs:    0.75rem;    /* 12px — captions, legal */
+  --text-sm:    0.8125rem;  /* 13px — labels, badges */
+  --text-base:  0.9375rem;  /* 15px — body default */
+  --text-md:    1.0625rem;  /* 17px — body large */
+  --text-lg:    1.25rem;    /* 20px — sub-heading */
+  --text-xl:    1.5rem;     /* 24px — section title */
+  --text-2xl:   2rem;       /* 32px — display small */
+  --text-3xl:   2.75rem;    /* 44px — display mid */
+  --text-4xl:   3.75rem;    /* 60px — display large */
+
+  /* ── FONT WEIGHTS ───────────────────────────────────────── */
+  --weight-regular: 400;
+  --weight-medium:  500;
+  --weight-semibold: 600;
+  --weight-bold:    700;
+
+  /* ── LINE HEIGHTS ───────────────────────────────────────── */
+  --leading-tight:  1.2;
+  --leading-snug:   1.35;
+  --leading-normal: 1.55;
+  --leading-loose:  1.75;
+
+  /* ── LETTER SPACING ─────────────────────────────────────── */
+  --tracking-tight:  -0.03em;
+  --tracking-normal:  0em;
+  --tracking-wide:    0.04em;
+  --tracking-wider:   0.08em;
+  --tracking-widest:  0.14em;
+
+  /* ── SPACING SCALE ──────────────────────────────────────── */
+  --space-1:   4px;
+  --space-2:   8px;
+  --space-3:   12px;
+  --space-4:   16px;
+  --space-5:   20px;
+  --space-6:   24px;
+  --space-8:   32px;
+  --space-10:  40px;
+  --space-12:  48px;
+  --space-16:  64px;
+  --space-20:  80px;
+  --space-24:  96px;
+
+  /* ── BORDER RADIUS ──────────────────────────────────────── */
+  --radius-sm:   4px;
+  --radius-md:   8px;
+  --radius-lg:   12px;
+  --radius-xl:   16px;
+  --radius-2xl:  24px;
+  --radius-full: 9999px;
+
+  /* ── SHADOWS / ELEVATION ────────────────────────────────── */
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.4);
+  --shadow-md:  0 4px 16px rgba(0,0,0,0.5);
+  --shadow-lg:  0 8px 32px rgba(0,0,0,0.6);
+  --shadow-xl:  0 16px 64px rgba(0,0,0,0.7);
+  --shadow-accent: 0 0 24px rgba(238, 68, 8, 0.25);
+
+  /* ── TRANSITIONS ────────────────────────────────────────── */
+  --ease-out:   cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in:    cubic-bezier(0.4, 0, 1, 1);
+  --ease-inout: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-fast:   120ms;
+  --duration-base:   220ms;
+  --duration-slow:   380ms;
+}
+
+/* ── SEMANTIC TYPE STYLES ────────────────────────────────── */
+.t-brand-display {
+  font-family: var(--font-brand);
+  font-size: var(--text-4xl);
+  font-weight: var(--weight-regular);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-tight);
+  color: var(--color-text-primary);
+}
+
+.t-brand-title {
+  font-family: var(--font-brand);
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-regular);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-tight);
+  color: var(--color-text-primary);
+}
+
+.t-brand-italic {
+  font-family: var(--font-brand);
+  font-style: italic;
+  font-size: var(--text-xl);
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-accent-text);
+}
+
+.t-h1 {
+  font-family: var(--font-body);
+  font-size: var(--text-3xl);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-tight);
+  color: var(--color-text-primary);
+}
+
+.t-h2 {
+  font-family: var(--font-body);
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-snug);
+  color: var(--color-text-primary);
+}
+
+.t-h3 {
+  font-family: var(--font-body);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-snug);
+  color: var(--color-text-primary);
+}
+
+.t-h4 {
+  font-family: var(--font-body);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-normal);
+  line-height: var(--leading-snug);
+  color: var(--color-text-primary);
+}
+
+.t-body {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-normal);
+  color: var(--color-text-primary);
+}
+
+.t-body-sm {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-normal);
+  color: var(--color-text-primary);
+}
+
+.t-label {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.t-caption {
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-regular);
+  letter-spacing: var(--tracking-normal);
+  color: var(--color-text-secondary);
+}
+
+.t-mono {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-regular);
+  letter-spacing: var(--tracking-normal);
+}
+
+.t-accent {
+  color: var(--color-accent-text);
+}
+
+/* ── BASE RESETS FOR CARRYIT UI ─────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}

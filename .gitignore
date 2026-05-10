@@ -1,3 +1,4 @@
-copywriting/
+.DS_Store
 .claude/
-Plans/
+content/copywriting/
+docs/planning/

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="components.css">
+<style>
+  body { padding: 28px 32px; }
+  /* Timeline */
+  .timeline { display: flex; margin-bottom: 24px; }
+  .milestone { flex: 1; position: relative; display: flex; flex-direction: column; align-items: center; }
+  .milestone::before {
+    content: ''; position: absolute; top: 18px; left: 50%; right: -50%;
+    height: 2px; background: rgba(255,253,246,0.08); z-index: 0;
+  }
+  .milestone:last-child::before { display: none; }
+  .m-dot {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; position: relative; z-index: 1; margin-bottom: 8px;
+  }
+  .m-num   { font-size: 10px; color: #929292; margin-bottom: 3px; }
+  .m-title { font-size: 11px; font-weight: 600; text-align: center; max-width: 80px; line-height: 1.3; }
+  .m-date  { font-size: 10px; color: #929292; margin-top: 3px; }
+  /* Jalon inline KPI */
+  .kpi-inline { margin-top: 0; }
+  .kpi-inline__header { margin-bottom: 5px; }
+  .kpi-inline__title { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.09em; color: #929292; }
+</style>
+</head>
+<body>
+
+  <div class="ds-label">Timeline des jalons</div>
+  <div class="timeline">
+    <div class="milestone">
+      <div class="m-dot" style="background:#0A2A53;color:#7aa8d8;">✓</div>
+      <div class="m-num">Jalon 1</div>
+      <div class="m-title" style="color:#929292;">Cadrage produit</div>
+      <div class="m-date">Avr 2026</div>
+    </div>
+    <div class="milestone">
+      <div class="m-dot" style="background:#EE4408;color:#FFFDF6;box-shadow:0 0 0 3px rgba(238,68,8,0.2);">2</div>
+      <div class="m-num">Jalon 2</div>
+      <div class="m-title" style="color:#EE4408;">MVP testable</div>
+      <div class="m-date">Juil 2026</div>
+    </div>
+    <div class="milestone">
+      <div class="m-dot" style="background:#1A1A1C;color:#929292;border:1px solid rgba(255,253,246,0.1);">3</div>
+      <div class="m-num">Jalon 3</div>
+      <div class="m-title" style="color:#929292;">Lancement public</div>
+      <div class="m-date">Oct 2026</div>
+    </div>
+    <div class="milestone">
+      <div class="m-dot" style="background:#1A1A1C;color:#929292;border:1px solid rgba(255,253,246,0.1);">4</div>
+      <div class="m-num">Jalon 4</div>
+      <div class="m-title" style="color:#929292;">400 clients</div>
+      <div class="m-date">Déc 2026</div>
+    </div>
+  </div>
+
+  <div class="ds-divider"></div>
+  <div class="ds-label">États de jalon — avec Description</div>
+  <div class="ds-row">
+
+    <!-- En cours -->
+    <div class="card" style="flex:1;min-width:210px;max-width:260px;">
+      <div class="card__header">
+        <div class="badge-position">MOIS 4 · 2/4</div>
+        <div class="chip chip--active"><div class="chip__dot"></div>En cours</div>
+      </div>
+      <div style="font-size:15px;font-weight:700;color:#FFFDF6;letter-spacing:-0.01em;margin-bottom:2px;">MVP testable</div>
+      <div style="font-size:11px;color:#929292;">Échéance : 31 juil. 2026</div>
+      <div class="sep"></div>
+      <div class="section-key">Description</div>
+      <div style="font-size:12px;color:#929292;line-height:1.5;">Première version fonctionnelle pour tester le flux principal avec de vrais utilisateurs.</div>
+      <div class="sep"></div>
+      <div class="section-key">Critère de validation</div>
+      <div style="font-size:12px;color:#FFFDF6;line-height:1.5;">MVP testable avec onboarding terminé pour 10 utilisateurs</div>
+      <div class="sep"></div>
+      <div class="kpi-inline">
+        <div class="kpi-inline__header"><span class="kpi-inline__title">KPI · Ce que ça donne</span></div>
+        <div><span class="kpi-value--mid">3</span><span class="kpi-value__unit">utilisateurs</span></div>
+        <div class="kpi-name">Utilisateurs onboardés</div>
+        <div class="progress-labels"><span>0</span><span>Objectif : <strong>10</strong> — <strong>30%</strong></span></div>
+        <div class="progress progress--thin"><div class="progress__fill" style="width:30%;"></div></div>
+      </div>
+    </div>
+
+    <!-- Terminé -->
+    <div class="card" style="flex:1;min-width:210px;max-width:260px;">
+      <div class="card__header">
+        <div class="badge-position">MOIS 1 · 1/4</div>
+        <div class="chip chip--done"><div class="chip__dot"></div>Terminé</div>
+      </div>
+      <div style="font-size:15px;font-weight:700;color:#FFFDF6;letter-spacing:-0.01em;margin-bottom:2px;">Cadrage produit</div>
+      <div style="font-size:11px;color:#929292;">Validé le 30 avril 2026</div>
+      <div class="sep"></div>
+      <div class="section-key">Description</div>
+      <div style="font-size:12px;color:#929292;line-height:1.5;">Poser les fondations : définir ce qu'on construit, pour qui, et comment valider.</div>
+      <div class="sep"></div>
+      <div class="section-key">Critère de validation</div>
+      <div style="font-size:12px;color:#FFFDF6;line-height:1.5;">3 documentations techniques réalisées (CDC, ICP, USP)</div>
+    </div>
+
+    <!-- À venir -->
+    <div class="card" style="flex:1;min-width:210px;max-width:260px;">
+      <div class="card__header">
+        <div class="badge-position">MOIS 7 · 3/4</div>
+        <div class="chip chip--upcoming"><div class="chip__dot"></div>À venir</div>
+      </div>
+      <div style="font-size:15px;font-weight:700;color:#929292;letter-spacing:-0.01em;margin-bottom:2px;">Lancement public</div>
+      <div style="font-size:11px;color:#929292;">Échéance : 31 oct. 2026</div>
+      <div class="sep"></div>
+      <div class="section-key">Description</div>
+      <div style="font-size:12px;color:#929292;opacity:0.5;line-height:1.5;">À préciser quand ce jalon devient actif.</div>
+      <div class="sep"></div>
+      <div class="section-key">Critère de validation</div>
+      <div style="font-size:12px;color:#929292;line-height:1.5;">Produit en production, 50 premiers clients payants</div>
+    </div>
+
+    <!-- En retard -->
+    <div class="card card--alert" style="flex:1;min-width:210px;max-width:260px;">
+      <div class="card__header">
+        <div class="badge-position">MOIS 4 · 2/4</div>
+        <div class="chip chip--late"><div class="chip__dot"></div>En retard</div>
+      </div>
+      <div style="font-size:15px;font-weight:700;color:#FFFDF6;letter-spacing:-0.01em;margin-bottom:2px;">MVP testable</div>
+      <div style="font-size:11px;color:#e05545;">Dépassé — 31 juil. 2026</div>
+      <div class="sep"></div>
+      <div class="section-key">Description</div>
+      <div style="font-size:12px;color:#929292;line-height:1.5;">Première version fonctionnelle pour tester le flux principal.</div>
+      <div class="sep"></div>
+      <div class="section-key">Critère de validation</div>
+      <div style="font-size:12px;color:#FFFDF6;line-height:1.5;">MVP testable avec onboarding terminé pour 10 utilisateurs</div>
+    </div>
+
+  </div>
+
+</body>
+</html>

@@ -7,28 +7,62 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
 
-    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="assets/css/dashboard.css?v=3">
+    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 </head>
 <body>
     <!-- Navbar -->
-    <nav class="navbar">
-        <a href="index.html" class="navbar-logo">CARRY IT</a>
-        <!-- Project dropdown (centre navbar) -->
-        <div class="db-nav-dropdown" id="dbNavDropdown">
-            <button class="db-nav-trigger" id="dbNavTrigger" onclick="toggleNavDropdown()">
-                <span id="dbNavLabel">—</span>git
-                <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="2,3 5,7 8,3"/>
-                </svg>
-            </button>
-            <ul class="db-nav-list" id="dbNavList"></ul>
+    <nav class="navbar dashboard-navbar">
+        <div class="dashboard-nav-top">
+            <div class="dashboard-nav-left">
+                <div class="db-nav-dropdown" id="dbNavDropdown">
+                    <button class="db-nav-trigger" id="dbNavTrigger" onclick="toggleNavDropdown()">
+                        <span class="db-nav-initial" id="dbNavInitial">—</span>
+                        <span id="dbNavLabel">—</span>
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M4 5.5L7 8.5L10 5.5"/>
+                        </svg>
+                    </button>
+                    <ul class="db-nav-list" id="dbNavList"></ul>
+                </div>
+                <div class="dashboard-project-actions" id="dashboardProjectActions"></div>
+            </div>
+            <div class="navbar-links">
+                <button onclick="openSyncModal()" class="navbar-link navbar-sync-btn" type="button">⇄ Sync</button>
+                <a href="objectif.html" class="navbar-link cta">+ Nouveau projet</a>
+            </div>
         </div>
-        <div class="navbar-links">
-            <button onclick="openSyncModal()" class="navbar-link" style="background:none;border:none;cursor:pointer;font-size:inherit;color:inherit;padding:0;">⇄ Sync</button>
-            <a href="objectif.html" class="navbar-link cta">+ Nouveau projet</a>
+
+        <div class="dashboard-nav-tabs db-main-tabs" role="tablist" aria-label="Sections du dashboard">
+            <button class="db-main-tab active"
+                type="button"
+                role="tab"
+                data-view="execution"
+                aria-selected="true"
+                onclick="switchDashboardView('execution')">
+                <span class="db-main-tab-icon">
+                    <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 11l3 3L22 4"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+                    </svg>
+                </span>
+                Exécution
+            </button>
+            <button class="db-main-tab"
+                type="button"
+                role="tab"
+                data-view="pilotage"
+                aria-selected="false"
+                onclick="switchDashboardView('pilotage')">
+                <span class="db-main-tab-icon">
+                    <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 19V5M4 19h16M9 16V9M14 16V7M19 16v-4"/>
+                    </svg>
+                </span>
+                Pilotage & Vision
+            </button>
         </div>
     </nav>
 
@@ -80,7 +114,7 @@
                 </div>
                 <div class="m-field">
                     <label class="m-label" for="measureValue">Valeur</label>
-                    <input class="m-input" type="number" min="0" step="any" id="measureValue" placeholder="ex: 42">
+                    <input class="m-input" type="number" min="0" step="any" id="measureValue">
                     <div class="m-error" id="valueError"></div>
                 </div>
                 <div class="m-btns">
@@ -104,7 +138,7 @@
                 </div>
                 <div class="m-field">
                     <label class="m-label" for="editMeasureValue">Valeur</label>
-                    <input class="m-input" type="number" min="0" step="any" id="editMeasureValue" placeholder="ex: 42">
+                    <input class="m-input" type="number" min="0" step="any" id="editMeasureValue">
                     <div class="m-error" id="editValueError"></div>
                 </div>
                 <div class="m-btns">
@@ -128,9 +162,40 @@
         </div>
     </div>
 
+    <!-- ── MODAL: KPI Jalon ── -->
+    <div id="jalonKpiModalOverlay" class="m-overlay">
+        <div class="m-box" onclick="event.stopPropagation()">
+            <h3 class="m-title">KPI du jalon</h3>
+            <p class="m-sub">Définissez l'indicateur que vous suivez pour ce jalon.</p>
+            <form id="jalonKpiForm" onsubmit="handleJalonKpiSubmit(event)">
+                <div class="m-field">
+                    <label class="m-label" for="jalonKpiTitre">Indicateur *</label>
+                    <input class="m-input" type="text" id="jalonKpiTitre">
+                </div>
+                <div class="m-field">
+                    <label class="m-label" for="jalonKpiUnite">Unité</label>
+                    <input class="m-input" type="text" id="jalonKpiUnite">
+                </div>
+                <div class="m-field">
+                    <label class="m-label" for="jalonKpiValeur">Valeur actuelle</label>
+                    <input class="m-input" type="number" min="0" id="jalonKpiValeur">
+                </div>
+                <div class="m-field">
+                    <label class="m-label" for="jalonKpiCible">Valeur cible</label>
+                    <input class="m-input" type="number" min="0" id="jalonKpiCible">
+                </div>
+                <div class="m-error" id="jalonKpiError"></div>
+                <div class="m-btns">
+                    <button type="button" class="m-btn-cancel" onclick="closeJalonKpiModal()">Annuler</button>
+                    <button type="submit" class="m-btn-ok">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- ── TASK SIDE PANEL ── -->
     <div id="taskPanelOverlay" class="side-panel-overlay" onclick="closeTaskPanel()">
-        <div class="side-panel" onclick="event.stopPropagation()">
+        <div class="side-panel" role="dialog" aria-modal="false" aria-labelledby="taskPanelTitle" onclick="event.stopPropagation()">
             <button class="side-panel-back" onclick="forceCloseTaskPanel()">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="12,4 6,10 12,16"/>
@@ -160,6 +225,8 @@
         let taskViewMode = {}; // { projectIndex: 'list' | 'kanban' }
         let jalonPopupState = {}; // { projectIndex: jalonId | null }
         let kanbanDragState = { projectIndex: null, taskId: null };
+        let jalonKpiModalState = { projectIndex: null, jalonId: null };
+        let currentDashboardView = 'execution';
 
         // ──────────────────────────────────────────────────────────
         // STORAGE
@@ -185,6 +252,12 @@
                             if (!t.subtasks) t.subtasks = [];
                             if (!t.notes) t.notes = '';
                             if (ensureTaskTarget(obj, t)) changed = true;
+                        });
+                        (obj.jalons || []).forEach(jalon => {
+                            if (!jalon.kpiData && jalon.kpi) {
+                                jalon.kpiData = { titre: jalon.kpi, valeur: null, cible: null, unite: '' };
+                                changed = true;
+                            }
                         });
                         if (!obj.createdAt) obj.createdAt = obj.id || Date.now();
                         if (!obj.kpiType) obj.kpiType = 'cumulatif';
@@ -220,34 +293,36 @@
             const dropdown = document.getElementById('dbNavDropdown');
             const navList  = document.getElementById('dbNavList');
             const navLabel = document.getElementById('dbNavLabel');
+            const navInitial = document.getElementById('dbNavInitial');
+            const navProjectActions = document.getElementById('dashboardProjectActions');
             panels.innerHTML  = '';
             navList.innerHTML = '';
+            if (navProjectActions) navProjectActions.innerHTML = '';
 
             if (allObjectifs.length === 0) {
-                dropdown.style.display = 'none';
+                dropdown.style.display = 'flex';
+                if (navLabel) navLabel.textContent = 'Aucun projet';
+                if (navInitial) navInitial.textContent = '—';
                 panels.innerHTML = buildEmptyState();
                 return;
             }
 
             currentCarouselIndex = Math.min(currentCarouselIndex, allObjectifs.length - 1);
 
-            // Show dropdown only when multiple projects
-            dropdown.style.display = allObjectifs.length > 1 ? 'flex' : 'none';
+            dropdown.style.display = 'flex';
 
             allObjectifs.forEach((obj, i) => {
                 enforceKpiCadence(obj);
 
                 // Dropdown item
-                if (allObjectifs.length > 1) {
-                    const li = document.createElement('li');
-                    li.style.listStyle = 'none';
-                    const btn = document.createElement('button');
-                    btn.className = 'db-nav-item' + (i === currentCarouselIndex ? ' active' : '');
-                    btn.textContent = obj.titre || `Projet ${i + 1}`;
-                    btn.onclick = () => { switchProject(i); closeNavDropdown(); };
-                    li.appendChild(btn);
-                    navList.appendChild(li);
-                }
+                const li = document.createElement('li');
+                li.style.listStyle = 'none';
+                const btn = document.createElement('button');
+                btn.className = 'db-nav-item' + (i === currentCarouselIndex ? ' active' : '');
+                btn.textContent = obj.titre || `Projet ${i + 1}`;
+                btn.onclick = () => { switchProject(i); closeNavDropdown(); };
+                li.appendChild(btn);
+                navList.appendChild(li);
 
                 // Panel
                 const panel = document.createElement('div');
@@ -260,9 +335,12 @@
             // Update navbar label
             const active = allObjectifs[currentCarouselIndex];
             if (navLabel) navLabel.textContent = active?.titre || `Projet ${currentCarouselIndex + 1}`;
+            if (navInitial) navInitial.textContent = getProjectInitial(active, currentCarouselIndex);
+            updateProjectActions(currentCarouselIndex);
 
-            // init charts only for visible panel
-            setTimeout(() => initKPIChart(currentCarouselIndex, allObjectifs[currentCarouselIndex]), 0);
+            if (currentDashboardView === 'pilotage') {
+                setTimeout(() => initKPIChart(currentCarouselIndex, allObjectifs[currentCarouselIndex]), 0);
+            }
         }
 
         function switchProject(i) {
@@ -274,17 +352,38 @@
 
             // Update navbar label
             const navLabel = document.getElementById('dbNavLabel');
+            const navInitial = document.getElementById('dbNavInitial');
             if (navLabel) navLabel.textContent = allObjectifs[i]?.titre || `Projet ${i + 1}`;
+            if (navInitial) navInitial.textContent = getProjectInitial(allObjectifs[i], i);
+            updateProjectActions(i);
 
             // Update panels
             document.querySelectorAll('.db-panel').forEach((p, idx) =>
                 p.classList.toggle('active', idx === i));
 
-            // Init chart for newly visible panel
-            setTimeout(() => initKPIChart(i, allObjectifs[i]), 0);
+            if (currentDashboardView === 'pilotage') {
+                setTimeout(() => initKPIChart(i, allObjectifs[i]), 0);
+            }
 
             // Scroll to top of content
             window.scrollTo({ top: document.getElementById('dashboardSection').offsetTop - 80, behavior: 'smooth' });
+        }
+
+        function switchDashboardView(viewName) {
+            currentDashboardView = viewName === 'pilotage' ? 'pilotage' : 'execution';
+            document.querySelectorAll('.db-main-tab').forEach(tab => {
+                const isActive = tab.dataset.view === currentDashboardView;
+                tab.classList.toggle('active', isActive);
+                tab.setAttribute('aria-selected', String(isActive));
+            });
+            document.querySelectorAll('.db-view').forEach(view => {
+                const isActive = view.dataset.view === currentDashboardView;
+                view.hidden = !isActive;
+                view.classList.toggle('active', isActive);
+            });
+            if (currentDashboardView === 'pilotage' && allObjectifs[currentCarouselIndex]) {
+                setTimeout(() => initKPIChart(currentCarouselIndex, allObjectifs[currentCarouselIndex]), 0);
+            }
         }
 
         function toggleNavDropdown() {
@@ -293,6 +392,24 @@
 
         function closeNavDropdown() {
             document.getElementById('dbNavDropdown').classList.remove('open');
+        }
+
+        function getProjectInitial(obj, i) {
+            const title = (obj?.titre || `Projet ${i + 1}`).trim();
+            return (title[0] || 'P').toUpperCase();
+        }
+
+        function updateProjectActions(i) {
+            const holder = document.getElementById('dashboardProjectActions');
+            if (!holder || !allObjectifs[i]) return;
+            holder.innerHTML = `
+                <a href="objectif.html" class="nav-project-edit">Modifier</a>
+                <button class="nav-project-delete" type="button" title="Supprimer" onclick="deleteObjectif(${i})">
+                    <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                    </svg>
+                </button>
+            `;
         }
 
         // Close dropdown on outside click
@@ -316,91 +433,89 @@
         }
 
         function buildProjectCard(obj, i) {
-            const kpiLabel = extractKPI(obj.mesurable) || 'Indicateur';
             const kpiDesc  = extractKPIDesc(obj.mesurable);
-            const freqLabel = formatFrequence(obj.frequence, obj.jour);
-            const dateLabel = formatDateBadge(obj.temporel);
 
             return `
             <div class="proj-card">
-                <!-- Header -->
-                <div class="proj-header">
-                    <div class="proj-header-left">
-                        <h2 class="proj-title">${escHtml(obj.titre || 'Sans titre')}</h2>
-                        <div class="proj-badges">
-                            ${dateLabel ? `<span class="proj-badge proj-badge-t">T · ${dateLabel}</span>` : ''}
-                            ${freqLabel ? `<span class="proj-badge">${freqLabel}</span>` : ''}
-                            ${obj.jalons && obj.jalons.length > 0 ? `<span class="proj-badge">${obj.jalons.length} jalon${obj.jalons.length > 1 ? 's' : ''}</span>` : ''}
-                        </div>
-                    </div>
-                    <div class="proj-actions">
-                        <a href="objectif.html" class="proj-edit-link">Modifier le projet →</a>
-                        <button class="proj-btn-icon" title="Supprimer" onclick="deleteObjectif(${i})">
-                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-
                 <!-- Body -->
                 <div class="proj-body">
 
-                    <!-- Row 1 : KPI + SMART côte à côte -->
-                    <div class="db-row-kpi-smart">
-                        <div class="kpi-panel" id="kpiPanel-${i}">
-                            <div class="kpi-panel-top">
-                                <div class="kpi-panel-top-left">
-                                    <span class="kpi-panel-label">ÉVOLUTION · KPI</span>
-                                    ${kpiDesc ? `<span class="kpi-panel-desc">${escHtml(kpiDesc)}</span>` : ''}
-                                </div>
-                                <button class="kpi-add-btn" onclick="openAddMeasureModal(${i})">+ Ajouter une mesure</button>
+                    <div class="db-view db-view-execution ${currentDashboardView === 'execution' ? 'active' : ''}"
+                        data-view="execution"
+                        ${currentDashboardView === 'execution' ? '' : 'hidden'}>
+                        <div class="db-section">
+                            <div class="db-section-header">
+                                <span class="db-section-label">Exécution · Court terme</span>
                             </div>
-                            <div class="kpi-chart-area" id="kpiWrap-${i}">
-                                <canvas id="kpiChart-${i}"></canvas>
-                            </div>
-                        </div>
-
-                        <div class="smart-panel">
-                            <div class="smart-header">
-                                <span style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.55);">Objectif SMART</span>
-                                <button class="smart-edit-btn" type="button" onclick="enterSmartEdit(${i})">
-                                    <svg width="10" height="10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                                    </svg>
-                                    Modifier
-                                </button>
-                            </div>
-                            <div class="smart-view" id="smartView-${i}">
-                                ${buildSmartRow('S', "L'Ambition", obj.specifique, 'specifique')}
-                                ${buildSmartRow('M', 'La Mesure', obj.mesurable, 'mesurable')}
-                                ${buildSmartRow('A', 'Atteignable', obj.atteignable, 'atteignable')}
-                                ${buildSmartRow('R', 'Réaliste', obj.realiste, 'realiste')}
-                                ${buildSmartRow('T', "L'Échéance", obj.temporel, 'temporel')}
-                            </div>
-                            <form class="smart-edit" id="smartEdit-${i}" onsubmit="saveSmartEdit(event, ${i})">
-                                ${buildSmartEditRow('S', "L'Ambition", `smartSpec-${i}`, obj.specifique)}
-                                ${buildSmartEditRow('M', 'La Mesure', `smartMes-${i}`, obj.mesurable)}
-                                ${buildSmartEditRow('A', 'Atteignable', `smartAtt-${i}`, obj.atteignable)}
-                                ${buildSmartEditRow('R', 'Réaliste', `smartRea-${i}`, obj.realiste)}
-                                ${buildSmartEditRow('T', "L'Échéance", `smartTem-${i}`, obj.temporel)}
-                                <div class="smart-error" id="smartError-${i}">Tous les champs sont requis.</div>
-                                <div class="smart-edit-actions">
-                                    <button class="smart-btn smart-btn-cancel" type="button" onclick="cancelSmartEdit(${i})">Annuler</button>
-                                    <button class="smart-btn smart-btn-save" type="submit">Sauvegarder</button>
-                                </div>
-                            </form>
+                            ${buildJalonTaskBlock(obj, i)}
                         </div>
                     </div>
 
-                    <!-- Bloc unifié : Jalon actif + Tâches -->
-                    ${buildJalonTaskBlock(obj, i)}
+                    <div class="db-view db-view-pilotage ${currentDashboardView === 'pilotage' ? 'active' : ''}"
+                        data-view="pilotage"
+                        ${currentDashboardView === 'pilotage' ? '' : 'hidden'}>
+                        <div class="db-section">
+                            <div class="db-section-header">
+                                <span class="db-section-label">Vision · Long terme</span>
+                            </div>
 
-                    <!-- Timeline globale -->
-                    ${buildJalonsPanel(obj, i)}
+                            <!-- Row 1 : KPI + SMART côte à côte -->
+                            <div class="db-row-kpi-smart">
+                                <div class="kpi-panel db-card db-card-vision-main" id="kpiPanel-${i}">
+                                    <div class="kpi-panel-top">
+                                        <div class="kpi-panel-top-left">
+                                            <span class="kpi-panel-label">KPI global</span>
+                                            ${kpiDesc ? `<span class="kpi-panel-desc">${escHtml(kpiDesc)}</span>` : ''}
+                                        </div>
+                                        <button class="kpi-add-btn" onclick="openAddMeasureModal(${i})">+ Ajouter une mesure</button>
+                                    </div>
+                                    <div class="kpi-chart-area" id="kpiWrap-${i}">
+                                    </div>
+                                </div>
 
-                    <!-- Citation -->
-                    <p class="db-citation">"C'est quand t'as envie d'abandonner que tout commence."</p>
+                                <div class="smart-panel db-card db-card-vision-side">
+                                    <div class="smart-header">
+                                        <span class="smart-title">Objectif SMART</span>
+                                        <button class="smart-edit-btn" type="button" onclick="enterSmartEdit(${i})">
+                                            <svg width="10" height="10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                            </svg>
+                                            Modifier
+                                        </button>
+                                    </div>
+                                    <div class="smart-view" id="smartView-${i}">
+                                        ${buildSmartRow('S', "L'Ambition", obj.specifique, 'specifique')}
+                                        ${buildSmartRow('M', 'La Mesure', obj.mesurable, 'mesurable')}
+                                        ${buildSmartRow('A', 'Atteignable', obj.atteignable, 'atteignable')}
+                                        ${buildSmartRow('R', 'Réaliste', obj.realiste, 'realiste')}
+                                        ${buildSmartRow('T', "L'Échéance", obj.temporel, 'temporel')}
+                                    </div>
+                                    <form class="smart-edit" id="smartEdit-${i}" onsubmit="saveSmartEdit(event, ${i})">
+                                        ${buildSmartEditRow('S', "L'Ambition", `smartSpec-${i}`, obj.specifique)}
+                                        ${buildSmartEditRow('M', 'La Mesure', `smartMes-${i}`, obj.mesurable)}
+                                        ${buildSmartEditRow('A', 'Atteignable', `smartAtt-${i}`, obj.atteignable)}
+                                        ${buildSmartEditRow('R', 'Réaliste', `smartRea-${i}`, obj.realiste)}
+                                        ${buildSmartEditRow('T', "L'Échéance", `smartTem-${i}`, obj.temporel)}
+                                        <div class="smart-error" id="smartError-${i}">Tous les champs sont requis.</div>
+                                        <div class="smart-edit-actions">
+                                            <button class="smart-btn smart-btn-cancel" type="button" onclick="cancelSmartEdit(${i})">Annuler</button>
+                                            <button class="smart-btn smart-btn-save" type="submit">Sauvegarder</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="db-section">
+                            <div class="db-section-header">
+                                <span class="db-section-label">Pilotage · Jalons</span>
+                            </div>
+                            ${buildJalonsPanel(obj, i)}
+                        </div>
+
+                        <!-- Citation -->
+                        <p class="db-citation">"C'est quand t'as envie d'abandonner que tout commence."</p>
+                    </div>
 
                 </div>
             </div>
@@ -425,7 +540,7 @@
                     <div class="smart-edit-label">${letter}</div>
                     <div>
                         <div class="smart-sublabel">${label}</div>
-                        <textarea class="smart-input" id="${id}" rows="2" placeholder="${label}...">${escHtml(value || '')}</textarea>
+                        <textarea class="smart-input" id="${id}" rows="2">${escHtml(value || '')}</textarea>
                     </div>
                 </div>
             `;
@@ -534,7 +649,7 @@
                 <div class="section-lbl" id="todoHeaderLabel-${i}">${headerLabel}</div>
                 <div class="todo-row">
                     <input class="todo-input" type="text" id="todoInput-${i}"
-                        placeholder="Quelle action aujourd'hui ?"
+                        placeholder="Nouvelle tâche"
                         enterkeyhint="go"
                         onkeydown="if(event.key==='Enter'){addTask(${i});event.preventDefault();}"
                         onblur="addTask(${i});">
@@ -578,12 +693,34 @@
             return base;
         }
 
+        function renderTaskStats(counts) {
+            return `
+                <span class="jt-task-stat">${counts.todo} à faire</span>
+                <span class="jt-task-stat">${counts.doing} en cours</span>
+                <span class="jt-task-stat">${counts.done} terminées</span>
+            `;
+        }
+
         function renderTaskViewToggle(i) {
             const mode = getTaskViewMode(i);
             return `
-                <div class="task-view-toggle" id="taskViewToggle-${i}" role="tablist" aria-label="Vue des tâches">
-                    <button class="task-view-btn ${mode === 'list' ? 'active' : ''}" data-view="list" role="tab" aria-selected="${mode === 'list'}" onclick="setTaskViewMode(${i}, 'list')">Liste</button>
-                    <button class="task-view-btn ${mode === 'kanban' ? 'active' : ''}" data-view="kanban" role="tab" aria-selected="${mode === 'kanban'}" onclick="setTaskViewMode(${i}, 'kanban')">Kanban</button>
+                <div class="task-view-toggle view-toggle" id="taskViewToggle-${i}" role="tablist" aria-label="Vue des tâches" onclick="event.stopPropagation()">
+                    <button class="task-view-btn view-toggle-btn ${mode === 'list' ? 'active' : ''}" data-view="list" role="tab" aria-selected="${mode === 'list'}" onclick="setTaskViewMode(${i}, 'list')">
+                        <span class="task-view-icon toggle-icon ${mode === 'list' ? 'dark' : ''}">
+                            <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>
+                            </svg>
+                        </span>
+                        Liste
+                    </button>
+                    <button class="task-view-btn view-toggle-btn ${mode === 'kanban' ? 'active' : ''}" data-view="kanban" role="tab" aria-selected="${mode === 'kanban'}" onclick="setTaskViewMode(${i}, 'kanban')">
+                        <span class="task-view-icon toggle-icon ${mode === 'kanban' ? 'dark' : ''}">
+                            <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h6v14H4zM14 5h6v8h-6zM14 17h6v2h-6z"/>
+                            </svg>
+                        </span>
+                        Board
+                    </button>
                 </div>`;
         }
 
@@ -596,46 +733,95 @@
 
         function renderTasksList(tasks, i) {
             if (!tasks || tasks.length === 0) {
-                return '';
+                return `
+                    <div class="task-table card-panel">
+                        <div class="task-grid task-header">
+                            <div></div>
+                            <div>Nom de la tâche</div>
+                            <div>Statut</div>
+                            <div>Échéance</div>
+                            <div></div>
+                        </div>
+                        ${renderTaskListGroup('doing', 'En cours', [], i)}
+                        ${renderTaskListGroup('todo', 'À faire', [], i)}
+                        ${renderAddTaskRow(i)}
+                    </div>`;
             }
             const doing = tasks.filter(t => getTaskStatus(t) === 'doing');
             const todo  = tasks.filter(t => getTaskStatus(t) === 'todo');
             const done  = tasks.filter(t => getTaskStatus(t) === 'done');
 
-            let html = '';
+            let html = `
+                <div class="task-table card-panel">
+                    <div class="task-grid task-header">
+                        <div></div>
+                        <div>Nom de la tâche</div>
+                        <div>Statut</div>
+                        <div>Échéance</div>
+                        <div></div>
+                    </div>
+            `;
 
-            if (doing.length) {
-                html += `<div class="todo-section-lbl doing">En cours</div>`;
-                html += doing.map((t, ti) => renderTaskItem(t, i, ti)).join('');
-            }
-
-            if (todo.length) {
-                html += `<div class="todo-section-lbl">À faire</div>`;
-                html += todo.map((t, ti) => renderTaskItem(t, i, ti)).join('');
-            }
-
-            // no message when list is empty — input is the affordance
+            html += renderTaskListGroup('doing', 'En cours', doing, i);
+            html += renderTaskListGroup('todo', 'À faire', todo, i);
+            html += renderAddTaskRow(i);
 
             if (done.length) {
-                const collapsed = todoDoneCollapsed[i] === true;
-                html += `
-                    <div class="todo-done-header">
-                        <span class="section-lbl" style="margin-bottom:0;">Terminées (${done.length})</span>
-                        <button class="todo-done-toggle" onclick="toggleDoneBlock(${i})">
-                            <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor" style="transition:transform 0.2s;transform:${collapsed ? 'rotate(0deg)' : 'rotate(90deg)'}"><path d="M3 2l4 3-4 3V2z"/></svg>
-                        </button>
-                    </div>
-                    <div class="todo-done-group" style="display:${collapsed ? 'none' : 'flex'};">
-                        ${done.map((t, ti) => renderTaskItem(t, i, ti)).join('')}
-                    </div>`;
+                const collapsed = todoDoneCollapsed[i] !== false;
+                html += `<button class="task-group done" type="button" onclick="toggleDoneBlock(${i}); event.stopPropagation();"
+                    ondragover="taskListDragOver(event)"
+                    ondragleave="taskListDragLeave(event)"
+                    ondrop="dropTaskList(event, ${i}, 'done')">
+                    <span>Terminées</span>
+                    <strong>${done.length}</strong>
+                </button>
+                <div class="done-group task-list-dropzone done" style="display:${collapsed ? 'none' : 'block'};"
+                    ondragover="taskListDragOver(event)"
+                    ondragleave="taskListDragLeave(event)"
+                    ondrop="dropTaskList(event, ${i}, 'done')">
+                    ${done.map((t, ti) => renderTaskItem(t, i, ti)).join('')}
+                </div>`;
             }
 
-            return html;
+            return html + '</div>';
+        }
+
+        function renderTaskListGroup(status, label, groupTasks, i) {
+            return `
+                <button class="task-group ${status}" type="button"
+                    ondragover="taskListDragOver(event)"
+                    ondragleave="taskListDragLeave(event)"
+                    ondrop="dropTaskList(event, ${i}, '${status}')">
+                    <span>${label}</span>
+                    <strong>${groupTasks.length}</strong>
+                </button>
+                <div class="task-list-dropzone ${status}"
+                    ondragover="taskListDragOver(event)"
+                    ondragleave="taskListDragLeave(event)"
+                    ondrop="dropTaskList(event, ${i}, '${status}')">
+                    ${groupTasks.length
+                        ? groupTasks.map((t, ti) => renderTaskItem(t, i, ti)).join('')
+                        : `<div class="task-list-empty">Glisser une tâche ici</div>`}
+                </div>`;
+        }
+
+        function renderAddTaskRow(i) {
+            return `
+                <div class="add-task-row" onclick="document.getElementById('todoInput-${i}').focus()">
+                    <svg class="icon" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v14M5 12h14"/>
+                    </svg>
+                    <input type="text" id="todoInput-${i}"
+                        placeholder="Nouvelle tâche..."
+                        enterkeyhint="go"
+                        onkeydown="if(event.key==='Enter'){addTask(${i});event.preventDefault();}"
+                        onblur="addTask(${i});">
+                </div>`;
         }
 
         function renderTasksKanban(tasks, i) {
             const columns = [
-                { status: 'todo', label: 'À faire', empty: 'Aucune action à lancer' },
+                { status: 'todo', label: 'À faire', empty: 'Aucune tâche à lancer' },
                 { status: 'doing', label: 'En cours', empty: 'Rien en mouvement' },
                 { status: 'done', label: 'Terminé', empty: 'Rien terminé pour l’instant' }
             ];
@@ -655,10 +841,25 @@
                                     <span class="kanban-count">${colTasks.length}</span>
                                 </div>
                                 <div class="kanban-column-body">
-                                    ${colTasks.map(task => renderKanbanTaskCard(task, i)).join('')}
+                                    ${col.status === 'todo' ? renderKanbanAddTaskCard(i) : ''}
+                                    ${colTasks.length
+                                        ? colTasks.map(task => renderKanbanTaskCard(task, i)).join('')
+                                        : `<div class="kanban-empty">${col.empty}</div>`}
                                 </div>
                             </section>`;
                     }).join('')}
+                </div>`;
+        }
+
+        function renderKanbanAddTaskCard(i) {
+            return `
+                <div class="kanban-add-card" onclick="document.getElementById('todoInput-${i}').focus(); event.stopPropagation();">
+                    <span class="kanban-add-plus">+</span>
+                    <input type="text" id="todoInput-${i}"
+                        placeholder="Nouvelle tâche..."
+                        enterkeyhint="go"
+                        onkeydown="if(event.key==='Enter'){addTask(${i});event.preventDefault();}"
+                        onblur="addTask(${i});">
                 </div>`;
         }
 
@@ -712,6 +913,42 @@
             if (taskPanelState.projectIndex === i && taskPanelState.taskId === taskId) {
                 renderTaskPanel();
             }
+        }
+
+        function startTaskListDrag(event, i, taskId) {
+            kanbanDragState = { projectIndex: i, taskId };
+            event.currentTarget.classList.add('dragging');
+            if (event.dataTransfer) {
+                event.dataTransfer.effectAllowed = 'move';
+                event.dataTransfer.setData('text/plain', String(taskId));
+            }
+        }
+
+        function taskListDragOver(event) {
+            event.preventDefault();
+            if (event.dataTransfer) event.dataTransfer.dropEffect = 'move';
+            event.currentTarget.classList.add('drag-over');
+        }
+
+        function taskListDragLeave(event) {
+            if (!event.currentTarget.contains(event.relatedTarget)) {
+                event.currentTarget.classList.remove('drag-over');
+            }
+        }
+
+        function dropTaskList(event, i, status) {
+            event.preventDefault();
+            document.querySelectorAll('.task-list-dropzone.drag-over,.task-group.drag-over').forEach(el => el.classList.remove('drag-over'));
+            const rawTaskId = event.dataTransfer?.getData('text/plain') || kanbanDragState.taskId;
+            const taskId = Number(rawTaskId);
+            if (!Number.isFinite(taskId)) return;
+            setTaskStatus(i, taskId, status);
+        }
+
+        function endTaskListDrag(event) {
+            event.currentTarget.classList.remove('dragging');
+            document.querySelectorAll('.task-list-dropzone.drag-over,.task-group.drag-over').forEach(el => el.classList.remove('drag-over'));
+            kanbanDragState = { projectIndex: null, taskId: null };
         }
 
         function startKanbanDrag(event, i, taskId) {
@@ -769,39 +1006,48 @@
             const doneSubtasks = subtasks.filter(s => s.done).length;
             const meta = [];
             if (subtasks.length) meta.push(`${doneSubtasks}/${subtasks.length}`);
+            const dueLabel = getTaskDueLabel(task);
             return `
-                <div class="todo-item task-list-item ${status}" data-taskid="${task.id}"
+                <div class="task-grid task-row ${status} ${isDone ? 'completed' : ''}" data-taskid="${task.id}"
+                    draggable="true"
                     onclick="handleTaskRowClick(event, ${i}, ${task.id})"
+                    ondragstart="startTaskListDrag(event, ${i}, ${task.id})"
+                    ondragend="endTaskListDrag(event)"
                     ontouchstart="todoTouchStart(event)"
                     ontouchmove="todoTouchMove(event)"
                     ontouchend="todoTouchEnd(event, ${i}, ${task.id})">
-                    <button class="task-list-check ${status}"
+                    <div class="task-check-cell">
+                        <button class="custom-checkbox ${status}"
+                            onclick="toggleTask(${i}, ${task.id}); event.stopPropagation();"
+                            ontouchstart="event.stopPropagation();"
+                            ontouchend="toggleTask(${i}, ${task.id}); event.stopPropagation(); event.preventDefault();"
+                            aria-label="${getTaskStatusLabel(status)}"></button>
+                    </div>
+                    <div class="task-name ${status === 'doing' ? 'strong' : ''}">
+                        <span>${escHtml(task.text)}</span>
+                        ${meta.length ? `<span class="task-meta">${meta.map(item => escHtml(item)).join(' · ')}</span>` : ''}
+                    </div>
+                    <div>
+                        <button class="status-pill ${status === 'doing' ? 'dark' : ''}"
                         onclick="toggleTask(${i}, ${task.id}); event.stopPropagation();"
                         ontouchstart="event.stopPropagation();"
-                        ontouchend="toggleTask(${i}, ${task.id}); event.stopPropagation(); event.preventDefault();"
-                        aria-label="${getTaskStatusLabel(status)}"></button>
-                    <div class="task-list-main">
-                        <span class="todo-text">${escHtml(task.text)}</span>
-                        ${meta.length ? `<div class="task-list-meta">${meta.map(item => `<span>${escHtml(item)}</span>`).join('')}</div>` : ''}
+                        ontouchend="toggleTask(${i}, ${task.id}); event.stopPropagation(); event.preventDefault();">
+                        ${getTaskStatusLabel(status)}
+                        </button>
                     </div>
-                    <div class="task-list-actions">
-                        <button class="todo-edit"
+                    <button class="due-date ${dueLabel === '—' ? 'muted' : ''}" type="button" onclick="event.stopPropagation();">${escHtml(dueLabel)}</button>
+                    <button class="row-action"
                             onclick="openTaskPanel(${i}, ${task.id}); event.stopPropagation();"
                             ontouchstart="event.stopPropagation();"
                             ontouchend="openTaskPanel(${i}, ${task.id}); event.stopPropagation(); event.preventDefault();"
                             title="Ouvrir le détail">⋯</button>
-                        <button class="todo-del" onclick="deleteTask(event, ${i}, ${task.id})">×</button>
-                        <button class="todo-drop ${subOpen ? 'open' : ''}"
-                            onclick="toggleSubtasks(${i}, ${task.id}); event.stopPropagation();"
-                            ontouchstart="event.stopPropagation();"
-                            ontouchend="toggleSubtasks(${i}, ${task.id}); event.stopPropagation(); event.preventDefault();"
-                            title="Checklist">
-                            <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M5 7L1 3h8L5 7z"/></svg>
-                        </button>
-                    </div>
                 </div>
-                ${renderSubtasksInline(task, i)}
+                ${subOpen ? renderSubtasksInline(task, i) : ''}
             `;
+        }
+
+        function getTaskDueLabel(task) {
+            return task?.dueDate || task?.due || task?.deadline || task?.echeance || task?.date || '—';
         }
 
         const SUBTASK_ICON = `<svg class="subtask-icon-svg" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.4"/><path class="subtask-check" d="M4.5 7l1.8 1.8 3.2-3.2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
@@ -879,6 +1125,12 @@
             setTaskStatus(i, taskId, cycle[getTaskStatus(task)]);
         }
 
+        function toggleTaskDirect(i, taskId) {
+            const task = (allObjectifs[i]?.tasks || []).find(t => t.id === taskId);
+            if (!task) return;
+            setTaskStatus(i, taskId, getTaskStatus(task) === 'done' ? 'todo' : 'done');
+        }
+
         function deleteTask(event, i, taskId) {
             event.stopPropagation();
             if (!allObjectifs[i] || !allObjectifs[i].tasks) return;
@@ -893,6 +1145,10 @@
             const el = document.getElementById(`todoList-${i}`);
             if (el) {
                 el.innerHTML = renderTasksContent(allObjectifs[i], i);
+            }
+            const statsEl = document.getElementById(`jtTaskStats-${i}`);
+            if (statsEl) {
+                statsEl.innerHTML = renderTaskStats(getTaskCounts(getFilteredTasksForView(allObjectifs[i], i)));
             }
         }
 
@@ -1091,13 +1347,13 @@
             panel.innerHTML = `
                 <div class="cp-status-row">
                     <span class="cp-status-badge ${getTaskStatus(task)}"
-                        onclick="toggleTask(${i}, ${task.id}); renderTaskPanel(); refreshTodoList(${i});"
-                        ontouchend="toggleTask(${i}, ${task.id}); renderTaskPanel(); refreshTodoList(${i}); event.preventDefault();">
+                        onclick="toggleTaskDirect(${i}, ${task.id}); renderTaskPanel(); refreshTodoList(${i});"
+                        ontouchend="toggleTaskDirect(${i}, ${task.id}); renderTaskPanel(); refreshTodoList(${i}); event.preventDefault();">
                         <span class="cp-status-dot"></span>
                         ${getTaskStatusLabel(getTaskStatus(task))}
                     </span>
                 </div>
-                <h3 class="cp-task-title" onclick="inlineEditPanelTitle(${i}, ${taskId}, this)" title="Modifier le titre">${escHtml(task.text)}</h3>
+                <h3 class="cp-task-title" id="taskPanelTitle" onclick="inlineEditPanelTitle(${i}, ${taskId}, this)" title="Modifier le titre">${escHtml(task.text)}</h3>
                 <div class="cp-fields">
                     ${nextJalon ? `
                     <div class="cp-field-row">
@@ -1309,7 +1565,7 @@
             if (err) err.classList.remove('show');
 
             edit.style.display = 'none';
-            view.style.display = 'block';
+            view.style.display = '';
         }
 
         function saveSmartEdit(e, i) {
@@ -1369,62 +1625,50 @@
         function buildJalonsPanel(obj, i) {
             const jalons = getSortedProjectJalons(obj);
 
-            const manageLink = `<a href="jalons.html" class="jalons-manage-link">Gérer →</a>`;
-
             if (jalons.length === 0) {
                 return `<div style="text-align:center;padding:4px 0 0;">
-                    <a href="jalons.html" style="font-size:12px;color:rgba(255,255,255,0.25);text-decoration:none;border-bottom:1px dashed rgba(255,255,255,0.12);padding-bottom:2px;transition:color 0.2s;" onmouseover="this.style.color='#EE4408'" onmouseout="this.style.color='rgba(255,255,255,0.25)'">+ Planifier les jalons de ce projet</a>
+                    <a href="jalons.html" style="font-size:12px;color:rgba(255,255,255,0.25);text-decoration:none;border-bottom:1px dashed rgba(255,255,255,0.12);padding-bottom:2px;">+ Planifier les jalons de ce projet</a>
                 </div>`;
             }
 
-            // Build 3 parallel rows: top-labels | dots+lines | bottom-labels
-            let topCols = '';
-            let midCols = '';
-            let botCols = '';
+            const selectedJalonId = jalonPopupState[i] !== undefined
+                ? jalonPopupState[i]
+                : (getNextActiveJalon(obj)?.id || jalons[0]?.id);
+            const selectedJalon = jalons.find(j => j.id === selectedJalonId) || jalons[0];
+            const selectedIndex = Math.max(0, jalons.findIndex(j => j.id === selectedJalon?.id));
+
+            let topCols = '', midCols = '', botCols = '';
 
             jalons.forEach((jalon, ji) => {
                 const status = jalon.statut || 'pending';
-                const prevDone = ji > 0 && (jalons[ji-1].statut === 'completed');
+                const prevDone = ji > 0 && jalons[ji-1].statut === 'completed';
                 const lineDone = prevDone ? 'done' : '';
+                const isSelected = jalon.id === selectedJalon?.id;
 
-                // spacer between columns (connector line)
                 const spacer = ji > 0 ? `<div class="jt-spacer" style="min-width:50px;flex:1;"></div>` : '';
                 const midLine = ji > 0 ? `<div class="jt-line-seg ${lineDone}" style="flex:1;min-width:50px;"></div>` : '';
 
-                topCols += spacer + `
-                    <div class="jt-col-top">
-                        ${jalon.tag ? `<span class="jt-tag">${escHtml(jalon.tag)}</span>` : '<span class="jt-tag" style="visibility:hidden;">·</span>'}
-                        <span class="jt-date">${formatDateJalonCourt(jalon.date)}</span>
-                    </div>`;
+                topCols += spacer + `<div class="jt-col-top"><span class="jt-date">${formatDateJalonCourt(jalon.date)}</span></div>`;
 
-                const isPopupOpen = jalonPopupState[i] === jalon.id;
                 midCols += midLine + `
                     <div class="jt-dot-wrap">
-                        <div class="jt-dot ${status} ${isPopupOpen ? 'popup-active' : ''}"
-                            onclick="toggleJalonPopup(${i}, '${escHtml(jalon.id || '')}')"
+                        <div class="jt-dot ${status} ${isSelected ? 'popup-active' : ''}"
+                            onclick="selectJalon(${i}, '${escHtml(jalon.id || '')}')"
                             title="${escHtml(jalon.titre || jalon.title || '')}"></div>
                     </div>`;
 
                 botCols += (ji > 0 ? '<div class="jt-spacer"></div>' : '') + `
                     <div class="jt-col-bot">
+                        <span class="jt-rank-label">J${ji + 1}</span>
                         <span class="jt-title">${escHtml(jalon.titre || jalon.title || '')}</span>
-                        ${jalon.kpi ? `<span class="jt-kpi">${escHtml(jalon.kpi)}</span>` : ''}
-                        ${jalon.progression !== undefined ? `<span class="jt-prog">${jalon.progression}%</span>` : ''}
                     </div>`;
             });
 
-            // Popup card for selected jalon
-            let popupHtml = '';
-            if (jalonPopupState[i]) {
-                const pj = jalons.find(j => j.id === jalonPopupState[i]);
-                if (pj) popupHtml = buildJalonDetailCard(pj, jalons.length, jalons.indexOf(pj));
-            }
-
             return `
-            <div class="jalons-panel">
-                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-                    <span class="section-lbl" style="margin-bottom:0;">Étapes Clés</span>
-                    ${manageLink}
+            <div class="jalons-panel db-card db-card-pilot">
+                <div class="jalons-head">
+                    <span class="section-lbl" style="margin-bottom:0;">Pilotage · Jalons</span>
+                    <a href="jalons.html" class="jalons-manage-link">Gérer →</a>
                 </div>
                 <div class="jalons-scroll-wrap">
                     <div style="display:flex;flex-direction:column;gap:6px;min-width:max-content;">
@@ -1433,47 +1677,111 @@
                         <div style="display:flex;align-items:flex-start;">${botCols}</div>
                     </div>
                 </div>
-                ${popupHtml}
+                ${buildJalonPilotCard(selectedJalon, jalons.length, selectedIndex, i)}
             </div>`;
         }
 
         // ──────────────────────────────────────────────────────────
-        // JALON POPUP DETAIL
+        // JALON PILOT CARD (Zone 3 — panel fixe)
         // ──────────────────────────────────────────────────────────
 
-        function toggleJalonPopup(i, jalonId) {
-            jalonPopupState[i] = jalonPopupState[i] === jalonId ? null : jalonId;
+        function selectJalon(i, jalonId) {
+            jalonPopupState[i] = jalonId;
             renderDashboard();
         }
 
-        function buildJalonDetailCard(jalon, total, idx) {
+        function buildJalonPilotCard(jalon, total, idx, i) {
+            if (!jalon) return '';
             const title = jalon.titre || jalon.title || '';
-            const tag = jalon.tag || '';
-            const date = formatDateJalonCourt(jalon.date);
-            const desc = jalon.desc || '';
-            const kpi = jalon.kpi || '';
             const statut = jalon.statut || 'pending';
+            const date = formatDateJalonCourt(jalon.date);
+            const validationText = jalon.critere || jalon.kpi || jalon.desc || '';
             const num = idx + 1;
 
             const statusLabels = { completed: 'Validé', in_progress: 'En cours', pending: 'À venir' };
             const statusLabel = statusLabels[statut] || 'À venir';
             const statusClass = statut === 'completed' ? 'completed' : statut === 'in_progress' ? 'in-progress' : 'pending';
 
+            const kpis = getJalonKpis(jalon);
+            const kpiHtml = renderJalonKpis(kpis, i, jalon);
+
+            const actionBtn = statut === 'completed'
+                ? `<button class="jl-reactivate-btn" onclick="reactivateJalon(${i}, '${escHtml(jalon.id || '')}')">Réactiver</button>`
+                : `<button class="jl-validate-btn" onclick="completeJalon(${i}, '${escHtml(jalon.id || '')}')">Valider ce jalon</button>`;
+
             return `
-            <div class="jl-detail-card">
-                <div class="jl-detail-header">
+            <div class="jl-pilot-card">
+                <div class="jl-pilot-header">
                     <div class="jl-detail-meta">
-                        ${tag ? `<span class="jl-detail-tag">${escHtml(tag)}</span>` : ''}
                         <span class="jl-detail-num">Jalon ${num}/${total}</span>
                         <span class="jl-detail-status ${statusClass}">${statusLabel}</span>
                     </div>
                     ${date ? `<span class="jl-detail-date">${escHtml(date)}</span>` : ''}
                 </div>
-                ${title ? `<div class="jl-detail-title">${escHtml(title)}</div>` : ''}
-                ${desc ? `<div class="jl-detail-section"><span class="jl-detail-label">Description</span><p class="jl-detail-text">${escHtml(desc)}</p></div>` : ''}
-                ${kpi ? `<div class="jl-detail-section"><span class="jl-detail-label">Validation</span><p class="jl-detail-text jl-detail-kpi">${escHtml(kpi)}</p></div>` : ''}
-                ${!desc && !kpi ? `<p class="jl-detail-empty">Aucun détail — <a href="jalons.html">ajouter une description</a></p>` : ''}
+                ${title ? `<div class="jl-pilot-title">${escHtml(title)}</div>` : ''}
+                ${validationText ? `
+                <div class="jl-pilot-section">
+                    <span class="jl-pilot-label">Validation</span>
+                    <p class="jl-pilot-text">${escHtml(validationText)}</p>
+                </div>` : ''}
+                ${kpiHtml}
+                <div class="jl-pilot-footer">
+                    ${actionBtn}
+                </div>
             </div>`;
+        }
+
+        function getJalonKpis(jalon) {
+            if (!jalon) return [];
+            if (Array.isArray(jalon.kpis)) {
+                return jalon.kpis.filter(kpi => kpi && (kpi.titre || kpi.label || kpi.name));
+            }
+            if (jalon.kpiData && jalon.kpiData.titre) {
+                return [jalon.kpiData];
+            }
+            return [];
+        }
+
+        function renderJalonKpis(kpis, i, jalon) {
+            if (!kpis.length) {
+                return `
+                    <div class="jl-kpi-block jl-kpi-empty">
+                        <span class="jl-kpi-empty-label">Aucun KPI défini</span>
+                        <button class="jl-kpi-add-btn" onclick="openJalonKpiModal(${i}, '${escHtml(jalon.id || '')}')">+ Définir un KPI</button>
+                    </div>`;
+            }
+
+            return `
+                <div class="jl-kpi-grid">
+                    ${kpis.slice(0, 2).map(kpi => {
+                        const titre = kpi.titre || kpi.label || kpi.name || '';
+                        const valeur = kpi.valeur !== null && kpi.valeur !== undefined
+                            ? kpi.valeur
+                            : kpi.value !== null && kpi.value !== undefined ? kpi.value : '—';
+                        const cible = kpi.cible !== null && kpi.cible !== undefined
+                            ? kpi.cible
+                            : kpi.target !== null && kpi.target !== undefined ? kpi.target : null;
+                        const unite = kpi.unite || kpi.unit || '';
+                        const type = kpi.type === 'leading'
+                            ? 'Leading KPI'
+                            : kpi.type === 'lagging' ? 'Lagging KPI' : 'KPI de jalon';
+                        const unitLabel = unite ? ` ${unite}` : '';
+                        return `
+                            <div class="jl-kpi-block">
+                                <div class="jl-kpi-header">
+                                    <div>
+                                        <span class="jl-kpi-type">${escHtml(type)}</span>
+                                        <span class="jl-kpi-name">${escHtml(titre)}</span>
+                                    </div>
+                                    <button class="jl-kpi-update-btn" onclick="openJalonKpiModal(${i}, '${escHtml(jalon.id || '')}')">Mettre à jour</button>
+                                </div>
+                                <div class="jl-kpi-values">
+                                    <span class="jl-kpi-current">${escHtml(String(valeur))}${escHtml(unitLabel)}</span>
+                                    ${cible !== null ? `<span class="jl-kpi-sep">/</span><span class="jl-kpi-target">${escHtml(String(cible))}${escHtml(unitLabel)} cible</span>` : ''}
+                                </div>
+                            </div>`;
+                    }).join('')}
+                </div>`;
         }
 
         // ──────────────────────────────────────────────────────────
@@ -1498,7 +1806,9 @@
         function switchJalonView(i, ji) {
             activeJalonView[i] = ji;
             renderDashboard();
-            setTimeout(() => initKPIChart(i, allObjectifs[i]), 0);
+            if (currentDashboardView === 'pilotage') {
+                setTimeout(() => initKPIChart(i, allObjectifs[i]), 0);
+            }
         }
 
         function completeJalon(i, jalonId) {
@@ -1509,7 +1819,22 @@
             jalon.statut = 'completed';
             saveAllObjectifs();
             renderDashboard();
-            setTimeout(() => initKPIChart(i, allObjectifs[i]), 0);
+            if (currentDashboardView === 'pilotage') {
+                setTimeout(() => initKPIChart(i, allObjectifs[i]), 0);
+            }
+        }
+
+        function reactivateJalon(i, jalonId) {
+            const obj = allObjectifs[i];
+            if (!obj || !obj.jalons) return;
+            const jalon = obj.jalons.find(j => (j.id || '') === jalonId);
+            if (!jalon) return;
+            jalon.statut = 'in_progress';
+            saveAllObjectifs();
+            renderDashboard();
+            if (currentDashboardView === 'pilotage') {
+                setTimeout(() => initKPIChart(i, allObjectifs[i]), 0);
+            }
         }
 
         function getFilteredTasksForView(obj, i) {
@@ -1549,77 +1874,65 @@
             const viewedJalon = sorted[viewedIdx] || null;
             const total = sorted.length;
             const isActiveViewed = viewedJalon && activeJalon && viewedJalon.id === activeJalon.id;
+            const filteredTasks = getFilteredTasksForView(obj, i);
+            const taskCounts = getTaskCounts(filteredTasks);
 
-            // ── Jalon card ──
-            let jalonCard = '';
-            if (viewedJalon) {
-                const posLabel = isActiveViewed
-                    ? `JALON ACTIF · ${viewedIdx + 1}/${total}`
-                    : `JALON ${viewedIdx + 1}/${total}`;
-                const dateFormatted = formatDateJalonCourt(viewedJalon.date);
-                const isViewedCompleted = (viewedJalon.statut || 'pending') === 'completed';
-                jalonCard = `
-                    <div class="jt-jalon-card ${isActiveViewed ? 'active' : ''} ${isViewedCompleted ? 'completed' : ''}">
-                        <div class="jt-jalon-top">
-                            <span class="jt-jalon-label">${posLabel}</span>
-                            <div class="jt-jalon-actions">
-                                ${!isViewedCompleted
-                                    ? `<button class="jt-validate-btn" onclick="completeJalon(${i}, '${escHtml(viewedJalon.id || '')}')">✓ Valider</button>`
-                                    : `<span class="jt-validated-badge">✓ Validé</span>`}
-                                <a href="jalons.html" class="jt-manage-link">Gérer →</a>
-                            </div>
-                        </div>
-                        <div class="jt-jalon-bottom">
-                            <div class="jt-jalon-title">${escHtml(getJalonLabel(viewedJalon))}</div>
-                            ${dateFormatted ? `<span class="jt-jalon-date">${escHtml(dateFormatted)}</span>` : ''}
-                        </div>
-                    </div>`;
-            } else {
-                jalonCard = `<div style="text-align:center;padding:4px 0 12px;">
-                    <a href="jalons.html" style="font-size:12px;color:rgba(255,255,255,0.25);text-decoration:none;border-bottom:1px dashed rgba(255,255,255,0.12);padding-bottom:2px;">+ Planifier les jalons de ce projet</a>
+            if (!sorted.length) {
+                return `
+                <div class="jt-section">
+                    <div class="jt-block db-card db-card-execution" style="padding:20px;text-align:center;">
+                        <a href="jalons.html" style="font-size:12px;color:rgba(255,255,255,0.25);text-decoration:none;border-bottom:1px dashed rgba(255,255,255,0.12);">+ Planifier les jalons</a>
+                    </div>
                 </div>`;
             }
 
-            // ── Tabs (chronological left→right) ──
-            let timelineHtml = '';
-            if (sorted.length > 0) {
-                let tabs = '';
-                sorted.forEach((jalon, ji) => {
-                    const isActive = activeJalon && jalon.id === activeJalon.id;
-                    const isViewed = ji === viewedIdx;
-                    const isCompleted = jalon.statut === 'completed';
-                    let tabClass = 'jt-tab';
-                    if (isViewed) tabClass += ' active';
-                    if (isCompleted) tabClass += ' completed';
-                    const dateLabel = formatDateJalonCourt(jalon.date);
-                    tabs += `
-                        <button class="${tabClass}" onclick="switchJalonView(${i}, ${ji})">
-                            <span class="jt-tab-date">${escHtml(dateLabel)}</span>
-                            <span class="jt-tab-title">${escHtml(getJalonLabel(jalon))}</span>
-                        </button>`;
-                });
-                timelineHtml = `<div class="jt-tabs">${tabs}</div>`;
+            let tabs = '';
+            sorted.forEach((jalon, ji) => {
+                const isViewed = ji === viewedIdx;
+                const isCompleted = jalon.statut === 'completed';
+                const isInProgress = !isCompleted && activeJalon && jalon.id === activeJalon.id;
+                const linkedTasks = (obj.tasks || []).filter(task => task.jalonId === jalon.id);
+                const linkedCounts = getTaskCounts(linkedTasks);
+                let tabClass = 'milestone-tab';
+                if (isViewed) tabClass += ' active';
+                if (isCompleted) tabClass += ' is-complete';
+                const dot = isCompleted
+                    ? '<span class="milestone-dot complete"></span>'
+                    : isInProgress ? '<span class="milestone-dot active"></span>' : '';
+                tabs += `
+                    <button class="${tabClass}" onclick="switchJalonView(${i}, ${ji})">
+                        ${dot}
+                        ${escHtml(getJalonLabel(jalon))}
+                        <span class="milestone-count ${isViewed ? '' : 'muted'}">${linkedCounts.done}/${linkedCounts.total}</span>
+                    </button>`;
+            });
+
+            let criterionCard = '';
+            if (viewedJalon) {
+                const validationText = viewedJalon.critere || viewedJalon.desc || '';
+                criterionCard = `
+                    <div class="criterion-card">
+                        <svg class="icon-lg" width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <circle cx="12" cy="12" r="8"/>
+                            <circle cx="12" cy="12" r="2"/>
+                            <path d="M12 2v4M12 18v4M2 12h4M18 12h4"/>
+                        </svg>
+                        <div>
+                            <p class="overline">Critère de validation</p>
+                            <p class="criterion-text">${validationText ? escHtml(validationText) : '<span class="jt-empty-inline">Aucun critère défini.</span>'}</p>
+                        </div>
+                    </div>`;
             }
 
             return `
             <div class="jt-section">
-                ${timelineHtml}
-                <div class="jt-block">
-                    ${jalonCard}
-                    ${renderTaskToolbar(obj, i)}
-                    <div class="todo-add-row" onclick="document.getElementById('todoInput-${i}').focus()">
-                        <svg class="todo-add-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                            <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3" stroke-dasharray="2.5 2" stroke-linecap="round"/>
-                        </svg>
-                        <input class="todo-add-input" type="text" id="todoInput-${i}"
-                            placeholder="Ajouter une action"
-                            enterkeyhint="go"
-                            onkeydown="if(event.key==='Enter'){addTask(${i});event.preventDefault();}"
-                            onblur="addTask(${i});">
-                    </div>
-                    <div class="todo-list" id="todoList-${i}">
-                        ${renderTasksContent(obj, i)}
-                    </div>
+                <div class="milestone-tabs" role="tablist" aria-label="Jalons">${tabs}</div>
+                ${criterionCard}
+                <div class="task-toolbar">
+                    ${renderTaskViewToggle(i)}
+                </div>
+                <div class="todo-list" id="todoList-${i}">
+                    ${renderTasksContent(obj, i)}
                 </div>
             </div>`;
         }
@@ -1627,317 +1940,145 @@
         // ──────────────────────────────────────────────────────────
         // KPI CHART
         // ──────────────────────────────────────────────────────────
-        const axisArrowsPlugin = {
-            id: 'axisArrows',
-            afterDraw(chart) {
-                const ctx = chart.ctx;
-                const area = chart.chartArea;
-                if (!area) return;
-                const { left, right, top, bottom } = area;
-                const showFin = chart.options?.plugins?.axisArrows?.showFin;
-                const unit = chart.options?.plugins?.axisArrows?.unit || '';
-
-                ctx.save();
-                const color = 'rgba(255,255,255,0.8)';
-                ctx.strokeStyle = color;
-                ctx.fillStyle = color;
-                ctx.lineWidth = 1;
-                ctx.lineCap = 'round';
-                ctx.lineJoin = 'round';
-                const AS = 5;
-
-                // Y axis line + flèche ↑
-                ctx.beginPath();
-                ctx.moveTo(left, bottom);
-                ctx.lineTo(left, top - 5);
-                ctx.stroke();
-                ctx.beginPath();
-                ctx.moveTo(left, top - 11);
-                ctx.lineTo(left - AS * 0.6, top - 4);
-                ctx.lineTo(left + AS * 0.6, top - 4);
-                ctx.closePath();
-                ctx.fill();
-
-                // Label Y — seulement en mode empty (pas showFin)
-                if (!showFin) {
-                    const yLabel = unit && unit.length > 0
-                        ? (unit.length <= 12 ? unit.toUpperCase() : unit.slice(0, 10).toUpperCase() + '…')
-                        : 'VALEUR';
-                    ctx.font = '700 8px Inter, sans-serif';
-                    ctx.textAlign = 'left';
-                    ctx.textBaseline = 'bottom';
-                    ctx.fillStyle = 'rgba(255,255,255,0.50)';
-                    ctx.fillText(yLabel, left + 6, top - 2);
-                }
-
-                // X axis line + flèche →
-                ctx.strokeStyle = color;
-                ctx.fillStyle = color;
-                ctx.beginPath();
-                ctx.moveTo(left, bottom);
-                ctx.lineTo(right + 5, bottom);
-                ctx.stroke();
-                ctx.beginPath();
-                ctx.moveTo(right + 11, bottom);
-                ctx.lineTo(right + 4, bottom - AS * 0.6);
-                ctx.lineTo(right + 4, bottom + AS * 0.6);
-                ctx.closePath();
-                ctx.fill();
-
-                // Date du jour à droite de la flèche X — seulement en mode showFin
-                if (showFin) {
-                    const _n = new Date();
-                    const _todayLabel = `${String(_n.getDate()).padStart(2,'0')}/${String(_n.getMonth()+1).padStart(2,'0')}`;
-                    ctx.font = '600 9px Inter, sans-serif';
-                    ctx.textAlign = 'left';
-                    ctx.textBaseline = 'middle';
-                    ctx.fillStyle = 'rgba(255,255,255,0.50)';
-                    ctx.fillText(_todayLabel, right + 15, bottom);
-                }
-
-
-                // Data labels sur chaque point
-                if (chart.options?.plugins?.axisArrows?.showDataLabels) {
-                    const meta0 = chart.getDatasetMeta(0);
-                    const d0 = chart.data.datasets[0]?.data || [];
-                    meta0.data.forEach((pt, idx) => {
-                        const v = d0[idx];
-                        if (v === null || v === undefined) return;
-                        ctx.font = '600 9px Inter, sans-serif';
-                        ctx.textAlign = 'center';
-                        ctx.textBaseline = 'bottom';
-                        ctx.fillStyle = 'rgba(255,255,255,0.75)';
-                        ctx.fillText(String(v), pt.x, pt.y - 6);
-                    });
-                }
-
-                ctx.restore();
-            }
-        };
-        Chart.register(axisArrowsPlugin);
+        function ddmmyyyyToIso(str) {
+            if (!str) return '';
+            const parts = str.split('/');
+            if (parts.length !== 3) return str;
+            const [d, m, y] = parts;
+            return `${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;
+        }
 
         function initKPIChart(i, obj) {
-            const canvas = document.getElementById(`kpiChart-${i}`);
-            const wrap   = document.getElementById(`kpiWrap-${i}`);
-            if (!canvas || !wrap) return;
+            const container = document.getElementById(`kpiWrap-${i}`);
+            if (!container) return;
 
-            // Destroy previous
-            if (kpiCharts[i]) { kpiCharts[i].destroy(); delete kpiCharts[i]; }
+            // destroy existing chart
+            if (kpiCharts[i]) {
+                try { kpiCharts[i].remove(); } catch(e) {}
+                delete kpiCharts[i];
+            }
+            container.innerHTML = '';
 
-            const kpiUnit   = extractKPIUnit(obj.mesurable);
-            const target    = extractTargetValue(obj.mesurable);
-            const _cd = new Date(obj.createdAt || obj.id || Date.now());
-            const _mo = ['Jan','Fév','Mar','Avr','Mai','Juin','Juil','Août','Sep','Oct','Nov','Déc'];
-            const startDate = `${_cd.getDate()} ${_mo[_cd.getMonth()]} ${_cd.getFullYear()}`;
-            ensureMeasureIds(obj);
-            let measures    = [...(obj.measures || [])].sort((a,b) =>
-                (a.timestamp || parseDateString(a.date)) - (b.timestamp || parseDateString(b.date))
-            );
+            const kpiUnit = extractKPIUnit(obj.mesurable) || extractKPI(obj.mesurable) || '';
+            const measures = obj.measures || [];
 
-            // Considéré "vide" si aucune mesure manuelle (seulement auto avec value=0)
-            const hasRealMeasures = measures.some(m => !m.auto);
-
-            if (measures.length === 0 || !hasRealMeasures) {
-                canvas.style.display = 'block';
-                wrap.querySelectorAll('.kpi-empty-cta, .kpi-empty-overlay, .kpi-single-overlay, .kpi-empty-label, .kpi-mesurable-label, .kpi-empty-center, .kpi-empty-backdrop').forEach(el => el.remove());
-                // Ghost chart — axes visibles, aucun tick, aucune donnée
-                kpiCharts[i] = new Chart(canvas.getContext('2d'), {
-                    type: 'line',
-                    data: {
-                        labels: ['', '', '', '', ''],
-                        datasets: [{ data: [null, null, null, null, null], borderWidth: 0, pointRadius: 0 }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        animation: { duration: 0 },
-                        layout: { padding: { top: 30, right: 18, bottom: 30, left: 8 } },
-                        plugins: { legend: { display: false }, tooltip: { enabled: false }, axisArrows: { unit: '' } },
-                        scales: {
-                            x: {
-                                grid: { color: 'rgba(255,255,255,0.02)', lineWidth: 0.5, drawTicks: false },
-                                ticks: { display: false },
-                                border: { display: false }
-                            },
-                            y: {
-                                grid: { color: 'rgba(255,255,255,0.02)', lineWidth: 0.5, drawTicks: false },
-                                ticks: { display: false },
-                                beginAtZero: true,
-                                min: 0,
-                                max: 100,
-                                border: { display: false }
-                            }
-                        }
-                    }
-                });
-                // Backdrop radial — masque grille + blur derrière le texte
-                const backdrop = document.createElement('div');
-                backdrop.className = 'kpi-empty-backdrop';
-                wrap.appendChild(backdrop);
-
-                // Overlay centré — icône TrendingUp 48px orange + texte 22px blanc
-                const center = document.createElement('div');
-                center.className = 'kpi-empty-center';
-                // Sous-titre seulement si kpiUnit est un vrai label court (ex: "KM", "clients")
-                // Si kpiUnit = description longue (pas de brackets), on masque
-                const hasShortUnit = kpiUnit && kpiUnit.length <= 20;
-                const objLabel = hasShortUnit
-                    ? (target ? `Objectif : ${target} ${kpiUnit}` : `Mesure : ${kpiUnit}`)
-                    : '';
-                center.innerHTML = `
-                    <svg width="48" height="48" fill="none" stroke="#404025" viewBox="0 0 24 24" style="flex-shrink:0;">
-                        <polyline stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" points="22,7 13,16 8,11 2,17"/>
-                        <polyline stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" points="16,7 22,7 22,13"/>
-                    </svg>
-                    <span>AJOUTE TA PREMIÈRE MESURE</span>
-                    ${objLabel ? `<span class="kpi-empty-sub">${escHtml(objLabel)}</span>` : ''}
-                `;
-                wrap.appendChild(center);
+            // Empty state
+            if (measures.length === 0) {
+                container.innerHTML = `
+                    <button class="kpi-empty-cta" onclick="openAddMeasureModal(${i})">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                        </svg>
+                        Aucune mesure enregistrée · Ajouter une mesure
+                    </button>`;
                 return;
             }
 
-            // Filtered pour le chart : exclure les auto-mesures à 0
-            measures = measures.filter(m => !m.auto || m.value !== 0);
-
-            // Remove any overlays — measures now exist
-            wrap.querySelectorAll('.kpi-empty-cta, .kpi-empty-overlay, .kpi-single-overlay, .kpi-empty-label, .kpi-mesurable-label, .kpi-empty-center, .kpi-empty-backdrop').forEach(el => el.remove());
-            canvas.style.display = 'block';
-
-            // 1+ measures — always Chart.js (1 measure = 1 visible dot)
-            canvas.style.display = 'block';
-
-            const labels = measures.map(m => m.date);
-            const data   = measures.map(m => m.value);
-            const last   = measures[measures.length - 1];
-            const prev   = measures.length >= 2 ? measures[measures.length - 2] : null;
-            const delta  = prev !== null ? last.value - prev.value : null;
-            const pct    = target ? Math.round((last.value / target) * 100) : null;
-            const unit   = kpiUnit || '';
-
-
-            const datasets = [{
-                label: 'Progression',
-                data,
-                borderColor: '#EE4408',
-                borderWidth: 2,
-                tension: 0,
-                fill: false,
-                pointBackgroundColor: '#EE4408',
-                pointBorderColor: '#0d0d0f',
-                pointBorderWidth: 2,
-                pointRadius: 5,
-                pointHoverRadius: 7
-            }];
-
-            // Ligne cible diagonale : 0 → target sur la plage X
-            if (target) {
-                const diag = labels.map((_, idx) =>
-                    labels.length <= 1 ? target
-                    : +(target * idx / (labels.length - 1)).toFixed(1)
-                );
-                datasets.push({
-                    label: 'Cible',
-                    data: diag,
-                    borderColor: 'rgba(255,255,255,0.20)',
-                    borderWidth: 1,
-                    borderDash: [5, 4],
-                    pointRadius: 0,
-                    pointHoverRadius: 0,
-                    fill: false,
-                    tension: 0
-                });
-            }
-
-            const _yMax = target ? Math.max(target, Math.max(...data)) * 1.05 : Math.max(...data) > 0 ? Math.max(...data) * 1.15 : 1;
-            const _yMin = -(_yMax * 0.08);
-
-            kpiCharts[i] = new Chart(canvas.getContext('2d'), {
-                type: 'line',
-                data: { labels, datasets },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    animation: { duration: 400 },
-                    layout: { padding: { top: 30, right: 60, bottom: 30, left: 8 } },
-                    onHover: (evt, elements) => {
-                        const canvasEl = evt?.native?.target;
-                        if (canvasEl) canvasEl.style.cursor = elements.length ? 'pointer' : 'default';
-                    },
-                    onClick: (evt, elements) => {
-                        if (!elements || !elements.length) return;
-                        const idx = elements[0].index;
-                        const measure = measures[idx];
-                        if (measure && measure.id) openEditMeasureModal(i, measure.id);
-                    },
-                    plugins: {
-                        legend: { display: false },
-                        axisArrows: { showFin: true },
-                        tooltip: {
-                            backgroundColor: 'rgba(8,8,9,0.95)',
-                            titleColor: '#FFFDF6',
-                            bodyColor: 'rgba(255,255,255,0.65)',
-                            borderColor: 'rgba(238,68,8,0.3)',
-                            borderWidth: 1,
-                            padding: 12,
-                            displayColors: false,
-                            callbacks: {
-                                title: ctx => ctx[0] ? `Entrée du ${ctx[0].label}` : '',
-                                label: ctx => ctx.datasetIndex === 0
-                                    ? `Mesure: ${ctx.parsed.y} ${kpiUnit}`
-                                    : `Objectif: ${ctx.parsed.y} ${kpiUnit}`,
-                                footer: () => 'Cliquer pour éditer'
-                            }
-                        }
-                    },
-                    interaction: { mode: 'nearest', intersect: true },
-                    scales: {
-                        x: {
-                            offset: true,
-                            grid: { color: 'rgba(255,255,255,0.04)', lineWidth: 1, drawTicks: false, borderDash: [3, 5] },
-                            ticks: {
-                                color: 'rgba(255,255,255,0.60)',
-                                font: { family: 'Inter', size: 9, weight: '600' },
-                                maxRotation: 0,
-                                maxTicksLimit: 5,
-                                padding: 10,
-                                callback: function(val, idx) {
-                                    const lbl = this.getLabelForValue(val);
-                                    if (!lbl) return '';
-                                    const p = lbl.split('/');
-                                    return p.length === 3 ? `${p[0]}/${p[1]}` : lbl;
-                                }
-                            },
-                            title: {
-                                display: false,
-                            },
-                            border: { display: false }
-                        },
-                        y: {
-                            grid: { color: 'rgba(255,255,255,0.12)', lineWidth: 1, drawTicks: false, borderDash: [3, 5] },
-                            ticks: {
-                                color: 'rgba(255,255,255,0.60)',
-                                font: { family: 'Inter', size: 10, weight: '600' },
-                                maxTicksLimit: 5,
-                                precision: 0,
-                                padding: 12,
-                                callback: function(val) {
-                                    if (val < 0) return '';
-                                    return kpiUnit ? val + ' ' + kpiUnit : val;
-                                }
-                            },
-                            min: _yMin,
-                            max: _yMax,
-                            title: { display: false },
-                            border: { display: false }
-                        }
-                    }
-                }
+            // Group by ISO date, average same-day values
+            const byDate = {};
+            measures.forEach(m => {
+                const iso = ddmmyyyyToIso(m.date);
+                if (!byDate[iso]) byDate[iso] = { sum: 0, count: 0, ids: [] };
+                byDate[iso].sum += m.value;
+                byDate[iso].count++;
+                byDate[iso].ids.push(m.id);
             });
 
-            // Nettoyer ancien kpi-stats s'il existe
-            const panel = document.getElementById(`kpiPanel-${i}`);
-            const oldStats = panel?.querySelector('.kpi-stats');
-            if (oldStats) oldStats.remove();
+            const data = Object.keys(byDate).sort().map(date => ({
+                time: date,
+                value: Math.round(byDate[date].sum / byDate[date].count),
+                ids: byDate[date].ids,
+            }));
+
+            const maxVal = Math.max(...data.map(d => d.value));
+
+            // Chart dimensions
+            const w = container.offsetWidth || 600;
+            const h = (container.offsetHeight || 380) - 28;
+
+            const chart = LightweightCharts.createChart(container, {
+                width: w,
+                height: h,
+                layout: {
+                    background: { color: 'transparent' },
+                    textColor: 'rgba(255,255,255,0.35)',
+                    fontFamily: 'Inter, sans-serif',
+                    fontSize: 11,
+                },
+                grid: {
+                    vertLines: { color: 'rgba(255,255,255,0.04)' },
+                    horzLines: { color: 'rgba(255,255,255,0.04)' },
+                },
+                crosshair: {
+                    vertLine: { color: 'rgba(255,255,255,0.12)', width: 1 },
+                    horzLine: { color: 'rgba(255,255,255,0.12)', width: 1 },
+                },
+                leftPriceScale: {
+                    visible: true,
+                    borderColor: 'rgba(255,255,255,0.06)',
+                    scaleMargins: { top: 0.12, bottom: 0.08 },
+                },
+                rightPriceScale: { visible: false },
+                timeScale: {
+                    borderColor: 'rgba(255,255,255,0.06)',
+                    rightOffset: 5,
+                    tickMarkFormatter: (time) => {
+                        if (typeof time === 'string') {
+                            const parts = time.split('-');
+                            return `${parts[2]}/${parts[1]}`;
+                        }
+                        return time;
+                    },
+                },
+                handleScroll: false,
+                handleScale: false,
+                watermark: { visible: false },
+                attributionLogo: false,
+            });
+
+            const lineSeries = chart.addSeries(LightweightCharts.LineSeries, {
+                color: '#EE4408',
+                lineWidth: 2,
+                pointMarkersVisible: true,
+                priceScaleId: 'left',
+                crosshairMarkerRadius: 5,
+                crosshairMarkerBorderColor: '#EE4408',
+                crosshairMarkerBackgroundColor: '#EE4408',
+                priceFormat: {
+                    type: 'custom',
+                    minMove: 1,
+                    formatter: (price) => String(Math.round(price)),
+                },
+                autoscaleInfoProvider: () => ({
+                    priceRange: {
+                        minValue: 0,
+                        maxValue: maxVal > 0 ? Math.ceil(maxVal * 1.15) : 10,
+                    },
+                }),
+            });
+
+            lineSeries.setData(data.map(d => ({ time: d.time, value: d.value })));
+            chart.timeScale().fitContent();
+
+            kpiCharts[i] = chart;
+
+            // Click on point → edit modal for first measure on that date
+            chart.subscribeClick(param => {
+                if (!param.point) return;
+                const seriesPoint = param.seriesData && param.seriesData.get(lineSeries);
+                if (!seriesPoint) return;
+                const isoDate = seriesPoint.time;
+                const entry = byDate[isoDate];
+                if (entry && entry.ids.length) openEditMeasureModal(i, entry.ids[0]);
+            });
+
+            // Responsive
+            const ro = new ResizeObserver(() => {
+                const nw = container.offsetWidth;
+                const nh = container.offsetHeight - 28;
+                if (nw > 0 && nh > 0) chart.resize(nw, nh);
+            });
+            ro.observe(container);
         }
 
         // (navigation gérée par switchProject)
@@ -2351,6 +2492,53 @@
         }
 
         // ──────────────────────────────────────────────────────────
+        // JALON KPI MODAL
+        // ──────────────────────────────────────────────────────────
+        function openJalonKpiModal(i, jalonId) {
+            const obj = allObjectifs[i];
+            if (!obj) return;
+            const jalon = (obj.jalons || []).find(j => (j.id || '') === jalonId);
+            if (!jalon) return;
+            jalonKpiModalState = { projectIndex: i, jalonId };
+            const kpi = jalon.kpiData || {};
+            document.getElementById('jalonKpiTitre').value = kpi.titre || '';
+            document.getElementById('jalonKpiUnite').value = kpi.unite || '';
+            document.getElementById('jalonKpiValeur').value = kpi.valeur !== null && kpi.valeur !== undefined ? kpi.valeur : '';
+            document.getElementById('jalonKpiCible').value = kpi.cible !== null && kpi.cible !== undefined ? kpi.cible : '';
+            document.getElementById('jalonKpiError').textContent = '';
+            openModal('jalonKpiModalOverlay');
+            setTimeout(() => document.getElementById('jalonKpiTitre').focus(), 100);
+        }
+
+        function closeJalonKpiModal() {
+            closeModal('jalonKpiModalOverlay');
+            jalonKpiModalState = { projectIndex: null, jalonId: null };
+        }
+
+        function handleJalonKpiSubmit(e) {
+            e.preventDefault();
+            const { projectIndex: i, jalonId } = jalonKpiModalState;
+            if (i === null) return;
+            const titre = document.getElementById('jalonKpiTitre').value.trim();
+            const valeurRaw = document.getElementById('jalonKpiValeur').value.trim();
+            const cibleRaw = document.getElementById('jalonKpiCible').value.trim();
+            const unite = document.getElementById('jalonKpiUnite').value.trim();
+            if (!titre) {
+                document.getElementById('jalonKpiError').textContent = 'Le titre est requis.';
+                return;
+            }
+            const valeur = valeurRaw !== '' ? Number(valeurRaw) : null;
+            const cible = cibleRaw !== '' ? Number(cibleRaw) : null;
+            const obj = allObjectifs[i];
+            const jalon = (obj?.jalons || []).find(j => (j.id || '') === jalonId);
+            if (!jalon) return;
+            jalon.kpiData = { titre, valeur, cible, unite };
+            saveAllObjectifs();
+            closeJalonKpiModal();
+            renderDashboard();
+        }
+
+        // ──────────────────────────────────────────────────────────
         // INIT
         // ──────────────────────────────────────────────────────────
         document.addEventListener('DOMContentLoaded', () => {
@@ -2376,7 +2564,12 @@
                     cancelDelete();
                     forceCloseTaskPanel();
                     closeSyncModal();
+                    closeJalonKpiModal();
                 }
+            });
+
+            document.getElementById('jalonKpiModalOverlay').addEventListener('click', function(e) {
+                if (e.target === this) closeJalonKpiModal();
             });
 
             // Re-aligner le panneau si resize
