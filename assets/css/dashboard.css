@@ -7412,19 +7412,21 @@ body {
 }
 
 .dashboard-brand-mark {
+    display: none;
+}
+
+.dashboard-brand-logo {
     width: 24px;
     height: 24px;
-    display: grid;
-    place-items: center;
-    border-radius: 5px;
-    background: rgba(255,253,246,0.96);
-    color: #080809;
-    font-size: 12px;
-    font-weight: 850;
-    line-height: 1;
+    object-fit: contain;
+    flex: 0 0 auto;
 }
 
 .dashboard-brand-name {
+    font-family: 'Righteous', 'Inter', sans-serif;
+    font-size: 17px;
+    font-weight: 400;
+    letter-spacing: 0;
     line-height: 1;
 }
 
@@ -7695,11 +7697,13 @@ body {
 }
 
 .criterion-card {
-    gap: 12px;
-    padding: 14px 16px;
-    margin-bottom: 18px;
-    background: rgba(255,253,246,0.035);
-    border-color: rgba(255,253,246,0.14);
+    gap: 10px;
+    padding: 6px 0;
+    margin-bottom: 0;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
 }
 
 .criterion-card .icon-lg {
@@ -7840,7 +7844,7 @@ body {
 }
 
 .jalon-focus {
-    margin: 0 0 10px;
+    margin: 0 0 6px;
     padding: 0;
 }
 
@@ -7910,11 +7914,13 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
-    min-height: 38px;
+    min-height: 36px;
     margin: 0;
-    padding: 10px 0;
+    padding: 6px 0;
     background: transparent;
     border: none;
+    border-radius: 0;
+    box-shadow: none;
 }
 
 .criterion-card .jalon-validate-btn {
@@ -7923,17 +7929,23 @@ body {
 }
 
 .criterion-card .icon-lg {
-    width: 16px;
-    height: 16px;
+    width: 15px;
+    height: 15px;
+    flex: 0 0 auto;
     margin: 0;
-    color: rgba(255,253,246,0.66);
+    color: rgba(255,253,246,0.52);
 }
 
 .criterion-text {
-    color: rgba(255,253,246,0.86);
-    font-size: 13.5px;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: rgba(255,253,246,0.82);
+    font-size: 13px;
     font-weight: 470;
-    line-height: 1.35;
+    line-height: 1;
 }
 
 .criterion-text span:first-child {
@@ -8375,4 +8387,40 @@ body {
 .criterion-text span:first-child {
     color: rgba(255,253,246,0.88);
     font-weight: 560;
+}
+
+.db-sync-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid rgba(255,253,246,0.14);
+    background: transparent;
+    color: rgba(255,253,246,0.62);
+    font-size: 12.5px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 150ms, color 150ms, border-color 150ms;
+    white-space: nowrap;
+}
+
+.db-sync-btn:hover {
+    background: rgba(255,253,246,0.06);
+    color: rgba(255,253,246,0.92);
+    border-color: rgba(255,253,246,0.28);
+}
+
+.db-nav-add {
+    display: block;
+    width: 100%;
+    padding: 8px 14px;
+    border-top: 1px solid rgba(255,253,246,0.08);
+    margin-top: 4px;
+    color: rgba(238,68,8,0.82);
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 120ms, background 120ms;
 }

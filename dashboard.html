@@ -6,10 +6,10 @@
     <title>Dashboard · Carry It</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Righteous&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/styles.css">
 
-    <link rel="stylesheet" href="assets/css/dashboard.css?v=22">
+    <link rel="stylesheet" href="assets/css/dashboard.css?v=24">
     <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 </head>
 <body>
@@ -18,8 +18,8 @@
         <div class="dashboard-nav-top">
             <div class="dashboard-nav-left">
                 <a class="dashboard-brand" href="index.html" aria-label="Retour à l'accueil CarryIT">
-                    <span class="dashboard-brand-mark">C</span>
-                    <span class="dashboard-brand-name">CarryIT</span>
+                    <img src="assets/images/site/logo_png.webp" alt="" class="dashboard-brand-logo" aria-hidden="true">
+                    <span class="dashboard-brand-name">Carry IT</span>
                 </a>
                 <span class="dashboard-nav-divider" aria-hidden="true">/</span>
                 <div class="db-nav-dropdown" id="dbNavDropdown">
@@ -35,21 +35,12 @@
                 <div class="dashboard-project-actions" id="dashboardProjectActions"></div>
             </div>
             <div class="navbar-links dashboard-nav-right">
-                <span class="dashboard-nav-date">Mar. 14 Avril</span>
-                <span class="dashboard-theme-toggle dashboard-theme-indicator" role="status" aria-label="Passer en mode clair">
-                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <circle cx="12" cy="12" r="5" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                <button class="db-sync-btn" type="button" onclick="openSyncModal()" aria-label="Synchroniser les données">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
                     </svg>
-                    Passer en clair
-                </span>
-                <button class="dashboard-icon-button" type="button" aria-label="Notifications">
-                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2c0 .5-.2 1-.6 1.4L4 17h5"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17a3 3 0 0 0 6 0"/>
-                    </svg>
+                    Synchroniser
                 </button>
-                <button class="dashboard-avatar" type="button" aria-label="Profil utilisateur"></button>
             </div>
         </div>
 
@@ -320,8 +311,8 @@
 
             if (allObjectifs.length === 0) {
                 dropdown.style.display = 'flex';
-                if (navLabel) navLabel.textContent = 'Mon Espace';
-                if (navInitial) navInitial.textContent = 'N';
+                if (navLabel) navLabel.textContent = 'Nouveau projet';
+                if (navInitial) navInitial.textContent = '+';
                 panels.innerHTML = buildEmptyState();
                 return;
             }
@@ -351,10 +342,21 @@
                 panels.appendChild(panel);
             });
 
-            // Update navbar label
+            // Add "Nouveau projet" link at bottom of dropdown
+            const liAdd = document.createElement('li');
+            liAdd.style.listStyle = 'none';
+            const aAdd = document.createElement('a');
+            aAdd.className = 'db-nav-item db-nav-add';
+            aAdd.href = 'objectif.html';
+            aAdd.textContent = '+ Ajouter un projet';
+            liAdd.appendChild(aAdd);
+            navList.appendChild(liAdd);
+
+            // Update navbar label to current project name
             const active = allObjectifs[currentCarouselIndex];
-            if (navLabel) navLabel.textContent = 'Mon Espace';
-            if (navInitial) navInitial.textContent = 'N';
+            const activeLabel = active?.titre || `Projet ${currentCarouselIndex + 1}`;
+            if (navLabel) navLabel.textContent = activeLabel;
+            if (navInitial) navInitial.textContent = activeLabel.charAt(0).toUpperCase();
             updateProjectActions(currentCarouselIndex);
 
             if (currentDashboardView === 'pilotage') {
@@ -372,8 +374,9 @@
             // Update navbar label
             const navLabel = document.getElementById('dbNavLabel');
             const navInitial = document.getElementById('dbNavInitial');
-            if (navLabel) navLabel.textContent = 'Mon Espace';
-            if (navInitial) navInitial.textContent = 'N';
+            const switchedLabel = allObjectifs[i]?.titre || `Projet ${i + 1}`;
+            if (navLabel) navLabel.textContent = switchedLabel;
+            if (navInitial) navInitial.textContent = switchedLabel.charAt(0).toUpperCase();
             updateProjectActions(i);
 
             // Update panels
