@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Righteous&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/styles.css">
 
-    <link rel="stylesheet" href="assets/css/dashboard.css?v=43">
+    <link rel="stylesheet" href="assets/css/dashboard.css?v=57">
     <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 </head>
 <body>
@@ -187,6 +187,13 @@
             <p class="m-sub">Définissez l'indicateur que vous suivez pour ce jalon.</p>
             <form id="jalonKpiForm" onsubmit="handleJalonKpiSubmit(event)">
                 <div class="m-field">
+                    <label class="m-label" for="jalonKpiType">Type</label>
+                    <select class="m-input" id="jalonKpiType">
+                        <option value="leading">Leading (ce que je fais)</option>
+                        <option value="lagging">Lagging (ce que ça donne)</option>
+                    </select>
+                </div>
+                <div class="m-field">
                     <label class="m-label" for="jalonKpiTitre">Indicateur *</label>
                     <input class="m-input" type="text" id="jalonKpiTitre">
                 </div>
@@ -205,6 +212,30 @@
                 <div class="m-error" id="jalonKpiError"></div>
                 <div class="m-btns">
                     <button type="button" class="m-btn-cancel" onclick="closeJalonKpiModal()">Annuler</button>
+                    <button type="submit" class="m-btn-ok">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ── MODAL: Ajouter une mesure KPI (jalon) ── -->
+    <div id="jalonKpiMeasureModalOverlay" class="m-overlay">
+        <div class="m-box" onclick="event.stopPropagation()">
+            <h3 class="m-title">Ajouter une mesure</h3>
+            <p class="m-sub" id="jalonKpiMeasureSubtitle">Ajoutez une valeur pour ce KPI.</p>
+            <form id="jalonKpiMeasureForm" onsubmit="handleJalonKpiMeasureSubmit(event)">
+                <div class="m-field">
+                    <label class="m-label" for="jalonKpiMeasureDate">Date</label>
+                    <input class="m-input" type="date" id="jalonKpiMeasureDate">
+                    <div class="m-error" id="jalonKpiMeasureDateError"></div>
+                </div>
+                <div class="m-field">
+                    <label class="m-label" for="jalonKpiMeasureValue">Valeur</label>
+                    <input class="m-input" type="number" min="0" step="any" id="jalonKpiMeasureValue">
+                    <div class="m-error" id="jalonKpiMeasureValueError"></div>
+                </div>
+                <div class="m-btns">
+                    <button type="button" class="m-btn-cancel" onclick="closeJalonKpiMeasureModal()">Annuler</button>
                     <button type="submit" class="m-btn-ok">Enregistrer</button>
                 </div>
             </form>
@@ -244,7 +275,8 @@
         let taskViewMode = {}; // { projectIndex: 'list' | 'kanban' }
         let jalonPopupState = {}; // { projectIndex: jalonId | null }
         let kanbanDragState = { projectIndex: null, taskId: null };
-        let jalonKpiModalState = { projectIndex: null, jalonId: null };
+        let jalonKpiModalState = { projectIndex: null, jalonId: null, kpiType: 'lagging' };
+        let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: null };
         let currentDashboardView = 'execution';
 
         // ──────────────────────────────────────────────────────────
@@ -261,10 +293,67 @@
                     allObjectifs.forEach((obj, objIndex) => {
                         if (!obj.tasks) obj.tasks = [];
                         if (sharedMilestones.length > 0 && objIndex === allObjectifs.length - 1) {
-                            const normalizedShared = sharedMilestones.map(m => ({ ...m }));
-                            if (JSON.stringify(obj.jalons || []) !== JSON.stringify(normalizedShared)) {
-                                obj.jalons = normalizedShared;
+                            const existing = Array.isArray(obj.jalons) ? obj.jalons : [];
+                            if (!existing.length) {
+                                obj.jalons = sharedMilestones.map(m => ({
+                                    ...m,
+                                    titre: m.title || m.titre || '',
+                                    title: m.title || m.titre || '',
+                                    desc: m.desc || m.description || '',
+                                    description: m.desc || m.description || '',
+                                    critere: m.kpi || m.critere || '',
+                                    kpi: m.kpi || m.critere || '',
+                                    statut: m.statut || 'pending',
+                                    kpis: Array.isArray(m.kpis) ? m.kpis : []
+                                }));
                                 changed = true;
+                            } else {
+                                // Merge shared milestones (jalons.html) into dashboard jalons without losing user edits
+                                const beforeMerge = JSON.stringify(existing);
+                                const byId = new Map(existing.map(j => [String(j?.id || ''), j]));
+                                const merged = [];
+                                sharedMilestones.forEach(m => {
+                                    const id = String(m?.id || '');
+                                    if (!id) return;
+                                    const cur = byId.get(id);
+                                    if (cur) {
+                                        // keep user-edited fields (statut, kpis, etc) but refresh canonical fields from jalons.html
+                                        const nextTitle = m.title || m.titre || cur.titre || cur.title || '';
+                                        const nextDesc = m.desc || m.description || cur.desc || cur.description || '';
+                                        const nextCrit = (cur.critere || cur.kpi) ? (cur.critere || cur.kpi) : (m.kpi || m.critere || '');
+                                        cur.date = m.date || cur.date;
+                                        cur.title = nextTitle;
+                                        cur.titre = nextTitle;
+                                        cur.desc = nextDesc;
+                                        cur.description = nextDesc;
+                                        cur.kpi = nextCrit;
+                                        cur.critere = nextCrit;
+                                        merged.push(cur);
+                                    } else {
+                                        merged.push({
+                                            ...m,
+                                            titre: m.title || m.titre || '',
+                                            title: m.title || m.titre || '',
+                                            desc: m.desc || m.description || '',
+                                            description: m.desc || m.description || '',
+                                            critere: m.kpi || m.critere || '',
+                                            kpi: m.kpi || m.critere || '',
+                                            statut: m.statut || 'pending',
+                                            kpis: Array.isArray(m.kpis) ? m.kpis : []
+                                        });
+                                    }
+                                });
+                                // append any extra jalons created in dashboard that are not in shared milestones
+                                existing.forEach(j => {
+                                    const id = String(j?.id || '');
+                                    if (!id) return;
+                                    const inShared = sharedMilestones.some(m => String(m?.id || '') === id);
+                                    if (!inShared) merged.push(j);
+                                });
+                                // Only write back if changed in length/order or if we actually updated fields above
+                                obj.jalons = merged;
+                                const afterMerge = JSON.stringify(obj.jalons || []);
+                                if (beforeMerge !== afterMerge) changed = true;
                             }
                         }
                         obj.tasks.forEach(t => {
@@ -277,6 +366,27 @@
                                 jalon.kpiData = { titre: jalon.kpi, valeur: null, cible: null, unite: '' };
                                 changed = true;
                             }
+                            // backward compat: move kpiData to kpis[] (lagging) if needed
+                            if (!Array.isArray(jalon.kpis)) {
+                                if (jalon.kpiData && jalon.kpiData.titre) {
+                                    jalon.kpis = [{ id: `kpi-${Date.now()}-${Math.random().toString(16).slice(2)}`, type: 'lagging', ...jalon.kpiData, measures: [] }];
+                                    changed = true;
+                                } else {
+                                    jalon.kpis = [];
+                                }
+                            } else if (jalon.kpiData && jalon.kpiData.titre) {
+                                const hasLagging = jalon.kpis.some(k => (k?.type || '') === 'lagging');
+                                if (!hasLagging) {
+                                    jalon.kpis.push({ id: `kpi-${Date.now()}-${Math.random().toString(16).slice(2)}`, type: 'lagging', ...jalon.kpiData, measures: [] });
+                                    changed = true;
+                                }
+                            }
+                            // ensure ids + measures arrays
+                            (jalon.kpis || []).forEach(kpi => {
+                                if (!kpi) return;
+                                if (!kpi.id) { kpi.id = `kpi-${Date.now()}-${Math.random().toString(16).slice(2)}`; changed = true; }
+                                if (!Array.isArray(kpi.measures)) { kpi.measures = []; changed = true; }
+                            });
                         });
                         if (!obj.createdAt) obj.createdAt = obj.id || Date.now();
                         if (!obj.kpiType) obj.kpiType = 'cumulatif';
@@ -300,6 +410,21 @@
 
         function saveAllObjectifs() {
             localStorage.setItem('carryItAllObjectifs', JSON.stringify(allObjectifs));
+            // Keep jalons.html in sync with last project (without wiping dashboard-only fields)
+            try {
+                const last = allObjectifs[allObjectifs.length - 1];
+                if (last && Array.isArray(last.jalons) && last.jalons.length) {
+                    const shared = last.jalons.map(j => ({
+                        id: j.id,
+                        date: j.date,
+                        tag: j.tag || '',
+                        title: j.title || j.titre || '',
+                        desc: j.desc || j.description || '',
+                        kpi: j.critere || j.kpi || ''
+                    }));
+                    localStorage.setItem('carryItMilestones', JSON.stringify(shared));
+                }
+            } catch (e) {}
         }
 
         // ──────────────────────────────────────────────────────────
@@ -1054,6 +1179,50 @@
             }
         }
 
+        function jalonDropOver(event) {
+            event.preventDefault();
+            if (event.dataTransfer) event.dataTransfer.dropEffect = 'move';
+            event.currentTarget.classList.add('drag-over');
+        }
+
+        function jalonDropLeave(event) {
+            if (!event.currentTarget.contains(event.relatedTarget)) {
+                event.currentTarget.classList.remove('drag-over');
+            }
+        }
+
+        function dropTaskOnJalon(event, i, jalonId) {
+            event.preventDefault();
+            document.querySelectorAll('.milestone-tab.drag-over,.msb-milestone.drag-over').forEach(el => el.classList.remove('drag-over'));
+            const rawTaskId = event.dataTransfer?.getData('text/plain') || kanbanDragState.taskId;
+            const taskId = Number(rawTaskId);
+            if (!Number.isFinite(taskId)) return;
+            const srcIndex = kanbanDragState.projectIndex;
+            if (srcIndex === null || srcIndex === undefined) return;
+            if (srcIndex !== i) return; // same project only
+            const obj = allObjectifs[i];
+            if (!obj) return;
+            const task = (obj.tasks || []).find(t => t.id === taskId);
+            if (!task) return;
+            const targetJalon = (obj.jalons || []).find(j => String(j?.id || '') === String(jalonId || ''));
+            if (!targetJalon) return;
+
+            task.jalonId = targetJalon.id || '';
+            task.jalonTitle = getJalonLabel(targetJalon);
+            task.jalonDate = targetJalon.date || '';
+
+            const sorted = getSortedProjectJalons(obj);
+            const targetIdx = sorted.findIndex(j => String(j?.id || '') === String(jalonId || ''));
+            if (targetIdx >= 0) activeJalonView[i] = targetIdx;
+            jalonPopupState[i] = targetJalon.id || '';
+
+            saveAllObjectifs();
+            renderDashboard();
+            if (taskPanelState.projectIndex === i && taskPanelState.taskId === taskId) {
+                renderTaskPanel();
+            }
+        }
+
         function dropTaskList(event, i, status) {
             event.preventDefault();
             document.querySelectorAll('.task-list-dropzone.drag-over,.task-group.drag-over').forEach(el => el.classList.remove('drag-over'));
@@ -1066,6 +1235,7 @@
         function endTaskListDrag(event) {
             event.currentTarget.classList.remove('dragging');
             document.querySelectorAll('.task-list-dropzone.drag-over,.task-group.drag-over').forEach(el => el.classList.remove('drag-over'));
+            document.querySelectorAll('.milestone-tab.drag-over,.msb-milestone.drag-over').forEach(el => el.classList.remove('drag-over'));
             kanbanDragState = { projectIndex: null, taskId: null };
         }
 
@@ -1102,6 +1272,7 @@
         function endKanbanDrag(event) {
             event.currentTarget.classList.remove('dragging');
             document.querySelectorAll('.kanban-column.drag-over').forEach(col => col.classList.remove('drag-over'));
+            document.querySelectorAll('.milestone-tab.drag-over,.msb-milestone.drag-over').forEach(el => el.classList.remove('drag-over'));
             kanbanDragState = { projectIndex: null, taskId: null };
         }
 
@@ -1774,47 +1945,96 @@
             const selectedJalon = jalons.find(j => j.id === selectedJalonId) || jalons[0];
             const selectedIndex = Math.max(0, jalons.findIndex(j => j.id === selectedJalon?.id));
 
-            let topCols = '', midCols = '', botCols = '';
+            const statusLabels = { completed: 'Terminé', in_progress: 'En cours', pending: 'À venir', late: 'En retard' };
+            const statusChips = { completed: 'msb-chip--done', in_progress: 'msb-chip--active', pending: 'msb-chip--upcoming', late: 'msb-chip--late' };
+            const isLate = (jalon) => {
+                if (!jalon) return false;
+                const st = jalon.statut || 'pending';
+                if (st === 'completed') return false;
+                const t = new Date(jalon.date || '').getTime();
+                if (Number.isNaN(t)) return false;
+                const now = new Date();
+                now.setHours(0, 0, 0, 0);
+                return t < now.getTime();
+            };
 
+            let timelineItems = '';
+            // Timeline order UX: keep chronological sense (left → right)
             jalons.forEach((jalon, ji) => {
                 const status = jalon.statut || 'pending';
-                const prevDone = ji > 0 && jalons[ji-1].statut === 'completed';
-                const lineDone = prevDone ? 'done' : '';
                 const isSelected = jalon.id === selectedJalon?.id;
-
-                const spacer = ji > 0 ? `<div class="jt-spacer" style="min-width:50px;flex:1;"></div>` : '';
-                const midLine = ji > 0 ? `<div class="jt-line-seg ${lineDone}" style="flex:1;min-width:50px;"></div>` : '';
-
-                topCols += spacer + `<div class="jt-col-top"><span class="jt-date">${formatDateJalonCourt(jalon.date)}</span></div>`;
-
-                midCols += midLine + `
-                    <div class="jt-dot-wrap">
-                        <div class="jt-dot ${status} ${isSelected ? 'popup-active' : ''}"
-                            onclick="selectJalon(${i}, '${escHtml(jalon.id || '')}')"
-                            title="${escHtml(jalon.titre || jalon.title || '')}"></div>
-                    </div>`;
-
-                botCols += (ji > 0 ? '<div class="jt-spacer"></div>' : '') + `
-                    <div class="jt-col-bot">
-                        <span class="jt-rank-label">J${ji + 1}</span>
-                        <span class="jt-title">${escHtml(jalon.titre || jalon.title || '')}</span>
-                    </div>`;
+                const dotClass = status === 'completed' ? 'msb-dot--done' : status === 'in_progress' ? 'msb-dot--active' : isLate(jalon) ? 'msb-dot--late' : 'msb-dot--upcoming';
+                const dotText = status === 'completed' ? '✓' : String(ji + 1);
+                const isDone = status === 'completed';
+                timelineItems += `
+                    <button class="msb-milestone ${isSelected ? 'is-selected' : ''} ${isDone ? 'is-done' : ''}" type="button"
+                        onclick="selectJalon(${i}, '${escHtml(jalon.id || '')}')"
+                        ondragover="jalonDropOver(event)"
+                        ondragleave="jalonDropLeave(event)"
+                        ondrop="dropTaskOnJalon(event, ${i}, '${escHtml(jalon.id || '')}')"
+                        title="${escHtml(jalon.titre || jalon.title || '')}"
+                        aria-current="${isSelected ? 'step' : 'false'}">
+                        <div class="msb-dot ${dotClass}">${dotText}</div>
+                        <div class="msb-num">Jalon ${ji + 1}</div>
+                        <div class="msb-title">${escHtml(jalon.titre || jalon.title || '')}</div>
+                        <div class="msb-date">${escHtml(formatDateJalonCourt(jalon.date) || '')}</div>
+                    </button>`;
             });
 
+            const total = jalons.length;
+
+            const rawStatus = selectedJalon?.statut || 'pending';
+            const statut = isLate(selectedJalon) ? 'late' : rawStatus;
+            const statusLabel = statusLabels[statut] || 'À venir';
+            const statusChip = statusChips[statut] || 'msb-chip--upcoming';
+            const title = selectedJalon?.titre || selectedJalon?.title || '';
+            const date = formatDateJalonCourt(selectedJalon?.date);
+            const desc = selectedJalon?.desc || selectedJalon?.description || '';
+            const validationText = selectedJalon?.critere || selectedJalon?.kpi || '';
+            const num = selectedIndex + 1;
+
+            const kpiHtml = renderJalonKpiCards(selectedJalon, i, statut);
+
+            const actionBtn = rawStatus === 'completed'
+                ? `<button class="jl-reactivate-btn" onclick="reactivateJalon(${i}, '${escHtml(selectedJalon?.id || '')}')">Réactiver</button>`
+                : `<button class="jl-validate-btn" onclick="completeJalon(${i}, '${escHtml(selectedJalon?.id || '')}')">Valider ce jalon</button>`;
+
             return `
-            <div class="jalons-panel db-card db-card-pilot">
-                <div class="jalons-head">
+            <div class="msb-panel db-card db-card-pilot">
+                <div class="msb-head">
                     <span class="section-lbl" style="margin-bottom:0;">Pilotage · Jalons</span>
                     <a href="jalons.html" class="jalons-manage-link">Gérer →</a>
                 </div>
-                <div class="jalons-scroll-wrap">
-                    <div style="display:flex;flex-direction:column;gap:6px;min-width:max-content;">
-                        <div style="display:flex;align-items:flex-end;">${topCols}</div>
-                        <div style="display:flex;align-items:center;">${midCols}</div>
-                        <div style="display:flex;align-items:flex-start;">${botCols}</div>
+
+                <div class="msb-kicker">Timeline des jalons</div>
+                <div class="msb-timeline-wrap" aria-label="Timeline des jalons">
+                    <div class="msb-timeline" role="list">
+                        ${timelineItems}
                     </div>
                 </div>
-                ${buildJalonPilotCard(selectedJalon, jalons.length, selectedIndex, i)}
+
+                <div class="msb-divider" aria-hidden="true"></div>
+                <div class="msb-kicker">États de jalon — avec description</div>
+                <div class="msb-state-row msb-state-row--single">
+                    <div class="msb-state-card is-selected">
+                        <div class="msb-card-head">
+                            <div class="msb-badge">Jalon ${num} · ${num}/${total}</div>
+                            <div class="msb-chip ${statusChip}"><span class="msb-chip-dot" aria-hidden="true"></span>${statusLabel}</div>
+                        </div>
+                        ${title ? `<div class="msb-card-title">${escHtml(title)}</div>` : ''}
+                        ${date ? `<div class="msb-card-sub">${rawStatus === 'completed' ? 'Validé' : 'Échéance'} : ${escHtml(date)}</div>` : ''}
+                        <div class="msb-sep" aria-hidden="true"></div>
+                        <div class="msb-section-key">Description</div>
+                        <div class="msb-section-text">${desc ? escHtml(desc) : '<span class="msb-empty">—</span>'}</div>
+                        <div class="msb-sep" aria-hidden="true"></div>
+                        <div class="msb-section-key">Critère de validation</div>
+                        <div class="msb-section-text msb-section-text--strong">${validationText ? escHtml(validationText) : '<span class="msb-empty">—</span>'}</div>
+                        ${kpiHtml}
+                        <div class="msb-state-footer">
+                            ${actionBtn}
+                        </div>
+                    </div>
+                </div>
             </div>`;
         }
 
@@ -1879,45 +2099,126 @@
             return [];
         }
 
-        function renderJalonKpis(kpis, i, jalon) {
-            if (!kpis.length) {
+        function getKpiCurrentValue(kpi) {
+            if (!kpi) return null;
+            const measures = Array.isArray(kpi.measures) ? kpi.measures : [];
+            if (measures.length) {
+                const sorted = [...measures].sort((a, b) => new Date(a?.date || 0).getTime() - new Date(b?.date || 0).getTime());
+                const last = sorted[sorted.length - 1];
+                const v = last?.value !== undefined ? last.value : last?.valeur;
+                const num = v !== null && v !== undefined && v !== '' ? Number(v) : null;
+                return Number.isFinite(num) ? num : null;
+            }
+            const raw = kpi.valeur !== undefined ? kpi.valeur : (kpi.value !== undefined ? kpi.value : null);
+            const num = raw !== null && raw !== undefined && raw !== '' ? Number(raw) : null;
+            return Number.isFinite(num) ? num : null;
+        }
+
+        function getKpiTargetValue(kpi) {
+            if (!kpi) return null;
+            const raw = kpi.cible !== undefined ? kpi.cible : (kpi.target !== undefined ? kpi.target : null);
+            const num = raw !== null && raw !== undefined && raw !== '' ? Number(raw) : null;
+            return Number.isFinite(num) ? num : null;
+        }
+
+        function formatKpiPercent(current, target) {
+            if (!Number.isFinite(current) || !Number.isFinite(target) || target <= 0) return null;
+            return Math.max(0, Math.min(100, Math.round((current / target) * 100)));
+        }
+
+        function getJalonKpiByType(jalon, type) {
+            if (!jalon) return null;
+            const kpis = getJalonKpis(jalon);
+            const found = kpis.find(k => (k?.type || '') === type);
+            if (found) return found;
+            // backward compat: if only one KPI exists and no type, assume lagging
+            if (type === 'lagging' && kpis.length === 1 && !kpis[0]?.type) return kpis[0];
+            return null;
+        }
+
+        function getJalonStatusChipLabel(jalonStatus) {
+            if (jalonStatus === 'completed') return 'Terminé';
+            if (jalonStatus === 'late') return 'En retard';
+            if (jalonStatus === 'in_progress') return 'Jalon en cours';
+            return 'À venir';
+        }
+
+        function renderJalonKpiCard(type, kpi, jalon, i, jalonStatus) {
+            const isLeading = type === 'leading';
+            const kicker = isLeading ? 'Ce que je fais' : 'Ce que ça donne';
+            const titre = kpi?.titre || kpi?.label || kpi?.name || '';
+            const unite = kpi?.unite || kpi?.unit || '';
+            const current = getKpiCurrentValue(kpi);
+            const target = getKpiTargetValue(kpi);
+            const percent = formatKpiPercent(current, target);
+            const chipLabel = getJalonStatusChipLabel(jalonStatus);
+            const chipClass = jalonStatus === 'in_progress'
+                ? 'jkpi-chip--active'
+                : jalonStatus === 'completed' ? 'jkpi-chip--done' : jalonStatus === 'late' ? 'jkpi-chip--late' : 'jkpi-chip--upcoming';
+
+            if (!kpi || !titre) {
                 return `
-                    <div class="jl-kpi-block jl-kpi-empty">
-                        <span class="jl-kpi-empty-label">Aucun KPI défini</span>
-                        <button class="jl-kpi-add-btn" onclick="openJalonKpiModal(${i}, '${escHtml(jalon.id || '')}')">+ Définir un KPI</button>
+                    <div class="jkpi-card jkpi-card--empty">
+                        <div class="jkpi-top">
+                            <div class="jkpi-kicker">${escHtml(kicker)}</div>
+                            <div class="jkpi-chip ${chipClass}"><span class="jkpi-chip-dot" aria-hidden="true"></span>${escHtml(chipLabel)}</div>
+                        </div>
+                        <div class="jkpi-empty">
+                            <p class="jkpi-empty-title">Aucun KPI défini</p>
+                            <button class="jkpi-empty-btn" type="button" onclick="openJalonKpiModal(${i}, '${escHtml(jalon?.id || '')}', '${type}')">+ Définir le KPI</button>
+                        </div>
                     </div>`;
             }
 
+            const valueNum = Number.isFinite(current) ? String(current) : '—';
+            const valueHtml = unite
+                ? `<span class="jkpi-value-num">${escHtml(valueNum)}</span><span class="jkpi-value-unit">${escHtml(unite)}</span>`
+                : `<span class="jkpi-value-num">${escHtml(valueNum)}</span>`;
+            const targetLine = Number.isFinite(target) && percent !== null
+                ? `<div class="jkpi-target">Objectif : <strong>${escHtml(String(target))}</strong> — <strong>${percent}%</strong></div>`
+                : Number.isFinite(target) ? `<div class="jkpi-target">Objectif : <strong>${escHtml(String(target))}</strong></div>` : '';
+            const bar = percent !== null
+                ? `<div class="jkpi-bar"><div class="jkpi-bar-fill" style="width:${percent}%"></div></div>`
+                : '';
+
+            const infoBox = (jalon?.critere || jalon?.kpi)
+                ? `<div class="jkpi-infobox"><strong>Critère de validation :</strong> ${escHtml(jalon?.critere || jalon?.kpi || '')}</div>`
+                : '';
+
             return `
-                <div class="jl-kpi-grid">
-                    ${kpis.slice(0, 2).map(kpi => {
-                        const titre = kpi.titre || kpi.label || kpi.name || '';
-                        const valeur = kpi.valeur !== null && kpi.valeur !== undefined
-                            ? kpi.valeur
-                            : kpi.value !== null && kpi.value !== undefined ? kpi.value : '—';
-                        const cible = kpi.cible !== null && kpi.cible !== undefined
-                            ? kpi.cible
-                            : kpi.target !== null && kpi.target !== undefined ? kpi.target : null;
-                        const unite = kpi.unite || kpi.unit || '';
-                        const type = kpi.type === 'leading'
-                            ? 'Leading KPI'
-                            : kpi.type === 'lagging' ? 'Lagging KPI' : 'KPI de jalon';
-                        const unitLabel = unite ? ` ${unite}` : '';
-                        return `
-                            <div class="jl-kpi-block">
-                                <div class="jl-kpi-header">
-                                    <div>
-                                        <span class="jl-kpi-type">${escHtml(type)}</span>
-                                        <span class="jl-kpi-name">${escHtml(titre)}</span>
-                                    </div>
-                                    <button class="jl-kpi-update-btn" onclick="openJalonKpiModal(${i}, '${escHtml(jalon.id || '')}')">Mettre à jour</button>
-                                </div>
-                                <div class="jl-kpi-values">
-                                    <span class="jl-kpi-current">${escHtml(String(valeur))}${escHtml(unitLabel)}</span>
-                                    ${cible !== null ? `<span class="jl-kpi-sep">/</span><span class="jl-kpi-target">${escHtml(String(cible))}${escHtml(unitLabel)} cible</span>` : ''}
-                                </div>
-                            </div>`;
-                    }).join('')}
+                <div class="jkpi-card">
+                    <div class="jkpi-top">
+                        <div class="jkpi-kicker">${escHtml(kicker)}</div>
+                        <div class="jkpi-chip ${chipClass}"><span class="jkpi-chip-dot" aria-hidden="true"></span>${escHtml(chipLabel)}</div>
+                    </div>
+                    <div class="jkpi-value-row">
+                        <div class="jkpi-value">${valueHtml}</div>
+                    </div>
+                    <div class="jkpi-name">${escHtml(titre)}</div>
+                    <div class="jkpi-progress">
+                        <div class="jkpi-left">${escHtml(String(Number.isFinite(current) ? current : 0))}</div>
+                        ${targetLine}
+                    </div>
+                    ${bar}
+                    ${infoBox}
+                    <div class="jkpi-actions">
+                        <button class="jkpi-btn" type="button" onclick="openJalonKpiMeasureModal(${i}, '${escHtml(jalon?.id || '')}', '${type}')">+ Ajouter une mesure</button>
+                        <button class="jkpi-btn jkpi-btn--ghost" type="button" onclick="openJalonKpiModal(${i}, '${escHtml(jalon?.id || '')}', '${type}')">Mettre à jour</button>
+                    </div>
+                </div>`;
+        }
+
+        function renderJalonKpiCards(jalon, i, jalonStatus) {
+            if (!jalon) return '';
+            const leading = getJalonKpiByType(jalon, 'leading');
+            const lagging = getJalonKpiByType(jalon, 'lagging');
+            return `
+                <div class="jkpi-wrap">
+                    <div class="jkpi-title">KPI de jalon — moyen terme</div>
+                    <div class="jkpi-grid">
+                        ${renderJalonKpiCard('leading', leading, jalon, i, jalonStatus)}
+                        ${renderJalonKpiCard('lagging', lagging, jalon, i, jalonStatus)}
+                    </div>
                 </div>`;
         }
 
@@ -2027,9 +2328,28 @@
                 </div>`;
             }
 
+            // UX: show current jalon first, then upcoming, then completed (compact)
+            const chrono = sorted;
+            const currentId = String(activeJalon?.id || '');
+            const displayOrder = [];
+            if (activeJalon) displayOrder.push(activeJalon);
+            chrono.forEach(j => {
+                if (!j) return;
+                const id = String(j?.id || '');
+                if (!id || id === currentId) return;
+                if ((j.statut || 'pending') !== 'completed') displayOrder.push(j);
+            });
+            chrono.forEach(j => {
+                if (!j) return;
+                const id = String(j?.id || '');
+                if (!id || id === currentId) return;
+                if ((j.statut || 'pending') === 'completed') displayOrder.push(j);
+            });
+
             let tabs = '';
-            sorted.forEach((jalon, ji) => {
-                const isViewed = ji === viewedIdx;
+            displayOrder.forEach((jalon) => {
+                const chronoIndex = chrono.findIndex(j => String(j?.id || '') === String(jalon?.id || ''));
+                const isViewed = chronoIndex === viewedIdx;
                 const isCompleted = jalon.statut === 'completed';
                 const isInProgress = !isCompleted && activeJalon && jalon.id === activeJalon.id;
                 const linkedTasks = (obj.tasks || []).filter(task => task.jalonId === jalon.id);
@@ -2040,14 +2360,22 @@
                 let tabClass = 'milestone-tab';
                 if (isViewed) tabClass += ' active';
                 if (isCompleted) tabClass += ' is-complete';
+                if (isCompleted) tabClass += ' is-compact';
                 const dot = isCompleted
                     ? '<span class="milestone-dot complete"></span>'
                     : isInProgress ? '<span class="milestone-dot active"></span>' : '';
+                const jalonLabel = getJalonLabel(jalon);
+                const labelHtml = isCompleted
+                    ? `<span class="milestone-compact-hint" aria-label="Ancien jalon (validé) : ${escHtml(jalonLabel)}">Ancien · ${escHtml(jalonLabel)}</span>`
+                    : escHtml(jalonLabel);
                 tabs += `
-                    <button class="${tabClass}" onclick="switchJalonView(${i}, ${ji})" title="${escHtml(getJalonLabel(jalon))}">
+                    <button class="${tabClass}" onclick="switchJalonView(${i}, ${chronoIndex})" title="${escHtml(getJalonLabel(jalon))}"
+                        ondragover="jalonDropOver(event)"
+                        ondragleave="jalonDropLeave(event)"
+                        ondrop="dropTaskOnJalon(event, ${i}, '${escHtml(jalon.id || '')}')">
                         ${dot}
-                        ${escHtml(getJalonLabel(jalon))}
-                        ${countHtml}
+                        ${labelHtml}
+                        ${isCompleted ? '' : countHtml}
                     </button>`;
             });
 
@@ -2639,13 +2967,15 @@
         // ──────────────────────────────────────────────────────────
         // JALON KPI MODAL
         // ──────────────────────────────────────────────────────────
-        function openJalonKpiModal(i, jalonId) {
+        function openJalonKpiModal(i, jalonId, kpiType = 'lagging') {
             const obj = allObjectifs[i];
             if (!obj) return;
             const jalon = (obj.jalons || []).find(j => (j.id || '') === jalonId);
             if (!jalon) return;
-            jalonKpiModalState = { projectIndex: i, jalonId };
-            const kpi = jalon.kpiData || {};
+            if (!Array.isArray(jalon.kpis)) jalon.kpis = [];
+            jalonKpiModalState = { projectIndex: i, jalonId, kpiType };
+            const kpi = (jalon.kpis || []).find(k => (k?.type || '') === kpiType) || {};
+            document.getElementById('jalonKpiType').value = kpiType;
             document.getElementById('jalonKpiTitre').value = kpi.titre || '';
             document.getElementById('jalonKpiUnite').value = kpi.unite || '';
             document.getElementById('jalonKpiValeur').value = kpi.valeur !== null && kpi.valeur !== undefined ? kpi.valeur : '';
@@ -2657,13 +2987,14 @@
 
         function closeJalonKpiModal() {
             closeModal('jalonKpiModalOverlay');
-            jalonKpiModalState = { projectIndex: null, jalonId: null };
+            jalonKpiModalState = { projectIndex: null, jalonId: null, kpiType: 'lagging' };
         }
 
         function handleJalonKpiSubmit(e) {
             e.preventDefault();
             const { projectIndex: i, jalonId } = jalonKpiModalState;
             if (i === null) return;
+            const type = (document.getElementById('jalonKpiType').value || 'lagging').trim();
             const titre = document.getElementById('jalonKpiTitre').value.trim();
             const valeurRaw = document.getElementById('jalonKpiValeur').value.trim();
             const cibleRaw = document.getElementById('jalonKpiCible').value.trim();
@@ -2677,9 +3008,87 @@
             const obj = allObjectifs[i];
             const jalon = (obj?.jalons || []).find(j => (j.id || '') === jalonId);
             if (!jalon) return;
-            jalon.kpiData = { titre, valeur, cible, unite };
+            if (!Array.isArray(jalon.kpis)) jalon.kpis = [];
+            // keep legacy mirror for older screens
+            jalon.kpiData = jalon.kpiData || {};
+
+            const existing = jalon.kpis.find(k => (k?.type || '') === type);
+            const payload = { titre, valeur, cible, unite, type };
+            if (existing) {
+                Object.assign(existing, payload);
+                if (!existing.id) existing.id = `kpi-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+                if (!Array.isArray(existing.measures)) existing.measures = [];
+            } else {
+                jalon.kpis.push({ id: `kpi-${Date.now()}-${Math.random().toString(16).slice(2)}`, measures: [], ...payload });
+            }
+            // mirror: prefer lagging as main
+            const lagging = jalon.kpis.find(k => (k?.type || '') === 'lagging');
+            if (lagging) {
+                jalon.kpiData = { titre: lagging.titre, valeur: lagging.valeur ?? null, cible: lagging.cible ?? null, unite: lagging.unite || '' };
+            }
             saveAllObjectifs();
             closeJalonKpiModal();
+            renderDashboard();
+        }
+
+        function openJalonKpiMeasureModal(i, jalonId, kpiType) {
+            const obj = allObjectifs[i];
+            if (!obj) return;
+            const jalon = (obj.jalons || []).find(j => (j.id || '') === jalonId);
+            if (!jalon) return;
+            if (!Array.isArray(jalon.kpis)) jalon.kpis = [];
+            const kpi = jalon.kpis.find(k => (k?.type || '') === kpiType);
+            if (!kpi || !(kpi.titre || '').trim()) {
+                openJalonKpiModal(i, jalonId, kpiType);
+                return;
+            }
+            jalonKpiMeasureModalState = { projectIndex: i, jalonId, kpiType };
+            document.getElementById('jalonKpiMeasureSubtitle').textContent = `Ajoutez une valeur pour : ${kpi.titre}`;
+            document.getElementById('jalonKpiMeasureDate').value = new Date().toISOString().slice(0, 10);
+            document.getElementById('jalonKpiMeasureValue').value = '';
+            document.getElementById('jalonKpiMeasureDateError').textContent = '';
+            document.getElementById('jalonKpiMeasureValueError').textContent = '';
+            openModal('jalonKpiMeasureModalOverlay');
+            setTimeout(() => document.getElementById('jalonKpiMeasureValue').focus(), 100);
+        }
+
+        function closeJalonKpiMeasureModal() {
+            closeModal('jalonKpiMeasureModalOverlay');
+            jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: null };
+        }
+
+        function handleJalonKpiMeasureSubmit(e) {
+            e.preventDefault();
+            const { projectIndex: i, jalonId, kpiType } = jalonKpiMeasureModalState;
+            if (i === null || !kpiType) return;
+            const date = (document.getElementById('jalonKpiMeasureDate').value || '').trim();
+            const valueRaw = (document.getElementById('jalonKpiMeasureValue').value || '').trim();
+            document.getElementById('jalonKpiMeasureDateError').textContent = '';
+            document.getElementById('jalonKpiMeasureValueError').textContent = '';
+            if (!date) {
+                document.getElementById('jalonKpiMeasureDateError').textContent = 'La date est requise.';
+                return;
+            }
+            if (valueRaw === '') {
+                document.getElementById('jalonKpiMeasureValueError').textContent = 'La valeur est requise.';
+                return;
+            }
+            const value = Number(valueRaw);
+            if (!Number.isFinite(value)) {
+                document.getElementById('jalonKpiMeasureValueError').textContent = 'Valeur invalide.';
+                return;
+            }
+            const obj = allObjectifs[i];
+            const jalon = (obj?.jalons || []).find(j => (j.id || '') === jalonId);
+            if (!jalon) return;
+            if (!Array.isArray(jalon.kpis)) jalon.kpis = [];
+            const kpi = jalon.kpis.find(k => (k?.type || '') === kpiType);
+            if (!kpi) return;
+            if (!Array.isArray(kpi.measures)) kpi.measures = [];
+            kpi.measures.push({ id: `m-${Date.now()}-${Math.random().toString(16).slice(2)}`, date, value });
+            kpi.valeur = value;
+            saveAllObjectifs();
+            closeJalonKpiMeasureModal();
             renderDashboard();
         }
 
@@ -2701,6 +3110,12 @@
             document.getElementById('deleteConfirmModal').addEventListener('click', function(e) {
                 if (e.target === this) cancelDelete();
             });
+            document.getElementById('jalonKpiModalOverlay').addEventListener('click', function(e) {
+                if (e.target === this) closeJalonKpiModal();
+            });
+            document.getElementById('jalonKpiMeasureModalOverlay').addEventListener('click', function(e) {
+                if (e.target === this) closeJalonKpiMeasureModal();
+            });
 
             // Escape key
             document.addEventListener('keydown', e => {
@@ -2711,6 +3126,7 @@
                     forceCloseTaskPanel();
                     closeSyncModal();
                     closeJalonKpiModal();
+                    closeJalonKpiMeasureModal();
                 }
             });
 

@@ -212,6 +212,29 @@ Bloc central du projet, zone de travail quotidien.
 - Tab complétée = style barré/vert
 - Clic sur une tab → `switchJalonView()` → filtre les tâches pour ce jalon
 
+### Drag & Drop — déplacer une tâche entre jalons (à implémenter)
+
+Objectif : permettre de **re-rattacher rapidement** une tâche à un autre jalon.
+
+**Interaction**
+- L’utilisateur **drag** une tâche (item de la liste/kanban).
+- Il **drop** la tâche sur :
+  - une **tab de jalon** (header jalon), ou
+  - un **jalon dans la timeline** (point / item jalon).
+
+**Résultat attendu**
+- La tâche est déplacée dans le jalon cible :
+  - `task.jalonId` = `targetJalon.id`
+  - `task.jalonTitle` = `targetJalon.titre || targetJalon.title`
+  - `task.jalonDate` = `targetJalon.date`
+- La tâche **disparaît** de la vue du jalon source et **apparaît** dans le jalon cible.
+- Les données sont **persistées** en localStorage via `saveAllObjectifs()` (donc stable après refresh).
+
+**UX**
+- Survol d’une tab/jalon = **état “drop target”** (highlight).
+- Drop invalide (hors jalon) = aucun changement.
+- Mobile : fallback recommandé via menu “Déplacer vers…” (car drag natif moins fiable).
+
 ### Carte Jalon actif (`jt-jalon-card`)
 - Label "JALON ACTIF · X/Y" ou "JALON X/Y"
 - Titre + date du jalon visualisé
@@ -251,7 +274,8 @@ todo → doing → done → todo (cycle au clic sur le bouton)
 - **⋯** : ouvre le side panel de détail
 - **×** : suppression directe
 - **▼** : toggle checklist inline (sous-tâches)
-- **Clic sur le texte** (desktop) : édition inline (contentEditable)
+- **Clic simple sur le texte** : ouvre le **side panel** (modal) de la tâche
+- **Double-clic sur le texte** (desktop) : active l’**édition inline** (contentEditable)
 
 ### Sous-tâches (checklist inline)
 - Se déplie sous chaque tâche via le bouton ▼
