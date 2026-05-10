@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/styles.css">
 
-    <link rel="stylesheet" href="assets/css/dashboard.css?v=3">
+    <link rel="stylesheet" href="assets/css/dashboard.css?v=22">
     <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 </head>
 <body>
@@ -17,6 +17,11 @@
     <nav class="navbar dashboard-navbar">
         <div class="dashboard-nav-top">
             <div class="dashboard-nav-left">
+                <a class="dashboard-brand" href="index.html" aria-label="Retour à l'accueil CarryIT">
+                    <span class="dashboard-brand-mark">C</span>
+                    <span class="dashboard-brand-name">CarryIT</span>
+                </a>
+                <span class="dashboard-nav-divider" aria-hidden="true">/</span>
                 <div class="db-nav-dropdown" id="dbNavDropdown">
                     <button class="db-nav-trigger" id="dbNavTrigger" onclick="toggleNavDropdown()">
                         <span class="db-nav-initial" id="dbNavInitial">—</span>
@@ -29,9 +34,22 @@
                 </div>
                 <div class="dashboard-project-actions" id="dashboardProjectActions"></div>
             </div>
-            <div class="navbar-links">
-                <button onclick="openSyncModal()" class="navbar-link navbar-sync-btn" type="button">⇄ Sync</button>
-                <a href="objectif.html" class="navbar-link cta">+ Nouveau projet</a>
+            <div class="navbar-links dashboard-nav-right">
+                <span class="dashboard-nav-date">Mar. 14 Avril</span>
+                <span class="dashboard-theme-toggle dashboard-theme-indicator" role="status" aria-label="Passer en mode clair">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <circle cx="12" cy="12" r="5" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                    </svg>
+                    Passer en clair
+                </span>
+                <button class="dashboard-icon-button" type="button" aria-label="Notifications">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2c0 .5-.2 1-.6 1.4L4 17h5"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17a3 3 0 0 0 6 0"/>
+                    </svg>
+                </button>
+                <button class="dashboard-avatar" type="button" aria-label="Profil utilisateur"></button>
             </div>
         </div>
 
@@ -218,6 +236,7 @@
         let currentMeasureIndex = null;
         let todoEditState = {};
         let todoDoneCollapsed = {};
+        let todoGroupCollapsed = {};
         let todoSubOpen = {};
         let subtaskDoneCollapsed = {};
         let taskPanelState = { projectIndex: null, taskId: null };
@@ -301,8 +320,8 @@
 
             if (allObjectifs.length === 0) {
                 dropdown.style.display = 'flex';
-                if (navLabel) navLabel.textContent = 'Aucun projet';
-                if (navInitial) navInitial.textContent = '—';
+                if (navLabel) navLabel.textContent = 'Mon Espace';
+                if (navInitial) navInitial.textContent = 'N';
                 panels.innerHTML = buildEmptyState();
                 return;
             }
@@ -334,8 +353,8 @@
 
             // Update navbar label
             const active = allObjectifs[currentCarouselIndex];
-            if (navLabel) navLabel.textContent = active?.titre || `Projet ${currentCarouselIndex + 1}`;
-            if (navInitial) navInitial.textContent = getProjectInitial(active, currentCarouselIndex);
+            if (navLabel) navLabel.textContent = 'Mon Espace';
+            if (navInitial) navInitial.textContent = 'N';
             updateProjectActions(currentCarouselIndex);
 
             if (currentDashboardView === 'pilotage') {
@@ -353,8 +372,8 @@
             // Update navbar label
             const navLabel = document.getElementById('dbNavLabel');
             const navInitial = document.getElementById('dbNavInitial');
-            if (navLabel) navLabel.textContent = allObjectifs[i]?.titre || `Projet ${i + 1}`;
-            if (navInitial) navInitial.textContent = getProjectInitial(allObjectifs[i], i);
+            if (navLabel) navLabel.textContent = 'Mon Espace';
+            if (navInitial) navInitial.textContent = 'N';
             updateProjectActions(i);
 
             // Update panels
@@ -732,90 +751,93 @@
         }
 
         function renderTasksList(tasks, i) {
-            if (!tasks || tasks.length === 0) {
-                return `
-                    <div class="task-table card-panel">
-                        <div class="task-grid task-header">
-                            <div></div>
-                            <div>Nom de la tâche</div>
-                            <div>Statut</div>
-                            <div>Échéance</div>
-                            <div></div>
-                        </div>
-                        ${renderTaskListGroup('doing', 'En cours', [], i)}
-                        ${renderTaskListGroup('todo', 'À faire', [], i)}
-                        ${renderAddTaskRow(i)}
-                    </div>`;
-            }
-            const doing = tasks.filter(t => getTaskStatus(t) === 'doing');
-            const todo  = tasks.filter(t => getTaskStatus(t) === 'todo');
-            const done  = tasks.filter(t => getTaskStatus(t) === 'done');
+            const list = tasks || [];
+            const doing = list.filter(t => getTaskStatus(t) === 'doing');
+            const todo  = list.filter(t => getTaskStatus(t) === 'todo');
+            const done  = list.filter(t => getTaskStatus(t) === 'done');
+            const allDone = list.length > 0 && list.every(t => getTaskStatus(t) === 'done');
 
             let html = `
-                <div class="task-table card-panel">
-                    <div class="task-grid task-header">
-                        <div></div>
-                        <div>Nom de la tâche</div>
-                        <div>Statut</div>
-                        <div>Échéance</div>
-                        <div></div>
-                    </div>
+                <div class="task-list-surface">
             `;
 
             html += renderTaskListGroup('doing', 'En cours', doing, i);
             html += renderTaskListGroup('todo', 'À faire', todo, i);
-            html += renderAddTaskRow(i);
-
-            if (done.length) {
-                const collapsed = todoDoneCollapsed[i] !== false;
-                html += `<button class="task-group done" type="button" onclick="toggleDoneBlock(${i}); event.stopPropagation();"
-                    ondragover="taskListDragOver(event)"
-                    ondragleave="taskListDragLeave(event)"
-                    ondrop="dropTaskList(event, ${i}, 'done')">
-                    <span>Terminées</span>
-                    <strong>${done.length}</strong>
-                </button>
-                <div class="done-group task-list-dropzone done" style="display:${collapsed ? 'none' : 'block'};"
-                    ondragover="taskListDragOver(event)"
-                    ondragleave="taskListDragLeave(event)"
-                    ondrop="dropTaskList(event, ${i}, 'done')">
-                    ${done.map((t, ti) => renderTaskItem(t, i, ti)).join('')}
-                </div>`;
-            }
+            html += renderDoneTaskGroup(done, i);
 
             return html + '</div>';
         }
 
         function renderTaskListGroup(status, label, groupTasks, i) {
+            const addRow = renderAddTaskRow(i, status, false);
+            const key = `${i}-${status}`;
+            const collapsed = todoGroupCollapsed[key] === true;
             return `
-                <button class="task-group ${status}" type="button"
+                <button class="task-group ${status}${collapsed ? ' collapsed' : ''}" type="button"
+                    onclick="toggleGroupBlock(${i}, '${status}'); event.stopPropagation();"
                     ondragover="taskListDragOver(event)"
                     ondragleave="taskListDragLeave(event)"
                     ondrop="dropTaskList(event, ${i}, '${status}')">
                     <span>${label}</span>
                     <strong>${groupTasks.length}</strong>
                 </button>
-                <div class="task-list-dropzone ${status}"
+                <div class="task-list-dropzone ${status}" style="display:${collapsed ? 'none' : ''};"
                     ondragover="taskListDragOver(event)"
                     ondragleave="taskListDragLeave(event)"
                     ondrop="dropTaskList(event, ${i}, '${status}')">
-                    ${groupTasks.length
-                        ? groupTasks.map((t, ti) => renderTaskItem(t, i, ti)).join('')
-                        : `<div class="task-list-empty">Glisser une tâche ici</div>`}
+                    ${groupTasks.map((t, ti) => renderTaskItem(t, i, ti)).join('')}
+                    ${addRow}
                 </div>`;
         }
 
-        function renderAddTaskRow(i) {
+        function renderDoneTaskGroup(done, i) {
+            const collapsed = todoDoneCollapsed[i] !== false;
+            return `<button class="task-group done${collapsed ? ' collapsed' : ''}" type="button" onclick="toggleDoneBlock(${i}); event.stopPropagation();"
+                ondragover="taskListDragOver(event)"
+                ondragleave="taskListDragLeave(event)"
+                ondrop="dropTaskList(event, ${i}, 'done')">
+                <span>Terminées</span>
+                <strong>${done.length}</strong>
+            </button>
+            <div class="done-group task-list-dropzone done" style="display:${collapsed ? 'none' : 'block'};"
+                ondragover="taskListDragOver(event)"
+                ondragleave="taskListDragLeave(event)"
+                ondrop="dropTaskList(event, ${i}, 'done')">
+                ${done.length
+                    ? done.map((t, ti) => renderTaskItem(t, i, ti)).join('')
+                    : ''}
+            </div>`;
+        }
+
+        function renderTaskEmptyState() {
             return `
-                <div class="add-task-row" onclick="document.getElementById('todoInput-${i}').focus()">
+                <div class="task-empty-state">
+                    <span class="task-empty-icon">+</span>
+                    <p>Aucune action définie pour ce jalon.</p>
+                    <span>Commencez par lister ce qu'il faut faire.</span>
+                </div>`;
+        }
+
+        function renderTaskSuccessState() {
+            return `
+                <div class="task-success-state">
+                    <span>Toutes les actions sont cochées.</span>
+                    <strong>Ce jalon est-il prêt à être validé ?</strong>
+                </div>`;
+        }
+
+        function renderAddTaskRow(i, status = 'todo', primary = false) {
+            const inputId = `todoInput-${i}-${status}`;
+            return `
+                <div class="add-task-row ${status} ${primary ? 'primary' : ''}" onclick="document.getElementById('${inputId}').focus()">
                     <svg class="icon" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v14M5 12h14"/>
                     </svg>
-                    <input type="text" id="todoInput-${i}"
-                        placeholder="Nouvelle tâche..."
+                    <input type="text" id="${inputId}"
+                        placeholder="Ajouter une action..."
                         enterkeyhint="go"
-                        onkeydown="if(event.key==='Enter'){addTask(${i});event.preventDefault();}"
-                        onblur="addTask(${i});">
+                        onkeydown="if(event.key==='Enter'){addTask(${i}, '${status}');event.preventDefault();}"
+                        onblur="addTask(${i}, '${status}');">
                 </div>`;
         }
 
@@ -993,12 +1015,19 @@
             const isEditing = todoEditState[i] === task.id;
             if (isEditing) {
                 return `
-                <div class="todo-item" onclick="event.stopPropagation()">
-                    <div class="todo-edit-row">
-                        <input class="todo-edit-input" id="todoEditInput-${i}-${task.id}" value="${escHtml(task.text)}">
-                        <button class="todo-mini-btn primary" onclick="saveTaskEdit(${i}, ${task.id})">OK</button>
-                        <button class="todo-mini-btn" onclick="cancelTaskEdit(${i})">Annuler</button>
+                <div class="task-row editing ${status}" data-taskid="${task.id}" onclick="event.stopPropagation()">
+                    <div class="task-check-cell">
+                        <button class="custom-checkbox ${status}"
+                            onclick="toggleTaskDirect(${i}, ${task.id}); event.stopPropagation();"
+                            aria-label="${getTaskStatusLabel(status)}"></button>
                     </div>
+                    <input class="task-edit-input" id="todoEditInput-${i}-${task.id}"
+                        value="${escHtml(task.text)}"
+                        onkeydown="if(event.key==='Enter'){saveTaskEdit(${i}, ${task.id});event.preventDefault();} if(event.key==='Escape'){cancelTaskEdit(${i});event.preventDefault();}"
+                        onblur="saveTaskEdit(${i}, ${task.id});">
+                    <button class="row-action"
+                            onclick="openTaskPanel(${i}, ${task.id}); event.stopPropagation();"
+                            title="Ouvrir le détail">⋯</button>
                 </div>`;
             }
             const subOpen = todoSubOpen[`${i}-${task.id}`];
@@ -1006,41 +1035,36 @@
             const doneSubtasks = subtasks.filter(s => s.done).length;
             const meta = [];
             if (subtasks.length) meta.push(`${doneSubtasks}/${subtasks.length}`);
-            const dueLabel = getTaskDueLabel(task);
             return `
-                <div class="task-grid task-row ${status} ${isDone ? 'completed' : ''}" data-taskid="${task.id}"
+                <div class="task-row ${status} ${isDone ? 'completed' : ''}" data-taskid="${task.id}"
                     draggable="true"
-                    onclick="handleTaskRowClick(event, ${i}, ${task.id})"
+                    onclick="openTaskPanel(${i}, ${task.id})"
+                    ondblclick="openTaskPanel(${i}, ${task.id}); editTask(${i}, ${task.id}); event.stopPropagation();"
                     ondragstart="startTaskListDrag(event, ${i}, ${task.id})"
-                    ondragend="endTaskListDrag(event)"
-                    ontouchstart="todoTouchStart(event)"
-                    ontouchmove="todoTouchMove(event)"
-                    ontouchend="todoTouchEnd(event, ${i}, ${task.id})">
+                    ondragend="endTaskListDrag(event)">
                     <div class="task-check-cell">
                         <button class="custom-checkbox ${status}"
-                            onclick="toggleTask(${i}, ${task.id}); event.stopPropagation();"
+                            onclick="toggleTaskDirect(${i}, ${task.id}); event.stopPropagation();"
                             ontouchstart="event.stopPropagation();"
-                            ontouchend="toggleTask(${i}, ${task.id}); event.stopPropagation(); event.preventDefault();"
+                            ontouchend="toggleTaskDirect(${i}, ${task.id}); event.stopPropagation(); event.preventDefault();"
                             aria-label="${getTaskStatusLabel(status)}"></button>
                     </div>
                     <div class="task-name ${status === 'doing' ? 'strong' : ''}">
-                        <span>${escHtml(task.text)}</span>
+                        <span class="task-title"
+                            onclick="openTaskPanel(${i}, ${task.id}); event.stopPropagation();"
+                            ondblclick="openTaskPanel(${i}, ${task.id}); editTask(${i}, ${task.id}); event.stopPropagation();">${escHtml(task.text)}</span>
                         ${meta.length ? `<span class="task-meta">${meta.map(item => escHtml(item)).join(' · ')}</span>` : ''}
                     </div>
-                    <div>
-                        <button class="status-pill ${status === 'doing' ? 'dark' : ''}"
-                        onclick="toggleTask(${i}, ${task.id}); event.stopPropagation();"
-                        ontouchstart="event.stopPropagation();"
-                        ontouchend="toggleTask(${i}, ${task.id}); event.stopPropagation(); event.preventDefault();">
-                        ${getTaskStatusLabel(status)}
-                        </button>
-                    </div>
-                    <button class="due-date ${dueLabel === '—' ? 'muted' : ''}" type="button" onclick="event.stopPropagation();">${escHtml(dueLabel)}</button>
                     <button class="row-action"
                             onclick="openTaskPanel(${i}, ${task.id}); event.stopPropagation();"
                             ontouchstart="event.stopPropagation();"
                             ontouchend="openTaskPanel(${i}, ${task.id}); event.stopPropagation(); event.preventDefault();"
                             title="Ouvrir le détail">⋯</button>
+                    <button class="row-del"
+                            onclick="deleteTask(event, ${i}, ${task.id}); event.stopPropagation();"
+                            ontouchstart="event.stopPropagation();"
+                            ontouchend="deleteTask(event, ${i}, ${task.id}); event.stopPropagation(); event.preventDefault();"
+                            title="Supprimer">×</button>
                 </div>
                 ${subOpen ? renderSubtasksInline(task, i) : ''}
             `;
@@ -1083,17 +1107,19 @@
             `;
         }
 
-        function addTask(i) {
-            const input = document.getElementById(`todoInput-${i}`);
+        function addTask(i, status = 'todo') {
+            const input = document.getElementById(`todoInput-${i}-${status}`) || document.getElementById(`todoInput-${i}`);
+            if (!input) return;
             const text = (input.value || '').trim();
             if (!text) return;
+            const taskStatus = ['todo', 'doing', 'done'].includes(status) ? status : 'todo';
 
             if (!allObjectifs[i].tasks) allObjectifs[i].tasks = [];
             const task = {
                 id: Date.now(),
                 text,
-                done: false,
-                status: 'todo',
+                done: taskStatus === 'done',
+                status: taskStatus,
                 createdAt: Date.now(),
                 notes: '',
                 subtasks: []
@@ -1161,24 +1187,31 @@
             refreshTodoList(i);
         }
 
+        function toggleGroupBlock(i, status) {
+            const key = `${i}-${status}`;
+            todoGroupCollapsed[key] = !todoGroupCollapsed[key];
+            refreshTodoList(i);
+        }
+
         function editTask(i, taskId) {
             todoEditState[i] = taskId;
             refreshTodoList(i);
             setTimeout(() => {
                 const input = document.getElementById(`todoEditInput-${i}-${taskId}`);
-                if (input) input.focus();
+                if (input) {
+                    input.focus();
+                }
             }, 0);
         }
 
         function saveTaskEdit(i, taskId) {
             const input = document.getElementById(`todoEditInput-${i}-${taskId}`);
             const text = (input?.value || '').trim();
-            if (!text) return;
             const task = (allObjectifs[i]?.tasks || []).find(t => t.id === taskId);
             if (!task) return;
-            task.text = text;
+            if (text) task.text = text;
             todoEditState[i] = null;
-            saveAllObjectifs();
+            if (text) saveAllObjectifs();
             refreshTodoList(i);
         }
 
@@ -1261,13 +1294,13 @@
         function todoTouchEnd(event, i, taskId) {
             if (!isTaskPanelMobile()) return;
             if (_todoTouchMoved) return;
-            if (event.target.closest('.todo-drop,.todo-cb,.todo-del,.todo-edit,.task-list-check,.subtask-icon-btn,.subtask-del,.subtask-input,.kanban-status-pill,.kanban-card-menu,.kanban-card-del')) return;
+            if (event.target.closest('.todo-drop,.todo-cb,.todo-del,.todo-edit,.task-list-check,.custom-checkbox,.task-title,.row-action,.subtask-icon-btn,.subtask-del,.subtask-input,.kanban-status-pill,.kanban-card-menu,.kanban-card-del')) return;
             event.preventDefault();
             clickTask(i, taskId);
         }
 
         function handleTaskRowClick(event, i, taskId) {
-            if (event.target.closest('.todo-drop,.todo-cb,.todo-del,.todo-edit,.task-list-check,.subtask-icon-btn,.subtask-del,.subtask-input,.kanban-status-pill,.kanban-card-menu,.kanban-card-del')) return;
+            if (event.target.closest('.todo-drop,.todo-cb,.todo-del,.todo-edit,.task-list-check,.custom-checkbox,.task-title,.row-action,.subtask-icon-btn,.subtask-del,.subtask-input,.kanban-status-pill,.kanban-card-menu,.kanban-card-del')) return;
             if (isTaskPanelMobile()) return;
             clickTask(i, taskId);
         }
@@ -1372,6 +1405,14 @@
                     <span class="cp-section-count">${openCount} open</span>
                 </div>
                 ${renderSubtasksPanel(task, i)}
+                <div class="cp-danger-zone">
+                    <button class="cp-delete-btn" onclick="deleteTask(event, ${i}, ${task.id}); forceCloseTaskPanel();" type="button">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/>
+                        </svg>
+                        Supprimer la tâche
+                    </button>
+                </div>
             `;
         }
 
@@ -1457,7 +1498,7 @@
             if (window.matchMedia('(hover: hover)').matches) {
                 setTimeout(() => {
                     const item = document.querySelector(`[data-taskid="${taskId}"]`);
-                    const span = item ? item.querySelector('.todo-text') : null;
+                    const span = item ? item.querySelector('.task-title') : null;
                     if (span) inlineEditTask(i, taskId, span);
                 }, 0);
             }
@@ -1893,6 +1934,9 @@
                 const isInProgress = !isCompleted && activeJalon && jalon.id === activeJalon.id;
                 const linkedTasks = (obj.tasks || []).filter(task => task.jalonId === jalon.id);
                 const linkedCounts = getTaskCounts(linkedTasks);
+                const countHtml = linkedCounts.total
+                    ? `<span class="milestone-count ${isViewed ? '' : 'muted'}">${linkedCounts.done}/${linkedCounts.total}</span>`
+                    : '';
                 let tabClass = 'milestone-tab';
                 if (isViewed) tabClass += ' active';
                 if (isCompleted) tabClass += ' is-complete';
@@ -1900,10 +1944,10 @@
                     ? '<span class="milestone-dot complete"></span>'
                     : isInProgress ? '<span class="milestone-dot active"></span>' : '';
                 tabs += `
-                    <button class="${tabClass}" onclick="switchJalonView(${i}, ${ji})">
+                    <button class="${tabClass}" onclick="switchJalonView(${i}, ${ji})" title="${escHtml(getJalonLabel(jalon))}">
                         ${dot}
                         ${escHtml(getJalonLabel(jalon))}
-                        <span class="milestone-count ${isViewed ? '' : 'muted'}">${linkedCounts.done}/${linkedCounts.total}</span>
+                        ${countHtml}
                     </button>`;
             });
 
@@ -1911,15 +1955,19 @@
             if (viewedJalon) {
                 const validationText = viewedJalon.critere || viewedJalon.desc || '';
                 criterionCard = `
-                    <div class="criterion-card">
-                        <svg class="icon-lg" width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                            <circle cx="12" cy="12" r="8"/>
-                            <circle cx="12" cy="12" r="2"/>
-                            <path d="M12 2v4M12 18v4M2 12h4M18 12h4"/>
-                        </svg>
-                        <div>
-                            <p class="overline">Critère de validation</p>
-                            <p class="criterion-text">${validationText ? escHtml(validationText) : '<span class="jt-empty-inline">Aucun critère défini.</span>'}</p>
+                    <div class="jalon-focus ${viewedJalon.statut === 'completed' ? 'completed' : ''}">
+                        <div class="criterion-card">
+                            <svg class="icon-lg" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <circle cx="12" cy="12" r="8"/>
+                                <circle cx="12" cy="12" r="2"/>
+                                <path d="M12 2v4M12 18v4M2 12h4M18 12h4"/>
+                            </svg>
+                            <p class="criterion-text"><span class="criterion-label">Validation :</span> ${validationText ? escHtml(validationText) : '<span class="jt-empty-inline">Aucun critère défini.</span>'}</p>
+                            <button class="jalon-validate-btn" type="button"
+                                ${viewedJalon.statut === 'completed' ? 'disabled' : ''}
+                                onclick="completeJalon(${i}, '${escHtml(viewedJalon.id || '')}')">
+                                ✓ Valider
+                            </button>
                         </div>
                     </div>`;
             }
