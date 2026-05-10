@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Righteous&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/styles.css">
 
-    <link rel="stylesheet" href="assets/css/dashboard.css?v=42">
+    <link rel="stylesheet" href="assets/css/dashboard.css?v=43">
     <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 </head>
 <body>
@@ -958,14 +958,14 @@
                                         <span class="kanban-count">${colTasks.length}</span>
                                     </div>
                                     <div class="kanban-column-body">
-                                        ${col.status === 'todo' ? renderKanbanAddTaskCard(i) : ''}
-                                        ${colTasks.length
-                                            ? colTasks.map(task => renderKanbanTaskCard(task, i)).join('')
-                                            : `<div class="kanban-empty">${col.empty}</div>`}
-                                    </div>
-                                </section>`;
-                        }).join('')}
-                    </div>
+                                    ${col.status === 'todo' ? renderKanbanAddTaskCard(i) : ''}
+                                    ${colTasks.length
+                                        ? colTasks.map(task => renderKanbanTaskCard(task, i)).join('')
+                                        : ``}
+                                </div>
+                            </section>`;
+                    }).join('')}
+                </div>
                 </div>`;
         }
 
@@ -1991,7 +1991,9 @@
             const viewedJalon = getViewedJalon(obj, i);
             const activeJalon = getNextActiveJalon(obj);
             const isActiveViewed = viewedJalon && activeJalon && viewedJalon.id === activeJalon.id;
-            return filteredTasks.length === 0 && viewedJalon && !isActiveViewed;
+            // Even when a viewed jalon has no tasks yet, we still render the
+            // list/board shell so the user can add actions for that jalon.
+            return false;
         }
 
         function renderTaskSkeleton() {
