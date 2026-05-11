@@ -1258,7 +1258,33 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             event.currentTarget.classList.remove('dragging');
             document.querySelectorAll('.task-list-dropzone.drag-over,.task-group.drag-over').forEach(el => el.classList.remove('drag-over'));
             document.querySelectorAll('.milestone-tab.drag-over,.msb-milestone.drag-over').forEach(el => el.classList.remove('drag-over'));
+            document.querySelectorAll('.task-row.drag-hover').forEach(el => el.classList.remove('drag-hover'));
             kanbanDragState = { projectIndex: null, taskId: null };
+        }
+
+        function taskRowDragEnter(event, projIdx, taskId) {
+            event.currentTarget.classList.add('drag-hover');
+        }
+
+        function taskRowDragLeave(event) {
+            if (!event.currentTarget.contains(event.relatedTarget)) {
+                event.currentTarget.classList.remove('drag-hover');
+            }
+        }
+
+        function taskRowDragOver(event, projIdx, taskId) {
+            if (subtaskDragState.projIdx !== null) {
+                event.preventDefault();
+                event.dataTransfer.dropEffect = 'move';
+            }
+        }
+
+        function taskRowDrop(event, projIdx, toTaskId) {
+            event.currentTarget.classList.remove('drag-hover');
+            if (subtaskDragState.projIdx === null) return;
+            event.preventDefault();
+            event.stopPropagation();
+            subtaskDrop(event, projIdx, toTaskId);
         }
 
         function startKanbanDrag(event, i, taskId) {
@@ -1331,7 +1357,11 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                     onclick="openTaskPanel(${i}, ${task.id})"
                     ondblclick="openTaskPanel(${i}, ${task.id}); editTask(${i}, ${task.id}); event.stopPropagation();"
                     ondragstart="startTaskListDrag(event, ${i}, ${task.id})"
-                    ondragend="endTaskListDrag(event)">
+                    ondragend="endTaskListDrag(event)"
+                    ondragenter="taskRowDragEnter(event, ${i}, ${task.id})"
+                    ondragleave="taskRowDragLeave(event)"
+                    ondragover="taskRowDragOver(event, ${i}, ${task.id})"
+                    ondrop="taskRowDrop(event, ${i}, ${task.id})">
                     ${subtasks.length ? `<button class="task-chevron ${subOpen ? 'open' : ''}" onclick="toggleSubtasks(${i}, ${task.id}); event.stopPropagation();" ontouchend="toggleSubtasks(${i}, ${task.id}); event.stopPropagation(); event.preventDefault();">▶</button>` : '<span class="task-chevron"></span>'}
                     <div class="task-check-cell">
                         <button class="custom-checkbox ${status}"
@@ -1541,6 +1571,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             subtaskDragState = { projIdx: null, fromTaskId: null, subId: null };
             event.currentTarget.classList.remove('dragging');
             document.querySelectorAll('.subtasks.drag-over').forEach(el => el.classList.remove('drag-over'));
+            document.querySelectorAll('.task-row.drag-hover').forEach(el => el.classList.remove('drag-hover'));
         }
 
         function subtaskDragOver(event, projIdx, taskId) {
