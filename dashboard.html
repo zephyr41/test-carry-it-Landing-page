@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Righteous&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/styles.css">
 
-    <link rel="stylesheet" href="assets/css/dashboard.css?v=68">
+    <link rel="stylesheet" href="assets/css/dashboard.css?v=69">
     <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 </head>
 <body>
@@ -1964,7 +1964,7 @@
             const selectedIndex = Math.max(0, jalons.findIndex(j => j.id === selectedJalon?.id));
 
             const statusLabels = { completed: 'Terminé', in_progress: 'En cours', pending: 'À venir', late: 'En retard' };
-            const statusChips = { completed: 'msb-chip--done', in_progress: 'msb-chip--active', pending: 'msb-chip--upcoming', late: 'msb-chip--late' };
+            const statusChips = { completed: 'pt-chip--done', in_progress: 'pt-chip--active', pending: 'pt-chip--upcoming', late: 'pt-chip--late' };
             const isLate = (jalon) => {
                 if (!jalon) return false;
                 const st = jalon.statut || 'pending';
@@ -1981,8 +1981,9 @@
                 const status = jalon.statut || 'pending';
                 const isSelected = jalon.id === selectedJalon?.id;
                 const isDone = status === 'completed';
-                const isActive = status === 'in_progress' || isLate(jalon);
-                const milestoneState = isDone ? 'milestone--done' : isActive ? 'milestone--active' : '';
+                const late = isLate(jalon);
+                const isActive = status === 'in_progress' || late;
+                const milestoneState = isDone ? 'milestone--done' : late ? 'milestone--late' : isActive ? 'milestone--active' : '';
                 const dotText = isDone ? '✓' : String(ji + 1);
                 const shortTitle = escHtml((jalon.titre || jalon.title || '').split(' ').slice(0,2).join(' '));
 
@@ -1999,14 +2000,14 @@
                 }
 
                 timelineItems += `
-                    <button class="pil-milestone ${milestoneState} ${isSelected ? 'is-selected' : ''}" type="button"
+                    <button class="pt-milestone ${milestoneState} ${isSelected ? 'is-selected' : ''}" type="button"
                         onclick="selectJalon(${i}, '${escHtml(jalon.id || '')}')"
                         ondragover="jalonDropOver(event)" ondragleave="jalonDropLeave(event)"
                         ondrop="dropTaskOnJalon(event, ${i}, '${escHtml(jalon.id || '')}')"
                         title="${escHtml(jalon.titre || jalon.title || '')}"
                         aria-current="${isSelected ? 'step' : 'false'}">
-                        <div class="pil-dot"${dotStyle}>${dotText}</div>
-                        <div class="pil-m-title">${shortTitle}</div>
+                        <div class="pt-dot"${dotStyle}>${dotText}</div>
+                        <div class="pt-m-title">${shortTitle}</div>
                     </button>`;
             });
 
@@ -2016,7 +2017,7 @@
             const statusLabel = statusLabels[statut] || 'À venir';
             const statusChip = statusChips[statut] || 'msb-chip--upcoming';
             const title = selectedJalon?.titre || selectedJalon?.title || '';
-            const date = formatDateJalonCourt(selectedJalon?.date);
+            const date = formatDateJalonLong(selectedJalon?.date);
             const desc = selectedJalon?.desc || selectedJalon?.description || '';
             const validationText = selectedJalon?.critere || selectedJalon?.kpi || '';
             const num = selectedIndex + 1;
@@ -2039,48 +2040,45 @@
             const kpiHtml = renderJalonKpiCards(selectedJalon, i, statut);
 
             const actionBtn = rawStatus === 'completed'
-                ? `<button class="jl-reactivate-btn" onclick="reactivateJalon(${i}, '${escHtml(selectedJalon?.id || '')}')">Réactiver</button>`
-                : `<button class="jl-validate-btn" onclick="completeJalon(${i}, '${escHtml(selectedJalon?.id || '')}')">✓ Valider ce jalon</button>`;
+                ? `<button class="pt-btn-validate" onclick="reactivateJalon(${i}, '${escHtml(selectedJalon?.id || '')}')">Réactiver</button>`
+                : `<button class="pt-btn-validate" onclick="completeJalon(${i}, '${escHtml(selectedJalon?.id || '')}')">✓ Valider ce jalon</button>`;
 
             return `
-            <div class="steering-card">
-                <div class="msb-head">
-                    <span class="section-lbl" style="margin-bottom:0;">Pilotage · Jalons</span>
-                    <a href="jalons.html" class="jalons-manage-link">Gérer →</a>
+            <div class="pt-shell">
+                <div class="pt-shell-label">Pilotage · Jalon Actif</div>
+
+                <div class="pt-timeline" aria-label="Timeline des jalons">
+                    ${timelineItems}
                 </div>
 
-                <div class="msb-timeline-wrap" aria-label="Timeline des jalons">
-                    <div class="pil-timeline">
-                        ${timelineItems}
-                    </div>
+                <div class="pt-card">
+                    <header class="pt-header">
+                        <div class="pt-header-top-row">
+                            <div>
+                                <div class="pt-section-key">Mois ${num} · Jalon ${num} sur ${total}</div>
+                                <div class="pt-title">${title ? escHtml(title) : 'Jalon sans titre'}</div>
+                                ${deadlineStr ? `<div class="pt-deadline">${deadlineStr}</div>` : ''}
+                            </div>
+                            <div class="pt-header-actions">
+                                <div class="pt-chip ${statusChip}"><span class="pt-chip-dot" aria-hidden="true"></span>${statusLabel}</div>
+                                ${actionBtn}
+                            </div>
+                        </div>
+
+                        <div class="pt-info-grid">
+                            <div>
+                                <div class="pt-section-key">Objectif</div>
+                                <div class="pt-objective-text">${desc ? escHtml(desc) : '<span class="msb-empty">—</span>'}</div>
+                            </div>
+                            <div>
+                                <div class="pt-section-key">Critère</div>
+                                <div class="pt-critere-highlight">${validationText ? escHtml(validationText) : '<span class="msb-empty">—</span>'}</div>
+                            </div>
+                        </div>
+                    </header>
+
+                    ${kpiHtml}
                 </div>
-
-                <header class="steering-header">
-                    <div class="header-top-row">
-                        <div>
-                            <div class="section-key pil-meta">Mois ${num} · Jalon ${num} sur ${total}</div>
-                            ${title ? `<h2 class="pil-title">${escHtml(title)}</h2>` : ''}
-                            ${deadlineStr ? `<div class="pil-deadline">${deadlineStr}</div>` : ''}
-                        </div>
-                        <div class="header-actions">
-                            <div class="msb-chip ${statusChip}"><span class="msb-chip-dot" aria-hidden="true"></span>${statusLabel}</div>
-                            ${actionBtn}
-                        </div>
-                    </div>
-
-                    <div class="info-grid">
-                        <div>
-                            <div class="section-key" style="margin-bottom:8px;">Direction</div>
-                            <div class="pil-desc-text">${desc ? escHtml(desc) : '<span class="msb-empty">—</span>'}</div>
-                        </div>
-                        <div>
-                            <div class="section-key" style="margin-bottom:8px;">Le Contrat</div>
-                            <div class="critere-highlight">${validationText ? escHtml(validationText) : '<span class="msb-empty">—</span>'}</div>
-                        </div>
-                    </div>
-                </header>
-
-                ${kpiHtml}
             </div>`;
         }
 
@@ -2172,6 +2170,32 @@
             return Math.max(0, Math.min(100, Math.round((current / target) * 100)));
         }
 
+        function formatMetricValue(value) {
+            if (!Number.isFinite(value)) return '—';
+            if (Number.isInteger(value)) return String(value);
+            return String(Math.round(value * 100) / 100);
+        }
+
+        function getLatestKpiMeasure(kpi) {
+            if (!kpi || !Array.isArray(kpi.measures) || !kpi.measures.length) return null;
+            const sorted = [...kpi.measures].sort((a, b) => new Date(a?.date || 0).getTime() - new Date(b?.date || 0).getTime());
+            return sorted[sorted.length - 1] || null;
+        }
+
+        function getRelativeDayLabel(dateString) {
+            if (!dateString) return 'Aucune mesure';
+            const t = new Date(dateString).getTime();
+            if (Number.isNaN(t)) return 'Aucune mesure';
+            const now = new Date();
+            now.setHours(0, 0, 0, 0);
+            const then = new Date(t);
+            then.setHours(0, 0, 0, 0);
+            const days = Math.max(0, Math.round((now.getTime() - then.getTime()) / 86400000));
+            if (days === 0) return 'Mis à jour aujourd’hui';
+            if (days === 1) return 'Mis à jour il y a 1 jour';
+            return `Mis à jour il y a ${days} jours`;
+        }
+
         function getJalonKpiByType(jalon, type) {
             if (!jalon) return null;
             const kpis = getJalonKpis(jalon);
@@ -2191,54 +2215,64 @@
 
         function renderJalonKpiCard(type, kpi, jalon, i) {
             const isLeading = type === 'leading';
-            const titleLabel = isLeading ? 'Indicateur d\'effort' : 'Indicateur de résultat';
+            const titleLabel = isLeading ? 'Effort' : 'Résultat';
             const phrasing = isLeading ? 'Ce que je fais' : 'Ce que ça donne';
             const titre = kpi?.titre || kpi?.label || kpi?.name || '';
             const unite = kpi?.unite || kpi?.unit || '';
             const current = getKpiCurrentValue(kpi);
             const target = getKpiTargetValue(kpi);
             const percent = formatKpiPercent(current, target);
+            const latestMeasure = getLatestKpiMeasure(kpi);
+            const currentLabel = Number.isFinite(current) ? formatMetricValue(current) : '—';
+            const targetLabel = Number.isFinite(target) ? formatMetricValue(target) : null;
+            const valueSuffix = (() => {
+                if (isLeading) return unite ? escHtml(unite) : '';
+                if (targetLabel !== null) return `/ ${escHtml(targetLabel)}${unite ? ` ${escHtml(unite)}` : ''}`;
+                return unite ? escHtml(unite) : '';
+            })();
+            const freshness = getRelativeDayLabel(latestMeasure?.date || '');
+            const description = titre || 'Aucun indicateur défini pour ce jalon.';
 
             if (!kpi || !titre) {
                 return `
-                    <article class="sc-kpi-unit sc-kpi-unit--empty">
-                        <div class="sc-kpi-unit__header">
+                    <article class="kpi-unit kpi-unit--empty">
+                        <div class="kpi-unit__header">
                             <div>
-                                <h3 class="sc-kpi-title">${escHtml(titleLabel)}</h3>
+                                <h3 class="kpi-category">${escHtml(titleLabel)}</h3>
                                 <p class="kpi-phrasing">${escHtml(phrasing)}</p>
                             </div>
                         </div>
-                        <button class="sc-add-btn" type="button" onclick="openJalonKpiModal(${i}, '${escHtml(jalon?.id || '')}', '${type}')">+ Définir le KPI</button>
+                        <button class="add-btn" type="button" onclick="openJalonKpiModal(${i}, '${escHtml(jalon?.id || '')}', '${type}')">+ Définir le KPI</button>
                     </article>`;
             }
 
-            const valueNum = Number.isFinite(current) ? String(current) : '—';
             const progressBar = percent !== null
-                ? `<div>
-                        <div class="sc-progress-label">Progression</div>
-                        <div class="sc-progress-meta">
+                ? `<div class="progress-area">
+                        <div class="progress-labels">
                             <span>0</span>
-                            <span>Objectif : <strong>${escHtml(String(target))}${unite ? ' ' + escHtml(unite) : ''} — ${percent}%</strong></span>
+                            <span>Objectif : <strong>${escHtml(String(targetLabel))}${unite ? ' ' + escHtml(unite) : ''} — ${percent}%</strong></span>
                         </div>
-                        <div class="sc-progress-bar"><div class="sc-progress-fill" style="width:${Math.min(percent,100)}%"></div></div>
+                        <div class="progress-bar"><div class="progress-fill" style="width:${Math.min(percent,100)}%"></div></div>
                    </div>`
                 : '';
 
             return `
-                <article class="sc-kpi-unit">
-                    <div class="sc-kpi-unit__header">
+                <article class="kpi-unit">
+                    <div class="kpi-unit__header">
                         <div>
-                            <h3 class="sc-kpi-title">${escHtml(titleLabel)}</h3>
+                            <h3 class="kpi-category">${escHtml(titleLabel)}</h3>
                             <p class="kpi-phrasing">${escHtml(phrasing)}</p>
                         </div>
-                        <button class="sc-edit-btn" type="button" onclick="openJalonKpiModal(${i}, '${escHtml(jalon?.id || '')}', '${type}')">Modifier</button>
+                        <button class="edit-btn" type="button" onclick="openJalonKpiModal(${i}, '${escHtml(jalon?.id || '')}', '${type}')">Modifier</button>
                     </div>
-                    <div class="sc-kpi-value">
-                        <strong>${escHtml(valueNum)}</strong>${unite ? `<span>${escHtml(unite)}</span>` : ''}
+                    <div class="kpi-factual-title">${escHtml(titre)}</div>
+                    <div class="value-group">
+                        <strong>${escHtml(currentLabel)}</strong>${valueSuffix ? `<span>${valueSuffix}</span>` : ''}
                     </div>
-                    <p class="sc-kpi-desc">${escHtml(titre)}</p>
+                    <p class="description-text">${escHtml(description)}</p>
+                    <div class="freshness"><span class="freshness-dot" aria-hidden="true"></span>${escHtml(freshness)}</div>
                     ${progressBar}
-                    <button class="sc-add-btn" type="button" onclick="openJalonKpiMeasureModal(${i}, '${escHtml(jalon?.id || '')}', '${type}')">+ Ajouter une mesure</button>
+                    <button class="add-btn" type="button" onclick="openJalonKpiMeasureModal(${i}, '${escHtml(jalon?.id || '')}', '${type}')">+ Ajouter une mesure</button>
                 </article>`;
         }
 
@@ -2248,10 +2282,10 @@
             const lagging = getJalonKpiByType(jalon, 'lagging');
             return `
                 <div class="steering-pilotage-wrap">
-                    <span class="sc-section-label">Indicateurs de Pilotage</span>
-                    <div class="sc-kpi-grid">
+                    <span class="section-label-pilotage">Indicateurs de Pilotage</span>
+                    <div class="kpi-grid">
                         ${renderJalonKpiCard('leading', leading, jalon, i)}
-                        <div class="sc-v-sep"></div>
+                        <div class="v-sep"></div>
                         ${renderJalonKpiCard('lagging', lagging, jalon, i)}
                     </div>
                 </div>`;
@@ -2971,6 +3005,14 @@
             if (isNaN(d)) return dateStr;
             const months = ['Jan','Fév','Mar','Avr','Mai','Juin','Juil','Août','Sep','Oct','Nov','Déc'];
             return `${months[d.getMonth()]} ${d.getFullYear()}`;
+        }
+
+        function formatDateJalonLong(dateStr) {
+            if (!dateStr) return '';
+            const d = new Date(dateStr);
+            if (isNaN(d)) return dateStr;
+            const months = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+            return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
         }
 
         function formatDateBadge(temporelText) {
