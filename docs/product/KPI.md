@@ -37,9 +37,28 @@
   - une **unité**
   - une **fréquence de mise à jour**
   - un **type** : leading ou lagging (non obligatoire)
+  - un **mode de mesure**
   - un **rattachement** : objectif SMART ou jalon
   - une **valeur cible** *(optionnelle)*
   - Indicateur de la dernière MAJ
+
+  ### 4.1 Mode de mesure
+
+  Un KPI doit préciser comment une nouvelle mesure met à jour la valeur affichée.
+
+  Deux modes existent en V1 :
+
+  - **Cumulatif** : chaque nouvelle mesure s'ajoute au total courant.
+    - Exemples : `+1 utilisateur onboardé`, `+2 heures de dev`, `+5 km cumulés`
+  - **Valeur actuelle** : chaque nouvelle mesure remplace l'état courant affiché.
+    - Exemples : `5 km sur la dernière sortie`, `6:10 min/km aujourd'hui`, `72 kg actuellement`
+
+  Règle produit :
+
+  - un KPI de jalon ne doit pas imposer un mode unique
+  - le mode est choisi par l'utilisateur au moment de définir le KPI
+  - le dashboard doit afficher ce KPI selon ce mode
+  - l'historique doit conserver chaque mesure saisie
 
   ## 5. Cardinalité
 
