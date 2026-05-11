@@ -184,34 +184,29 @@
     <div id="jalonKpiModalOverlay" class="m-overlay">
         <div class="m-box" onclick="event.stopPropagation()">
             <h3 class="m-title" id="jalonKpiModalTitle">Configurer le KPI</h3>
-            <p class="m-sub" id="jalonKpiModalSubtitle">Définissez ce que vous suivez pour ce jalon. Les mesures s’ajoutent ensuite séparément.</p>
             <form id="jalonKpiForm" onsubmit="handleJalonKpiSubmit(event)">
+                <input type="hidden" id="jalonKpiType">
+                <input type="hidden" id="jalonKpiMode">
                 <div class="m-field">
-                    <label class="m-label" for="jalonKpiTypeLabel">Type de KPI</label>
-                    <input class="m-input" type="text" id="jalonKpiTypeLabel" readonly>
-                    <input type="hidden" id="jalonKpiType">
+                    <label class="m-label" for="jalonKpiTitre">Indicateur</label>
+                    <input class="m-input" type="text" id="jalonKpiTitre" placeholder="km courus, clients onboardés…" autocomplete="off">
+                </div>
+                <div class="m-row">
+                    <div class="m-field">
+                        <label class="m-label" for="jalonKpiCible">Cible</label>
+                        <input class="m-input" type="number" min="0" id="jalonKpiCible" placeholder="100">
+                    </div>
+                    <div class="m-field">
+                        <label class="m-label" for="jalonKpiUnite">Unité</label>
+                        <input class="m-input" type="text" id="jalonKpiUnite" placeholder="km, clients…">
+                    </div>
                 </div>
                 <div class="m-field">
-                    <label class="m-label" for="jalonKpiMode">Comment les mesures mettent à jour ce KPI</label>
-                    <select class="m-input" id="jalonKpiMode">
-                        <option value="incremental">Cumulatif · chaque mesure s’ajoute au total</option>
-                        <option value="absolute">Valeur actuelle · chaque mesure remplace la valeur affichée</option>
-                    </select>
-                    <div class="m-hint">Exemple cumulatif : +1 utilisateur, +2 heures. Exemple valeur actuelle : 5 km sur la dernière sortie, 6:10 min/km aujourd’hui.</div>
-                </div>
-                <div class="m-field">
-                    <label class="m-label" for="jalonKpiTitre">Nom de l’indicateur</label>
-                    <input class="m-input" type="text" id="jalonKpiTitre">
-                </div>
-                <div class="m-field">
-                    <label class="m-label" for="jalonKpiUnite">Unité affichée</label>
-                    <input class="m-input" type="text" id="jalonKpiUnite">
-                    <div class="m-hint">Exemple : heures, utilisateurs, min/km.</div>
-                </div>
-                <div class="m-field">
-                    <label class="m-label" for="jalonKpiCible">Objectif final</label>
-                    <input class="m-input" type="number" min="0" id="jalonKpiCible">
-                    <div class="m-hint">La progression est calculée par rapport à cet objectif.</div>
+                    <label class="m-label">Mode</label>
+                    <div class="m-mode-toggle">
+                        <button type="button" class="m-mode-btn" data-mode="incremental" onclick="setKpiMode('incremental')">Cumulatif</button>
+                        <button type="button" class="m-mode-btn" data-mode="absolute" onclick="setKpiMode('absolute')">Valeur actuelle</button>
+                    </div>
                 </div>
                 <div class="m-error" id="jalonKpiError"></div>
                 <div class="m-btns">
@@ -219,6 +214,10 @@
                     <button type="submit" class="m-btn-ok">Enregistrer</button>
                 </div>
             </form>
+            <div class="m-history-wrap">
+                <div class="m-history-title">Historique des mesures</div>
+                <div id="jalonKpiConfigHistory" class="m-history-list"></div>
+            </div>
         </div>
     </div>
 
@@ -244,10 +243,6 @@
                     <button type="submit" class="m-btn-ok" id="jalonKpiMeasureSubmitBtn">Enregistrer</button>
                 </div>
             </form>
-            <div class="m-history-wrap">
-                <div class="m-history-title">Historique des mesures</div>
-                <div id="jalonKpiMeasureHistory" class="m-history-list"></div>
-            </div>
         </div>
     </div>
 
@@ -284,7 +279,7 @@
         let taskViewMode = {}; // { projectIndex: 'list' | 'kanban' }
         let jalonPopupState = {}; // { projectIndex: jalonId | null }
         let kanbanDragState = { projectIndex: null, taskId: null };
-let jalonKpiModalState = { projectIndex: null, jalonId: null, kpiType: 'lagging' };
+let jalonKpiModalState = { projectIndex: null, jalonId: null, kpiType: 'lagging', measureId: null };
 let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: null, measureId: null };
         let currentDashboardView = 'execution';
 
@@ -1090,7 +1085,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             const columns = [
                 { status: 'todo', label: 'À faire', empty: 'Aucune tâche à lancer' },
                 { status: 'doing', label: 'En cours', empty: 'Rien en mouvement' },
-                { status: 'done', label: 'Terminé', empty: 'Rien terminé pour l’instant' }
+                { status: 'done', label: 'Terminé', empty: "Rien terminé pour l'instant" }
             ];
 
             return `
@@ -2241,7 +2236,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             const then = new Date(t);
             then.setHours(0, 0, 0, 0);
             const days = Math.max(0, Math.round((now.getTime() - then.getTime()) / 86400000));
-            if (days === 0) return 'Mis à jour aujourd’hui';
+            if (days === 0) return "Mis à jour aujourd'hui";
             if (days === 1) return 'Mis à jour il y a 1 jour';
             return `Mis à jour il y a ${days} jours`;
         }
@@ -2271,7 +2266,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                 <svg width="10" height="10" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                 </svg>
-                Modifier
+                Modifier le KPI
             </button>`;
             const titre = kpi?.titre || kpi?.label || kpi?.name || '';
             const unite = kpi?.unite || kpi?.unit || '';
@@ -2281,7 +2276,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             const latestMeasure = getLatestKpiMeasure(kpi);
             const currentLabel = Number.isFinite(current) ? formatMetricValue(current) : '—';
             const targetLabel = Number.isFinite(target) ? formatMetricValue(target) : null;
-            const titleText = titre || (isLeading ? 'Indicateur d’effort' : 'Indicateur de résultat');
+            const titleText = titre || (isLeading ? "Indicateur d'effort" : 'Indicateur de résultat');
             const descriptionText = (kpi?.description || kpi?.desc || '').trim();
             const measureMode = getKpiMeasureMode(kpi, type);
             const valueSuffix = (() => {
@@ -3116,33 +3111,38 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
         // ──────────────────────────────────────────────────────────
         // JALON KPI MODAL
         // ──────────────────────────────────────────────────────────
+        function setKpiMode(mode) {
+            document.getElementById('jalonKpiMode').value = mode || 'incremental';
+            document.querySelectorAll('#jalonKpiForm .m-mode-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.mode === (mode || 'incremental'));
+            });
+        }
+
         function openJalonKpiModal(i, jalonId, kpiType = 'lagging') {
             const obj = allObjectifs[i];
             if (!obj) return;
             const jalon = (obj.jalons || []).find(j => (j.id || '') === jalonId);
             if (!jalon) return;
             if (!Array.isArray(jalon.kpis)) jalon.kpis = [];
-            jalonKpiModalState = { projectIndex: i, jalonId, kpiType };
+            jalonKpiModalState = { projectIndex: i, jalonId, kpiType, measureId: null };
             const kpi = (jalon.kpis || []).find(k => (k?.type || '') === kpiType) || {};
             const isLeading = kpiType === 'leading';
             document.getElementById('jalonKpiModalTitle').textContent = isLeading ? 'Configurer le KPI Effort' : 'Configurer le KPI Résultat';
-            document.getElementById('jalonKpiModalSubtitle').textContent = isLeading
-                ? 'Définissez ce que vous faites pour faire avancer ce jalon. Les mesures s’ajoutent ensuite séparément.'
-                : 'Définissez le résultat que vous suivez sur ce jalon. Les mesures s’ajoutent ensuite séparément.';
             document.getElementById('jalonKpiType').value = kpiType;
-            document.getElementById('jalonKpiTypeLabel').value = isLeading ? 'Effort · ce que je fais' : 'Résultat · ce que ça donne';
-            document.getElementById('jalonKpiMode').value = getKpiMeasureMode(kpi, kpiType);
+            setKpiMode(getKpiMeasureMode(kpi, kpiType));
             document.getElementById('jalonKpiTitre').value = kpi.titre || '';
             document.getElementById('jalonKpiUnite').value = kpi.unite || '';
             document.getElementById('jalonKpiCible').value = kpi.cible !== null && kpi.cible !== undefined ? kpi.cible : '';
             document.getElementById('jalonKpiError').textContent = '';
+            renderJalonKpiConfigHistory(i, jalonId, kpiType);
             openModal('jalonKpiModalOverlay');
             setTimeout(() => document.getElementById('jalonKpiTitre').focus(), 100);
         }
 
         function closeJalonKpiModal() {
             closeModal('jalonKpiModalOverlay');
-            jalonKpiModalState = { projectIndex: null, jalonId: null, kpiType: 'lagging' };
+            jalonKpiModalState = { projectIndex: null, jalonId: null, kpiType: 'lagging', measureId: null };
+            document.getElementById('jalonKpiConfigHistory').innerHTML = '';
         }
 
         function handleJalonKpiSubmit(e) {
@@ -3181,6 +3181,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                 jalon.kpiData = { titre: lagging.titre, valeur: lagging.valeur ?? null, cible: lagging.cible ?? null, unite: lagging.unite || '' };
             }
             saveAllObjectifs();
+            renderJalonKpiConfigHistory(i, jalonId, type);
             closeJalonKpiModal();
             renderDashboard();
         }
@@ -3217,7 +3218,6 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             document.getElementById('jalonKpiMeasureValueError').textContent = '';
             document.getElementById('jalonKpiMeasureValue').previousElementSibling.textContent = mode === 'incremental' ? 'Valeur à ajouter' : 'Nouvelle valeur';
             document.getElementById('jalonKpiMeasureSubmitBtn').textContent = 'Ajouter';
-            renderJalonKpiMeasureHistory(i, jalonId, kpiType);
             openModal('jalonKpiMeasureModalOverlay');
             setTimeout(() => document.getElementById('jalonKpiMeasureValue').focus(), 100);
         }
@@ -3230,23 +3230,20 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             const kpi = jalon.kpis.find(k => (k?.type || '') === kpiType);
             const measure = kpi?.measures?.find(m => String(m?.id || '') === String(measureId || ''));
             if (!kpi || !measure) return;
-            jalonKpiMeasureModalState = { projectIndex: i, jalonId, kpiType, measureId: String(measureId) };
-            openJalonKpiMeasureModal(i, jalonId, kpiType);
-            jalonKpiMeasureModalState.measureId = String(measureId);
-            document.getElementById('jalonKpiMeasureContext').style.display = 'none';
-            document.getElementById('jalonKpiMeasureContext').textContent = '';
-            renderJalonKpiMeasureHistory(i, jalonId, kpiType);
+            openJalonKpiModal(i, jalonId, kpiType);
+            jalonKpiModalState.measureId = String(measureId);
+            renderJalonKpiConfigHistory(i, jalonId, kpiType);
         }
 
-        function renderJalonKpiMeasureHistory(i, jalonId, kpiType) {
-            const target = document.getElementById('jalonKpiMeasureHistory');
+        function renderJalonKpiConfigHistory(i, jalonId, kpiType) {
+            const target = document.getElementById('jalonKpiConfigHistory');
             if (!target) return;
             const obj = allObjectifs[i];
             const jalon = (obj?.jalons || []).find(j => (j.id || '') === jalonId);
             const kpi = jalon?.kpis?.find(k => (k?.type || '') === kpiType);
             const mode = getKpiMeasureMode(kpi, kpiType);
             const history = getRecentKpiMeasures(kpi, 8);
-            const activeMeasureId = String(jalonKpiMeasureModalState?.measureId || '');
+            const activeMeasureId = String(jalonKpiModalState?.measureId || '');
             if (!history.length) {
                 target.innerHTML = `<div class="m-history-empty">Aucune mesure enregistrée pour le moment.</div>`;
                 return;
@@ -3289,14 +3286,14 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
         }
 
         function cancelJalonKpiHistoryEdit() {
-            if (jalonKpiMeasureModalState) jalonKpiMeasureModalState.measureId = null;
-            const { projectIndex: i, jalonId, kpiType } = jalonKpiMeasureModalState;
+            if (jalonKpiModalState) jalonKpiModalState.measureId = null;
+            const { projectIndex: i, jalonId, kpiType } = jalonKpiModalState;
             if (i === null || !kpiType) return;
-            renderJalonKpiMeasureHistory(i, jalonId, kpiType);
+            renderJalonKpiConfigHistory(i, jalonId, kpiType);
         }
 
         function saveJalonKpiHistoryEdit() {
-            const { projectIndex: i, jalonId, kpiType, measureId } = jalonKpiMeasureModalState;
+            const { projectIndex: i, jalonId, kpiType, measureId } = jalonKpiModalState;
             if (i === null || !kpiType || !measureId) return;
             const date = (document.getElementById('jalonKpiHistoryEditDate')?.value || '').trim();
             const valueRaw = (document.getElementById('jalonKpiHistoryEditValue')?.value || '').trim();
@@ -3308,8 +3305,8 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             const kpi = jalon?.kpis?.find(k => (k?.type || '') === kpiType);
             const mode = getKpiMeasureMode(kpi, kpiType);
             applyJalonKpiMeasure(i, jalonId, kpiType, { date, value, measureId, mode });
-            jalonKpiMeasureModalState.measureId = null;
-            renderJalonKpiMeasureHistory(i, jalonId, kpiType);
+            jalonKpiModalState.measureId = null;
+            renderJalonKpiConfigHistory(i, jalonId, kpiType);
             renderDashboard();
         }
 
@@ -3319,7 +3316,6 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             document.getElementById('jalonKpiMeasureContext').style.display = 'none';
             document.getElementById('jalonKpiMeasureContext').textContent = '';
             document.getElementById('jalonKpiMeasureSubmitBtn').textContent = 'Enregistrer';
-            document.getElementById('jalonKpiMeasureHistory').innerHTML = '';
         }
 
         function handleJalonKpiMeasureSubmit(e) {
@@ -3354,8 +3350,8 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             applyJalonKpiMeasure(i, jalonId, kpiType, { date, value, mode });
             document.getElementById('jalonKpiMeasureValue').value = '';
             document.getElementById('jalonKpiMeasureDate').value = new Date().toISOString().slice(0, 10);
-            renderJalonKpiMeasureHistory(i, jalonId, kpiType);
             renderDashboard();
+            closeJalonKpiMeasureModal();
         }
 
         function applyJalonKpiMeasure(i, jalonId, kpiType, { date, value, measureId = null, mode = null }) {
@@ -3383,7 +3379,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
         }
 
         function deleteJalonKpiMeasure(explicitMeasureId = null) {
-            const { projectIndex: i, jalonId, kpiType, measureId } = jalonKpiMeasureModalState;
+            const { projectIndex: i, jalonId, kpiType, measureId } = jalonKpiModalState;
             const resolvedMeasureId = explicitMeasureId || measureId;
             if (i === null || !kpiType || !resolvedMeasureId) return;
             const obj = allObjectifs[i];
@@ -3395,8 +3391,8 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             kpi.measures.splice(idx, 1);
             normalizeKpiMeasures(kpi, kpiType);
             saveAllObjectifs();
-            jalonKpiMeasureModalState.measureId = null;
-            renderJalonKpiMeasureHistory(i, jalonId, kpiType);
+            jalonKpiModalState.measureId = null;
+            renderJalonKpiConfigHistory(i, jalonId, kpiType);
             renderDashboard();
         }
 

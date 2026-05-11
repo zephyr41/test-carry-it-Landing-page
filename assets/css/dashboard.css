@@ -3805,6 +3805,41 @@ body::before {
     color: #929292;
 }
 
+.m-row {
+    display: flex;
+    gap: 10px;
+}
+.m-row .m-field {
+    flex: 1;
+    min-width: 0;
+}
+
+.m-mode-toggle {
+    display: flex;
+    gap: 6px;
+}
+.m-mode-btn {
+    flex: 1;
+    padding: 9px 12px;
+    background: #1A1A1C;
+    border: 1px solid rgba(255,253,246,0.12);
+    border-radius: 8px;
+    color: #929292;
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: border-color 150ms, color 150ms, background 150ms;
+}
+.m-mode-btn:hover {
+    border-color: rgba(255,253,246,0.22);
+    color: #FFFDF6;
+}
+.m-mode-btn.active {
+    background: rgba(238,68,8,0.12);
+    border-color: #EE4408;
+    color: #FFFDF6;
+}
+
 .m-input {
     width: 100%;
     background: #1A1A1C;
@@ -10027,6 +10062,9 @@ body {
     font-weight: 600;
     color: #f4f4f5;
     margin-top: 6px;
+    line-height: 1.45;
+    min-height: 2.9em;
+    max-width: 26ch;
 }
 
 .value-group {
