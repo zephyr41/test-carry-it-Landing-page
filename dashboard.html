@@ -1305,6 +1305,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             if (isEditing) {
                 return `
                 <div class="task-row editing ${status}" data-taskid="${task.id}" onclick="event.stopPropagation()">
+                    <span class="task-chevron"></span>
                     <div class="task-check-cell">
                         <button class="custom-checkbox ${status}"
                             onclick="toggleTaskDirect(${i}, ${task.id}); event.stopPropagation();"
@@ -1331,6 +1332,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                     ondblclick="openTaskPanel(${i}, ${task.id}); editTask(${i}, ${task.id}); event.stopPropagation();"
                     ondragstart="startTaskListDrag(event, ${i}, ${task.id})"
                     ondragend="endTaskListDrag(event)">
+                    ${subtasks.length ? `<button class="task-chevron ${subOpen ? 'open' : ''}" onclick="toggleSubtasks(${i}, ${task.id}); event.stopPropagation();" ontouchend="toggleSubtasks(${i}, ${task.id}); event.stopPropagation(); event.preventDefault();">▶</button>` : '<span class="task-chevron"></span>'}
                     <div class="task-check-cell">
                         <button class="custom-checkbox ${status}"
                             onclick="toggleTaskDirect(${i}, ${task.id}); event.stopPropagation();"
@@ -1342,7 +1344,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                         <span class="task-title"
                             onclick="openTaskPanel(${i}, ${task.id}); event.stopPropagation();"
                             ondblclick="openTaskPanel(${i}, ${task.id}); editTask(${i}, ${task.id}); event.stopPropagation();">${escHtml(task.text)}</span>
-                        ${subtasks.length ? `<button class="task-sub-toggle ${subOpen ? 'open' : ''}" onclick="toggleSubtasks(${i}, ${task.id}); event.stopPropagation();" ontouchend="toggleSubtasks(${i}, ${task.id}); event.stopPropagation(); event.preventDefault();">${doneSubtasks}/${subtasks.length}</button>` : ''}
+                        ${subtasks.length ? `<span class="task-sub-count">${doneSubtasks}/${subtasks.length}</span>` : ''}
                     </div>
                     <button class="row-action"
                             onclick="openTaskPanel(${i}, ${task.id}); event.stopPropagation();"

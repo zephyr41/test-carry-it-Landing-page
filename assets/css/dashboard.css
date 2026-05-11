@@ -1910,6 +1910,14 @@ body::before {
     box-shadow: inset 2px 0 0 rgba(255,253,246,0.15);
 }
 
+/* Panel context: revert to flex, not grid */
+.side-panel .subtask-item,
+.side-panel .subtask-add-row {
+    display: flex;
+    min-height: auto;
+    grid-template-columns: unset;
+}
+
 /* Icône cercle loop — bouton status */
 .subtask-icon-btn {
     border: none;
@@ -7079,23 +7087,13 @@ body {
     font-weight: 600;
 }
 
-.task-sub-toggle {
+.task-sub-count {
     flex-shrink: 0;
-    padding: 0;
-    background: none;
-    border: none;
-    color: rgba(255,253,246,0.35);
+    color: rgba(255,253,246,0.30);
     font-size: 11px;
-    font-family: inherit;
-    cursor: pointer;
-    transition: color 120ms;
+    font-weight: 500;
     line-height: 1;
-}
-.task-sub-toggle:hover {
-    color: rgba(255,253,246,0.65);
-}
-.task-sub-toggle.open {
-    color: #EE4408;
+    pointer-events: none;
 }
 
 .status-pill {
@@ -7240,7 +7238,7 @@ body {
     .task-grid,
     .task-header,
     .task-row {
-        grid-template-columns: 34px minmax(0, 1fr);
+        grid-template-columns: 20px 34px minmax(0, 1fr);
     }
 
     .task-header > div:nth-child(3),
@@ -8280,7 +8278,7 @@ body {
     .task-grid,
     .task-header,
     .task-row {
-        grid-template-columns: 34px minmax(0, 1fr);
+        grid-template-columns: 20px 34px minmax(0, 1fr);
     }
 }
 
@@ -8739,7 +8737,7 @@ body {
 .add-task-editor {
     width: 100%;
     display: grid;
-    grid-template-columns: 38px minmax(0, 1fr);
+    grid-template-columns: 20px 38px minmax(0, 1fr);
     align-items: center;
     min-height: 36px;
     padding: 8px 0;
@@ -9251,9 +9249,33 @@ body {
 .task-row {
     min-height: 36px;
     display: grid;
-    grid-template-columns: 38px minmax(0, 1fr) 28px 28px;
+    grid-template-columns: 20px 38px minmax(0, 1fr) 28px 28px;
     align-items: center;
     border-bottom: 1px solid rgba(255,253,246,0.085);
+}
+
+.task-chevron {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 100%;
+    background: none;
+    border: none;
+    padding: 0;
+    color: rgba(255,253,246,0.2);
+    font-size: 9px;
+    cursor: pointer;
+    transition: color 120ms;
+    visibility: hidden;
+}
+.task-row:hover .task-chevron,
+.task-chevron.open {
+    visibility: visible;
+}
+.task-chevron.open {
+    color: rgba(255,253,246,0.55);
+    transform: rotate(90deg);
 }
 
 .row-del {
@@ -9435,7 +9457,7 @@ body {
     }
 
     .task-row {
-        grid-template-columns: 34px minmax(0, 1fr) 28px;
+        grid-template-columns: 20px 34px minmax(0, 1fr) 28px;
     }
 }
 
