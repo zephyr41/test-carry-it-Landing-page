@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Righteous&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/styles.css">
 
-    <link rel="stylesheet" href="assets/css/dashboard.css?v=57">
+    <link rel="stylesheet" href="assets/css/dashboard.css?v=64">
     <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 </head>
 <body>
@@ -388,6 +388,24 @@
                                 if (!Array.isArray(kpi.measures)) { kpi.measures = []; changed = true; }
                             });
                         });
+                        // Migration: auto-transition — set first pending after last completed to in_progress
+                        const jalonList = obj.jalons || [];
+                        const hasActive = jalonList.some(j => (j.statut || 'pending') === 'in_progress');
+                        if (!hasActive) {
+                            const sorted = [...jalonList].sort((a, b) =>
+                                new Date(a.date || 0).getTime() - new Date(b.date || 0).getTime()
+                            );
+                            const lastDoneIdx = sorted.reduce((acc, j, idx) =>
+                                j.statut === 'completed' ? idx : acc, -1
+                            );
+                            if (lastDoneIdx >= 0 && lastDoneIdx < sorted.length - 1) {
+                                const next = sorted[lastDoneIdx + 1];
+                                if (next && (next.statut || 'pending') === 'pending') {
+                                    const ref = jalonList.find(j => j.id === next.id);
+                                    if (ref) { ref.statut = 'in_progress'; changed = true; }
+                                }
+                            }
+                        }
                         if (!obj.createdAt) obj.createdAt = obj.id || Date.now();
                         if (!obj.kpiType) obj.kpiType = 'cumulatif';
                     });
@@ -2006,33 +2024,33 @@
                     <a href="jalons.html" class="jalons-manage-link">Gérer →</a>
                 </div>
 
-                <div class="msb-kicker">Timeline des jalons</div>
                 <div class="msb-timeline-wrap" aria-label="Timeline des jalons">
                     <div class="msb-timeline" role="list">
                         ${timelineItems}
                     </div>
                 </div>
 
-                <div class="msb-divider" aria-hidden="true"></div>
-                <div class="msb-kicker">États de jalon — avec description</div>
-                <div class="msb-state-row msb-state-row--single">
-                    <div class="msb-state-card is-selected">
-                        <div class="msb-card-head">
-                            <div class="msb-badge">Jalon ${num} · ${num}/${total}</div>
-                            <div class="msb-chip ${statusChip}"><span class="msb-chip-dot" aria-hidden="true"></span>${statusLabel}</div>
+                <div class="msb-detail">
+                    <div class="msb-detail-header">
+                        <div class="msb-badge">Jalon ${num} · ${num}/${total}</div>
+                        <div class="msb-chip ${statusChip}"><span class="msb-chip-dot" aria-hidden="true"></span>${statusLabel}</div>
+                    </div>
+                    ${title ? `<div class="msb-card-title">${escHtml(title)}</div>` : ''}
+                    ${date ? `<div class="msb-card-sub">${rawStatus === 'completed' ? 'Validé' : 'Échéance'} : ${escHtml(date)}</div>` : ''}
+                    <div class="msb-sep" aria-hidden="true"></div>
+                    <div class="msb-detail-grid">
+                        <div>
+                            <div class="msb-section-key">Description</div>
+                            <div class="msb-section-text">${desc ? escHtml(desc) : '<span class="msb-empty">—</span>'}</div>
                         </div>
-                        ${title ? `<div class="msb-card-title">${escHtml(title)}</div>` : ''}
-                        ${date ? `<div class="msb-card-sub">${rawStatus === 'completed' ? 'Validé' : 'Échéance'} : ${escHtml(date)}</div>` : ''}
-                        <div class="msb-sep" aria-hidden="true"></div>
-                        <div class="msb-section-key">Description</div>
-                        <div class="msb-section-text">${desc ? escHtml(desc) : '<span class="msb-empty">—</span>'}</div>
-                        <div class="msb-sep" aria-hidden="true"></div>
-                        <div class="msb-section-key">Critère de validation</div>
-                        <div class="msb-section-text msb-section-text--strong">${validationText ? escHtml(validationText) : '<span class="msb-empty">—</span>'}</div>
-                        ${kpiHtml}
-                        <div class="msb-state-footer">
-                            ${actionBtn}
+                        <div>
+                            <div class="msb-section-key">Critère de validation</div>
+                            <div class="msb-section-text msb-section-text--strong">${validationText ? escHtml(validationText) : '<span class="msb-empty">—</span>'}</div>
                         </div>
+                    </div>
+                    ${kpiHtml}
+                    <div class="msb-state-footer">
+                        ${actionBtn}
                     </div>
                 </div>
             </div>`;
@@ -2143,26 +2161,22 @@
             return 'À venir';
         }
 
-        function renderJalonKpiCard(type, kpi, jalon, i, jalonStatus) {
+        function renderJalonKpiCard(type, kpi, jalon, i) {
             const isLeading = type === 'leading';
-            const kicker = isLeading ? 'Ce que je fais' : 'Ce que ça donne';
+            const kicker = isLeading ? 'Leading KPI (Effort)' : 'Lagging KPI (Résultat)';
+            const explain = isLeading
+                ? 'Mesure si tu fais ce qu\'il faut pour avancer.'
+                : 'Mesure si tes actions donnent des résultats.';
             const titre = kpi?.titre || kpi?.label || kpi?.name || '';
             const unite = kpi?.unite || kpi?.unit || '';
             const current = getKpiCurrentValue(kpi);
             const target = getKpiTargetValue(kpi);
             const percent = formatKpiPercent(current, target);
-            const chipLabel = getJalonStatusChipLabel(jalonStatus);
-            const chipClass = jalonStatus === 'in_progress'
-                ? 'jkpi-chip--active'
-                : jalonStatus === 'completed' ? 'jkpi-chip--done' : jalonStatus === 'late' ? 'jkpi-chip--late' : 'jkpi-chip--upcoming';
 
             if (!kpi || !titre) {
                 return `
-                    <div class="jkpi-card jkpi-card--empty">
-                        <div class="jkpi-top">
-                            <div class="jkpi-kicker">${escHtml(kicker)}</div>
-                            <div class="jkpi-chip ${chipClass}"><span class="jkpi-chip-dot" aria-hidden="true"></span>${escHtml(chipLabel)}</div>
-                        </div>
+                    <div class="jkpi-card jkpi-card--empty jkpi-card--${type}">
+                        <div class="jkpi-kicker">${escHtml(kicker)}</div>
                         <div class="jkpi-empty">
                             <p class="jkpi-empty-title">Aucun KPI défini</p>
                             <button class="jkpi-empty-btn" type="button" onclick="openJalonKpiModal(${i}, '${escHtml(jalon?.id || '')}', '${type}')">+ Définir le KPI</button>
@@ -2171,40 +2185,30 @@
             }
 
             const valueNum = Number.isFinite(current) ? String(current) : '—';
-            const valueHtml = unite
-                ? `<span class="jkpi-value-num">${escHtml(valueNum)}</span><span class="jkpi-value-unit">${escHtml(unite)}</span>`
-                : `<span class="jkpi-value-num">${escHtml(valueNum)}</span>`;
-            const targetLine = Number.isFinite(target) && percent !== null
-                ? `<div class="jkpi-target">Objectif : <strong>${escHtml(String(target))}</strong> — <strong>${percent}%</strong></div>`
-                : Number.isFinite(target) ? `<div class="jkpi-target">Objectif : <strong>${escHtml(String(target))}</strong></div>` : '';
-            const bar = percent !== null
-                ? `<div class="jkpi-bar"><div class="jkpi-bar-fill" style="width:${percent}%"></div></div>`
+            const unitSpan = unite ? `<span class="jkpi-value-unit">${escHtml(unite)}</span>` : '';
+            const targetSpan = Number.isFinite(target)
+                ? `<span class="jkpi-compact-target">/ ${escHtml(String(target))}</span>`
                 : '';
-
-            const infoBox = (jalon?.critere || jalon?.kpi)
-                ? `<div class="jkpi-infobox"><strong>Critère de validation :</strong> ${escHtml(jalon?.critere || jalon?.kpi || '')}</div>`
-                : '';
+            const progressBlock = percent !== null ? `
+                <div class="jkpi-progress-labels">
+                    <span>0</span>
+                    <span>Objectif : <strong>${escHtml(String(target))}</strong> — <strong>${percent}%</strong></span>
+                </div>
+                <div class="jkpi-bar"><div class="jkpi-bar-fill" style="width:${Math.min(percent,100)}%"></div></div>` : '';
 
             return `
-                <div class="jkpi-card">
-                    <div class="jkpi-top">
-                        <div class="jkpi-kicker">${escHtml(kicker)}</div>
-                        <div class="jkpi-chip ${chipClass}"><span class="jkpi-chip-dot" aria-hidden="true"></span>${escHtml(chipLabel)}</div>
-                    </div>
-                    <div class="jkpi-value-row">
-                        <div class="jkpi-value">${valueHtml}</div>
+                <div class="jkpi-card jkpi-card--${type}">
+                    <div class="jkpi-kicker">${escHtml(kicker)}</div>
+                    <div class="jkpi-value-wrap">
+                        <span class="jkpi-value-num">${escHtml(valueNum)}</span>${unitSpan}${targetSpan}
+                        <button class="jkpi-edit-btn" type="button" onclick="openJalonKpiModal(${i}, '${escHtml(jalon?.id || '')}', '${type}')" title="Modifier le KPI" aria-label="Modifier le KPI">
+                            <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2L11 4L4 11H2V9L9 2Z"/></svg>
+                        </button>
                     </div>
                     <div class="jkpi-name">${escHtml(titre)}</div>
-                    <div class="jkpi-progress">
-                        <div class="jkpi-left">${escHtml(String(Number.isFinite(current) ? current : 0))}</div>
-                        ${targetLine}
-                    </div>
-                    ${bar}
-                    ${infoBox}
-                    <div class="jkpi-actions">
-                        <button class="jkpi-btn" type="button" onclick="openJalonKpiMeasureModal(${i}, '${escHtml(jalon?.id || '')}', '${type}')">+ Ajouter une mesure</button>
-                        <button class="jkpi-btn jkpi-btn--ghost" type="button" onclick="openJalonKpiModal(${i}, '${escHtml(jalon?.id || '')}', '${type}')">Mettre à jour</button>
-                    </div>
+                    ${progressBlock}
+                    <div class="jkpi-explain">${escHtml(explain)}</div>
+                    <button class="jkpi-measure-link" type="button" onclick="openJalonKpiMeasureModal(${i}, '${escHtml(jalon?.id || '')}', '${type}')">+ Ajouter une mesure</button>
                 </div>`;
         }
 
@@ -2216,8 +2220,8 @@
                 <div class="jkpi-wrap">
                     <div class="jkpi-title">KPI de jalon — moyen terme</div>
                     <div class="jkpi-grid">
-                        ${renderJalonKpiCard('leading', leading, jalon, i, jalonStatus)}
-                        ${renderJalonKpiCard('lagging', lagging, jalon, i, jalonStatus)}
+                        ${renderJalonKpiCard('leading', leading, jalon, i)}
+                        ${renderJalonKpiCard('lagging', lagging, jalon, i)}
                     </div>
                 </div>`;
         }
@@ -2255,6 +2259,16 @@
             const jalon = obj.jalons.find(j => (j.id || '') === jalonId);
             if (!jalon) return;
             jalon.statut = 'completed';
+            // Auto-transition: next pending jalon → in_progress
+            const sorted = getSortedProjectJalons(obj);
+            const doneIdx = sorted.findIndex(j => j.id === jalonId);
+            if (doneIdx >= 0 && doneIdx < sorted.length - 1) {
+                const next = sorted[doneIdx + 1];
+                if (next && (next.statut || 'pending') === 'pending') {
+                    const nextInObj = obj.jalons.find(j => j.id === next.id);
+                    if (nextInObj) nextInObj.statut = 'in_progress';
+                }
+            }
             saveAllObjectifs();
             renderDashboard();
             if (currentDashboardView === 'pilotage') {
