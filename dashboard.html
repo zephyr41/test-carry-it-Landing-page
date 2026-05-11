@@ -1043,7 +1043,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
         function renderAddTaskRow(i, status = 'todo', primary = false) {
             const inputId = `todoInput-${i}-${status}`;
             return `
-                <div class="add-task-row ${status} ${primary ? 'primary' : ''}">
+                <div class="add-task-row ${status} ${primary ? 'primary' : ''}" ondragover="event.stopPropagation();" ondragenter="event.stopPropagation();">
                     <button class="add-task-ghost-btn" type="button"
                         id="addTaskGhostBtn-${i}-${status}"
                         onclick="openAddTaskEditor(${i}, '${status}'); event.stopPropagation();">
@@ -1331,12 +1331,13 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             if (isEditing) {
                 return `
                 <div class="task-row editing ${status}" data-taskid="${task.id}" onclick="event.stopPropagation()">
-                    <span class="task-chevron"></span>
+                    <span class="task-drag-grip"></span>
                     <div class="task-check-cell">
                         <button class="custom-checkbox ${status}"
                             onclick="toggleTaskDirect(${i}, ${task.id}); event.stopPropagation();"
                             aria-label="${getTaskStatusLabel(status)}"></button>
                     </div>
+                    <span class="task-chevron"></span>
                     <input class="task-edit-input" id="todoEditInput-${i}-${task.id}"
                         value="${escHtml(task.text)}"
                         onkeydown="if(event.key==='Enter'){saveTaskEdit(${i}, ${task.id});event.preventDefault();} if(event.key==='Escape'){cancelTaskEdit(${i});event.preventDefault();}"
@@ -1362,7 +1363,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                     ondragleave="taskRowDragLeave(event)"
                     ondragover="taskRowDragOver(event, ${i}, ${task.id})"
                     ondrop="taskRowDrop(event, ${i}, ${task.id})">
-                    ${subtasks.length ? `<button class="task-chevron ${subOpen ? 'open' : ''}" onclick="toggleSubtasks(${i}, ${task.id}); event.stopPropagation();" ontouchend="toggleSubtasks(${i}, ${task.id}); event.stopPropagation(); event.preventDefault();">▶</button>` : '<span class="task-chevron"></span>'}
+                    <span class="task-drag-grip" title="Déplacer">⠿</span>
                     <div class="task-check-cell">
                         <button class="custom-checkbox ${status}"
                             onclick="toggleTaskDirect(${i}, ${task.id}); event.stopPropagation();"
@@ -1370,6 +1371,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                             ontouchend="toggleTaskDirect(${i}, ${task.id}); event.stopPropagation(); event.preventDefault();"
                             aria-label="${getTaskStatusLabel(status)}"></button>
                     </div>
+                    ${subtasks.length ? `<button class="task-chevron ${subOpen ? 'open' : ''}" onclick="toggleSubtasks(${i}, ${task.id}); event.stopPropagation();" ontouchend="toggleSubtasks(${i}, ${task.id}); event.stopPropagation(); event.preventDefault();">▶</button>` : '<span class="task-chevron"></span>'}
                     <div class="task-name ${status === 'doing' ? 'strong' : ''}">
                         <span class="task-title"
                             onclick="openTaskPanel(${i}, ${task.id}); event.stopPropagation();"
@@ -1802,7 +1804,11 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
         function renderSubtasksPanel(task, i) {
             const subs = task.subtasks || [];
             const rows = subs.map(s => `
-                <div class="subtask-item ${s.done ? 'done' : ''}">
+                <div class="subtask-item ${s.done ? 'done' : ''}"
+                    draggable="true"
+                    data-subtaskid="${s.id}" data-taskid="${task.id}" data-projidx="${i}"
+                    ondragstart="startSubtaskDrag(event, ${i}, ${task.id}, ${s.id})"
+                    ondragend="endSubtaskDrag(event)">
                     <button class="subtask-icon-btn"
                         onclick="toggleSubtask(${i}, ${task.id}, ${s.id}); renderTaskPanel();"
                         ontouchstart="event.stopPropagation();"

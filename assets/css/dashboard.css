@@ -7252,7 +7252,7 @@ body {
     .task-grid,
     .task-header,
     .task-row {
-        grid-template-columns: 20px 34px minmax(0, 1fr);
+        grid-template-columns: 20px 34px 20px minmax(0, 1fr);
     }
 
     .task-header > div:nth-child(3),
@@ -8293,7 +8293,7 @@ body {
     .task-grid,
     .task-header,
     .task-row {
-        grid-template-columns: 20px 34px minmax(0, 1fr);
+        grid-template-columns: 20px 34px 20px minmax(0, 1fr);
     }
 }
 
@@ -8752,7 +8752,7 @@ body {
 .add-task-editor {
     width: 100%;
     display: grid;
-    grid-template-columns: 20px 38px minmax(0, 1fr);
+    grid-template-columns: 20px 38px 20px minmax(0, 1fr);
     align-items: center;
     min-height: 36px;
     padding: 8px 0;
@@ -9264,10 +9264,27 @@ body {
 .task-row {
     min-height: 36px;
     display: grid;
-    grid-template-columns: 20px 38px minmax(0, 1fr) 28px 28px;
+    grid-template-columns: 20px 38px 20px minmax(0, 1fr) 28px 28px;
     align-items: center;
     border-bottom: 1px solid rgba(255,253,246,0.085);
 }
+
+.task-drag-grip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 100%;
+    color: rgba(255,253,246,0.18);
+    font-size: 13px;
+    cursor: grab;
+    opacity: 0;
+    transition: opacity 120ms;
+    user-select: none;
+    line-height: 1;
+}
+.task-row:hover .task-drag-grip { opacity: 1; }
+.task-row.dragging .task-drag-grip { opacity: 0.4; }
 
 .task-chevron {
     display: flex;
@@ -9281,7 +9298,7 @@ body {
     color: rgba(255,253,246,0.2);
     font-size: 9px;
     cursor: pointer;
-    transition: color 120ms;
+    transition: color 120ms, transform 150ms;
     visibility: hidden;
 }
 .task-row:hover .task-chevron,
@@ -9472,7 +9489,7 @@ body {
     }
 
     .task-row {
-        grid-template-columns: 20px 34px minmax(0, 1fr) 28px;
+        grid-template-columns: 20px 34px 20px minmax(0, 1fr) 28px;
     }
 }
 
