@@ -1884,13 +1884,31 @@ body::before {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 7px 10px 7px 12px;
+    padding: 7px 10px 7px 8px;
     border-top: 1px solid rgba(255,255,255,0.05);
     transition: background 0.12s;
     cursor: default;
 }
 .subtask-item:hover { background: rgba(255,255,255,0.025); }
 .subtask-item:hover .subtask-del { opacity: 1; }
+.subtask-item:hover .subtask-drag-handle { opacity: 1; }
+.subtask-item.dragging { opacity: 0.4; }
+
+.subtask-drag-handle {
+    flex-shrink: 0;
+    width: 14px;
+    color: rgba(255,255,255,0.2);
+    font-size: 12px;
+    cursor: grab;
+    opacity: 0;
+    transition: opacity 120ms;
+    line-height: 1;
+}
+
+.subtasks.drag-over {
+    background: rgba(255,253,246,0.03);
+    box-shadow: inset 2px 0 0 rgba(255,253,246,0.15);
+}
 
 /* Icône cercle loop — bouton status */
 .subtask-icon-btn {
@@ -6947,8 +6965,8 @@ body {
 
 .task-list-dropzone.drag-over,
 .task-group.drag-over {
-    background: rgba(238,68,8,0.07);
-    box-shadow: inset 3px 0 0 var(--db-accent);
+    background: rgba(255,253,246,0.03);
+    box-shadow: inset 2px 0 0 rgba(255,253,246,0.15);
 }
 
 .milestone-tab.drag-over {
@@ -7039,8 +7057,9 @@ body {
 .task-name {
     min-width: 0;
     display: flex;
-    flex-direction: column;
-    gap: var(--tl-space-1);
+    flex-direction: row;
+    align-items: center;
+    gap: 7px;
     padding-right: var(--tl-space-4);
     color: rgba(255,253,246,0.82);
     font-size: 14px;
@@ -7058,6 +7077,30 @@ body {
     color: var(--db-muted);
     font-size: 12px;
     font-weight: 600;
+}
+
+.task-sub-toggle {
+    flex-shrink: 0;
+    padding: 1px 6px;
+    background: rgba(255,253,246,0.06);
+    border: 1px solid rgba(255,253,246,0.10);
+    border-radius: 4px;
+    color: rgba(255,253,246,0.45);
+    font-size: 11px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 120ms, color 120ms, border-color 120ms;
+    line-height: 1.6;
+}
+.task-sub-toggle:hover {
+    background: rgba(255,253,246,0.10);
+    color: rgba(255,253,246,0.75);
+    border-color: rgba(255,253,246,0.18);
+}
+.task-sub-toggle.open {
+    background: rgba(238,68,8,0.10);
+    border-color: rgba(238,68,8,0.30);
+    color: #EE4408;
 }
 
 .status-pill {

@@ -1342,7 +1342,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                         <span class="task-title"
                             onclick="openTaskPanel(${i}, ${task.id}); event.stopPropagation();"
                             ondblclick="openTaskPanel(${i}, ${task.id}); editTask(${i}, ${task.id}); event.stopPropagation();">${escHtml(task.text)}</span>
-                        ${meta.length ? `<span class="task-meta">${meta.map(item => escHtml(item)).join(' · ')}</span>` : ''}
+                        ${subtasks.length ? `<button class="task-sub-toggle ${subOpen ? 'open' : ''}" onclick="toggleSubtasks(${i}, ${task.id}); event.stopPropagation();" ontouchend="toggleSubtasks(${i}, ${task.id}); event.stopPropagation(); event.preventDefault();">${doneSubtasks}/${subtasks.length}</button>` : ''}
                     </div>
                     <button class="row-action"
                             onclick="openTaskPanel(${i}, ${task.id}); event.stopPropagation();"
@@ -1371,7 +1371,13 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             const subs = task.subtasks || [];
 
             const rows = subs.map(s => `
-                <div class="subtask-item ${s.done ? 'done' : ''}" onclick="event.stopPropagation()">
+                <div class="subtask-item ${s.done ? 'done' : ''}"
+                    draggable="true"
+                    data-subtaskid="${s.id}" data-taskid="${task.id}" data-projidx="${i}"
+                    onclick="event.stopPropagation()"
+                    ondragstart="startSubtaskDrag(event, ${i}, ${task.id}, ${s.id})"
+                    ondragend="endSubtaskDrag(event)">
+                    <span class="subtask-drag-handle">⠿</span>
                     <button class="subtask-icon-btn"
                         onclick="toggleSubtask(${i}, ${task.id}, ${s.id}); event.stopPropagation();"
                         ontouchstart="event.stopPropagation();"
@@ -1382,7 +1388,11 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             `).join('');
 
             return `
-                <div class="subtasks" onclick="event.stopPropagation()">
+                <div class="subtasks" onclick="event.stopPropagation()"
+                    data-taskid="${task.id}" data-projidx="${i}"
+                    ondragover="subtaskDragOver(event, ${i}, ${task.id})"
+                    ondragleave="subtaskDragLeave(event)"
+                    ondrop="subtaskDrop(event, ${i}, ${task.id})">
                     ${rows}
                     <div class="subtask-add-row">
                         <span class="subtask-add-icon">${SUBTASK_ICON}</span>
@@ -1513,6 +1523,56 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             const key = `${i}-${taskId}`;
             todoSubOpen[key] = !todoSubOpen[key];
             refreshTodoList(i);
+        }
+
+        let subtaskDragState = { projIdx: null, fromTaskId: null, subId: null };
+
+        function startSubtaskDrag(event, projIdx, taskId, subId) {
+            subtaskDragState = { projIdx, fromTaskId: taskId, subId };
+            event.dataTransfer.effectAllowed = 'move';
+            event.currentTarget.classList.add('dragging');
+            event.stopPropagation();
+        }
+
+        function endSubtaskDrag(event) {
+            subtaskDragState = { projIdx: null, fromTaskId: null, subId: null };
+            event.currentTarget.classList.remove('dragging');
+            document.querySelectorAll('.subtasks.drag-over').forEach(el => el.classList.remove('drag-over'));
+        }
+
+        function subtaskDragOver(event, projIdx, taskId) {
+            if (subtaskDragState.projIdx === null) return;
+            event.preventDefault();
+            event.dataTransfer.dropEffect = 'move';
+            event.currentTarget.classList.add('drag-over');
+            event.stopPropagation();
+        }
+
+        function subtaskDragLeave(event) {
+            if (!event.currentTarget.contains(event.relatedTarget)) {
+                event.currentTarget.classList.remove('drag-over');
+            }
+        }
+
+        function subtaskDrop(event, projIdx, toTaskId) {
+            event.preventDefault();
+            event.stopPropagation();
+            event.currentTarget.classList.remove('drag-over');
+            const { projIdx: fromProjIdx, fromTaskId, subId } = subtaskDragState;
+            if (fromProjIdx === null || fromTaskId === toTaskId) return;
+            const obj = allObjectifs[projIdx];
+            if (!obj) return;
+            const fromTask = (obj.tasks || []).find(t => t.id === fromTaskId);
+            const toTask = (obj.tasks || []).find(t => t.id === toTaskId);
+            if (!fromTask || !toTask) return;
+            const subIdx = (fromTask.subtasks || []).findIndex(s => s.id === subId);
+            if (subIdx === -1) return;
+            const [sub] = fromTask.subtasks.splice(subIdx, 1);
+            if (!Array.isArray(toTask.subtasks)) toTask.subtasks = [];
+            toTask.subtasks.push(sub);
+            todoSubOpen[`${projIdx}-${toTaskId}`] = true;
+            saveAllObjectifs();
+            refreshTodoList(projIdx);
         }
 
         function addSubtask(i, taskId) {
