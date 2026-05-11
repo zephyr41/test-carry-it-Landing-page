@@ -482,12 +482,19 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
 
                 // Dropdown item
                 const li = document.createElement('li');
-                li.style.listStyle = 'none';
+                li.style.cssText = 'list-style:none;display:flex;align-items:center;gap:4px;';
                 const btn = document.createElement('button');
                 btn.className = 'db-nav-item' + (i === currentCarouselIndex ? ' active' : '');
+                btn.style.flex = '1';
                 btn.textContent = obj.titre || `Projet ${i + 1}`;
                 btn.onclick = () => { switchProject(i); closeNavDropdown(); };
+                const delBtn = document.createElement('button');
+                delBtn.className = 'db-nav-item-delete';
+                delBtn.title = 'Supprimer';
+                delBtn.innerHTML = `<svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>`;
+                delBtn.onclick = (e) => { e.stopPropagation(); closeNavDropdown(); deleteObjectif(i); };
                 li.appendChild(btn);
+                li.appendChild(delBtn);
                 navList.appendChild(li);
 
                 // Panel
@@ -645,15 +652,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
 
         function updateProjectActions(i) {
             const holder = document.getElementById('dashboardProjectActions');
-            if (!holder || !allObjectifs[i]) return;
-            holder.innerHTML = `
-                <a href="objectif.html" class="nav-project-edit">Modifier</a>
-                <button class="nav-project-delete" type="button" title="Supprimer" onclick="deleteObjectif(${i})">
-                    <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                    </svg>
-                </button>
-            `;
+            if (holder) holder.innerHTML = '';
         }
 
         // Close dropdown on outside click
@@ -1254,21 +1253,45 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             setTaskStatus(i, taskId, status);
         }
 
+        function clearInsertionClasses() {
+            document.querySelectorAll('.task-row.insert-before,.task-row.insert-after').forEach(el => {
+                el.classList.remove('insert-before', 'insert-after');
+            });
+        }
+
+        function moveTaskRelativeTo(projIdx, draggedTaskId, targetTaskId, position) {
+            const proj = allObjectifs[projIdx];
+            if (!proj) return;
+            const tasks = proj.tasks;
+            const draggedIdx = tasks.findIndex(t => t.id === draggedTaskId);
+            if (draggedIdx === -1) return;
+            const dragged = tasks.splice(draggedIdx, 1)[0];
+            const targetIdx = tasks.findIndex(t => t.id === targetTaskId);
+            if (targetIdx === -1) { tasks.push(dragged); }
+            else if (position === 'before') { tasks.splice(targetIdx, 0, dragged); }
+            else { tasks.splice(targetIdx + 1, 0, dragged); }
+            saveAllObjectifs();
+            renderDashboard();
+        }
+
         function endTaskListDrag(event) {
             event.currentTarget.classList.remove('dragging');
             document.querySelectorAll('.task-list-dropzone.drag-over,.task-group.drag-over').forEach(el => el.classList.remove('drag-over'));
             document.querySelectorAll('.milestone-tab.drag-over,.msb-milestone.drag-over').forEach(el => el.classList.remove('drag-over'));
             document.querySelectorAll('.task-row.drag-hover').forEach(el => el.classList.remove('drag-hover'));
+            clearInsertionClasses();
             kanbanDragState = { projectIndex: null, taskId: null };
         }
 
         function taskRowDragEnter(event, projIdx, taskId) {
+            if (subtaskDragState.projIdx === null) return;
             event.currentTarget.classList.add('drag-hover');
         }
 
         function taskRowDragLeave(event) {
             if (!event.currentTarget.contains(event.relatedTarget)) {
                 event.currentTarget.classList.remove('drag-hover');
+                event.currentTarget.classList.remove('insert-before', 'insert-after');
             }
         }
 
@@ -1276,15 +1299,172 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             if (subtaskDragState.projIdx !== null) {
                 event.preventDefault();
                 event.dataTransfer.dropEffect = 'move';
+                return;
+            }
+            if (kanbanDragState.taskId !== null && kanbanDragState.taskId !== taskId) {
+                event.preventDefault();
+                event.dataTransfer.dropEffect = 'move';
+                const rect = event.currentTarget.getBoundingClientRect();
+                const mid = rect.top + rect.height / 2;
+                clearInsertionClasses();
+                if (event.clientY < mid) {
+                    event.currentTarget.classList.add('insert-before');
+                } else {
+                    event.currentTarget.classList.add('insert-after');
+                }
             }
         }
 
         function taskRowDrop(event, projIdx, toTaskId) {
-            event.currentTarget.classList.remove('drag-hover');
-            if (subtaskDragState.projIdx === null) return;
-            event.preventDefault();
+            event.currentTarget.classList.remove('drag-hover', 'insert-before', 'insert-after');
+            clearInsertionClasses();
+            if (subtaskDragState.projIdx !== null) {
+                event.preventDefault();
+                event.stopPropagation();
+                subtaskDrop(event, projIdx, toTaskId);
+                return;
+            }
+            if (kanbanDragState.taskId !== null && kanbanDragState.taskId !== toTaskId) {
+                event.preventDefault();
+                event.stopPropagation();
+                const rect = event.currentTarget.getBoundingClientRect();
+                const position = event.clientY < rect.top + rect.height / 2 ? 'before' : 'after';
+                moveTaskRelativeTo(projIdx, kanbanDragState.taskId, toTaskId, position);
+            }
+        }
+
+        // ── Touch drag for task reorder ──────────────────────────────
+        let _touchTaskDrag = null;
+        let _touchTaskGhost = null;
+
+        function taskGripTouchStart(event, projIdx, taskId) {
             event.stopPropagation();
-            subtaskDrop(event, projIdx, toTaskId);
+            event.preventDefault();
+            const touch = event.touches[0];
+            const row = event.currentTarget.closest('.task-row');
+            if (!row) return;
+            const rect = row.getBoundingClientRect();
+            const ghost = row.cloneNode(true);
+            ghost.style.cssText = `position:fixed;left:${rect.left}px;right:${window.innerWidth - rect.right}px;top:${rect.top}px;z-index:9999;opacity:0.88;pointer-events:none;box-shadow:0 4px 20px rgba(0,0,0,0.55);border-radius:4px;`;
+            document.body.appendChild(ghost);
+            _touchTaskGhost = ghost;
+            row.style.opacity = '0.3';
+            _touchTaskDrag = { projIdx, taskId, offsetY: touch.clientY - rect.top, sourceRow: row };
+            kanbanDragState = { projectIndex: projIdx, taskId };
+            document.addEventListener('touchmove', _taskTouchMove, { passive: false });
+            document.addEventListener('touchend', _taskTouchEnd, { once: true });
+            document.addEventListener('touchcancel', _taskTouchEnd, { once: true });
+        }
+
+        function _taskTouchMove(event) {
+            if (!_touchTaskDrag) return;
+            event.preventDefault();
+            const touch = event.touches[0];
+            if (_touchTaskGhost) _touchTaskGhost.style.top = `${touch.clientY - _touchTaskDrag.offsetY}px`;
+            if (_touchTaskGhost) _touchTaskGhost.style.pointerEvents = 'none';
+            const el = document.elementFromPoint(touch.clientX, touch.clientY);
+            const targetRow = el?.closest('.task-row');
+            clearInsertionClasses();
+            if (targetRow && targetRow !== _touchTaskDrag.sourceRow) {
+                const r = targetRow.getBoundingClientRect();
+                targetRow.classList.add(touch.clientY < r.top + r.height / 2 ? 'insert-before' : 'insert-after');
+            }
+        }
+
+        function _taskTouchEnd(event) {
+            document.removeEventListener('touchmove', _taskTouchMove);
+            if (!_touchTaskDrag) return;
+            const touch = event.changedTouches[0];
+            if (_touchTaskGhost) { _touchTaskGhost.remove(); _touchTaskGhost = null; }
+            _touchTaskDrag.sourceRow.style.opacity = '';
+            clearInsertionClasses();
+            const el = document.elementFromPoint(touch.clientX, touch.clientY);
+            const targetRow = el?.closest('.task-row');
+            if (targetRow && targetRow !== _touchTaskDrag.sourceRow) {
+                const targetId = Number(targetRow.dataset.taskid);
+                if (targetId && targetId !== _touchTaskDrag.taskId) {
+                    const r = targetRow.getBoundingClientRect();
+                    const pos = touch.clientY < r.top + r.height / 2 ? 'before' : 'after';
+                    moveTaskRelativeTo(_touchTaskDrag.projIdx, _touchTaskDrag.taskId, targetId, pos);
+                }
+            }
+            kanbanDragState = { projectIndex: null, taskId: null };
+            _touchTaskDrag = null;
+        }
+
+        // ── Touch drag for subtask reorder ───────────────────────────
+        let _touchSubDrag = null;
+        let _touchSubGhost = null;
+
+        function subtaskGripTouchStart(event, projIdx, taskId, subId) {
+            event.stopPropagation();
+            event.preventDefault();
+            const touch = event.touches[0];
+            const item = event.currentTarget.closest('.subtask-item');
+            if (!item) return;
+            const rect = item.getBoundingClientRect();
+            const ghost = item.cloneNode(true);
+            ghost.style.cssText = `position:fixed;left:${rect.left}px;right:${window.innerWidth - rect.right}px;top:${rect.top}px;z-index:9999;opacity:0.88;pointer-events:none;box-shadow:0 4px 16px rgba(0,0,0,0.5);border-radius:4px;`;
+            document.body.appendChild(ghost);
+            _touchSubGhost = ghost;
+            item.style.opacity = '0.3';
+            _touchSubDrag = { projIdx, taskId, subId, offsetY: touch.clientY - rect.top, sourceItem: item };
+            subtaskDragState = { projIdx, fromTaskId: taskId, subId };
+            document.addEventListener('touchmove', _subtaskTouchMove, { passive: false });
+            document.addEventListener('touchend', _subtaskTouchEnd, { once: true });
+            document.addEventListener('touchcancel', _subtaskTouchEnd, { once: true });
+        }
+
+        function _subtaskTouchMove(event) {
+            if (!_touchSubDrag) return;
+            event.preventDefault();
+            const touch = event.touches[0];
+            if (_touchSubGhost) _touchSubGhost.style.top = `${touch.clientY - _touchSubDrag.offsetY}px`;
+            if (_touchSubGhost) _touchSubGhost.style.pointerEvents = 'none';
+            const el = document.elementFromPoint(touch.clientX, touch.clientY);
+            const targetItem = el?.closest('.subtask-item');
+            document.querySelectorAll('.subtask-item.insert-before,.subtask-item.insert-after').forEach(e => e.classList.remove('insert-before','insert-after'));
+            if (targetItem && targetItem !== _touchSubDrag.sourceItem) {
+                const r = targetItem.getBoundingClientRect();
+                targetItem.classList.add(touch.clientY < r.top + r.height / 2 ? 'insert-before' : 'insert-after');
+            }
+        }
+
+        function _subtaskTouchEnd(event) {
+            document.removeEventListener('touchmove', _subtaskTouchMove);
+            if (!_touchSubDrag) return;
+            const touch = event.changedTouches[0];
+            if (_touchSubGhost) { _touchSubGhost.remove(); _touchSubGhost = null; }
+            _touchSubDrag.sourceItem.style.opacity = '';
+            document.querySelectorAll('.subtask-item.insert-before,.subtask-item.insert-after').forEach(e => e.classList.remove('insert-before','insert-after'));
+            const el = document.elementFromPoint(touch.clientX, touch.clientY);
+            const targetItem = el?.closest('.subtask-item');
+            if (targetItem && targetItem !== _touchSubDrag.sourceItem) {
+                const toSubId = Number(targetItem.dataset.subtaskid);
+                const toTaskId = Number(targetItem.dataset.taskid);
+                const toProjIdx = Number(targetItem.dataset.projidx);
+                if (toSubId && toTaskId) {
+                    const r = targetItem.getBoundingClientRect();
+                    const pos = touch.clientY < r.top + r.height / 2 ? 'before' : 'after';
+                    // Simulate drop
+                    subtaskDragState = { projIdx: _touchSubDrag.projIdx, fromTaskId: _touchSubDrag.taskId, subId: _touchSubDrag.subId };
+                    const fakeEvent = { clientY: touch.clientY, currentTarget: targetItem, preventDefault: ()=>{}, stopPropagation: ()=>{} };
+                    subtaskItemDrop(fakeEvent, toProjIdx, toTaskId, toSubId);
+                }
+            } else {
+                // Dropped on a task row → move to that task
+                const targetRow = el?.closest('.task-row');
+                if (targetRow && targetRow !== _touchSubDrag.sourceItem.closest('.task-row')) {
+                    const toTaskId = Number(targetRow.dataset.taskid);
+                    const toProjIdx = _touchSubDrag.projIdx;
+                    if (toTaskId) {
+                        subtaskDragState = { projIdx: _touchSubDrag.projIdx, fromTaskId: _touchSubDrag.taskId, subId: _touchSubDrag.subId };
+                        subtaskDrop({ preventDefault: ()=>{}, stopPropagation: ()=>{}, currentTarget: targetRow }, toProjIdx, toTaskId);
+                    }
+                }
+            }
+            subtaskDragState = { projIdx: null, fromTaskId: null, subId: null };
+            _touchSubDrag = null;
         }
 
         function startKanbanDrag(event, i, taskId) {
@@ -1363,7 +1543,8 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                     ondragleave="taskRowDragLeave(event)"
                     ondragover="taskRowDragOver(event, ${i}, ${task.id})"
                     ondrop="taskRowDrop(event, ${i}, ${task.id})">
-                    <span class="task-drag-grip" title="Déplacer">⠿</span>
+                    <span class="task-drag-grip" title="Déplacer"
+                        ontouchstart="taskGripTouchStart(event, ${i}, ${task.id})">⠿</span>
                     <div class="task-check-cell">
                         <button class="custom-checkbox ${status}"
                             onclick="toggleTaskDirect(${i}, ${task.id}); event.stopPropagation();"
@@ -1371,7 +1552,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                             ontouchend="toggleTaskDirect(${i}, ${task.id}); event.stopPropagation(); event.preventDefault();"
                             aria-label="${getTaskStatusLabel(status)}"></button>
                     </div>
-                    ${subtasks.length ? `<button class="task-chevron ${subOpen ? 'open' : ''}" onclick="toggleSubtasks(${i}, ${task.id}); event.stopPropagation();" ontouchend="toggleSubtasks(${i}, ${task.id}); event.stopPropagation(); event.preventDefault();">▶</button>` : '<span class="task-chevron"></span>'}
+                    <button class="task-chevron ${subOpen ? 'open' : ''}${!subtasks.length ? ' empty' : ''}" onclick="toggleSubtasks(${i}, ${task.id}); event.stopPropagation();" ontouchend="toggleSubtasks(${i}, ${task.id}); event.stopPropagation(); event.preventDefault();">▶</button>
                     <div class="task-name ${status === 'doing' ? 'strong' : ''}">
                         <span class="task-title"
                             onclick="openTaskPanel(${i}, ${task.id}); event.stopPropagation();"
@@ -1410,8 +1591,12 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                     data-subtaskid="${s.id}" data-taskid="${task.id}" data-projidx="${i}"
                     onclick="event.stopPropagation()"
                     ondragstart="startSubtaskDrag(event, ${i}, ${task.id}, ${s.id})"
-                    ondragend="endSubtaskDrag(event)">
-                    <span class="subtask-drag-handle">⠿</span>
+                    ondragend="endSubtaskDrag(event)"
+                    ondragover="subtaskItemDragOver(event, ${i}, ${task.id}, ${s.id})"
+                    ondragleave="subtaskItemDragLeave(event)"
+                    ondrop="subtaskItemDrop(event, ${i}, ${task.id}, ${s.id})">
+                    <span class="subtask-drag-handle"
+                        ontouchstart="subtaskGripTouchStart(event, ${i}, ${task.id}, ${s.id})">⠿</span>
                     <button class="subtask-icon-btn"
                         onclick="toggleSubtask(${i}, ${task.id}, ${s.id}); event.stopPropagation();"
                         ontouchstart="event.stopPropagation();"
@@ -1558,6 +1743,12 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             const key = `${i}-${taskId}`;
             todoSubOpen[key] = !todoSubOpen[key];
             refreshTodoList(i);
+            if (todoSubOpen[key]) {
+                requestAnimationFrame(() => {
+                    const inp = document.getElementById(`subtaskInput-${i}-${taskId}`);
+                    if (inp) inp.focus();
+                });
+            }
         }
 
         let subtaskDragState = { projIdx: null, fromTaskId: null, subId: null };
@@ -1574,6 +1765,60 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             event.currentTarget.classList.remove('dragging');
             document.querySelectorAll('.subtasks.drag-over').forEach(el => el.classList.remove('drag-over'));
             document.querySelectorAll('.task-row.drag-hover').forEach(el => el.classList.remove('drag-hover'));
+            document.querySelectorAll('.subtask-item.insert-before,.subtask-item.insert-after').forEach(el => el.classList.remove('insert-before','insert-after'));
+        }
+
+        function subtaskItemDragOver(event, projIdx, taskId, subId) {
+            if (subtaskDragState.projIdx === null) return;
+            event.preventDefault();
+            event.stopPropagation();
+            event.dataTransfer.dropEffect = 'move';
+            const rect = event.currentTarget.getBoundingClientRect();
+            document.querySelectorAll('.subtask-item.insert-before,.subtask-item.insert-after').forEach(el => el.classList.remove('insert-before','insert-after'));
+            event.currentTarget.classList.add(event.clientY < rect.top + rect.height / 2 ? 'insert-before' : 'insert-after');
+        }
+
+        function subtaskItemDragLeave(event) {
+            if (!event.currentTarget.contains(event.relatedTarget)) {
+                event.currentTarget.classList.remove('insert-before', 'insert-after');
+            }
+        }
+
+        function subtaskItemDrop(event, projIdx, toTaskId, toSubId) {
+            event.preventDefault();
+            event.stopPropagation();
+            document.querySelectorAll('.subtask-item.insert-before,.subtask-item.insert-after').forEach(el => el.classList.remove('insert-before','insert-after'));
+            document.querySelectorAll('.subtasks.drag-over').forEach(el => el.classList.remove('drag-over'));
+            const { projIdx: fromProjIdx, fromTaskId, subId } = subtaskDragState;
+            if (fromProjIdx === null) return;
+            const obj = allObjectifs[projIdx];
+            if (!obj) return;
+            const rect = event.currentTarget.getBoundingClientRect();
+            const position = event.clientY < rect.top + rect.height / 2 ? 'before' : 'after';
+            if (fromTaskId === toTaskId) {
+                if (subId === toSubId) return;
+                const task = (obj.tasks || []).find(t => t.id === toTaskId);
+                if (!task || !task.subtasks) return;
+                const fromIdx = task.subtasks.findIndex(s => s.id === subId);
+                if (fromIdx === -1) return;
+                const [sub] = task.subtasks.splice(fromIdx, 1);
+                const newToIdx = task.subtasks.findIndex(s => s.id === toSubId);
+                task.subtasks.splice(position === 'before' ? newToIdx : newToIdx + 1, 0, sub);
+            } else {
+                const fromTask = (obj.tasks || []).find(t => t.id === fromTaskId);
+                const toTask = (obj.tasks || []).find(t => t.id === toTaskId);
+                if (!fromTask || !toTask) return;
+                const fromIdx = (fromTask.subtasks || []).findIndex(s => s.id === subId);
+                if (fromIdx === -1) return;
+                const [sub] = fromTask.subtasks.splice(fromIdx, 1);
+                if (!Array.isArray(toTask.subtasks)) toTask.subtasks = [];
+                const toIdx = toTask.subtasks.findIndex(s => s.id === toSubId);
+                toTask.subtasks.splice(position === 'before' ? toIdx : toIdx + 1, 0, sub);
+                todoSubOpen[`${projIdx}-${toTaskId}`] = true;
+            }
+            saveAllObjectifs();
+            refreshTodoList(projIdx);
+            renderTaskPanel();
         }
 
         function subtaskDragOver(event, projIdx, taskId) {
@@ -1609,6 +1854,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             todoSubOpen[`${projIdx}-${toTaskId}`] = true;
             saveAllObjectifs();
             refreshTodoList(projIdx);
+            renderTaskPanel();
         }
 
         function addSubtask(i, taskId) {
@@ -1808,7 +2054,12 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                     draggable="true"
                     data-subtaskid="${s.id}" data-taskid="${task.id}" data-projidx="${i}"
                     ondragstart="startSubtaskDrag(event, ${i}, ${task.id}, ${s.id})"
-                    ondragend="endSubtaskDrag(event)">
+                    ondragend="endSubtaskDrag(event)"
+                    ondragover="subtaskItemDragOver(event, ${i}, ${task.id}, ${s.id})"
+                    ondragleave="subtaskItemDragLeave(event)"
+                    ondrop="subtaskItemDrop(event, ${i}, ${task.id}, ${s.id})">
+                    <span class="subtask-drag-handle" style="cursor:grab;opacity:0.35;font-size:11px;padding:0 4px 0 0;"
+                        ontouchstart="subtaskGripTouchStart(event, ${i}, ${task.id}, ${s.id})">⠿</span>
                     <button class="subtask-icon-btn"
                         onclick="toggleSubtask(${i}, ${task.id}, ${s.id}); renderTaskPanel();"
                         ontouchstart="event.stopPropagation();"
@@ -1819,7 +2070,11 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             `).join('');
 
             return `
-                <div class="subtasks">
+                <div class="subtasks"
+                    data-taskid="${task.id}" data-projidx="${i}"
+                    ondragover="subtaskDragOver(event, ${i}, ${task.id})"
+                    ondragleave="subtaskDragLeave(event)"
+                    ondrop="subtaskDrop(event, ${i}, ${task.id})">
                     ${rows}
                     <form class="subtask-add-row" action="javascript:void(0)" onsubmit="addSubtaskFromPanel(${i}, ${task.id});">
                         <span class="subtask-add-icon">${SUBTASK_ICON}</span>
@@ -2149,7 +2404,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
 
             return `
             <div class="pt-shell">
-                <div class="pt-shell-label">Pilotage · Jalon Actif</div>
+                <div class="pt-shell-label">Pilotage · Jalon Actif <a href="jalons.html" class="pt-btn-edit-jalons">Éditer les jalons</a></div>
 
                 <div class="pt-timeline" aria-label="Timeline des jalons">
                     ${timelineItems}

@@ -1165,6 +1165,7 @@
     <nav class="navbar">
         <a class="navbar-logo" href="index.html" style="text-decoration:none; color:inherit;">CARRY IT</a>
         <div style="display:flex; gap:8px; align-items:center;">
+            <button class="btn-reset" onclick="openHelpMailJalons()">Besoin d'aide ?</button>
             <a href="dashboard.html" class="btn-reset" style="text-decoration:none;">Dashboard</a>
             <button class="btn-reset" onclick="resetMilestones()">Réinitialiser tout</button>
         </div>
@@ -1173,8 +1174,7 @@
     <div class="intro-section">
         <div>
             <h2>Planifier l'impossible.</h2>
-            <p>Ne laissez pas le chaos dicter votre rythme. Utilisez l'IA pour transformer votre vision abstraite en une séquence tactique précise.</p>
-            <p class="intro-followup">Retourne sur ChatGPT — continue la conversation avec l'IA.</p>
+            <p>Découpe ton ambition en étapes concrètes. Ajuste les titres, dates et critères de validation de chaque jalon.</p>
         </div>
         <div class="scroll-hint" onclick="document.getElementById('timelineStart').scrollIntoView({behavior:'smooth'})">
             <span>Pose tes jalons</span>
@@ -1344,6 +1344,32 @@ Elles exigent des preuves immédiates là où il n’y a encore que des fondatio
                 };
             });
             save();
+        }
+
+        function openHelpMailJalons() {
+            const smart = JSON.parse(localStorage.getItem('carryItObjectifSMART') || '{}');
+            const milestones = JSON.parse(localStorage.getItem('carryItMilestones') || '[]');
+            const jalonsList = milestones.map((m, i) => `  Jalon ${i + 1} : ${m.title || '(sans titre)'} — ${m.date ? new Date(m.date).toLocaleDateString('fr-FR') : '(sans date)'}`).join('\n') || '  (aucun jalon défini)';
+
+            const body = `Je configure mes jalons CarryIT et j'ai besoin d'aide.
+
+Mon objectif SMART :
+S : ${smart.specifique || '(non rempli)'}
+M : ${smart.mesurable || '(non rempli)'}
+T : ${smart.temporel || '(non rempli)'}
+
+Jalons actuels :
+${jalonsList}
+
+Aide-moi à :
+1. Vérifier que les jalons sont cohérents avec la durée totale
+2. Définir un critère de validation concret pour chaque jalon
+3. Ajuster les dates si le découpage n'est pas réaliste
+
+Réponds jalon par jalon.`;
+
+            const subject = 'CarryIT — Aide pour structurer mes jalons';
+            window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
         }
 
         function resetMilestones() {
