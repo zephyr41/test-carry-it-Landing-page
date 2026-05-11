@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarryIT - Pilotage Jalon (Minimalist Unified)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* ============================================================
+           TOKENS STRICTS (tokens.css)
+           ============================================================ */
+        :root {
+            --c-noir-pur: #050505;
+            --c-gris: #929292;
+            --c-blanc: #FFFDF6;
+            --c-orange: #EE4408;
+            --c-olive: #6d6928;
+            --c-border: rgba(255, 253, 246, 0.08);
+            --radius-lg: 24px;
+            --shadow-accent: 0 0 20px rgba(238, 68, 8, 0.15);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            background-color: var(--c-noir-pur);
+            color: #f4f4f5;
+            font-family: 'Inter', 'DM Sans', system-ui, sans-serif;
+            padding: 40px;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ============================================================
+           TIMELINE LOGIC (Horizontal Fill)
+           ============================================================ */
+        .timeline { display: flex; margin-bottom: 50px; position: relative; max-width: 860px; margin: 0 auto 50px; }
+        .milestone { flex: 1; position: relative; display: flex; flex-direction: column; align-items: center; }
+        .milestone::before { content: ''; position: absolute; top: 18px; left: 50%; right: -50%; height: 2px; background: var(--c-border); z-index: 0; }
+        .milestone--done::before { background: var(--c-orange); }
+        .milestone:last-child::before { display: none; }
+        
+        .m-dot { 
+            width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+            font-size: 12px; font-weight: 700; position: relative; z-index: 1; margin-bottom: 8px; 
+            background: #1A1A1C; color: var(--c-gris); border: 1px solid var(--c-border);
+            overflow: hidden;
+        }
+        .milestone--done .m-dot { background: var(--c-orange); color: var(--c-blanc); border: none; }
+        
+        /* Jalon Actif : Remplissage horizontal (25%) */
+        .milestone--active .m-dot { 
+            background: linear-gradient(to right, var(--c-orange) 25%, #1A1A1C 25%); 
+            border: 2px solid var(--c-orange); color: var(--c-blanc); 
+            box-shadow: var(--shadow-accent); 
+        }
+        .m-title { font-size: 11px; font-weight: 600; color: var(--c-gris); text-align: center; }
+        .milestone--active .m-title { color: var(--c-orange); font-weight: 700; }
+
+        /* ============================================================
+           MAIN STEERING BLOCK (Unified)
+           ============================================================ */
+        .steering-card { 
+            background: #0b0b0d; /* Un ton juste au dessus du noir pur pour la structure */
+            border: 1px solid var(--c-border); border-radius: var(--radius-lg); 
+            overflow: hidden; display: flex; flex-direction: column; max-width: 900px; margin: 0 auto;
+        }
+
+        /* HEADER & ACTIONS */
+        .steering-header { padding: 32px 40px; border-bottom: 1px solid var(--c-border); }
+        .header-top-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
+        .header-actions { display: flex; align-items: center; gap: 16px; }
+
+        .btn--validate { 
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(255, 253, 246, 0.05); color: #FFFDF6; 
+            border: 1px solid rgba(255, 253, 246, 0.2); 
+            padding: 0 20px; height: 44px; border-radius: 12px;
+            font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.2s;
+        }
+        .btn--validate:hover { background: var(--c-orange); border-color: var(--c-orange); transform: translateY(-1px); }
+
+        .chip { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 9999px; font-size: 11px; font-weight: 600; background: rgba(238,68,8,0.1); color: var(--c-orange); }
+        .chip__dot { width: 6px; height: 6px; border-radius: 50%; background: var(--c-orange); }
+
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+        .section-key { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.18em; color: #8a8a90; margin-bottom: 8px; }
+        .critere-highlight { border-left: 2px solid var(--c-orange); padding-left: 20px; font-size: 15px; color: #f4f4f5; line-height: 1.6; }
+
+        /* ============================================================
+           PILOTAGE SECTION (NO CARDS - BLACK BACKGROUND)
+           ============================================================ */
+        .steering-pilotage-wrap {
+            background: var(--c-noir-pur); /* Le fond noir demandé */
+            padding: 40px; 
+        }
+
+        .section-label-pilotage { display: block; margin-bottom: 32px; font-size: 11px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: #8a8a90; }
+        
+        /* Grid avec séparation par gutter large */
+        .kpi-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1px 1fr; 
+            gap: 40px; 
+            align-items: stretch;
+        }
+
+        .v-sep { background: var(--c-border); width: 1px; }
+
+        .kpi-unit { display: flex; flex-direction: column; gap: 14px; }
+        .kpi-unit__header { display: flex; justify-content: space-between; align-items: baseline; }
+        
+        .kpi-title { margin: 0 0 4px; font-size: 15px; font-weight: 800; color: #f4f4f5; }
+        .kpi-phrasing { font-size: 12px; font-weight: 600; color: #7f7f86; font-style: italic; }
+
+        .edit-btn { 
+            height: 32px; padding: 0 14px; border-radius: 999px; border: 1px solid rgba(255, 90, 31, 0.2); 
+            background: rgba(255, 90, 31, 0.1); color: #ff5a1f; font-size: 11px; font-weight: 700; 
+            cursor: pointer; font-family: inherit; transition: 0.2s;
+        }
+        .edit-btn:hover { background: rgba(255, 90, 31, 0.2); }
+
+        .value { display: flex; align-items: baseline; gap: 10px; margin-top: 8px; }
+        .value strong { font-size: 42px; line-height: 0.9; letter-spacing: -0.06em; font-weight: 800; }
+        .value span { font-size: 20px; font-weight: 500; color: #77777d; letter-spacing: -0.04em; }
+
+        .description-text { font-size: 14px; line-height: 1.5; color: #8d8d93; min-height: 42px; }
+
+        .progress-label { font-size: 12px; font-weight: 700; color: #d8d8dc; margin-bottom: 4px; }
+        .meta { display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; color: #8a8a90; }
+        .meta strong { color: #f4f4f5; }
+
+        .progress-bar { height: 6px; border-radius: 999px; background: #24242a; overflow: hidden; margin: 8px 0 20px; }
+        .progress-fill { height: 100%; border-radius: inherit; background: var(--c-olive); transition: width 0.6s ease; }
+
+        .add-btn { 
+            width: 100%; height: 46px; border-radius: 12px; border: 1px solid #24242a; 
+            background: rgba(255,253,246,0.02); color: #d7d7db; font-family: inherit; font-size: 14px; 
+            font-weight: 600; cursor: pointer; transition: 0.2s;
+        }
+        .add-btn:hover { background: rgba(255, 253, 246, 0.05); color: #FFFDF6; border-color: rgba(255, 253, 246, 0.1); }
+
+    </style>
+</head>
+<body>
+
+    <div class="ds-label" style="text-align: center; margin-bottom: 32px;">Pilotage · Jalon Actif</div>
+
+    <!-- TIMELINE : REMPLISSAGE HORIZONTAL -->
+    <div class="timeline">
+        <div class="milestone milestone--done"><div class="m-dot">✓</div><div class="m-title">Cadrage</div></div>
+        <div class="milestone milestone--active">
+            <div class="m-dot">2</div>
+            <div class="m-title">POC (V0)</div>
+        </div>
+        <div class="milestone"><div class="m-dot">3</div><div class="m-title">MVP</div></div>
+        <div class="milestone"><div class="m-dot">4</div><div class="m-title">Lancement</div></div>
+        <div class="milestone"><div class="m-dot">5</div><div class="m-title">Scale</div></div>
+    </div>
+
+    <!-- STATION DE PILOTAGE UNIFIÉE -->
+    <div class="steering-card">
+        
+        <!-- HEADER STATIQUE -->
+        <header class="steering-header">
+            <div class="header-top-row">
+                <div>
+                    <div class="section-key">MOIS 2 · JALON 2 SUR 5</div>
+                    <h1 style="font-size: 32px; font-weight: 800; letter-spacing: -0.04em;">POC (V0)</h1>
+                    <div style="font-size: 13.5px; color: var(--c-gris); margin-top: 4px;">Échéance : 31 mai 2026 — <strong>21 jours restants</strong></div>
+                </div>
+                <div class="header-actions">
+                    <div class="chip"><div class="chip__dot"></div>En cours</div>
+                    <button class="btn--validate">✓ Valider ce jalon</button>
+                </div>
+            </div>
+
+            <div class="info-grid">
+                <div>
+                    <div class="section-key">Direction</div>
+                    <div style="font-size: 15px; color: #8d8d93; line-height: 1.6;">Développer la première architecture technique en local storage pour tester le flux principal auprès de 15 testeurs cibles.</div>
+                </div>
+                <div>
+                    <div class="section-key">Le Contrat</div>
+                    <div class="critere-highlight">Flux d'onboarding terminé sans bug critique et feedback collecté pour 100% du panel de test.</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- ZONE PERFORMANCE : FOND NOIR & SANS CARTES -->
+        <main class="steering-pilotage-wrap">
+            <span class="section-label-pilotage">Indicateurs de Pilotage</span>
+
+            <div class="kpi-grid">
+                
+                <!-- KPI : EFFORT -->
+                <article class="kpi-unit">
+                    <div class="kpi-unit__header">
+                        <div>
+                            <h3 class="kpi-title">Indicateur d'effort</h3>
+                            <p class="kpi-phrasing">Ce que je fais</p>
+                        </div>
+                        <button class="edit-btn">Modifier</button>
+                    </div>
+
+                    <div class="value">
+                        <strong>12</strong>
+                        <span>heures</span>
+                    </div>
+
+                    <p class="description-text">
+                        Temps de développement investi cette semaine dans les fonctionnalités clés du POC.
+                    </p>
+
+                    <div>
+                        <div class="progress-label">Progression</div>
+                        <div class="meta">
+                            <span>0</span>
+                            <span>Cible : <strong>15h — 80%</strong></span>
+                        </div>
+                        <div class="progress-bar"><div class="progress-fill" style="width: 80%"></div></div>
+                    </div>
+
+                    <button class="add-btn">+ Ajouter une mesure</button>
+                </article>
+
+                <!-- DIVISEUR VERTICAL SUBTIL -->
+                <div class="v-sep"></div>
+
+                <!-- KPI : RÉSULTAT -->
+                <article class="kpi-unit">
+                    <div class="kpi-unit__header">
+                        <div>
+                            <h3 class="kpi-title">Indicateur de résultat</h3>
+                            <p class="kpi-phrasing">Ce que ça donne</p>
+                        </div>
+                        <button class="edit-btn">Modifier</button>
+                    </div>
+
+                    <div class="value">
+                        <strong>3</strong>
+                        <span>/ 15</span>
+                    </div>
+
+                    <p class="description-text">
+                        Utilisateurs onboardés ayant complété le flux sans assistance technique.
+                    </p>
+
+                    <div>
+                        <div class="progress-label">Progression</div>
+                        <div class="meta">
+                            <span>0</span>
+                            <span>Objectif : <strong>15 — 20%</strong></span>
+                        </div>
+                        <div class="progress-bar"><div class="progress-fill" style="width: 20%"></div></div>
+                    </div>
+
+                    <button class="add-btn">+ Ajouter une mesure</button>
+                </article>
+
+            </div>
+        </main>
+
+    </div>
+
+    <div style="text-align: center; margin-top: 48px; font-style: italic; font-size: 13px; color: var(--c-gris); opacity: 0.5;">
+        "C'est quand t'as envie d'abandonner que tout commence."
+    </div>
+
+</body>
+</html>

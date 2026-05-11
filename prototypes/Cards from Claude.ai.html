@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../components.css">
+<style>
+  body { padding: 28px 32px; }
+  .ph { height: 9px; border-radius: 3px; background: rgba(255,253,246,0.07); margin-bottom: 7px; }
+  .ph:last-child { margin-bottom: 0; }
+  .ph-sm { height: 7px; border-radius: 3px; background: rgba(255,253,246,0.04); margin-bottom: 5px; }
+  .big-val { font-size: 32px; font-weight: 700; color: #FFFDF6; letter-spacing: -0.04em; line-height: 1; margin-bottom: 4px; }
+  .big-val span { font-size: 13px; color: #929292; font-weight: 400; margin-left: 3px; }
+  .section-row { display: flex; gap: 8px; align-items: flex-start; padding: 8px 0; }
+  .sec-badge { width: 20px; height: 20px; border-radius: 3px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; }
+</style>
+</head>
+<body>
+
+  <!-- Type 1 — Titre + Action -->
+  <div class="ds-label">Type 1 — Titre + Action à droite</div>
+  <div class="ds-row" style="margin-bottom:20px;">
+
+    <div style="flex:1;min-width:180px;max-width:220px;">
+      <div class="card card--spacious">
+        <div class="card__header">
+          <span class="card__title">KPI Global</span>
+          <button class="card__action">+ Ajouter</button>
+        </div>
+        <div class="big-val">247<span>clients</span></div>
+        <div class="ph" style="width:65%;margin-top:8px;"></div>
+        <div style="height:36px;margin-top:12px;border-top:1px solid rgba(255,253,246,0.05);"></div>
+      </div>
+    </div>
+
+    <div style="flex:1;min-width:180px;max-width:220px;">
+      <div class="card card--spacious">
+        <div class="card__header">
+          <span class="card__title">Objectif SMART</span>
+          <button class="card__action">Modifier</button>
+        </div>
+        <div class="section-row">
+          <div class="sec-badge" style="background:#EE4408;color:#FFFDF6;">S</div>
+          <div><div class="ph" style="width:110px;"></div><div class="ph-sm" style="width:80px;margin-top:4px;"></div></div>
+        </div>
+        <div class="sep"></div>
+        <div class="section-row">
+          <div class="sec-badge" style="background:#1A1A1C;color:#929292;border:1px solid rgba(255,253,246,0.1);">M</div>
+          <div><div class="ph" style="width:100px;"></div><div class="ph-sm" style="width:70px;margin-top:4px;"></div></div>
+        </div>
+        <div class="sep"></div>
+        <div class="section-row">
+          <div class="sec-badge" style="background:#1A1A1C;color:#929292;border:1px solid rgba(255,253,246,0.1);">T</div>
+          <div><div class="ph" style="width:90px;"></div><div class="ph-sm" style="width:60px;margin-top:4px;"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="flex:1;min-width:180px;max-width:220px;">
+      <div class="card card--spacious">
+        <div class="card__header">
+          <span class="card__title">Tâches</span>
+          <button class="card__action">+ Ajouter</button>
+        </div>
+        <div class="task-row">
+          <div class="checkbox checkbox--checked"><span class="checkbox__mark">✓</span></div>
+          <span class="task-label task-label--done">Onboarding SMART</span>
+        </div>
+        <div class="task-row">
+          <div class="checkbox"></div>
+          <span class="task-label">Dashboard KPI</span>
+          <span class="tag tag--priority">Priorité</span>
+        </div>
+        <div class="task-row">
+          <div class="checkbox"></div>
+          <span class="task-label">10 beta-testeurs</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="ds-divider"></div>
+
+  <!-- Type 2 — Titre + Statut -->
+  <div class="ds-label">Type 2 — Titre + Statut à droite</div>
+  <div class="ds-row" style="margin-bottom:20px;">
+
+    <div style="flex:1;min-width:180px;max-width:220px;">
+      <div class="card card--spacious">
+        <div class="card__header">
+          <span class="card__title">Jalon 2/4</span>
+          <div class="chip chip--active"><div class="chip__dot"></div>En cours</div>
+        </div>
+        <div style="font-size:14px;font-weight:700;color:#FFFDF6;margin-bottom:3px;">MVP testable</div>
+        <div style="font-size:11px;color:#929292;margin-bottom:10px;">31 juillet 2026</div>
+        <div class="ph" style="width:40%;margin-bottom:5px;"></div>
+        <div class="ph" style="width:90%;"></div>
+      </div>
+    </div>
+
+    <div style="flex:1;min-width:180px;max-width:220px;">
+      <div class="card card--spacious">
+        <div class="card__header">
+          <span class="card__title">Jalon 1/4</span>
+          <div class="chip chip--done"><div class="chip__dot"></div>Terminé</div>
+        </div>
+        <div style="font-size:14px;font-weight:700;color:#FFFDF6;margin-bottom:3px;">Cadrage produit</div>
+        <div style="font-size:11px;color:#929292;margin-bottom:10px;">30 avril 2026</div>
+        <div class="ph" style="width:40%;margin-bottom:5px;"></div>
+        <div class="ph" style="width:85%;"></div>
+      </div>
+    </div>
+
+    <div style="flex:1;min-width:180px;max-width:220px;">
+      <div class="card card--spacious card--alert">
+        <div class="card__header">
+          <span class="card__title">Jalon 2/4</span>
+          <div class="chip chip--late"><div class="chip__dot"></div>En retard</div>
+        </div>
+        <div style="font-size:14px;font-weight:700;color:#FFFDF6;margin-bottom:3px;">MVP testable</div>
+        <div style="font-size:11px;color:#e05545;margin-bottom:10px;">Dépassé — 31 juil. 2026</div>
+        <div class="ph" style="width:40%;margin-bottom:5px;"></div>
+        <div class="ph" style="width:90%;"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="ds-divider"></div>
+
+  <!-- Type 3 — Titre seul -->
+  <div class="ds-label">Type 3 — Titre seul</div>
+  <div class="ds-row">
+
+    <div style="flex:1;min-width:180px;max-width:220px;">
+      <div class="card card--spacious">
+        <div class="card__header"><span class="card__title">Description</span></div>
+        <div class="ph" style="width:90%;"></div>
+        <div class="ph" style="width:75%;"></div>
+        <div class="ph" style="width:60%;"></div>
+      </div>
+    </div>
+
+    <div style="flex:1;min-width:180px;max-width:220px;">
+      <div class="card card--spacious">
+        <div class="card__header"><span class="card__title">Critère de validation</span></div>
+        <div class="ph" style="width:95%;"></div>
+        <div class="ph" style="width:80%;"></div>
+        <div class="sep"></div>
+        <div class="ph-sm" style="width:60%;"></div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

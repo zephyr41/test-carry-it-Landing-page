@@ -39,6 +39,7 @@
   - un **type** : leading ou lagging (non obligatoire)
   - un **rattachement** : objectif SMART ou jalon
   - une **valeur cible** *(optionnelle)*
+  - Indicateur de la dernière MAJ
 
   ## 5. Cardinalité
 
