@@ -62,8 +62,21 @@
             <button class="db-main-tab active"
                 type="button"
                 role="tab"
-                data-view="execution"
+                data-view="pilotage"
                 aria-selected="true"
+                onclick="switchDashboardView('pilotage')">
+                <span class="db-main-tab-icon">
+                    <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 19V5M4 19h16M9 16V9M14 16V7M19 16v-4"/>
+                    </svg>
+                </span>
+                Pilotage & Vision
+            </button>
+            <button class="db-main-tab"
+                type="button"
+                role="tab"
+                data-view="execution"
+                aria-selected="false"
                 onclick="switchDashboardView('execution')">
                 <span class="db-main-tab-icon">
                     <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -72,19 +85,6 @@
                     </svg>
                 </span>
                 Exécution
-            </button>
-            <button class="db-main-tab"
-                type="button"
-                role="tab"
-                data-view="pilotage"
-                aria-selected="false"
-                onclick="switchDashboardView('pilotage')">
-                <span class="db-main-tab-icon">
-                    <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 19V5M4 19h16M9 16V9M14 16V7M19 16v-4"/>
-                    </svg>
-                </span>
-                Pilotage & Vision
             </button>
         </div>
     </nav>
@@ -286,7 +286,7 @@
         let kanbanDragState = { projectIndex: null, taskId: null };
 let jalonKpiModalState = { projectIndex: null, jalonId: null, kpiType: 'lagging', measureId: null };
 let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: null, measureId: null };
-        let currentDashboardView = 'execution';
+        let currentDashboardView = 'pilotage';
 
         // ──────────────────────────────────────────────────────────
         // STORAGE
@@ -773,9 +773,6 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                         </div>
 
                         <div class="db-section">
-                            <div class="db-section-header">
-                                <span class="db-section-label">Pilotage · Jalons</span>
-                            </div>
                             ${buildJalonsPanel(obj, i)}
                         </div>
 
@@ -2467,7 +2464,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
 
             const actionBtn = rawStatus === 'completed'
                 ? `<button class="pt-btn-validate" onclick="reactivateJalon(${i}, '${escHtml(selectedJalon?.id || '')}')">Réactiver</button>`
-                : `<button class="pt-btn-validate" onclick="completeJalon(${i}, '${escHtml(selectedJalon?.id || '')}')">✓ Valider ce jalon</button>`;
+                : `<button class="pt-btn-validate" onclick="completeJalon(${i}, '${escHtml(selectedJalon?.id || '')}')">Valider</button>`;
 
             return `
             <div class="pt-shell">
@@ -2487,10 +2484,10 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                             </div>
                             <div class="pt-header-actions">
                                 <div class="pt-chip ${statusChip}"><span class="pt-chip-dot" aria-hidden="true"></span>${statusLabel}</div>
-                                <a href="#" onclick="openJalonsForProject(${i}); return false;" class="pt-btn-edit-jalons-icon" title="Modifier les jalons">
+                                ${actionBtn}
+                                <a href="#" onclick="openJalonsForProject(${i}); return false;" class="pt-btn-edit-jalons-icon" style="margin-left:auto;" title="Modifier les jalons">
                                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5L12.5 4.5L4.5 12.5H1.5V9.5L9.5 1.5Z"/></svg>
                                 </a>
-                                ${actionBtn}
                             </div>
                         </div>
 
