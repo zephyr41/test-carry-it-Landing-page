@@ -6,23 +6,141 @@
     <title>Carry It - Timeline Finale</title>
 
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@100;300;400;500;600;700;900&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --bg-primary: #050505;
-            --bg-card: #1a1a1a;
-            --text-primary: #FFFFFF;
-            --text-secondary: #A3A3A3;
-            --accent: #FF4D00;
-            --accent-glow: rgba(255, 77, 0, 0.3);
-            --border: #333333;
-            --radius: 16px;
-            --font-stack: 'Inter', sans-serif;
+            /* ── DS TOKENS (CarryIT Design System v1.0) ── */
+            --c-noir:        #080809;
+            --c-gris:        #929292;
+            --c-blanc:       #FFFDF6;
+            --c-orange:      #EE4408;
+            --c-rouge-o:     #A82B06;
+            --c-rouge:       #A3150D;
+            --c-surface-1:   #111112;
+            --c-surface-2:   #1A1A1C;
+            --c-border:      rgba(255,253,246,0.08);
+            --c-border-med:  rgba(255,253,246,0.14);
+            --radius-sm:     4px;
+            --radius-md:     8px;
+            --radius-lg:     12px;
+            --radius-full:   9999px;
+            --shadow-sm:     0 1px 3px rgba(0,0,0,0.4);
+            --shadow-md:     0 4px 16px rgba(0,0,0,0.5);
+            --space-1: 4px; --space-2: 8px; --space-3: 12px;
+            --space-4: 16px; --space-5: 20px; --space-6: 24px;
+            --duration-fast: 120ms; --duration-base: 220ms;
+            --ease-out: cubic-bezier(0.16,1,0.3,1);
 
-            /* Briefing SVG variables */
-            --text-p: #FFFDF6;
-            --text-s: #86868B;
+            /* ── Local aliases (jalons.html internals) ── */
+            --bg-primary:    var(--c-noir);
+            --bg-card:       var(--c-surface-1);
+            --text-primary:  var(--c-blanc);
+            --text-secondary: var(--c-gris);
+            --accent:        var(--c-orange);
+            --accent-glow:   rgba(238,68,8,0.3);
+            --border:        var(--c-border);
+            --radius:        var(--radius-md);
+            --font-stack:    'DM Sans', 'Inter', sans-serif;
+            --text-p:        var(--c-blanc);
+            --text-s:        var(--c-gris);
+        }
+
+        /* ══ DS COMPONENTS — Card ══════════════════════════════ */
+        .card {
+            background: var(--c-surface-1);
+            border: 1px solid var(--c-border);
+            border-radius: var(--radius-md);
+            padding: var(--space-5) 22px;
+            box-shadow: var(--shadow-md);
+        }
+        .card--compact  { padding: var(--space-3) 14px; }
+        .card--standard { padding: var(--space-4) 18px; }
+        .card--spacious { padding: var(--space-5) 22px; }
+        .card--alert    { border-color: rgba(163,21,13,0.35); }
+
+        .card__header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 14px;
+        }
+        .card__title {
+            font-size: 10px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.09em;
+            color: var(--c-gris);
+        }
+        .card__action {
+            font-size: 12px; color: var(--c-gris);
+            background: none; border: none;
+            font-family: var(--font-stack); cursor: pointer;
+            transition: color var(--duration-fast);
+        }
+        .card__action:hover { color: var(--c-blanc); }
+
+        .sep {
+            height: 1px;
+            background: rgba(255,253,246,0.07);
+            margin: 10px 0;
+        }
+
+        /* ══ DS COMPONENTS — Badges & Chips ════════════════════ */
+        .badge-position {
+            display: inline-flex; align-items: center;
+            padding: 3px 9px; border-radius: var(--radius-sm);
+            font-size: 10px; font-weight: 600;
+            letter-spacing: 0.04em; text-transform: uppercase;
+            background: rgba(255,253,246,0.06); color: var(--c-gris);
+            border: 1px solid rgba(255,253,246,0.1);
+        }
+
+        .chip {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 3px 9px; border-radius: var(--radius-full);
+            font-size: 11px; font-weight: 500;
+        }
+        .chip__dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+        .chip--active  { background: rgba(238,68,8,0.1); color: var(--c-orange); }
+        .chip--active  .chip__dot { background: var(--c-orange); }
+        .chip--done    { background: rgba(10,42,83,0.25); color: #7aa8d8; }
+        .chip--done    .chip__dot { background: #0A2A53; }
+        .chip--upcoming { background: rgba(255,253,246,0.05); color: var(--c-gris); border: 1px solid var(--c-border); }
+        .chip--late    { background: rgba(163,21,13,0.12); color: #e05545; }
+        .chip--late    .chip__dot { background: #A3150D; }
+
+        /* ══ DS COMPONENTS — Form & Inputs ═════════════════════ */
+        .form-group {
+            display: flex; flex-direction: column; gap: 5px;
+            margin-bottom: 14px;
+        }
+        .form-group:last-child { margin-bottom: 0; }
+        .form-label {
+            font-size: 12px; font-weight: 500; color: var(--c-gris);
+        }
+        .form-hint  { font-size: 11px; color: var(--c-gris); margin-top: 2px; }
+        .form-error { font-size: 11px; color: #ff6b6b; margin-top: 2px; }
+
+        .input {
+            background: var(--c-surface-2);
+            border: 1px solid rgba(255,253,246,0.12);
+            border-radius: var(--radius-md);
+            padding: 10px 14px;
+            font-family: var(--font-stack);
+            font-size: 14px; color: var(--c-blanc);
+            outline: none; width: 100%;
+            transition: border-color var(--duration-fast), box-shadow var(--duration-fast);
+        }
+        .input::placeholder { color: rgba(146,146,146,0.6); }
+        .input:focus {
+            border-color: var(--c-orange);
+            box-shadow: 0 0 0 3px rgba(238,68,8,0.15);
+        }
+        .input--error   { border-color: var(--c-rouge); box-shadow: 0 0 0 3px rgba(163,21,13,0.12); }
+        .input--disabled { opacity: 0.4; cursor: not-allowed; }
+        textarea.input  { resize: none; line-height: 1.55; }
+
+        .section-key {
+            font-size: 9px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.1em;
+            color: var(--c-gris); margin-bottom: 4px;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
@@ -78,7 +196,7 @@
         .timeline-list {
             position: relative;
             width: 100%;
-            max-width: 650px;
+            max-width: 720px;
             display: flex;
             flex-direction: column;
             margin: 0 auto;
@@ -108,7 +226,7 @@
         .timeline-item {
             display: flex;
             position: relative;
-            margin-bottom: 105px;
+            margin-bottom: 80px;
             z-index: 1;
         }
 
@@ -123,8 +241,8 @@
         }
 
         .rail-year {
-            font-size: 18px; font-weight: 700; color: var(--accent);
-            margin-bottom: 4px; letter-spacing: 1px;
+            font-size: 15px; font-weight: 700; color: var(--accent);
+            margin-bottom: 4px; letter-spacing: 0.5px;
         }
 
         .rail-month {
@@ -211,21 +329,13 @@
             }
         }
 
-        /* CARTE */
+        /* CARTE — layout timeline, visuel via .card DS */
         .item-card {
             flex: 1;
             margin-left: var(--card-gap);
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 24px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            transition: border-color 0.2s;
             position: relative;
         }
-
-        .item-card:focus-within { border-color: var(--accent); }
-
+        .item-card:focus-within { border-color: var(--c-orange); }
         .item-card::before {
             content: '';
             position: absolute;
@@ -233,142 +343,26 @@
             top: 36px;
             width: var(--card-gap);
             height: 2px;
-            background: linear-gradient(90deg, var(--accent) 0%, var(--border) 100%);
+            background: linear-gradient(90deg, var(--c-orange) 0%, var(--c-border) 100%);
             opacity: 0.5;
             z-index: -1;
         }
 
-        .card-header { margin-bottom: 12px; display: flex; justify-content: space-between; align-items: flex-start; }
-
-        .card-meta-top {
-            display: flex; align-items: center; justify-content: space-between; width: 100%;
-            margin-bottom: 8px;
+        /* Date cliquable dans card header */
+        .jalon-date-label {
+            font-size: 11px; color: var(--c-gris);
+            cursor: pointer; position: relative;
+            display: inline-flex; align-items: center;
+            transition: color var(--duration-fast);
         }
-
-        .card-number {
-            font-size: 11px; font-weight: 600; color: var(--text-secondary);
-            background: rgba(255,255,255,0.05); padding: 2px 8px; border-radius: 4px;
-        }
-
-        .card-tag {
-            font-size: 10px; font-weight: 700; text-transform: uppercase;
-            letter-spacing: 0.05em; color: var(--accent);
-        }
-
-        .input-title {
-            width: 100%; background: transparent; border: none;
-            color: white; font-size: 18px; font-weight: 700;
-            font-family: var(--font-stack);
-        }
-        .input-title:disabled { opacity: 1; cursor: default; }
-
-        .field-block {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-
-        .field-head {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-        }
-
-        .field-label {
-            font-size: 11px;
-            font-weight: 700;
-            color: rgba(255,255,255,0.58);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            white-space: nowrap;
-        }
-
-        .field-helper {
-            font-size: 12px;
-            line-height: 1.45;
-            color: var(--text-secondary);
-        }
-
-        .input-desc {
-            width: 100%; background: rgba(255,255,255,0.03); border: none; border-radius: 8px;
-            color: var(--text-secondary); font-size: 14px; font-family: var(--font-stack);
-            padding: 12px; margin-bottom: 0; resize: none; min-height: 80px;
-        }
-        .input-desc:focus { background: rgba(255,255,255,0.06); color: white; }
-
-        .kpi-container {
-            display: flex; flex-direction: column; gap: 10px;
-            padding: 12px 14px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 8px;
-            transition: all 0.2s ease;
-        }
-
-        .kpi-container.empty {
-            background: rgba(238, 68, 8, 0.06);
-            border-color: rgba(238, 68, 8, 0.32);
-            box-shadow: inset 0 0 0 1px rgba(238, 68, 8, 0.08);
-        }
-
-        .kpi-container:focus-within {
-            border-color: var(--accent);
-            background: rgba(255, 255, 255, 0.05);
-            box-shadow: 0 0 0 1px var(--accent-glow);
-        }
-
-        .kpi-required {
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--accent);
-            background: rgba(238, 68, 8, 0.12);
-            border: 1px solid rgba(238, 68, 8, 0.2);
-            border-radius: 999px;
-            padding: 4px 8px;
-            white-space: nowrap;
-        }
-
-        .input-kpi {
-            width: 100%;
-            background: transparent; border: none;
-            color: white; font-weight: 600; font-size: 14px;
-        }
-
-        .input-kpi::placeholder {
-            color: var(--text-muted);
-            font-weight: 400;
-            font-style: italic;
-        }
-
-        .date-input-wrapper {
-            position: relative;
-            background: rgba(255,255,255,0.05);
-            border-radius: 6px;
-            padding: 4px 8px;
-            border: 1px solid rgba(255,255,255,0.05);
-            display: flex; align-items: center; gap: 6px;
-        }
-        .date-input-wrapper:hover { background: rgba(255,255,255,0.1); }
-        .date-input-wrapper.disabled { opacity: 0.5; pointer-events: none; }
-
-        .input-date-native {
-            background: transparent; border: none;
-            color: white; font-family: var(--font-stack);
-            font-size: 11px; font-weight: 600;
-            width: 85px; cursor: pointer;
-        }
-        .input-date-native::-webkit-calendar-picker-indicator {
-            filter: invert(1); opacity: 0.5; cursor: pointer;
+        .jalon-date-label:hover { color: var(--c-blanc); }
+        .jalon-date-label input[type="date"] {
+            position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%;
         }
 
         .btn-delete {
-            background: transparent; border: none; color: var(--text-secondary);
-            cursor: pointer; padding: 4px; transition: color 0.2s;
-            margin-left: 8px;
+            background: transparent; border: none; color: var(--c-gris);
+            cursor: pointer; padding: 4px; transition: color var(--duration-fast);
         }
         .btn-delete:hover { color: #ff3b30; }
 
@@ -584,7 +578,7 @@
         /* INTRO SECTION */
         .intro-section {
             margin-top: 60px;
-            padding: 140px 20px 100px;
+            padding: 60px 20px 40px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -726,14 +720,6 @@
             filter: blur(80px);
         }
 
-        body::after {
-            content: '';
-            position: fixed;
-            inset: 0;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
-            pointer-events: none;
-            z-index: 10;
-        }
 
         /* BRIEFING SECTION */
         .briefing-shell {
@@ -1114,17 +1100,6 @@
             .item-card {
                 padding: 16px;
             }
-            .input-title {
-                font-size: 15px;
-            }
-            .input-desc {
-                font-size: 13px;
-                min-height: 60px;
-            }
-            .field-head { align-items: flex-start; flex-direction: column; gap: 8px; }
-            .field-label { font-size: 10px; }
-            .field-helper { font-size: 11px; }
-            .input-kpi { font-size: 13px; }
             .main-container {
                 padding: 0 14px 20px 14px;
             }
@@ -1174,7 +1149,7 @@
     <div class="intro-section">
         <div>
             <h2>Planifier l'impossible.</h2>
-            <p>Découpe ton ambition en étapes concrètes. Ajuste les titres, dates et critères de validation de chaque jalon.</p>
+            <p>Ton objectif est loin. On va maintenant tracer les grands paliers pour y arriver. On part de la fin, puis on revient vers aujourd'hui. Les jalons lointains peuvent rester larges. Le prochain jalon, lui, doit être précis, daté et validable. Ce que tu poses ici est modifiable. Une trajectoire sert à avancer, pas à t'enfermer.</p>
         </div>
         <div class="scroll-hint" onclick="document.getElementById('timelineStart').scrollIntoView({behavior:'smooth'})">
             <span>Pose tes jalons</span>
@@ -1301,20 +1276,20 @@ Elles exigent des preuves immédiates là où il n’y a encore que des fondatio
             const timeDiff = deadline.getTime() - today.getTime();
             const smart = getSmartData();
 
-            dates.push({ label: "Vision Finale", tag: "OBJECTIF 100%", date: deadline });
-            dates.push({ label: "Mi-Parcours", tag: "CAP 50%", date: new Date(today.getTime() + (timeDiff / 2)) });
+            dates.push({ label: "Vision Finale", tag: "Jalon final", date: deadline });
+            dates.push({ label: "Mi-Parcours", tag: "Mi-parcours", date: new Date(today.getTime() + (timeDiff / 2)) });
 
             const d1y = new Date(today); d1y.setFullYear(d1y.getFullYear() + 1);
-            dates.push({ label: "À 1 An", tag: "ANNÉE 1", date: (d1y < deadline ? d1y : deadline) });
+            dates.push({ label: "À 1 An", tag: "An 1", date: (d1y < deadline ? d1y : deadline) });
 
             const d9m = new Date(today); d9m.setMonth(d9m.getMonth() + 9);
-            dates.push({ label: "À 9 Mois", tag: "TRIMESTRE 3", date: d9m });
+            dates.push({ label: "À 9 Mois", tag: "9 mois", date: d9m });
 
             const d6m = new Date(today); d6m.setMonth(d6m.getMonth() + 6);
-            dates.push({ label: "À 6 Mois", tag: "TRIMESTRE 2", date: d6m });
+            dates.push({ label: "À 6 Mois", tag: "6 mois", date: d6m });
 
             const d3m = new Date(today); d3m.setMonth(d3m.getMonth() + 3);
-            dates.push({ label: "À 3 Mois", tag: "TRIMESTRE 1", date: d3m });
+            dates.push({ label: "À 3 Mois", tag: "3 mois", date: d3m });
 
             return dates.sort((a, b) => b.date - a.date);
         }
@@ -1338,9 +1313,9 @@ Elles exigent des preuves immédiates là où il n’y a encore que des fondatio
                     id: `m${Date.now()}-${index}`,
                     date: item.date.toISOString(),
                     tag: item.tag,
-                    title: isFinal ? "Vision Finale" : item.label,
-                    desc: isFinal && smart.specifique ? smart.specifique : "",
-                    kpi: isFinal && smart.mesurable ? smart.mesurable : ""
+                    title: isFinal ? (smart.specifique || "") : item.label,
+                    desc: isFinal ? "L'objectif SMART est accompli." : "",
+                    kpi: isFinal ? (smart.niveau || (smart.specifique && smart.specifique.includes(' — ') ? smart.specifique.split(' — ')[1] : smart.specifique) || "") : ""
                 };
             });
             save();
@@ -1415,10 +1390,11 @@ Réponds jalon par jalon.`;
             const smart = getSmartData();
             if(milestones.length > 0) {
                 const finalM = milestones[0];
-                finalM.tag = "OBJECTIF 100%";
+                finalM.tag = "Jalon final";
                 if(smart.temporel) finalM.date = new Date(smart.temporel).toISOString();
-                if(smart.specifique) finalM.desc = smart.specifique;
-                if(smart.mesurable) finalM.kpi = smart.mesurable;
+                if(smart.specifique && !finalM.title) finalM.title = smart.specifique;
+                finalM.desc = "L'objectif SMART est accompli.";
+                finalM.kpi = smart.niveau || (smart.specifique && smart.specifique.includes(' — ') ? smart.specifique.split(' — ')[1] : smart.specifique) || "";
             }
 
             container.innerHTML = '<div class="timeline-line"></div>';
@@ -1445,52 +1421,51 @@ Réponds jalon par jalon.`;
 
                     <div class="dot ${isFinal ? 'final' : m.tag === 'CAP 50%' ? 'cap' : ''}"></div>
 
-                    <div class="item-card">
-                        <div class="card-meta-top">
-                            <span class="card-number">Jalon ${milestoneNumber}/${total}</span>
-                            ${!isFinal ? `
-                                <button class="btn-delete" onclick="deleteMilestone('${m.id}')" title="Supprimer">
-                                    <i class="ri-delete-bin-line"></i>
-                                </button>
-                            ` : ''}
-                        </div>
-
-                        <div class="card-header">
-                            <div style="flex:1">
-                                <span class="card-tag">${m.tag}</span>
-                                <input class="input-title" value="${m.title}"
-                                       placeholder="Titre..."
-                                       oninput="update('${m.id}', 'title', this.value)">
+                    <div class="item-card card card--spacious">
+                        <div class="card__header">
+                            <div style="display:flex;align-items:center;gap:8px;">
+                                <span class="card__title">Jalon ${milestoneNumber}/${total}</span>
+                                <span class="badge-position">${m.tag}</span>
                             </div>
-                            <div class="date-input-wrapper">
-                                <i class="ri-calendar-line" style="font-size:12px; color:var(--text-secondary)"></i>
-                                <input type="date" class="input-date-native"
-                                       value="${dateInputValue}"
-                                       onchange="updateDate('${m.id}', this.value)">
+                            <div style="display:flex;align-items:center;gap:10px;">
+                                <label class="jalon-date-label" title="Modifier la date">
+                                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px;opacity:.45"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>${new Date(m.date).toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'})}
+                                    <input type="date" value="${dateInputValue}" onchange="updateDate('${m.id}', this.value)">
+                                </label>
+                                ${!isFinal ? `<button class="card__action" onclick="deleteMilestone('${m.id}')">Supprimer</button>` : ''}
                             </div>
                         </div>
 
-                        <div class="field-block">
-                            <div class="field-head">
-                                <span class="field-label">Description</span>
-                            </div>
-                            <div class="field-helper">Décris clairement ce qui doit être construit ou obtenu à cette étape.</div>
-                            <textarea class="input-desc"
-                                      placeholder="Spécifique : Que doit-il se passer ?"
+                        ${(() => {
+                            const isFar = !isFinal && (new Date(m.date) - new Date() > 1000*60*60*24*180);
+                            const isMid = m.tag === 'Mi-parcours';
+                            const ph = isFinal
+                                ? { t: "Ce que tu vises. Concret, pas inspirant.", d: "Ce qui existera. Ce que tu peux montrer à quelqu'un.", k: "La mesure exacte. Un chiffre, un fait. Oui ou non." }
+                                : isMid
+                                ? { t: "Ce qui doit être vrai à mi-chemin.", d: "Ce qui doit exister pour que la fin soit encore possible.", k: "La preuve. Binaire, oui ou non." }
+                                : isFar
+                                ? { t: "Une direction. Tu préciseras quand tu seras plus proche.", d: "Reste approximatif. Rolling wave.", k: "Optionnel pour l'instant." }
+                                : { t: "Le livrable concret dans ce délai.", d: "Ce que tu peux montrer à cette date.", k: "La preuve. Binaire, oui ou non." };
+                            return `
+                        <div class="form-group">
+                            <label class="form-label">Titre</label>
+                            <input class="input" type="text" value="${m.title}"
+                                   placeholder="${ph.t}"
+                                   oninput="update('${m.id}', 'title', this.value)">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Description</label>
+                            <textarea class="input" rows="2"
+                                      placeholder="${ph.d}"
                                       oninput="autoResize(this); update('${m.id}', 'desc', this.value)">${m.desc || ''}</textarea>
                         </div>
-
-                        <div class="kpi-container ${hasValidation ? '' : 'empty'}">
-                            <div class="field-head">
-                                <span class="field-label">Validation</span>
-                                <span class="kpi-required">Obligatoire</span>
-                            </div>
-                            <div class="field-helper">Écris la preuve concrète qui montrera que ce jalon est validé.</div>
-                            <input class="input-kpi"
-                                   value="${m.kpi || ''}"
-                                   placeholder="Ex : 10 clients signés, maquette validée, 5 000 € de CA..."
-                                   oninput="this.closest('.kpi-container').classList.toggle('empty', !this.value.trim()); update('${m.id}', 'kpi', this.value)">
-                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Critère de validation</label>
+                            <textarea class="input" rows="2"
+                                      placeholder="${ph.k}"
+                                      oninput="autoResize(this); update('${m.id}', 'kpi', this.value)">${m.kpi || ''}</textarea>
+                        </div>`;
+                        })()}
                     </div>
                 `;
                 container.appendChild(item);

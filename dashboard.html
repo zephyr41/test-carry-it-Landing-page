@@ -30,6 +30,11 @@
                             <path d="M4 5.5L7 8.5L10 5.5"/>
                         </svg>
                     </button>
+                    <button type="button" class="db-nav-rename-btn" id="dbNavRenameBtn" onclick="inlineEditNavTitle(event)" title="Renommer">
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M8 1.5L10.5 4L4 10.5H1.5V8L8 1.5Z"/>
+                        </svg>
+                    </button>
                     <ul class="db-nav-list" id="dbNavList"></ul>
                 </div>
                 <div class="dashboard-project-actions" id="dashboardProjectActions"></div>
@@ -432,11 +437,15 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
 
         function saveAllObjectifs() {
             localStorage.setItem('carryItAllObjectifs', JSON.stringify(allObjectifs));
-            // Keep jalons.html in sync with last project (without wiping dashboard-only fields)
+        }
+
+        function openJalonsForProject(i) {
+            const obj = allObjectifs[i];
+            if (!obj) return;
             try {
-                const last = allObjectifs[allObjectifs.length - 1];
-                if (last && Array.isArray(last.jalons) && last.jalons.length) {
-                    const shared = last.jalons.map(j => ({
+                // Sync jalons du bon projet
+                if (Array.isArray(obj.jalons) && obj.jalons.length) {
+                    const shared = obj.jalons.map(j => ({
                         id: j.id,
                         date: j.date,
                         tag: j.tag || '',
@@ -445,8 +454,22 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                         kpi: j.critere || j.kpi || ''
                     }));
                     localStorage.setItem('carryItMilestones', JSON.stringify(shared));
+                } else {
+                    localStorage.removeItem('carryItMilestones');
                 }
+                // Sync SMART data du bon projet
+                const smart = {
+                    titre: obj.titre || '',
+                    specifique: obj.specifique || '',
+                    niveau: obj.niveau || '',
+                    mesurable: obj.mesurable || '',
+                    atteignable: obj.atteignable || '',
+                    realiste: obj.realiste || '',
+                    temporel: obj.temporel || ''
+                };
+                localStorage.setItem('carryItObjectifSMART', JSON.stringify(smart));
             } catch (e) {}
+            window.location.href = 'jalons.html';
         }
 
         // ──────────────────────────────────────────────────────────
@@ -510,7 +533,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             liAdd.style.listStyle = 'none';
             const aAdd = document.createElement('a');
             aAdd.className = 'db-nav-item db-nav-add';
-            aAdd.href = 'objectif.html';
+            aAdd.href = 'objectif-intro.html';
             aAdd.textContent = '+ Ajouter un projet';
             liAdd.appendChild(aAdd);
             navList.appendChild(liAdd);
@@ -669,7 +692,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                         </svg>
                         <p class="db-empty-title">Aucun objectif</p>
                         <p class="db-empty-sub">Commencez par définir votre premier objectif SMART.</p>
-                        <a href="objectif.html" class="btn-create">+ Créer un objectif</a>
+                        <a href="objectif-intro.html" class="btn-create">+ Créer un objectif</a>
                     </div>
                 </div>
             `;
@@ -2181,6 +2204,50 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             };
         }
 
+        function inlineEditNavTitle(event) {
+            event.stopPropagation();
+            const dropdown = document.getElementById('dbNavDropdown');
+            if (dropdown) dropdown.classList.remove('open');
+            const labelEl = document.getElementById('dbNavLabel');
+            const renameBtn = document.getElementById('dbNavRenameBtn');
+            if (!labelEl) return;
+            const orig = labelEl.textContent;
+            const i = currentCarouselIndex;
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = (orig === '—') ? '' : orig;
+            input.className = 'db-nav-label-input';
+            labelEl.style.display = 'none';
+            if (renameBtn) renameBtn.style.opacity = '0';
+            labelEl.parentNode.insertBefore(input, labelEl.nextSibling);
+            input.focus();
+            input.select();
+            const commit = () => {
+                const val = input.value.trim();
+                input.remove();
+                labelEl.style.display = '';
+                if (renameBtn) renameBtn.style.opacity = '';
+                if (val && val !== orig) {
+                    labelEl.textContent = val;
+                    const initial = document.getElementById('dbNavInitial');
+                    if (initial) initial.textContent = val.charAt(0).toUpperCase();
+                    if (allObjectifs[i]) {
+                        allObjectifs[i].titre = val;
+                        saveAllObjectifs();
+                        renderDashboard();
+                    }
+                } else {
+                    labelEl.textContent = orig;
+                }
+            };
+            input.addEventListener('blur', commit);
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
+                if (e.key === 'Escape') { input.value = orig; input.blur(); }
+                e.stopPropagation();
+            });
+        }
+
         function inlineEditPanelTitle(i, taskId, el) {
             const orig = el.textContent;
             el.contentEditable = 'true';
@@ -2312,7 +2379,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
 
             if (jalons.length === 0) {
                 return `<div style="text-align:center;padding:4px 0 0;">
-                    <a href="jalons.html" style="font-size:12px;color:rgba(255,255,255,0.25);text-decoration:none;border-bottom:1px dashed rgba(255,255,255,0.12);padding-bottom:2px;">+ Planifier les jalons de ce projet</a>
+                    <a href="#" onclick="openJalonsForProject(${i})" style="font-size:12px;color:rgba(255,255,255,0.25);text-decoration:none;border-bottom:1px dashed rgba(255,255,255,0.12);padding-bottom:2px;">+ Planifier les jalons de ce projet</a>
                 </div>`;
             }
 
@@ -2404,7 +2471,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
 
             return `
             <div class="pt-shell">
-                <div class="pt-shell-label">Pilotage · Jalon Actif <a href="jalons.html" class="pt-btn-edit-jalons">Éditer les jalons</a></div>
+                <div class="pt-shell-label">Pilotage · Jalon Actif</div>
 
                 <div class="pt-timeline" aria-label="Timeline des jalons">
                     ${timelineItems}
@@ -2420,6 +2487,9 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                             </div>
                             <div class="pt-header-actions">
                                 <div class="pt-chip ${statusChip}"><span class="pt-chip-dot" aria-hidden="true"></span>${statusLabel}</div>
+                                <a href="#" onclick="openJalonsForProject(${i}); return false;" class="pt-btn-edit-jalons-icon" title="Modifier les jalons">
+                                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5L12.5 4.5L4.5 12.5H1.5V9.5L9.5 1.5Z"/></svg>
+                                </a>
                                 ${actionBtn}
                             </div>
                         </div>
@@ -2814,7 +2884,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                 return `
                 <div class="jt-section">
                     <div class="jt-block db-card db-card-execution" style="padding:20px;text-align:center;">
-                        <a href="jalons.html" style="font-size:12px;color:rgba(255,255,255,0.25);text-decoration:none;border-bottom:1px dashed rgba(255,255,255,0.12);">+ Planifier les jalons</a>
+                        <a href="#" onclick="openJalonsForProject(${i})" style="font-size:12px;color:rgba(255,255,255,0.25);text-decoration:none;border-bottom:1px dashed rgba(255,255,255,0.12);">+ Planifier les jalons</a>
                     </div>
                 </div>`;
             }

@@ -554,14 +554,14 @@
         document.addEventListener('DOMContentLoaded', () => {
             // FIREBASE/AUTH/LOCAL STORAGE SETUP
             // Simulation de données S.M.A.R.T
-            const data = JSON.parse(localStorage.getItem('carryItAllObjectifs') || '[]');
-            const obj = data[data.length - 1] || {
-                mesurable: "100K abonnés avant la fin de l'année",
-                specifique: "Créer un programme éducatif vidéo complet sur le design iOS en 12 modules.",
-                atteignable: "L'expertise est là, il faut structurer le temps et déléguer le montage.",
-                realiste: "L'engagement des viewers est déjà élevé ; il faut capitaliser sur la niche.",
-                temporel: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString()
-            };
+            const obj = JSON.parse(localStorage.getItem('carryItObjectifSMART') || 'null')
+                || JSON.parse(localStorage.getItem('carryItAllObjectifs') || '[]').slice(-1)[0]
+                || {};
+
+            // Sync carryItObjectifSMART so jalons.html always finds the data
+            if (obj && (obj.specifique || obj.mesurable)) {
+                try { localStorage.setItem('carryItObjectifSMART', JSON.stringify(obj)); } catch {}
+            }
 
             // Remplissage des cartes S.M.A.R.T
             document.getElementById('disp-s').textContent = obj.specifique || "Aucune spécification détaillée fournie.";

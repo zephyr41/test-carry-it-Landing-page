@@ -5,6 +5,69 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Formulaire objectif SMART</title>
   <style>
+    @font-face {
+      font-family: Rifton;
+      src: url('assets/fonts/rifton/rifton-regular.otf') format('opentype');
+      font-weight: 400;
+      font-style: normal;
+    }
+
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 72px;
+      background: rgba(5, 6, 8, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 0 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .navbar-logo {
+      font-family: Rifton, serif;
+      font-size: 20px;
+      color: #fffdf6;
+      text-decoration: none;
+      font-weight: 400;
+    }
+
+    .navbar-links {
+      display: flex;
+      gap: 32px;
+      align-items: center;
+    }
+
+    .navbar-link {
+      font-size: 14px;
+      font-weight: 500;
+      color: #a8a8a8;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .navbar-link:hover {
+      color: #fffdf6;
+    }
+
+    .navbar-link.cta {
+      color: rgba(255, 255, 255, 0.7);
+      padding: 8px 18px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      font-weight: 600;
+    }
+
+    .navbar-link.cta:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: rgba(255, 255, 255, 0.9);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
     :root {
       --bg: #f1f5f9;
       --surface: #ffffff;
@@ -51,7 +114,7 @@
     .page {
       width: min(1160px, calc(100% - 32px));
       margin: 0 auto;
-      padding: 32px 0;
+      padding: 104px 0 32px;
     }
 
     .hero,
@@ -223,6 +286,24 @@
       color: #94a3b8;
     }
 
+    .date-input {
+      width: 100%;
+      border: 1px solid var(--border-strong);
+      border-radius: 16px;
+      background: var(--surface);
+      color: var(--text);
+      padding: 12px 14px;
+      font-size: 0.94rem;
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      cursor: pointer;
+    }
+
+    .date-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.12);
+    }
+
     .section-header {
       display: flex;
       align-items: flex-start;
@@ -370,6 +451,7 @@
       color: #334155;
       font-size: 0.94rem;
       line-height: 1.75;
+      white-space: pre-line;
     }
 
     ol {
@@ -443,6 +525,14 @@
   </style>
 </head>
 <body>
+  <nav class="navbar">
+    <a href="index.html" class="navbar-logo">CARRY IT</a>
+    <div class="navbar-links">
+      <a href="index.html" class="navbar-link">Accueil</a>
+      <a href="dashboard.html" class="navbar-link cta">Dashboard</a>
+    </div>
+  </nav>
+
   <main class="page">
     <header class="hero">
       <p class="eyebrow">Objectif SMART</p>
@@ -461,20 +551,20 @@
 
 
     <section class="main-grid">
-      <div class="stack" id="sectionsContainer"></div>
+      <div class="stack" id="sectionsContainer">
+        <div class="card" id="titreCard">
+          <div class="section-title-row">
+            <span class="letter-badge" style="background:var(--primary);color:#fff;">✦</span>
+            <div>
+              <h2>Nom du projet</h2>
+              <p class="section-def">Donne un nom court à ce projet. Tu pourras le retrouver dans ton dashboard.</p>
+            </div>
+          </div>
+          <textarea id="titreInput" class="textarea" rows="1" placeholder="Ex : Liberté financière immo, Marathon sub-3h, Lancer mon SaaS..."></textarea>
+        </div>
+      </div>
 
       <aside class="side">
-        <div class="card">
-          <div class="progress-row">
-            <span>Complétion</span>
-            <span id="scoreText">0%</span>
-          </div>
-          <div class="progress-track" aria-hidden="true">
-            <div class="progress-fill" id="progressFill"></div>
-          </div>
-          <div class="quality-list" id="qualityList"></div>
-        </div>
-
         <div class="output-card">
           <div class="output-header">
             <div>
@@ -495,6 +585,8 @@
             <li>La phrase est trop longue ? Coupe.</li>
           </ol>
         </div>
+
+        <button type="button" id="validateButton" class="btn btn-primary" style="width:100%;box-sizing:border-box;">Valider</button>
       </aside>
     </section>
   </main>
@@ -526,20 +618,19 @@
         key: "achievable",
         letter: "A",
         title: "Atteignable",
-        definition: "Est-ce que c'est compatible avec mon temps et mes contraintes réelles.",
+        definition: "Le sommet, c'est ton objectif. Pour l'atteindre, faut savoir ce que t'as dans ton sac — et ce qu'il te manque.",
         fields: [
-          ["resources", "Ce que t'as vraiment", "Ex. 4 entraînements par semaine, plan structuré"],
-          ["constraints", "Ce qui peut faire dérailler", "Ex. alternance, genou droit fragile, fatigue accumulée"]
+          ["resources", "Qu'as-tu déjà dans ton sac pour atteindre cet objectif ?", "Ex : compétences techniques, réseau, expérience terrain, capital disponible"],
+          ["constraints", "Qu'est-ce qu'il te manque pour avancer vers le sommet ?", "Ex : compétence à apprendre, outil à obtenir, blocage à lever"]
         ]
       },
       {
         key: "relevant",
         letter: "R",
-        title: "Pertinent",
-        definition: "Pourquoi cet objectif et pas un autre en ce moment.",
+        title: "Réaliste",
+        definition: "Un objectif réaliste rentre dans ton emploi du temps et tes contraintes.",
         fields: [
-          ["priority", "Quelle priorité ça sert", "Ex. prouver que je peux tenir un plan long terme"],
-          ["reason", "Pourquoi maintenant", "Ex. j'ai lâché l'an dernier à 8 semaines de la course"]
+          ["hours", "Combien d'heures par semaine peux-tu vraiment y consacrer ?", "Ex : 2h/semaine, 5h/semaine, 1h par jour, 2 soirs par semaine"]
         ]
       },
       {
@@ -548,7 +639,7 @@
         title: "Temporellement défini",
         definition: "À quelle date cet objectif sera atteint.",
         fields: [
-          ["deadline", "Date limite", "Ex. 12 octobre 2026"]
+          ["deadline", "Date limite", "", "date"]
         ]
       }
     ];
@@ -557,10 +648,11 @@
     const dateSignals = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre", "trimestre", "semaine", "mois", "jour", "q1", "q2", "q3", "q4", "s1", "s2"];
 
     const emptyForm = {
+      titre: "",
       specific: { result: "", level: "" },
       measurable: { indicator: "" },
       achievable: { resources: "", constraints: "" },
-      relevant: { priority: "", reason: "" },
+      relevant: { hours: "" },
       timebound: { deadline: "" }
     };
 
@@ -581,12 +673,10 @@
     let form = loadForm();
 
     const sectionsContainer = document.getElementById("sectionsContainer");
-    const scoreText = document.getElementById("scoreText");
-    const progressFill = document.getElementById("progressFill");
-    const qualityList = document.getElementById("qualityList");
     const objectiveText = document.getElementById("objectiveText");
     const resetButton = document.getElementById("resetButton");
     const copyButton = document.getElementById("copyButton");
+    const validateButton = document.getElementById("validateButton");
     const toast = document.getElementById("toast");
 
     function escapeHtml(value) {
@@ -629,10 +719,7 @@
       let warning = "";
 
       if (section.key === "timebound") {
-        complete = baseComplete && hasDateSignal(form.timebound.deadline);
-        if (baseComplete && !complete) {
-          warning = "Échéance à rendre plus explicite.";
-        }
+        complete = baseComplete;
       }
 
       return {
@@ -656,27 +743,33 @@
     }
 
     function buildObjective() {
-      const deadline = form.timebound.deadline || "[échéance]";
+      const rawDeadline = form.timebound.deadline;
+      const deadline = rawDeadline
+        ? new Date(rawDeadline).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })
+        : "[échéance]";
       const result = form.specific.result || "[résultat concret]";
       const level = form.specific.level || "[niveau de réussite]";
       const indicator = form.measurable.indicator || "[indicateur]";
-      const resources = form.achievable.resources || "[ressources]";
-      const constraints = form.achievable.constraints || "[contraintes]";
-      const priority = form.relevant.priority || "[priorité]";
-      const reason = form.relevant.reason || "[raison]";
+      const resources = form.achievable.resources || "[ce que j'ai déjà]";
+      const constraints = form.achievable.constraints || "[ce qu'il me manque]";
+      const hours = form.relevant.hours || "[heures/semaine]";
 
-      return `D'ici ${deadline}, ${result} — niveau visé : ${level}. L'atteinte sera vérifiée via ${indicator}. L'objectif est atteignable avec ${resources}, en tenant compte de ${constraints}. Il est pertinent car ${reason} et sert la priorité : ${priority}.`;
+      return `D'ici ${deadline}, je veux ${result} jusqu'à atteindre ${level}.\nJe mesurerai mes progrès avec ${indicator}.\nJe peux déjà m'appuyer sur ${resources}.\nIl me manque encore ${constraints}.\nJe peux y consacrer ${hours}.`;
     }
 
     function renderSections() {
       sectionsContainer.innerHTML = sections.map((section) => {
         const status = getSectionStatus(section);
-        const fieldHtml = section.fields.map(([fieldKey, label, placeholder]) => {
+        const fieldHtml = section.fields.map(([fieldKey, label, placeholder, type]) => {
           const path = `${section.key}.${fieldKey}`;
+          const val = escapeHtml(getValue(path));
+          const input = type === "date"
+            ? `<input type="date" data-field="${escapeHtml(path)}" value="${val}" class="date-input" />`
+            : `<textarea data-field="${escapeHtml(path)}" placeholder="${escapeHtml(placeholder)}">${val}</textarea>`;
           return `
             <label>
               <span class="label-text">${escapeHtml(label)}</span>
-              <textarea data-field="${escapeHtml(path)}" placeholder="${escapeHtml(placeholder)}">${escapeHtml(getValue(path))}</textarea>
+              ${input}
             </label>
           `;
         }).join("");
@@ -721,31 +814,7 @@
 
     function updateDynamic() {
       updateSectionStatuses();
-      const objective = buildObjective();
-      objectiveText.textContent = objective;
-      renderQuality(objective);
-    }
-
-    function renderQuality(objective) {
-      const statuses = sections.map(getSectionStatus);
-      const completed = statuses.filter((status) => status.complete).length;
-      const score = Math.round((completed / sections.length) * 100);
-      const detectedVagueWords = vagueWords.filter((word) => objective.toLowerCase().includes(word));
-
-      scoreText.textContent = `${score}%`;
-      progressFill.style.width = `${score}%`;
-
-      const lines = [`<p><strong>${completed}/5</strong> critères SMART complets.</p>`];
-
-      if (detectedVagueWords.length > 0) {
-        lines.push(`<p class="warning">Termes flous : ${escapeHtml(detectedVagueWords.join(", "))}. Relie-les à un chiffre ou remplace-les.</p>`);
-      }
-
-      if (detectedVagueWords.length === 0) {
-        lines.push(`<p class="success">Pas de termes flous. Bon signe.</p>`);
-      }
-
-      qualityList.innerHTML = lines.join("");
+      objectiveText.textContent = buildObjective();
     }
 
     function render() {
@@ -765,6 +834,30 @@
       form = structuredClone(emptyForm);
       saveForm();
       render();
+      const ti = document.getElementById("titreInput");
+      if (ti) ti.value = "";
+    });
+
+    validateButton.addEventListener("click", () => {
+      const specifique = form.specific.result || "";
+      const niveau = form.specific.level || "";
+      const atteignable = [form.achievable.resources, form.achievable.constraints ? "manque : " + form.achievable.constraints : ""].filter(Boolean).join(" / ");
+      const smartObj = {
+        titre: form.titre || "",
+        specifique,
+        niveau,
+        mesurable: form.measurable.indicator,
+        atteignable,
+        realiste: form.relevant.hours,
+        temporel: form.timebound.deadline ? form.timebound.deadline + 'T12:00:00' : ''
+      };
+      try {
+        const existing = JSON.parse(localStorage.getItem("carryItAllObjectifs") || "[]");
+        existing.push(smartObj);
+        localStorage.setItem("carryItAllObjectifs", JSON.stringify(existing));
+        localStorage.setItem("carryItObjectifSMART", JSON.stringify(smartObj));
+      } catch {}
+      window.location.href = "jalon.html";
     });
 
     copyButton.addEventListener("click", async () => {
@@ -788,6 +881,13 @@
     }
 
     render();
+
+    const titreInput = document.getElementById("titreInput");
+    titreInput.value = form.titre || "";
+    titreInput.addEventListener("input", () => {
+      form.titre = titreInput.value;
+      saveForm();
+    });
   </script>
 </body>
 </html>
