@@ -1,468 +1,812 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Carry It — Nouvel objectif</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&display=swap" rel="stylesheet">
-    <style>
-        @font-face {
-            font-family: 'Rifton';
-            src: url('assets/fonts/rifton/rifton-regular.otf') format('opentype');
-        }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Formulaire objectif SMART</title>
+  <style>
+    :root {
+      --bg: #f1f5f9;
+      --surface: #ffffff;
+      --surface-soft: #f8fafc;
+      --text: #020617;
+      --muted: #475569;
+      --muted-light: #64748b;
+      --border: #e2e8f0;
+      --border-strong: #cbd5e1;
+      --primary: #020617;
+      --primary-hover: #1e293b;
+      --success-bg: #dcfce7;
+      --success-text: #166534;
+      --warning-bg: #fef3c7;
+      --warning-text: #92400e;
+      --empty-bg: #f1f5f9;
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --shadow: 0 1px 3px rgba(15, 23, 42, 0.08), 0 1px 2px rgba(15, 23, 42, 0.04);
+    }
 
-        :root {
-            --bg: #080809;
-            --surface: rgba(255,255,255,0.025);
-            --border: rgba(255,255,255,0.07);
-            --border-focus: rgba(238,68,8,0.45);
-            --text: #FFFDF6;
-            --muted: #4A4A4A;
-            --dim: #2A2A2A;
-            --accent: #EE4408;
-            --accent-dim: rgba(238,68,8,0.08);
-        }
+    * {
+      box-sizing: border-box;
+    }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
 
-        html { scroll-behavior: smooth; }
+    button,
+    textarea {
+      font: inherit;
+    }
 
-        body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'Inter', -apple-system, sans-serif;
-            min-height: 100dvh;
-        }
+    button {
+      cursor: pointer;
+    }
 
-        /* ── NAV ── */
-        nav {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            background: rgba(8,8,9,0.85);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 40px;
-            height: 64px;
-        }
+    .page {
+      width: min(1160px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 32px 0;
+    }
 
-        .nav-back {
-            width: 36px; height: 36px;
-            background: none;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: var(--muted);
-            font-size: 16px;
-            cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            transition: color 0.15s, border-color 0.15s;
-        }
-        .nav-back:hover { color: var(--text); border-color: rgba(255,255,255,0.15); }
+    .hero,
+    .card,
+    .section-card,
+    .output-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+    }
 
-        .nav-logo {
-            font-family: 'Rifton', serif;
-            font-size: 15px;
-            color: rgba(255,253,246,0.3);
-            letter-spacing: 1px;
-        }
+    .hero {
+      padding: 32px;
+      margin-bottom: 24px;
+    }
 
-        .nav-help {
-            background: none;
-            border: none;
-            color: var(--muted);
-            font-family: 'Inter', sans-serif;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            padding: 8px 12px;
-            border-radius: 8px;
-            transition: color 0.15s, background 0.15s;
-        }
-        .nav-help:hover { color: var(--text); background: var(--surface); }
+    .eyebrow {
+      margin: 0;
+      color: var(--muted-light);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
 
-        /* ── PAGE ── */
-        .page {
-            max-width: 720px;
-            margin: 0 auto;
-            padding: 72px 40px 120px;
-        }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      align-items: start;
+      margin-top: 12px;
+    }
 
-        .page-title {
-            font-size: 13px;
-            font-weight: 600;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: var(--muted);
-            margin-bottom: 64px;
-        }
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
 
-        /* ── SMART SECTION ── */
-        .smart-section {
-            padding: 48px 0;
-            border-bottom: 1px solid var(--border);
-        }
-        .smart-section:last-of-type { border-bottom: none; }
+    h1 {
+      margin-bottom: 16px;
+      font-size: clamp(2rem, 4vw, 2.75rem);
+      line-height: 1.08;
+      letter-spacing: -0.035em;
+    }
 
-        .section-letter {
-            font-family: 'Inter', sans-serif;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            color: var(--accent);
-            opacity: 0.6;
-            margin-bottom: 16px;
-            display: block;
-        }
+    h2 {
+      margin-bottom: 8px;
+      font-size: 1.15rem;
+      line-height: 1.25;
+    }
 
-        .section-question {
-            font-size: 28px;
-            font-weight: 600;
-            color: var(--text);
-            line-height: 1.2;
-            letter-spacing: -0.5px;
-            margin-bottom: 28px;
-        }
+    .lead {
+      max-width: 720px;
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 1rem;
+    }
 
-        /* ── FIELDS ── */
-        textarea, input[type="text"], input[type="date"] {
-            width: 100%;
-            background: transparent;
-            border: none;
-            border-bottom: 1.5px solid var(--dim);
-            color: var(--text);
-            font-family: 'Inter', sans-serif;
-            font-size: 18px;
-            font-weight: 300;
-            line-height: 1.7;
-            padding: 12px 0;
-            outline: none;
-            resize: none;
-            transition: border-color 0.2s;
-            caret-color: var(--accent);
-        }
+    .btn {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 44px;
+      padding: 10px 16px;
+      border-radius: 14px;
+      border: 1px solid var(--border-strong);
+      background: var(--surface);
+      color: #1e293b;
+      font-weight: 700;
+      transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+    }
 
-        textarea:focus, input[type="text"]:focus, input[type="date"]:focus {
-            border-bottom-color: var(--accent);
-        }
+    .btn:hover {
+      background: var(--surface-soft);
+      border-color: #94a3b8;
+    }
 
-        textarea::placeholder, input::placeholder {
-            color: var(--dim);
-            font-style: italic;
-            font-weight: 300;
-        }
+    .btn:active {
+      transform: translateY(1px);
+    }
 
-        input[type="date"] {
-            color-scheme: dark;
-            max-width: 200px;
-        }
+    .btn-primary {
+      border-color: var(--primary);
+      background: var(--primary);
+      color: #ffffff;
+    }
 
-        /* ── M ROW ── */
-        .m-kpi { margin-bottom: 28px; }
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      border-color: var(--primary-hover);
+    }
 
-        .m-selects {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            align-items: flex-end;
-        }
+    .layout-two {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
 
-        .select-group {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+      align-items: start;
+    }
 
-        .select-label {
-            font-size: 10px;
-            font-weight: 600;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            color: var(--muted);
-        }
+    .stack {
+      display: grid;
+      gap: 20px;
+    }
 
-        select {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            color: var(--text);
-            font-family: 'Inter', sans-serif;
-            font-size: 14px;
-            font-weight: 400;
-            padding: 10px 36px 10px 14px;
-            outline: none;
-            cursor: pointer;
-            appearance: none;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234A4A4A' stroke-width='2'%3e%3cpath d='M6 9l6 6 6-6'%3e%3c/path%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right 10px center;
-            background-size: 14px;
-            transition: border-color 0.15s;
-        }
-        select:focus { border-color: var(--border-focus); outline: none; }
+    .card,
+    .section-card,
+    .output-card {
+      padding: 24px;
+    }
 
-        /* ── PROJET ── */
-        .projet-section {
-            padding: 48px 0 0;
-        }
+    .definition-text {
+      display: grid;
+      gap: 14px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
 
-        .projet-section .section-letter { opacity: 0.3; color: var(--text); }
+    .definition-text p {
+      margin: 0;
+    }
 
-        /* ── SUBMIT ── */
-        .submit-wrap {
-            padding: 56px 0 0;
-        }
+    .field-group {
+      display: grid;
+      gap: 16px;
+      margin-top: 16px;
+    }
 
-        .help-download {
-            color: var(--muted);
-            font-size: 13px;
-            font-weight: 400;
-            text-decoration: none;
-            transition: color 0.15s;
-        }
-        .help-download:hover { color: var(--text); }
+    label {
+      display: block;
+    }
 
-        .btn-create {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: var(--accent);
-            color: var(--text);
-            border: none;
-            border-radius: 14px;
-            font-family: 'Inter', sans-serif;
-            font-size: 16px;
-            font-weight: 600;
-            padding: 18px 36px;
-            cursor: pointer;
-            transition: background 0.15s, transform 0.12s;
-            letter-spacing: -0.1px;
-        }
-        .btn-create:hover { background: #ff5d1a; transform: translateY(-2px); }
-        .btn-create:active { transform: translateY(0); }
+    .label-text {
+      display: block;
+      margin-bottom: 8px;
+      color: #1e293b;
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
 
-        .btn-create svg {
-            transition: transform 0.15s;
-        }
-        .btn-create:hover svg { transform: translateX(3px); }
+    textarea {
+      width: 100%;
+      min-height: 92px;
+      resize: vertical;
+      border: 1px solid var(--border-strong);
+      border-radius: 16px;
+      background: var(--surface);
+      color: var(--text);
+      padding: 12px 14px;
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
 
-        /* ── RESPONSIVE ── */
-        @media (max-width: 640px) {
-            nav { padding: 0 20px; }
-            .page { padding: 48px 24px 80px; }
-            .section-question { font-size: 22px; }
-            textarea, input[type="text"] { font-size: 16px; }
-        }
-    </style>
+    textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.12);
+    }
+
+    textarea::placeholder {
+      color: #94a3b8;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .section-title-row {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .letter {
+      display: grid;
+      flex: 0 0 auto;
+      width: 44px;
+      height: 44px;
+      place-items: center;
+      border-radius: 14px;
+      background: var(--empty-bg);
+      color: #334155;
+      font-weight: 800;
+    }
+
+    .letter.complete {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    .section-definition {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .badge {
+      flex: 0 0 auto;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .badge.empty {
+      background: var(--empty-bg);
+      color: #475569;
+    }
+
+    .badge.partial {
+      background: var(--warning-bg);
+      color: var(--warning-text);
+    }
+
+    .badge.complete {
+      background: var(--success-bg);
+      color: var(--success-text);
+    }
+
+    .section-status {
+      margin-top: 16px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: var(--surface-soft);
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .section-status .warning {
+      color: var(--warning-text);
+    }
+
+    .side {
+      display: grid;
+      gap: 20px;
+    }
+
+    .progress-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+      color: #334155;
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+
+    .progress-track {
+      height: 12px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e2e8f0;
+    }
+
+    .progress-fill {
+      width: 0;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--primary);
+      transition: width 0.2s ease;
+    }
+
+    .quality-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .quality-list p {
+      margin: 0;
+    }
+
+    .quality-list .warning {
+      color: var(--warning-text);
+    }
+
+    .quality-list .success {
+      color: var(--success-text);
+    }
+
+    .output-card {
+      background: var(--surface-soft);
+    }
+
+    .output-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+
+    .output-help {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .objective-text {
+      margin: 0;
+      color: #334155;
+      font-size: 0.94rem;
+      line-height: 1.75;
+    }
+
+    ol {
+      margin: 16px 0 0;
+      padding-left: 22px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    li + li {
+      margin-top: 8px;
+    }
+
+    .toast {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      max-width: 320px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: var(--primary);
+      color: #ffffff;
+      font-size: 0.9rem;
+      box-shadow: 0 16px 30px rgba(15, 23, 42, 0.24);
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .toast.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 980px) {
+      .hero-grid,
+      .layout-two,
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .side {
+        position: static;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page {
+        width: min(100% - 24px, 1160px);
+        padding: 20px 0;
+      }
+
+      .hero,
+      .card,
+      .section-card,
+      .output-card {
+        padding: 20px;
+        border-radius: 20px;
+      }
+
+      .section-header,
+      .output-header {
+        flex-direction: column;
+      }
+
+      .badge {
+        width: fit-content;
+      }
+    }
+  </style>
 </head>
 <body>
-
-<nav>
-    <button class="nav-back" onclick="goBack()" aria-label="Retour">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-    </button>
-    <span class="nav-logo">CARRY IT</span>
-    <div style="width:60px"></div>
-</nav>
-
-<div class="page">
-    <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:64px;">
-        <p class="page-title" style="margin-bottom:0;">Nouvel objectif</p>
-        <a href="prompts/instruction_final.md" download="CarryIT_Prompt_SMART.md" class="help-download">
-            Tu galères ? Télécharge le prompt →
-        </a>
-    </div>
-
-    <!-- S -->
-    <div class="smart-section">
-        <span class="section-letter">S — Spécifique</span>
-        <p class="section-question">Je veux…</p>
-        <textarea id="specifiqueInput" rows="2"
-            placeholder="Courir un marathon en moins de 4h d'ici décembre."
-            oninput="autoGrow(this)"></textarea>
-    </div>
-
-    <!-- M -->
-    <div class="smart-section">
-        <span class="section-letter">M — Mesurable</span>
-        <p class="section-question">Je mesurerai mes progrès avec</p>
-        <div class="m-kpi">
-            <input type="text" id="mesurableInput" placeholder="km courus, clients signés, kg perdus…">
+  <main class="page">
+    <header class="hero">
+      <p class="eyebrow">Formulaire SMART</p>
+      <div class="hero-grid">
+        <div>
+          <h1>Transformer une intention en objectif vérifiable</h1>
+          <p class="lead">
+            Remplissez l'intention brute, puis chaque critère SMART. Le résultat final doit pouvoir être compris, mesuré et daté sans explication orale.
+          </p>
         </div>
-        <div class="m-selects">
-            <div class="select-group">
-                <span class="select-label">Fréquence</span>
-                <select id="frequenceSelect" onchange="handleFrequencyChange()">
-                    <option value="quotidien">Quotidien</option>
-                    <option value="hebdomadaire" selected>Hebdomadaire</option>
-                    <option value="mensuel">Mensuel</option>
-                    <option value="trimestriel">Trimestriel</option>
-                    <option value="annuel">Annuel</option>
-                </select>
-            </div>
-            <div class="select-group">
-                <span class="select-label" id="dayLabel">Quel jour</span>
-                <select id="daySelect">
-                    <option value="lundi">Lundi</option>
-                    <option value="mardi">Mardi</option>
-                    <option value="mercredi">Mercredi</option>
-                    <option value="jeudi">Jeudi</option>
-                    <option value="vendredi">Vendredi</option>
-                    <option value="samedi">Samedi</option>
-                    <option value="dimanche">Dimanche</option>
-                </select>
-            </div>
+        <div>
+          <button class="btn" type="button" id="resetButton">Réinitialiser</button>
         </div>
-    </div>
+      </div>
+    </header>
 
-    <!-- A -->
-    <div class="smart-section">
-        <span class="section-letter">A — Atteignable</span>
-        <p class="section-question">Qu'est-ce que j'ai pour y arriver — et est-ce suffisant ?</p>
-        <textarea id="atteignableInput" rows="2"
-            placeholder="J'ai les chaussures et 5h/sem libres. Il me manque un plan d'entraînement."
-            oninput="autoGrow(this)"></textarea>
-    </div>
+    <section class="layout-two">
+      <div class="card">
+        <h2>Point de départ</h2>
+        <div class="field-group">
+          <label>
+            <span class="label-text">Objectif brut</span>
+            <textarea data-field="context.rawObjective" placeholder="Ex. Je veux lancer CarryIt"></textarea>
+          </label>
+          <label>
+            <span class="label-text">Responsable</span>
+            <textarea data-field="context.owner" placeholder="Ex. Nils, équipe produit, responsable marketing"></textarea>
+          </label>
+        </div>
+      </div>
 
-    <!-- R -->
-    <div class="smart-section">
-        <span class="section-letter">R — Réaliste</span>
-        <p class="section-question">Est-ce compatible avec mon quotidien ?</p>
-        <textarea id="realisteInput" rows="2"
-            placeholder="35h/sem de travail, 3 créneaux sport libres, aucune contrainte avant novembre."
-            oninput="autoGrow(this)"></textarea>
-    </div>
+      <div class="card">
+        <h2>Définition retenue</h2>
+        <div class="definition-text">
+          <p>Origine : Doran, 1981 — Specific, Measurable, Assignable, Realistic, Time-related.</p>
+          <p>Version utilisée ici : Spécifique, Mesurable, Atteignable, Pertinent, Temporellement défini.</p>
+          <p>Le critère original "Assignable" est conservé sous forme de champ séparé : responsable.</p>
+        </div>
+      </div>
+    </section>
 
-    <!-- T -->
-    <div class="smart-section">
-        <span class="section-letter">T — Temporel</span>
-        <p class="section-question">Je vise le</p>
-        <input type="date" id="temporelInput">
-    </div>
+    <section class="main-grid">
+      <div class="stack" id="sectionsContainer"></div>
 
-    <!-- Projet -->
-    <div class="projet-section">
-        <span class="section-letter"># — Identité</span>
-        <p class="section-question">Mon projet s'appelle</p>
-        <input type="text" id="titreInput" placeholder="Opération Marathon">
-    </div>
+      <aside class="side">
+        <div class="card">
+          <div class="progress-row">
+            <span>Complétion</span>
+            <span id="scoreText">0%</span>
+          </div>
+          <div class="progress-track" aria-hidden="true">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+          <div class="quality-list" id="qualityList"></div>
+        </div>
 
-    <!-- Submit -->
-    <div class="submit-wrap">
-        <button class="btn-create" onclick="finalizeObjectif()">
-            Créer le projet
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </button>
-    </div>
-</div>
+        <div class="output-card">
+          <div class="output-header">
+            <div>
+              <h2>Objectif SMART généré</h2>
+              <p class="output-help">Texte à relire, raccourcir et corriger manuellement.</p>
+            </div>
+            <button class="btn btn-primary" type="button" id="copyButton">Copier</button>
+          </div>
+          <p class="objective-text" id="objectiveText"></p>
+        </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        loadSmartData();
-        document.querySelectorAll('input, textarea, select').forEach(el => {
-            el.addEventListener('input', saveAll);
-            el.addEventListener('change', saveAll);
-        });
+        <div class="card">
+          <h2>Contrôle manuel final</h2>
+          <ol>
+            <li>Supprimer les mots flous non mesurés.</li>
+            <li>Vérifier que la cible est observable par une autre personne.</li>
+            <li>Vérifier que la date limite permet une décision : atteint, non atteint ou à revoir.</li>
+            <li>Réduire la phrase finale si elle devient trop longue.</li>
+          </ol>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite">Objectif copié.</div>
+
+  <script>
+    const sections = [
+      {
+        key: "specific",
+        letter: "S",
+        title: "Spécifique",
+        definition: "L'objectif doit dire précisément quel résultat est visé, pour quel périmètre et par quelle action principale.",
+        fields: [
+          ["result", "Résultat attendu", "Ex. publier une version bêta utilisable de CarryIt"],
+          ["scope", "Périmètre ou cible", "Ex. utilisateurs francophones intéressés par le suivi d'objectifs"],
+          ["action", "Action principale", "Ex. développer le parcours d'inscription, la création d'objectif et le tableau de bord"]
+        ]
+      },
+      {
+        key: "measurable",
+        letter: "M",
+        title: "Mesurable",
+        definition: "L'objectif doit contenir un indicateur, une cible et une source de mesure. La mesure peut être quantitative ou observable.",
+        fields: [
+          ["indicator", "Indicateur", "Ex. nombre de comptes créés, taux d'activation, nombre de retours qualifiés"],
+          ["target", "Cible à atteindre", "Ex. 50 comptes créés et 10 retours utilisateurs exploitables"],
+          ["source", "Source de mesure", "Ex. base de données, analytics, formulaire de feedback, tableau de suivi"]
+        ]
+      },
+      {
+        key: "achievable",
+        letter: "A",
+        title: "Atteignable",
+        definition: "L'objectif doit être compatible avec les ressources disponibles et les contraintes connues.",
+        fields: [
+          ["resources", "Ressources disponibles", "Ex. 6 h par semaine, stack React déjà maîtrisée, backlog priorisé"],
+          ["constraints", "Contraintes principales", "Ex. alternance, temps limité, pas encore de base utilisateurs"],
+          ["firstStep", "Première action vérifiable", "Ex. finaliser la maquette du formulaire SMART avant vendredi"]
+        ]
+      },
+      {
+        key: "relevant",
+        letter: "R",
+        title: "Pertinent",
+        definition: "L'objectif doit servir une priorité concrète et expliquer pourquoi il est utile maintenant.",
+        fields: [
+          ["priority", "Priorité servie", "Ex. valider l'intérêt utilisateur avant d'ajouter des fonctions avancées"],
+          ["reason", "Raison concrète", "Ex. éviter de développer plusieurs mois sans retour terrain"],
+          ["riskIfNot", "Risque si l'objectif n'est pas traité", "Ex. construire une application trop large sans preuve d'usage"]
+        ]
+      },
+      {
+        key: "timebound",
+        letter: "T",
+        title: "Temporellement défini",
+        definition: "L'objectif doit avoir une échéance et au moins un point de contrôle pour éviter une formulation ouverte.",
+        fields: [
+          ["deadline", "Échéance finale", "Ex. 30 septembre 2026"],
+          ["review", "Point de contrôle", "Ex. revue intermédiaire le 15 septembre 2026"]
+        ]
+      }
+    ];
+
+    const vagueWords = ["améliorer", "mieux", "plus", "optimiser", "progresser", "booster", "rapidement", "efficacement", "simplement"];
+    const dateSignals = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre", "trimestre", "semaine", "mois", "jour", "q1", "q2", "q3", "q4", "s1", "s2"];
+
+    const emptyForm = {
+      context: { rawObjective: "", owner: "" },
+      specific: { result: "", scope: "", action: "" },
+      measurable: { indicator: "", target: "", source: "" },
+      achievable: { resources: "", constraints: "", firstStep: "" },
+      relevant: { priority: "", reason: "", riskIfNot: "" },
+      timebound: { deadline: "", review: "" }
+    };
+
+    let form = structuredClone(emptyForm);
+
+    const sectionsContainer = document.getElementById("sectionsContainer");
+    const scoreText = document.getElementById("scoreText");
+    const progressFill = document.getElementById("progressFill");
+    const qualityList = document.getElementById("qualityList");
+    const objectiveText = document.getElementById("objectiveText");
+    const resetButton = document.getElementById("resetButton");
+    const copyButton = document.getElementById("copyButton");
+    const toast = document.getElementById("toast");
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function isFilled(value) {
+      return value.trim().length > 0;
+    }
+
+    function hasNumber(value) {
+      return /[0-9]/.test(value);
+    }
+
+    function hasDateSignal(value) {
+      const normalized = value.toLowerCase();
+      return hasNumber(value) || dateSignals.some((signal) => normalized.includes(signal));
+    }
+
+    function getValue(path) {
+      const [group, key] = path.split(".");
+      return form[group][key];
+    }
+
+    function setValue(path, value) {
+      const [group, key] = path.split(".");
+      form[group][key] = value;
+    }
+
+    function getSectionStatus(section) {
+      const values = section.fields.map(([fieldKey]) => form[section.key][fieldKey]);
+      const filled = values.filter(isFilled).length;
+      const baseComplete = filled === section.fields.length;
+      let complete = baseComplete;
+      let warning = "";
+
+      if (section.key === "timebound") {
+        complete = baseComplete && hasDateSignal(form.timebound.deadline);
+        if (baseComplete && !complete) {
+          warning = "Échéance à rendre plus explicite.";
+        }
+      }
+
+      if (section.key === "measurable" && baseComplete && !hasNumber(form.measurable.target)) {
+        warning = "Cible sans nombre : acceptable seulement si le critère observable est non numérique.";
+      }
+
+      return {
+        filled,
+        total: section.fields.length,
+        complete,
+        warning
+      };
+    }
+
+    function statusClass(status) {
+      if (status.complete) return "complete";
+      if (status.filled > 0) return "partial";
+      return "empty";
+    }
+
+    function statusLabel(status) {
+      if (status.complete) return "Complet";
+      if (status.filled > 0) return "À compléter";
+      return "Vide";
+    }
+
+    function buildObjective() {
+      const owner = form.context.owner || "[responsable]";
+      const deadline = form.timebound.deadline || "[échéance]";
+      const action = form.specific.action || "[action principale]";
+      const result = form.specific.result || "[résultat attendu]";
+      const scope = form.specific.scope || "[périmètre ou cible]";
+      const indicator = form.measurable.indicator || "[indicateur]";
+      const target = form.measurable.target || "[cible]";
+      const source = form.measurable.source || "[source de mesure]";
+      const resources = form.achievable.resources || "[ressources]";
+      const constraints = form.achievable.constraints || "[contraintes]";
+      const priority = form.relevant.priority || "[priorité]";
+      const reason = form.relevant.reason || "[raison]";
+      const review = form.timebound.review || "[point de contrôle]";
+
+      return `D'ici ${deadline}, ${owner} va ${action} afin d'obtenir ${result} pour ${scope}. L'atteinte sera vérifiée avec l'indicateur suivant : ${indicator}, cible : ${target}, source : ${source}. L'objectif est atteignable avec ${resources}, en tenant compte de ${constraints}. Il est pertinent car ${reason} et sert la priorité suivante : ${priority}. Point de contrôle : ${review}.`;
+    }
+
+    function renderSections() {
+      sectionsContainer.innerHTML = sections.map((section) => {
+        const status = getSectionStatus(section);
+        const fieldHtml = section.fields.map(([fieldKey, label, placeholder]) => {
+          const path = `${section.key}.${fieldKey}`;
+          return `
+            <label>
+              <span class="label-text">${escapeHtml(label)}</span>
+              <textarea data-field="${escapeHtml(path)}" placeholder="${escapeHtml(placeholder)}">${escapeHtml(getValue(path))}</textarea>
+            </label>
+          `;
+        }).join("");
+
+        const warningHtml = status.warning ? `<span class="warning"> ${escapeHtml(status.warning)}</span>` : "";
+
+        return `
+          <article class="section-card">
+            <div class="section-header">
+              <div class="section-title-row">
+                <div class="letter ${status.complete ? "complete" : ""}">${escapeHtml(section.letter)}</div>
+                <div>
+                  <h2>${escapeHtml(section.title)}</h2>
+                  <p class="section-definition">${escapeHtml(section.definition)}</p>
+                </div>
+              </div>
+              <span class="badge ${statusClass(status)}">${statusLabel(status)}</span>
+            </div>
+            <div class="field-group">${fieldHtml}</div>
+            <div class="section-status">
+              ${status.filled}/${status.total} élément${status.total > 1 ? "s" : ""} renseigné${status.filled > 1 ? "s" : ""}.${warningHtml}
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    function renderQuality(objective) {
+      const statuses = sections.map(getSectionStatus);
+      const completed = statuses.filter((status) => status.complete).length;
+      const score = Math.round((completed / sections.length) * 100);
+      const missingOwner = !isFilled(form.context.owner);
+      const detectedVagueWords = vagueWords.filter((word) => objective.toLowerCase().includes(word));
+
+      scoreText.textContent = `${score}%`;
+      progressFill.style.width = `${score}%`;
+
+      const lines = [`<p><strong>${completed}/5</strong> critères SMART complets.</p>`];
+
+      if (missingOwner) {
+        lines.push(`<p class="warning">Responsable non renseigné. À ajouter si l'objectif implique une action suivie.</p>`);
+      }
+
+      if (detectedVagueWords.length > 0) {
+        lines.push(`<p class="warning">Termes flous détectés : ${escapeHtml(detectedVagueWords.join(", "))}. Ils doivent être reliés à un indicateur ou remplacés.</p>`);
+      }
+
+      if (!missingOwner && detectedVagueWords.length === 0) {
+        lines.push(`<p class="success">Aucun signal de formulation floue détecté dans la phrase générée.</p>`);
+      }
+
+      qualityList.innerHTML = lines.join("");
+    }
+
+    function render() {
+      renderSections();
+      const objective = buildObjective();
+      objectiveText.textContent = objective;
+      renderQuality(objective);
+    }
+
+    function syncInputsFromState() {
+      document.querySelectorAll("[data-field]").forEach((input) => {
+        input.value = getValue(input.dataset.field);
+      });
+    }
+
+    document.addEventListener("input", (event) => {
+      const field = event.target.dataset.field;
+      if (!field) return;
+
+      setValue(field, event.target.value);
+      render();
+      syncInputsFromState();
+      event.target.focus();
     });
 
-    function autoGrow(el) {
-        el.style.height = 'auto';
-        el.style.height = el.scrollHeight + 'px';
+    resetButton.addEventListener("click", () => {
+      form = structuredClone(emptyForm);
+      render();
+      syncInputsFromState();
+    });
+
+    copyButton.addEventListener("click", async () => {
+      const objective = buildObjective();
+
+      try {
+        await navigator.clipboard.writeText(objective);
+        showToast("Objectif copié.");
+      } catch (error) {
+        showToast("Copie impossible dans ce navigateur.");
+      }
+    });
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("visible");
+      window.clearTimeout(showToast.timeout);
+      showToast.timeout = window.setTimeout(() => {
+        toast.classList.remove("visible");
+      }, 2200);
     }
 
-    function saveAll() {
-        localStorage.setItem('carryItObjectifSMART', JSON.stringify({
-            specifique:  document.getElementById('specifiqueInput').value,
-            mesurable:   document.getElementById('mesurableInput').value,
-            atteignable: document.getElementById('atteignableInput').value,
-            realiste:    document.getElementById('realisteInput').value,
-            temporel:    document.getElementById('temporelInput').value,
-            titre:       document.getElementById('titreInput').value,
-            frequence:   document.getElementById('frequenceSelect').value,
-            jour:        document.getElementById('daySelect').value,
-            kpiType:     'cadence',
-        }));
-    }
-
-    function loadSmartData() {
-        const d = JSON.parse(localStorage.getItem('carryItObjectifSMART') || '{}');
-        ['specifique','mesurable','atteignable','realiste','temporel','titre'].forEach(k => {
-            const el = document.getElementById(k + 'Input');
-            if (el && d[k]) { el.value = d[k]; if (el.tagName === 'TEXTAREA') autoGrow(el); }
-        });
-        if (d.frequence) { document.getElementById('frequenceSelect').value = d.frequence; handleFrequencyChange(); }
-        if (d.jour) document.getElementById('daySelect').value = d.jour;
-    }
-
-    function handleFrequencyChange() {
-        const freq = document.getElementById('frequenceSelect').value;
-        const sel = document.getElementById('daySelect');
-        const lbl = document.getElementById('dayLabel');
-        if (freq === 'quotidien') {
-            lbl.textContent = 'Moment';
-            sel.innerHTML = '<option value="matin">Matin</option><option value="midi">Midi</option><option value="soir">Soir</option>';
-        } else if (freq === 'hebdomadaire') {
-            lbl.textContent = 'Quel jour';
-            sel.innerHTML = '<option value="lundi">Lundi</option><option value="mardi">Mardi</option><option value="mercredi">Mercredi</option><option value="jeudi">Jeudi</option><option value="vendredi">Vendredi</option><option value="samedi">Samedi</option><option value="dimanche">Dimanche</option>';
-        } else if (freq === 'mensuel') {
-            lbl.textContent = 'Jour du mois';
-            sel.innerHTML = Array.from({length:31},(_,i)=>`<option value="${i+1}">${i+1}</option>`).join('');
-        } else if (freq === 'trimestriel') {
-            lbl.textContent = 'Mois';
-            sel.innerHTML = '<option value="janvier">Janvier</option><option value="avril">Avril</option><option value="juillet">Juillet</option><option value="octobre">Octobre</option>';
-        } else {
-            lbl.textContent = 'Mois';
-            sel.innerHTML = '<option value="janvier">Janvier</option><option value="fevrier">Février</option><option value="mars">Mars</option><option value="avril">Avril</option><option value="mai">Mai</option><option value="juin">Juin</option><option value="juillet">Juillet</option><option value="aout">Août</option><option value="septembre">Septembre</option><option value="octobre">Octobre</option><option value="novembre">Novembre</option><option value="decembre">Décembre</option>';
-        }
-        saveAll();
-    }
-
-    function finalizeObjectif() {
-        saveAll();
-        const current = JSON.parse(localStorage.getItem('carryItObjectifSMART') || '{}');
-        if (!current.titre) { document.getElementById('titreInput').focus(); document.getElementById('titreInput').scrollIntoView({behavior:'smooth', block:'center'}); return; }
-        let all = JSON.parse(localStorage.getItem('carryItAllObjectifs') || '[]');
-        const jalons = generateJalons(current.temporel);
-        all.push({ id: Date.now(), createdAt: Date.now(), ...current, measures: [], jalons });
-        localStorage.setItem('carryItAllObjectifs', JSON.stringify(all));
-        localStorage.setItem('carryItMilestones', JSON.stringify(jalons));
-        localStorage.removeItem('carryItObjectifSMART');
-        window.location.href = 'dashboard.html';
-    }
-
-    function goBack() {
-        if (confirm('Quitter ? Tes données sont sauvegardées automatiquement.')) history.back();
-    }
-
-    function openHelpMail() {
-        const d = JSON.parse(localStorage.getItem('carryItObjectifSMART') || '{}');
-        const body = `CarryIT — Aide objectif SMART\n\nS : ${d.specifique||'(vide)'}\nM : ${d.mesurable||'(vide)'}\nA : ${d.atteignable||'(vide)'}\nR : ${d.realiste||'(vide)'}\nT : ${d.temporel||'(vide)'}\n\nAide-moi à formuler chaque critère et à proposer 4 à 6 jalons concrets. Réponds section par section.`;
-        window.location.href = `mailto:?subject=${encodeURIComponent('CarryIT — Aide SMART')}&body=${encodeURIComponent(body)}`;
-    }
-
-    function generateJalons(temporelDate) {
-        const today = new Date();
-        const end = new Date(temporelDate);
-        const days = Math.ceil((end - today) / 86400000);
-        let configs = [];
-        if (days < 90) {
-            configs = [{titre:'Jalon Mi-Parcours',p:50,offset:Math.floor(days*.5)},{titre:'Jalon Final',p:100,offset:days}];
-        } else if (days <= 365) {
-            configs = [{titre:'Jalon Décollage',p:15,offset:30},{titre:'Jalon Mi-Parcours',p:50,offset:Math.floor(days*.5)},{titre:'Jalon Final',p:100,offset:days}];
-        } else {
-            configs = [{titre:'Jalon Décollage',p:10,offset:30},{titre:'Jalon Trimestriel',p:25,offset:90},{titre:'Jalon Mi-Parcours',p:50,offset:Math.floor(days*.5)},{titre:'Jalon Final',p:100,offset:days}];
-        }
-        return configs.map((c,i) => {
-            const d = new Date(today); d.setDate(d.getDate() + c.offset);
-            const tag = c.p===100?'OBJECTIF 100%':c.p===50?'CAP 50%':c.p===25?'TRIMESTRE 2':c.p===15?'MOIS 1':'DÉCOLLAGE';
-            return {id:`m${Date.now()}-${i}`,date:d.toISOString(),tag,title:c.titre,desc:`Atteindre ${c.p}% de l'objectif`,kpi:'',kpis:[],statut:i===0?'in_progress':'pending',tasks:[]};
-        });
-    }
-</script>
+    render();
+  </script>
 </body>
 </html>
