@@ -445,44 +445,20 @@
 <body>
   <main class="page">
     <header class="hero">
-      <p class="eyebrow">Formulaire SMART</p>
+      <p class="eyebrow">Objectif SMART</p>
       <div class="hero-grid">
         <div>
-          <h1>Transformer une intention en objectif vérifiable</h1>
+          <h1>Pose ton objectif. Pour de vrai.</h1>
           <p class="lead">
-            Remplissez l'intention brute, puis chaque critère SMART. Le résultat final doit pouvoir être compris, mesuré et daté sans explication orale.
+            T'as un projet en tête. Force-toi à répondre à chaque question. Si tu peux pas répondre, l'objectif est pas encore prêt.
           </p>
         </div>
         <div>
-          <button class="btn" type="button" id="resetButton">Réinitialiser</button>
+          <button class="btn" type="button" id="resetButton">Recommencer</button>
         </div>
       </div>
     </header>
 
-    <section class="layout-two">
-      <div class="card">
-        <h2>Point de départ</h2>
-        <div class="field-group">
-          <label>
-            <span class="label-text">Objectif brut</span>
-            <textarea data-field="context.rawObjective" placeholder="Ex. Je veux lancer CarryIt"></textarea>
-          </label>
-          <label>
-            <span class="label-text">Responsable</span>
-            <textarea data-field="context.owner" placeholder="Ex. Nils, équipe produit, responsable marketing"></textarea>
-          </label>
-        </div>
-      </div>
-
-      <div class="card">
-        <h2>Définition retenue</h2>
-        <div class="definition-text">
-          <p>Origine : Doran, 1981 — Specific, Measurable, Assignable, Realistic, Time-related.</p>
-          <p>Version utilisée ici : Spécifique, Mesurable, Atteignable, Pertinent, Temporellement défini.</p>
-          <p>Le critère original "Assignable" est conservé sous forme de champ séparé : responsable.</p>
-        </div>
-      </div>
-    </section>
 
     <section class="main-grid">
       <div class="stack" id="sectionsContainer"></div>
@@ -502,8 +478,8 @@
         <div class="output-card">
           <div class="output-header">
             <div>
-              <h2>Objectif SMART généré</h2>
-              <p class="output-help">Texte à relire, raccourcir et corriger manuellement.</p>
+              <h2>Ton objectif formulé</h2>
+              <p class="output-help">Relis, coupe ce qui est en trop. C'est un brouillon, pas un contrat.</p>
             </div>
             <button class="btn btn-primary" type="button" id="copyButton">Copier</button>
           </div>
@@ -511,12 +487,12 @@
         </div>
 
         <div class="card">
-          <h2>Contrôle manuel final</h2>
+          <h2>Avant de valider</h2>
           <ol>
-            <li>Supprimer les mots flous non mesurés.</li>
-            <li>Vérifier que la cible est observable par une autre personne.</li>
-            <li>Vérifier que la date limite permet une décision : atteint, non atteint ou à revoir.</li>
-            <li>Réduire la phrase finale si elle devient trop longue.</li>
+            <li>Enlève les mots vagues qui n'ont pas de chiffre derrière.</li>
+            <li>Est-ce qu'une autre personne peut vérifier si t'as réussi ou non ?</li>
+            <li>La date te force à trancher : atteint, pas atteint, ou à revoir.</li>
+            <li>La phrase est trop longue ? Coupe.</li>
           </ol>
         </div>
       </aside>
@@ -531,54 +507,48 @@
         key: "specific",
         letter: "S",
         title: "Spécifique",
-        definition: "L'objectif doit dire précisément quel résultat est visé, pour quel périmètre et par quelle action principale.",
+        definition: "Un objectif spécifique dit exactement ce que tu veux réussir.",
         fields: [
-          ["result", "Résultat attendu", "Ex. publier une version bêta utilisable de CarryIt"],
-          ["scope", "Périmètre ou cible", "Ex. utilisateurs francophones intéressés par le suivi d'objectifs"],
-          ["action", "Action principale", "Ex. développer le parcours d'inscription, la création d'objectif et le tableau de bord"]
+          ["result", "Quel résultat concret veux-tu obtenir ?", "Ex : publier un livre, obtenir 3 biens locatifs, lancer une app payante, courir un marathon officiel"],
+          ["level", "Quel niveau exact rendra cet objectif réussi ?", "Ex : 5 000 € nets mensuels, 3 biens signés, 1 000 utilisateurs actifs, marathon terminé en moins de 4h"]
         ]
       },
       {
         key: "measurable",
         letter: "M",
         title: "Mesurable",
-        definition: "L'objectif doit contenir un indicateur, une cible et une source de mesure. La mesure peut être quantitative ou observable.",
+        definition: "Maintenant, par rapport à cet objectif précis, définis ce qui te permettra de voir ta progression.",
         fields: [
-          ["indicator", "Indicateur", "Ex. nombre de comptes créés, taux d'activation, nombre de retours qualifiés"],
-          ["target", "Cible à atteindre", "Ex. 50 comptes créés et 10 retours utilisateurs exploitables"],
-          ["source", "Source de mesure", "Ex. base de données, analytics, formulaire de feedback, tableau de suivi"]
+          ["indicator", "Comment tu vas suivre ta progression ?", "Ex : temps au km à chaque sortie, chiffre d'affaires mensuel, nombre de biens visités"]
         ]
       },
       {
         key: "achievable",
         letter: "A",
         title: "Atteignable",
-        definition: "L'objectif doit être compatible avec les ressources disponibles et les contraintes connues.",
+        definition: "Est-ce que c'est compatible avec mon temps et mes contraintes réelles.",
         fields: [
-          ["resources", "Ressources disponibles", "Ex. 6 h par semaine, stack React déjà maîtrisée, backlog priorisé"],
-          ["constraints", "Contraintes principales", "Ex. alternance, temps limité, pas encore de base utilisateurs"],
-          ["firstStep", "Première action vérifiable", "Ex. finaliser la maquette du formulaire SMART avant vendredi"]
+          ["resources", "Ce que t'as vraiment", "Ex. 4 entraînements par semaine, plan structuré"],
+          ["constraints", "Ce qui peut faire dérailler", "Ex. alternance, genou droit fragile, fatigue accumulée"]
         ]
       },
       {
         key: "relevant",
         letter: "R",
         title: "Pertinent",
-        definition: "L'objectif doit servir une priorité concrète et expliquer pourquoi il est utile maintenant.",
+        definition: "Pourquoi cet objectif et pas un autre en ce moment.",
         fields: [
-          ["priority", "Priorité servie", "Ex. valider l'intérêt utilisateur avant d'ajouter des fonctions avancées"],
-          ["reason", "Raison concrète", "Ex. éviter de développer plusieurs mois sans retour terrain"],
-          ["riskIfNot", "Risque si l'objectif n'est pas traité", "Ex. construire une application trop large sans preuve d'usage"]
+          ["priority", "Quelle priorité ça sert", "Ex. prouver que je peux tenir un plan long terme"],
+          ["reason", "Pourquoi maintenant", "Ex. j'ai lâché l'an dernier à 8 semaines de la course"]
         ]
       },
       {
         key: "timebound",
         letter: "T",
         title: "Temporellement défini",
-        definition: "L'objectif doit avoir une échéance et au moins un point de contrôle pour éviter une formulation ouverte.",
+        definition: "À quelle date cet objectif sera atteint.",
         fields: [
-          ["deadline", "Échéance finale", "Ex. 30 septembre 2026"],
-          ["review", "Point de contrôle", "Ex. revue intermédiaire le 15 septembre 2026"]
+          ["deadline", "Date limite", "Ex. 12 octobre 2026"]
         ]
       }
     ];
@@ -587,15 +557,28 @@
     const dateSignals = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre", "trimestre", "semaine", "mois", "jour", "q1", "q2", "q3", "q4", "s1", "s2"];
 
     const emptyForm = {
-      context: { rawObjective: "", owner: "" },
-      specific: { result: "", scope: "", action: "" },
-      measurable: { indicator: "", target: "", source: "" },
-      achievable: { resources: "", constraints: "", firstStep: "" },
-      relevant: { priority: "", reason: "", riskIfNot: "" },
-      timebound: { deadline: "", review: "" }
+      specific: { result: "", level: "" },
+      measurable: { indicator: "" },
+      achievable: { resources: "", constraints: "" },
+      relevant: { priority: "", reason: "" },
+      timebound: { deadline: "" }
     };
 
-    let form = structuredClone(emptyForm);
+    const STORAGE_KEY = "carryit_smart_form";
+
+    function loadForm() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) return JSON.parse(saved);
+      } catch {}
+      return structuredClone(emptyForm);
+    }
+
+    function saveForm() {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(form)); } catch {}
+    }
+
+    let form = loadForm();
 
     const sectionsContainer = document.getElementById("sectionsContainer");
     const scoreText = document.getElementById("scoreText");
@@ -652,10 +635,6 @@
         }
       }
 
-      if (section.key === "measurable" && baseComplete && !hasNumber(form.measurable.target)) {
-        warning = "Cible sans nombre : acceptable seulement si le critère observable est non numérique.";
-      }
-
       return {
         filled,
         total: section.fields.length,
@@ -677,21 +656,16 @@
     }
 
     function buildObjective() {
-      const owner = form.context.owner || "[responsable]";
       const deadline = form.timebound.deadline || "[échéance]";
-      const action = form.specific.action || "[action principale]";
-      const result = form.specific.result || "[résultat attendu]";
-      const scope = form.specific.scope || "[périmètre ou cible]";
+      const result = form.specific.result || "[résultat concret]";
+      const level = form.specific.level || "[niveau de réussite]";
       const indicator = form.measurable.indicator || "[indicateur]";
-      const target = form.measurable.target || "[cible]";
-      const source = form.measurable.source || "[source de mesure]";
       const resources = form.achievable.resources || "[ressources]";
       const constraints = form.achievable.constraints || "[contraintes]";
       const priority = form.relevant.priority || "[priorité]";
       const reason = form.relevant.reason || "[raison]";
-      const review = form.timebound.review || "[point de contrôle]";
 
-      return `D'ici ${deadline}, ${owner} va ${action} afin d'obtenir ${result} pour ${scope}. L'atteinte sera vérifiée avec l'indicateur suivant : ${indicator}, cible : ${target}, source : ${source}. L'objectif est atteignable avec ${resources}, en tenant compte de ${constraints}. Il est pertinent car ${reason} et sert la priorité suivante : ${priority}. Point de contrôle : ${review}.`;
+      return `D'ici ${deadline}, ${result} — niveau visé : ${level}. L'atteinte sera vérifiée via ${indicator}. L'objectif est atteignable avec ${resources}, en tenant compte de ${constraints}. Il est pertinent car ${reason} et sert la priorité : ${priority}.`;
     }
 
     function renderSections() {
@@ -713,16 +687,16 @@
           <article class="section-card">
             <div class="section-header">
               <div class="section-title-row">
-                <div class="letter ${status.complete ? "complete" : ""}">${escapeHtml(section.letter)}</div>
+                <div class="letter ${status.complete ? "complete" : ""}" data-letter="${escapeHtml(section.key)}">${escapeHtml(section.letter)}</div>
                 <div>
                   <h2>${escapeHtml(section.title)}</h2>
                   <p class="section-definition">${escapeHtml(section.definition)}</p>
                 </div>
               </div>
-              <span class="badge ${statusClass(status)}">${statusLabel(status)}</span>
+              <span class="badge ${statusClass(status)}" data-badge="${escapeHtml(section.key)}">${statusLabel(status)}</span>
             </div>
             <div class="field-group">${fieldHtml}</div>
-            <div class="section-status">
+            <div class="section-status" data-status="${escapeHtml(section.key)}">
               ${status.filled}/${status.total} élément${status.total > 1 ? "s" : ""} renseigné${status.filled > 1 ? "s" : ""}.${warningHtml}
             </div>
           </article>
@@ -730,11 +704,32 @@
       }).join("");
     }
 
+    function updateSectionStatuses() {
+      sections.forEach((section) => {
+        const status = getSectionStatus(section);
+        const badge = sectionsContainer.querySelector(`[data-badge="${section.key}"]`);
+        const letter = sectionsContainer.querySelector(`[data-letter="${section.key}"]`);
+        const statusEl = sectionsContainer.querySelector(`[data-status="${section.key}"]`);
+        if (badge) { badge.className = `badge ${statusClass(status)}`; badge.textContent = statusLabel(status); }
+        if (letter) { letter.className = `letter${status.complete ? " complete" : ""}`; }
+        if (statusEl) {
+          const warningHtml = status.warning ? `<span class="warning"> ${escapeHtml(status.warning)}</span>` : "";
+          statusEl.innerHTML = `${status.filled}/${status.total} élément${status.total > 1 ? "s" : ""} renseigné${status.filled > 1 ? "s" : ""}.${warningHtml}`;
+        }
+      });
+    }
+
+    function updateDynamic() {
+      updateSectionStatuses();
+      const objective = buildObjective();
+      objectiveText.textContent = objective;
+      renderQuality(objective);
+    }
+
     function renderQuality(objective) {
       const statuses = sections.map(getSectionStatus);
       const completed = statuses.filter((status) => status.complete).length;
       const score = Math.round((completed / sections.length) * 100);
-      const missingOwner = !isFilled(form.context.owner);
       const detectedVagueWords = vagueWords.filter((word) => objective.toLowerCase().includes(word));
 
       scoreText.textContent = `${score}%`;
@@ -742,16 +737,12 @@
 
       const lines = [`<p><strong>${completed}/5</strong> critères SMART complets.</p>`];
 
-      if (missingOwner) {
-        lines.push(`<p class="warning">Responsable non renseigné. À ajouter si l'objectif implique une action suivie.</p>`);
-      }
-
       if (detectedVagueWords.length > 0) {
-        lines.push(`<p class="warning">Termes flous détectés : ${escapeHtml(detectedVagueWords.join(", "))}. Ils doivent être reliés à un indicateur ou remplacés.</p>`);
+        lines.push(`<p class="warning">Termes flous : ${escapeHtml(detectedVagueWords.join(", "))}. Relie-les à un chiffre ou remplace-les.</p>`);
       }
 
-      if (!missingOwner && detectedVagueWords.length === 0) {
-        lines.push(`<p class="success">Aucun signal de formulation floue détecté dans la phrase générée.</p>`);
+      if (detectedVagueWords.length === 0) {
+        lines.push(`<p class="success">Pas de termes flous. Bon signe.</p>`);
       }
 
       qualityList.innerHTML = lines.join("");
@@ -759,31 +750,21 @@
 
     function render() {
       renderSections();
-      const objective = buildObjective();
-      objectiveText.textContent = objective;
-      renderQuality(objective);
-    }
-
-    function syncInputsFromState() {
-      document.querySelectorAll("[data-field]").forEach((input) => {
-        input.value = getValue(input.dataset.field);
-      });
+      updateDynamic();
     }
 
     document.addEventListener("input", (event) => {
       const field = event.target.dataset.field;
       if (!field) return;
-
       setValue(field, event.target.value);
-      render();
-      syncInputsFromState();
-      event.target.focus();
+      saveForm();
+      updateDynamic();
     });
 
     resetButton.addEventListener("click", () => {
       form = structuredClone(emptyForm);
+      saveForm();
       render();
-      syncInputsFromState();
     });
 
     copyButton.addEventListener("click", async () => {
