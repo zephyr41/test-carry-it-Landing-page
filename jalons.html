@@ -56,7 +56,7 @@
         }
         .card--compact  { padding: var(--space-3) 14px; }
         .card--standard { padding: var(--space-4) 18px; }
-        .card--spacious { padding: var(--space-5) 22px; }
+        .card--spacious { padding: 28px 28px; }
         .card--alert    { border-color: rgba(163,21,13,0.35); }
 
         .card__header {
@@ -108,15 +108,67 @@
 
         /* ══ DS COMPONENTS — Form & Inputs ═════════════════════ */
         .form-group {
-            display: flex; flex-direction: column; gap: 5px;
-            margin-bottom: 14px;
+            display: flex; flex-direction: column; gap: 6px;
+            margin-bottom: 22px;
         }
-        .form-group:last-child { margin-bottom: 0; }
+        .form-group:last-child { margin-bottom: 6px; }
         .form-label {
-            font-size: 12px; font-weight: 500; color: var(--c-gris);
+            font-size: 13px; font-weight: 600; color: var(--c-blanc);
         }
+        .form-sublabel { font-size: 11px; color: var(--c-gris); margin-bottom: 2px; }
         .form-hint  { font-size: 11px; color: var(--c-gris); margin-top: 2px; }
         .form-error { font-size: 11px; color: #ff6b6b; margin-top: 2px; }
+
+        /* ══ JCARD HEADER ══════════════════════════════════════ */
+        .jcard-top {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 16px;
+        }
+        .jcard-left { display: flex; align-items: center; gap: 12px; }
+        .jcard-circle {
+            width: 36px; height: 36px; border-radius: 50%;
+            background: rgba(238,68,8,0.1);
+            border: 2px solid rgba(238,68,8,0.35);
+            color: var(--c-orange); font-size: 13px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .jcard-circle--final { background: rgba(238,68,8,0.2); border-color: var(--c-orange); }
+        .jcard-tag {
+            display: block; font-size: 9px; font-weight: 700;
+            letter-spacing: 0.12em; text-transform: uppercase; color: var(--c-gris);
+        }
+        .jcard-name { display: block; font-size: 15px; font-weight: 600; color: var(--c-blanc); margin-top: 2px; }
+        .jcard-pct { font-size: 9px; font-weight: 700; letter-spacing: 0.1em; color: var(--c-orange); opacity: 0.8; }
+        .jcard-right { display: flex; align-items: center; gap: 10px; }
+
+        .verify-title { font-size: 13px; font-weight: 600; color: var(--c-blanc); display: block; margin-bottom: 4px; }
+        .verify-desc { font-size: 12px; color: var(--c-gris); line-height: 1.55; margin: 0; }
+
+        .help-tip {
+            position: relative; display: inline-flex; align-items: center; justify-content: center;
+            width: 18px; height: 18px; border-radius: 50%;
+            border: 1px solid rgba(255,253,246,0.2);
+            background: transparent; color: var(--c-gris);
+            font-size: 10px; font-weight: 700; cursor: default;
+            transition: border-color var(--duration-fast), color var(--duration-fast);
+            flex-shrink: 0;
+        }
+        .help-tip:hover { border-color: var(--c-orange); color: var(--c-orange); }
+        .help-tip__bubble {
+            display: none;
+            position: absolute; bottom: calc(100% + 8px); right: 0;
+            width: 280px;
+            background: var(--c-surface-2);
+            border: 1px solid rgba(238,68,8,0.25);
+            border-radius: var(--radius-md);
+            padding: 12px 14px;
+            z-index: 50;
+            pointer-events: none;
+        }
+        .help-tip:hover .help-tip__bubble { display: block; }
+        .help-tip__bubble strong { font-size: 12px; font-weight: 600; color: var(--c-blanc); display: block; margin-bottom: 5px; }
+        .help-tip__bubble p { font-size: 11px; color: var(--c-gris); line-height: 1.55; margin: 0; }
 
         .input {
             background: var(--c-surface-2);
@@ -135,7 +187,8 @@
         }
         .input--error   { border-color: var(--c-rouge); box-shadow: 0 0 0 3px rgba(163,21,13,0.12); }
         .input--disabled { opacity: 0.4; cursor: not-allowed; }
-        textarea.input  { resize: none; line-height: 1.55; }
+        textarea.input  { resize: none; line-height: 1.55; overflow: hidden; scrollbar-width: none; }
+        textarea.input::-webkit-scrollbar { display: none; }
 
         .section-key {
             font-size: 9px; font-weight: 700;
@@ -196,7 +249,7 @@
         .timeline-list {
             position: relative;
             width: 100%;
-            max-width: 720px;
+            max-width: 580px;
             display: flex;
             flex-direction: column;
             margin: 0 auto;
@@ -349,26 +402,27 @@
         }
 
         /* Date cliquable dans card header */
-        .jalon-date-label {
-            display: inline-flex; align-items: center; gap: 4px;
+        .jalon-date-wrap {
+            display: inline-flex; align-items: center; gap: 5px;
         }
+        .jalon-cal-icon {
+            flex-shrink: 0; opacity: 0.5; cursor: pointer;
+            transition: opacity var(--duration-fast);
+        }
+        .jalon-cal-icon:hover { opacity: 1; }
         .jalon-date-input {
             background: transparent;
-            border: none;
-            outline: none;
+            border: none; outline: none;
             color: var(--c-gris);
-            font-size: 11px;
-            font-family: inherit;
-            cursor: pointer;
-            padding: 0;
+            font-size: 11px; font-family: inherit;
+            cursor: pointer; padding: 0;
+            color-scheme: dark;
             transition: color var(--duration-fast);
         }
         .jalon-date-input:hover,
         .jalon-date-input:focus { color: var(--c-blanc); }
         .jalon-date-input::-webkit-calendar-picker-indicator {
-            filter: invert(0.5);
-            cursor: pointer;
-            opacity: 0.5;
+            cursor: pointer; opacity: 0.6; filter: invert(1);
         }
         .jalon-date-input::-webkit-calendar-picker-indicator:hover { opacity: 1; }
 
@@ -661,6 +715,29 @@
             line-height: 1.75;
             margin: 0 auto;
         }
+        .intro-section p.intro-source {
+            font-size: 11px;
+            color: rgba(255,255,255,0.28);
+            margin-top: 20px;
+            letter-spacing: 0.01em;
+            line-height: 1.6;
+        }
+        .intro-section p.intro-method {
+            font-size: 14px;
+            color: rgba(255,255,255,0.42);
+            letter-spacing: 0.02em;
+            margin-bottom: 14px;
+        }
+        .intro-section p.intro-action {
+            font-size: 18px;
+            color: rgba(255,255,255,0.88);
+            line-height: 1.8;
+        }
+        .intro-section p.intro-action .punch {
+            color: #ffffff;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+        }
 
         .intro-followup {
             display: inline-flex;
@@ -787,6 +864,7 @@
         }
 
         .mission-desc strong { color: #FFFDF6; font-weight: 600; }
+        .mission-source { display: block; font-size: 11px; color: rgba(255,255,255,0.55); margin-top: 12px; letter-spacing: 0.01em; font-style: italic; }
 
         .navigation-map {
             position: relative;
@@ -1160,7 +1238,8 @@
     <div class="intro-section">
         <div>
             <h2>Planifier l'impossible.</h2>
-            <p>Ton objectif est loin. On va maintenant tracer les grands paliers pour y arriver. On part de la fin, puis on revient vers aujourd'hui. Les jalons lointains peuvent rester larges. Le prochain jalon, lui, doit être précis, daté et validable. Ce que tu poses ici est modifiable. Une trajectoire sert à avancer, pas à t'enfermer.</p>
+            <p class="intro-method">On part de la fin, puis on revient vers aujourd'hui.</p>
+            <p class="intro-action">Si certains jalons sont flous, ce n'est pas grave.<br>Ce qui doit être clair maintenant : ton objectif final et ton prochain jalon.<br><span class="punch">Avancez.</span> Le reste se précisera en chemin.</p>
         </div>
         <div class="scroll-hint" onclick="document.getElementById('timelineStart').scrollIntoView({behavior:'smooth'})">
             <span>Pose tes jalons</span>
@@ -1183,8 +1262,7 @@
             <span class="eyebrow">Engagement de Trajectoire</span>
             <h1>La Réalité</h1>
             <p class="mission-desc">
-    Près de <strong>9 personnes sur 10</strong> n’atteignent pas leurs objectifs.
-Elles exigent des preuves immédiates là où il n’y a encore que des fondations.
+    Avant le résultat visible, il y a une trajectoire invisible : CarryIt la rend mesurable.
 </p>
             </header>
 
@@ -1264,6 +1342,12 @@ Elles exigent des preuves immédiates là où il n’y a encore que des fondatio
     </div>
 
     <script>
+        function openPicker(el) {
+            const inp = el.parentElement.querySelector('input[type="date"]');
+            if (!inp) return;
+            try { inp.showPicker(); } catch(e) { inp.focus(); }
+        }
+
         // --- CONFIG & SMART SYNC ---
         const today = new Date();
 
@@ -1309,8 +1393,7 @@ Elles exigent des preuves immédiates là où il n’y a encore que des fondatio
         let milestones = JSON.parse(localStorage.getItem('carryItMilestones'));
 
         // Valider les jalons
-        const hasCap = milestones && milestones.some(m => m.tag === 'CAP 50%');
-        if (!milestones || milestones.length < 1 || !milestones.every(m => m.title && m.date && m.tag) || !hasCap) {
+        if (!milestones || milestones.length < 1 || !milestones.every(m => m.id && m.date)) {
             initMilestones();
         }
 
@@ -1325,7 +1408,7 @@ Elles exigent des preuves immédiates là où il n’y a encore que des fondatio
                     date: item.date.toISOString(),
                     tag: item.tag,
                     title: isFinal ? (smart.specifique || "") : item.label,
-                    desc: isFinal ? "L'objectif SMART est accompli." : "",
+                    desc: isFinal ? (smart.specifique || "") : "",
                     kpi: isFinal ? (smart.niveau || (smart.specifique && smart.specifique.includes(' — ') ? smart.specifique.split(' — ')[1] : smart.specifique) || "") : ""
                 };
             });
@@ -1348,8 +1431,8 @@ Elles exigent des preuves immédiates là où il n’y a encore que des fondatio
             const newMilestone = {
                 id: `m${Date.now()}`,
                 date: newDate.toISOString(),
-                tag: "ÉTAPE",
-                title: "Jalon Intermédiaire",
+                tag: "",
+                title: "",
                 desc: "",
                 kpi: ""
             };
@@ -1376,9 +1459,8 @@ Elles exigent des preuves immédiates là où il n’y a encore que des fondatio
             if(milestones.length > 0) {
                 const finalM = milestones[0];
                 finalM.tag = "Jalon final";
-                if(smart.temporel) finalM.date = new Date(smart.temporel).toISOString();
                 if(smart.specifique && !finalM.title) finalM.title = smart.specifique;
-                finalM.desc = "L'objectif SMART est accompli.";
+                finalM.desc = smart.specifique || finalM.desc || "";
                 finalM.kpi = smart.niveau || (smart.specifique && smart.specifique.includes(' — ') ? smart.specifique.split(' — ')[1] : smart.specifique) || "";
             }
 
@@ -1404,48 +1486,61 @@ Elles exigent des preuves immédiates là où il n’y a encore que des fondatio
                         <span class="rail-month">${month}</span>
                     </div>
 
-                    <div class="dot ${isFinal ? 'final' : m.tag === 'CAP 50%' ? 'cap' : ''}"></div>
+                    <div class="dot ${isFinal ? 'final' : ''}"></div>
 
                     <div class="item-card card card--spacious">
-                        <div class="card__header">
-                            <div style="display:flex;align-items:center;gap:8px;">
-                                <span class="card__title">Jalon ${milestoneNumber}/${total}</span>
-                                <span class="badge-position">${m.tag}</span>
+                        <div class="jcard-top">
+                            <div style="display:flex;flex-direction:column;gap:3px;">
+                                <span class="jcard-tag">JALON ${milestoneNumber} / ${total}</span>
+                                ${isFinal ? `<span class="jcard-pct">100%</span>` : (m.tag || '').includes('50') || (m.tag || '').toLowerCase().includes('parcours') ? `<span class="jcard-pct">50%</span>` : ''}
                             </div>
-                            <div style="display:flex;align-items:center;gap:10px;">
-                                <span class="jalon-date-label">
-                                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.4;flex-shrink:0"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-                                    <input type="date" class="jalon-date-input" value="${dateInputValue}" onchange="updateDate('${m.id}', this.value)" title="Modifier la date">
+                            <div class="jcard-right">
+                                <span class="jalon-date-wrap">
+                                    <svg class="jalon-cal-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" onclick="openPicker(this)"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                                    <input type="date" class="jalon-date-input" value="${dateInputValue}" onclick="try{this.showPicker()}catch(e){}" onchange="updateDate('${m.id}', this.value)">
                                 </span>
                                 ${!isFinal ? `<button class="card__action" onclick="deleteMilestone('${m.id}')">Supprimer</button>` : ''}
                             </div>
                         </div>
 
+                        <div class="sep"></div>
+
                         ${(() => {
                             const isFar = !isFinal && (new Date(m.date) - new Date() > 1000*60*60*24*180);
                             const isMid = m.tag === 'Mi-parcours';
                             const ph = isFinal
-                                ? { t: "Ce que tu vises. Concret, pas inspirant.", d: "Ce qui existera. Ce que tu peux montrer à quelqu'un.", k: "La mesure exacte. Un chiffre, un fait. Oui ou non." }
+                                ? { t: "Ex : Marathon terminé.", d: "Ex : Terminer un marathon complet.", k: "Ex : Chrono officiel sous 3h00." }
                                 : isMid
                                 ? { t: "Ce qui doit être vrai à mi-chemin.", d: "Ce qui doit exister pour que la fin soit encore possible.", k: "La preuve. Binaire, oui ou non." }
                                 : isFar
                                 ? { t: "Une direction. Tu préciseras quand tu seras plus proche.", d: "Reste approximatif. Rolling wave.", k: "Optionnel pour l'instant." }
-                                : { t: "Le livrable concret dans ce délai.", d: "Ce que tu peux montrer à cette date.", k: "La preuve. Binaire, oui ou non." };
+                                : { t: "Ex : Livrables clés à cette date.", d: "Ce que tu peux montrer à cette date.", k: "La preuve. Binaire, oui ou non." };
                             return `
                         <div class="form-group">
-                            <label class="form-label">Titre</label>
+                            <span class="form-label">Titre du jalon</span>
+                            <span class="form-sublabel">Un nom court.</span>
                             <input class="input" type="text" value="${m.title}"
                                    placeholder="${ph.t}"
                                    oninput="update('${m.id}', 'title', this.value)">
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Description</label>
+                            <span class="form-label">Description du jalon</span>
+                            <span class="form-sublabel">L'objectif, en une phrase simple.</span>
                             <textarea class="input" rows="2"
                                       placeholder="${ph.d}"
                                       oninput="autoResize(this); update('${m.id}', 'desc', this.value)">${m.desc || ''}</textarea>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Critère de validation</label>
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <span class="form-label">Critère de validation</span>
+                                <span class="help-tip">?
+                                    <span class="help-tip__bubble">
+                                        <strong>Pour vérifier</strong>
+                                        <p>Un bon critère se vérifie simplement : oui ou non.<br><br>Exemple : tu veux courir un marathon. "Finir un marathon" c'est flou. "Finir en moins de 4h00" → oui ou non. C'est ça un critère valide.</p>
+                                    </span>
+                                </span>
+                            </div>
+                            <span class="form-sublabel">Une règle claire que tu peux vérifier.</span>
                             <textarea class="input" rows="2"
                                       placeholder="${ph.k}"
                                       oninput="autoResize(this); update('${m.id}', 'kpi', this.value)">${m.kpi || ''}</textarea>
@@ -1511,51 +1606,48 @@ Elles exigent des preuves immédiates là où il n’y a encore que des fondatio
 
         // --- SCROLL-TRIGGERED ZOOM MONTAGE ---
         const journeyWrapper = document.querySelector('.journey-wrapper');
-        let currentZoom = 'left';
 
-        journeyWrapper.classList.add('zoom-left');
+        if (journeyWrapper) {
+            let currentZoom = 'left';
+            journeyWrapper.classList.add('zoom-left');
 
-        function updateZoomState() {
-            const wrapperTop = journeyWrapper.getBoundingClientRect().top;
-            const wrapperHeight = journeyWrapper.offsetHeight;
-            const viewportHeight = window.innerHeight;
+            function updateZoomState() {
+                const wrapperTop = journeyWrapper.getBoundingClientRect().top;
+                const wrapperHeight = journeyWrapper.offsetHeight;
+                const viewportHeight = window.innerHeight;
 
-            const scrollProgress = (viewportHeight - wrapperTop) / (viewportHeight + wrapperHeight);
+                const scrollProgress = (viewportHeight - wrapperTop) / (viewportHeight + wrapperHeight);
 
-            let newZoom = 'left';
+                let newZoom = 'left';
 
-            if (scrollProgress < 0) {
-                newZoom = 'left';
-            } else if (scrollProgress < 0.2) {
-                newZoom = 'left';
-            } else if (scrollProgress < 0.5) {
-                newZoom = 'middle';
-            } else if (scrollProgress < 0.8) {
-                newZoom = 'plateau';
-            } else {
-                newZoom = 'full';
+                if (scrollProgress < 0.2) {
+                    newZoom = 'left';
+                } else if (scrollProgress < 0.5) {
+                    newZoom = 'middle';
+                } else if (scrollProgress < 0.8) {
+                    newZoom = 'plateau';
+                } else {
+                    newZoom = 'full';
+                }
+
+                if (newZoom !== currentZoom) {
+                    currentZoom = newZoom;
+                    journeyWrapper.classList.remove('zoom-left', 'zoom-middle', 'zoom-plateau', 'zoom-full');
+                    journeyWrapper.classList.add(`zoom-${newZoom}`);
+                }
             }
 
-            if (newZoom !== currentZoom) {
-                currentZoom = newZoom;
-                journeyWrapper.classList.remove('zoom-left', 'zoom-middle', 'zoom-plateau', 'zoom-full');
-                journeyWrapper.classList.add(`zoom-${newZoom}`);
+            updateZoomState();
+            window.addEventListener('scroll', updateZoomState, { passive: true });
+
+            if (typeof IntersectionObserver !== 'undefined') {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) { updateZoomState(); }
+                    });
+                }, { threshold: 0.1 });
+                observer.observe(journeyWrapper);
             }
-        }
-
-        updateZoomState();
-        window.addEventListener('scroll', updateZoomState, { passive: true });
-
-        if (typeof IntersectionObserver !== 'undefined') {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        updateZoomState();
-                    }
-                });
-            }, { threshold: 0.1 });
-
-            observer.observe(journeyWrapper);
         }
     </script>
 
