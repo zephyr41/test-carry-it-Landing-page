@@ -5447,6 +5447,21 @@
     color: var(--text-muted);
 }
 
+.product-flow-section .section-list {
+    margin-top: 1rem;
+    padding-left: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.product-flow-section .section-list li {
+    font-size: 1.05rem;
+    line-height: 1.5;
+    color: var(--text-muted);
+}
+
 .product-flow-section .mockup-box {
     background: var(--white);
     padding: 2.5rem;
@@ -5644,6 +5659,28 @@
     text-transform: uppercase;
 }
 
+.product-flow-section .critere-tag {
+    display: inline-block;
+    margin-top: 0.75rem;
+    margin-bottom: 0.3rem;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid rgba(238,68,8,0.35);
+    border-radius: 4px;
+    padding: 0.15rem 0.45rem;
+}
+
+.product-flow-section .critere-text {
+    font-size: 0.9rem;
+    font-weight: 500;
+    line-height: 1.5;
+    color: var(--text-dark);
+    margin: 0;
+}
+
 .product-flow-section .ladder-card .validation-proof {
     margin-top: 0.85rem;
     padding-top: 0.85rem;
@@ -5707,6 +5744,89 @@
     display: block;
 }
 
+.product-flow-section .kpi-context-line {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    font-size: 0.8rem;
+    color: var(--text-light-muted);
+    line-height: 1.4;
+}
+
+.product-flow-section .kpi-context-line .kpi-context-label {
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.7rem;
+    color: var(--text-light-muted);
+}
+
+.product-flow-section .kpi-context-line .kpi-context-name {
+    font-weight: 600;
+    color: var(--text-dark);
+    font-size: 0.85rem;
+}
+
+.product-flow-section .kpi-context-line .kpi-context-sep {
+    color: var(--border-medium);
+}
+
+.product-flow-section .kpi-context-line .kpi-context-sub {
+    color: var(--text-light-muted);
+}
+
+.product-flow-section .kpi-vision-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.9rem 1.25rem;
+    border-radius: var(--radius-xl);
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-medium);
+    gap: 1rem;
+}
+
+.product-flow-section .kpi-vision-card .kpi-vision-left {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.product-flow-section .kpi-vision-card .kpi-vision-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+.product-flow-section .kpi-vision-card .kpi-vision-badge {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-light-muted);
+}
+
+.product-flow-section .kpi-vision-card .kpi-vision-val {
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    color: var(--accent);
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.2rem;
+}
+
+.product-flow-section .kpi-vision-card .kpi-vision-unit {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--text-light-muted);
+    letter-spacing: 0;
+}
+
 .product-flow-section .kpi-cards-wrapper {
     display: flex;
     gap: 1rem;
@@ -5721,25 +5841,24 @@
 
 .product-flow-section .kpi-card {
     flex: 1;
-    padding: 2rem;
+    padding: 1.5rem;
     border-radius: var(--radius-xl);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    min-height: 250px;
+    min-height: 200px;
 }
 
 .product-flow-section .kpi-black {
-    background-color: var(--accent);
+    background-color: #080809;
     color: #fff;
-    box-shadow: 0 20px 40px rgba(238,68,8,0.2);
+    border: 1px solid rgba(255,255,255,0.06);
 }
 
 .product-flow-section .kpi-white {
-    background-color: var(--bg-secondary);
-    color: var(--text-dark);
-    border: 1px solid var(--border-medium);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    background-color: #ffffff;
+    color: #0d0d0f;
+    border: none;
 }
 
 .product-flow-section .kpi-type {
@@ -5753,39 +5872,42 @@
 }
 
 .product-flow-section .kpi-white .kpi-type {
-    color: var(--text-light-muted);
+    color: rgba(0,0,0,0.45);
 }
 
 .product-flow-section .kpi-card h4 {
-    font-size: 1.25rem;
+    font-size: 1.1rem;
     font-weight: 600;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     line-height: 1.2;
 }
 
+.product-flow-section .kpi-white h4 {
+    color: #0d0d0f;
+}
+
 .product-flow-section .kpi-val {
-    font-size: 3.5rem;
+    font-size: 2.8rem;
     font-weight: 700;
     letter-spacing: -0.04em;
     line-height: 1;
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.35rem;
+    flex-direction: row;
+    align-items: baseline;
+    gap: 0.4rem;
 }
 
 .product-flow-section .kpi-unit {
-    display: block;
-    font-size: 1rem;
+    font-size: 0.85rem;
     font-weight: 500;
-    color: rgba(255,255,255,0.55);
-    margin-left: 0;
+    color: rgba(255,255,255,0.45);
     letter-spacing: 0;
-    line-height: 1.15;
+    line-height: 1;
+    white-space: nowrap;
 }
 
 .product-flow-section .kpi-white .kpi-unit {
-    color: var(--text-dark);
+    color: rgba(0,0,0,0.4);
 }
 
 .product-flow-section .todo-list {

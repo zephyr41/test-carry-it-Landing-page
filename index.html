@@ -753,6 +753,28 @@
                         <span>Projet</span>
                         <p>Lancer mon application iOS.</p>
                     </div>
+                    <div class="smart-questions">
+                        <div class="smart-question">
+                            <span class="mock-smart-badge">S</span>
+                            <p>Quel résultat exact voulez-vous atteindre ?</p>
+                        </div>
+                        <div class="smart-question">
+                            <span class="mock-smart-badge">M</span>
+                            <p>Quel chiffre indiquera que l'objectif est atteint ?</p>
+                        </div>
+                        <div class="smart-question">
+                            <span class="mock-smart-badge">A</span>
+                            <p>Quelles ressources avez-vous déjà ?</p>
+                        </div>
+                        <div class="smart-question">
+                            <span class="mock-smart-badge">R</span>
+                            <p>Quelle charge pouvez-vous tenir chaque semaine ?</p>
+                        </div>
+                        <div class="smart-question">
+                            <span class="mock-smart-badge">T</span>
+                            <p>Quelle est la date limite ?</p>
+                        </div>
+                    </div>
                     <div class="smart-output-preview">
                         <span>Objectif structuré</span>
                         <p>Lancer une application iOS et atteindre 1 000 utilisateurs actifs mensuels avant le 31 décembre.</p>
@@ -782,7 +804,8 @@
                                 <div class="ladder-card">
                                     <span class="ladder-field-label">Jalon suivant</span>
                                     <h3>V1 publiée</h3>
-                                    <p>Critère : l'application est disponible sur TestFlight et testée par 50 utilisateurs.</p>
+                                    <span class="critere-tag">Critère de validation</span>
+                                    <p class="critere-text">L'application est disponible sur TestFlight et testée par 50 utilisateurs.</p>
                                 </div>
                             </div>
                         </div>
@@ -793,7 +816,8 @@
                                 <div class="ladder-card">
                                     <span class="ladder-field-label">Jalon actif</span>
                                     <h3>MVP validé</h3>
-                                    <p>Critère : 10 bêta-testeurs ont terminé l'onboarding sans erreur.</p>
+                                    <span class="critere-tag">Critère de validation</span>
+                                    <p class="critere-text">10 bêta-testeurs ont terminé l'onboarding sans erreur.</p>
                                 </div>
                             </div>
                         </div>
@@ -813,17 +837,23 @@
                 <div class="section-text">
                     <span class="tag-upper">3. Mesurer l’avancée</span>
                     <h2>Un jalon sans mesure reste une intention.</h2>
-                    <p>Pour savoir si l’étape avance, CarryIt vous fait suivre deux choses : ce que vous avez fait cette semaine, et ce que cet effort a produit.</p>
+                    <p>Pour savoir si l’étape avance, CarryIt vous fait suivre :</p>
+                    <ul class="section-list">
+                        <li>Ce que vous avez fait cette semaine</li>
+                        <li>Ce que cet effort a produit</li>
+                        <li>Où vous en êtes par rapport à votre objectif long terme</li>
+                    </ul>
                 </div>
                 <div class="kpi-panel">
-                    <div class="kpi-milestone-context">
-                        <span class="tag-upper">Jalon actif</span>
-                        <h4>MVP validé</h4>
-                        <p>Critère : V0 utilisable de bout en bout et testée par 15 utilisateurs.</p>
+                    <div class="kpi-context-line">
+                        <span class="kpi-context-label">Jalon actif</span>
+                        <span class="kpi-context-sep">·</span>
+                        <span class="kpi-context-name">MVP validé</span>
+                        <span class="kpi-context-sep">—</span>
+                        <span class="kpi-context-sub">Critère de validation : V0 utilisable de bout en bout et testée par 15 utilisateurs.</span>
                     </div>
-                    <span class="kpi-block-label tag-upper">Mesures d’avancée du jalon</span>
                     <div class="kpi-cards-wrapper">
-                        <div class="kpi-card kpi-white">
+                        <div class="kpi-card kpi-black">
                             <div>
                                 <span class="kpi-type">Effort fourni</span>
                                 <h4>Temps consacré cette semaine</h4>
@@ -836,6 +866,16 @@
                                 <h4>V0 testée par les utilisateurs</h4>
                             </div>
                             <div class="kpi-val">3/15<span class="kpi-unit">utilisateurs</span></div>
+                        </div>
+                    </div>
+                    <div class="kpi-vision-card">
+                        <div class="kpi-vision-left">
+                            <span class="kpi-vision-title">Vision long terme</span>
+                            <span class="kpi-vision-badge">· objectif S.M.A.R.T.</span>
+                        </div>
+                        <div class="kpi-vision-val">
+                            0 / 1 000
+                            <span class="kpi-vision-unit">utilisateurs actifs mensuels</span>
                         </div>
                     </div>
                 </div>
@@ -863,9 +903,9 @@
                     </div>
                 </div>
                 <div class="section-text">
-                    <span class="tag-upper">4. Exécuter le jalon actif</span>
-                    <h2>Votre semaine doit servir le prochain palier.</h2>
-                    <p>Rangez vos actions sous le jalon actif pour garder le lien entre ce que vous faites maintenant et l'étape que vous voulez franchir.</p>
+                    <span class="tag-upper">4. Relier l'exécution à la vision</span>
+                    <h2>Une to-do list seule vous dit quoi faire. CarryIt vous montre pourquoi vous le faites.</h2>
+                    <p>Vos tâches quotidiennes sont reliées aux jalons de votre ambition long terme, pour que chaque action garde sa place dans la trajectoire.</p>
                 </div>
             </div>
         </section>
