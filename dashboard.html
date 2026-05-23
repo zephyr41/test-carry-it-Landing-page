@@ -317,10 +317,12 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                     allObjectifs = JSON.parse(stored);
                     let changed = false;
                     const sharedMilestones = loadSharedMilestones();
+                    const editingProjectIndex = parseInt(localStorage.getItem('carryItEditingProjectIndex') ?? '-1', 10);
+                    const mergeTargetIndex = editingProjectIndex >= 0 && editingProjectIndex < allObjectifs.length ? editingProjectIndex : allObjectifs.length - 1;
                     // backward compat: ensure tasks array exists
                     allObjectifs.forEach((obj, objIndex) => {
                         if (!obj.tasks) obj.tasks = [];
-                        if (sharedMilestones.length > 0 && objIndex === allObjectifs.length - 1) {
+                        if (sharedMilestones.length > 0 && objIndex === mergeTargetIndex) {
                             const existing = Array.isArray(obj.jalons) ? obj.jalons : [];
                             if (!existing.length) {
                                 obj.jalons = sharedMilestones.map(m => ({
@@ -371,13 +373,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                                         });
                                     }
                                 });
-                                // append any extra jalons created in dashboard that are not in shared milestones
-                                existing.forEach(j => {
-                                    const id = String(j?.id || '');
-                                    if (!id) return;
-                                    const inShared = sharedMilestones.some(m => String(m?.id || '') === id);
-                                    if (!inShared) merged.push(j);
-                                });
+                                // jalons-edit is authoritative — do not re-add deleted jalons
                                 // Only write back if changed in length/order or if we actually updated fields above
                                 obj.jalons = merged;
                                 const afterMerge = JSON.stringify(obj.jalons || []);
@@ -462,6 +458,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             const obj = allObjectifs[i];
             if (!obj) return;
             try {
+                localStorage.setItem('carryItEditingProjectIndex', String(i));
                 // Sync jalons du bon projet
                 if (Array.isArray(obj.jalons) && obj.jalons.length) {
                     const shared = obj.jalons.map(j => ({

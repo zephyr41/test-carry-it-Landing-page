@@ -69,12 +69,13 @@
             color: var(--c-gris);
         }
         .card__action {
-            font-size: 12px; color: var(--c-gris);
+            font-size: 12px; color: rgba(255,59,48,0.7);
             background: none; border: none;
             font-family: var(--font-stack); cursor: pointer;
             transition: color var(--duration-fast);
+            padding: 4px 8px;
         }
-        .card__action:hover { color: var(--c-blanc); }
+        .card__action:hover { color: #ff3b30; }
 
         .sep {
             height: 1px;
@@ -1639,10 +1640,10 @@
         }
 
         function resetMilestones() {
-            if(confirm("Attention frérot : Tu vas effacer tous tes jalons pour repartir de zéro. Tu confirmes ?")) {
+            jeModalConfirm('Effacer tous les jalons et repartir de zéro ?', () => {
                 initMilestones();
                 render();
-            }
+            });
         }
 
         let _addLock = false;
@@ -1669,12 +1670,23 @@
             render();
         }
 
+        function jeModalConfirm(msg, onConfirm) {
+            const overlay = document.getElementById('jeModalOverlay');
+            document.getElementById('jeModalMsg').textContent = msg;
+            overlay.style.display = 'flex';
+            document.getElementById('jeModalConfirmBtn').onclick = () => { jeModalCancel(); onConfirm(); };
+            overlay.onclick = (e) => { if (e.target === overlay) jeModalCancel(); };
+        }
+        function jeModalCancel() {
+            document.getElementById('jeModalOverlay').style.display = 'none';
+        }
+
         function deleteMilestone(id) {
-            if(confirm("Supprimer ce jalon ?")) {
+            jeModalConfirm('Supprimer ce jalon ?', () => {
                 milestones = milestones.filter(m => m.id !== id);
                 save();
                 render();
-            }
+            });
         }
 
         // --- RENDER ---
@@ -1882,6 +1894,17 @@
     <!-- GLOW SECTIONS -->
     <div class="middle-section"></div>
     <div class="glow-section glow-orange"></div>
+
+    <!-- Modal confirm delete -->
+    <div id="jeModalOverlay" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;">
+        <div style="background:#1A1A1C;border:1px solid rgba(255,253,246,0.1);border-radius:12px;padding:28px 32px;max-width:340px;width:90%;font-family:var(--font-stack);">
+            <p id="jeModalMsg" style="color:#FFFDF6;font-size:15px;font-weight:600;margin:0 0 20px;"></p>
+            <div style="display:flex;gap:10px;justify-content:flex-end;">
+                <button onclick="jeModalCancel()" style="background:transparent;border:1px solid rgba(255,253,246,0.15);color:#929292;padding:8px 18px;border-radius:8px;cursor:pointer;font-size:13px;font-family:var(--font-stack);">Annuler</button>
+                <button id="jeModalConfirmBtn" style="background:#EE4408;border:none;color:#FFFDF6;padding:8px 18px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;font-family:var(--font-stack);">Confirmer</button>
+            </div>
+        </div>
+    </div>
 
 </body>
 </html>
