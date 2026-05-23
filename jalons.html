@@ -249,7 +249,8 @@
         .timeline-list {
             position: relative;
             width: 100%;
-            max-width: 580px;
+            max-width: calc(580px + var(--rail-offset) + var(--card-gap));
+            padding-right: calc(var(--rail-offset) + var(--card-gap));
             display: flex;
             flex-direction: column;
             margin: 0 auto;
@@ -1399,7 +1400,8 @@
 
             /* TIMELINE */
             .timeline-list {
-                transform: none;
+                max-width: 100%;
+                padding-right: 0;
                 --rail-offset: 56px;
                 --card-gap: 16px;
             }
@@ -1443,11 +1445,6 @@
             .btn-launch { padding: 12px 28px; font-size: 12px; }
         }
 
-        @media (min-width: 769px) {
-            .timeline-list {
-                transform: translateX(calc((var(--rail-offset) + var(--card-gap)) / -2));
-            }
-        }
 
     </style>
 </head>
@@ -1682,6 +1679,18 @@
         // --- DATA ---
         let milestones = JSON.parse(localStorage.getItem('carryItMilestones'));
 
+        // Dedup par ID (corrige localStorage corrompu)
+        if (milestones && Array.isArray(milestones)) {
+            const seen = new Set();
+            const before = milestones.length;
+            milestones = milestones.filter(m => {
+                if (!m.id || seen.has(m.id)) return false;
+                seen.add(m.id);
+                return true;
+            });
+            if (milestones.length !== before) save();
+        }
+
         // Valider les jalons
         if (!milestones || milestones.length < 1 || !milestones.every(m => m.id && m.date)) {
             initMilestones();
@@ -1712,7 +1721,12 @@
             }
         }
 
+        let _addLock = false;
         function addMilestoneBetween(dateStrA, dateStrB) {
+            if (_addLock) return;
+            _addLock = true;
+            setTimeout(() => { _addLock = false; }, 800);
+
             const timeA = new Date(dateStrA).getTime();
             const timeB = new Date(dateStrB).getTime();
             const midTime = (timeA + timeB) / 2;
