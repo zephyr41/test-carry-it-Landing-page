@@ -40,15 +40,6 @@
                 <div class="dashboard-project-actions" id="dashboardProjectActions"></div>
             </div>
             <div class="navbar-links dashboard-nav-right">
-                <button class="dashboard-theme-toggle" id="dashboardThemeToggle" type="button" onclick="toggleDashboardTheme()">
-                    <span class="dashboard-theme-icon" aria-hidden="true">
-                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12Z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
-                        </svg>
-                    </span>
-                    <span id="dashboardThemeLabel">Passer en clair</span>
-                </button>
                 <button class="db-sync-btn" type="button" onclick="openSyncModal()" aria-label="Synchroniser les données">
                     <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
@@ -727,7 +718,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                         ${currentDashboardView === 'execution' ? '' : 'hidden'}>
                         <div class="db-section">
                             <div class="db-section-header">
-                                <span class="db-section-label">Exécution · Court terme</span>
+                                <span class="db-section-label">To-do list</span>
                             </div>
                             ${buildJalonTaskBlock(obj, i)}
                         </div>
@@ -2484,7 +2475,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
 
             return `
             <div class="pt-shell">
-                <div class="pt-shell-label">Pilotage · Jalon Actif</div>
+                <div class="pt-shell-label">Jalons</div>
 
                 <div class="pt-timeline" aria-label="Timeline des jalons">
                     ${timelineItems}
