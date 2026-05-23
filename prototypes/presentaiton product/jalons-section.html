@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarryIt — Le Système d'Exécution</title>
+    <style>
+        /* --- DESIGN SYSTEM & VARIABLES (Apple Aesthetic) --- */
+        :root {
+            --bg-main: #f5f5f7;
+            --text-dark: #1d1d1f;
+            --text-muted: #515154;
+            --text-light-muted: #86868b;
+            --white: #ffffff;
+            --black: #000000;
+            --accent: #ee4408;
+            --border-light: rgba(0, 0, 0, 0.05);
+            --border-medium: rgba(0, 0, 0, 0.1);
+            --radius-pill: 9999px;
+            --radius-sm: 1rem;
+            --radius-md: 1.5rem;
+            --radius-lg: 2rem;
+            --radius-xl: 2.5rem;
+            --radius-xxl: 3rem;
+            --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-stack);
+            background-color: var(--bg-main);
+            color: var(--text-dark);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+            line-height: 1.5;
+        }
+
+        /* --- LAYOUT ET GRILLES RESPONSIVES --- */
+        main { min-height: 100vh; }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 0 1.5rem;
+        }
+
+        /* Espacement massif pour laisser respirer le contenu */
+        section { padding: 6rem 0; }
+        @media (min-width: 1024px) { section { padding: 8rem 0; } }
+        
+        .sub-section { padding: 4rem 0; }
+
+        /* --- ANIMATIONS --- */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade-up {
+            opacity: 0;
+            animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+
+        /* --- COMPOSANTS UNITAIRES --- */
+        .pill {
+            display: inline-flex; align-items: center;
+            border: 1px solid var(--border-medium);
+            background: rgba(255, 255, 255, 0.7);
+            padding: 0.5rem 1.25rem; border-radius: var(--radius-pill);
+            font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em;
+            color: var(--text-dark); box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+        }
+
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+            border-radius: var(--radius-pill); padding: 0.85rem 1.75rem; font-size: 1rem;
+            font-weight: 500; cursor: pointer; transition: all 0.2s ease; text-decoration: none;
+        }
+
+        .btn-dark { background-color: var(--text-dark); color: var(--white); border: none; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .btn-dark:hover { opacity: 0.9; transform: scale(1.02); }
+
+        .btn-light { background-color: var(--white); color: var(--text-dark); border: 1px solid var(--border-medium); }
+        .btn-light:hover { background-color: var(--bg-main); }
+
+        .tag-upper { font-size: 0.875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.18em; color: var(--text-light-muted); margin-bottom: 1rem; display: block; }
+        .tag-upper.accent { color: var(--accent); }
+
+        .icon-svg { vertical-align: middle; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+        /* --- NAVBAR --- */
+        .header-nav { position: relative; z-index: 100; padding-top: 1rem; }
+        .nav-bar {
+            display: flex; align-items: center; justify-content: space-between;
+            border: 1px solid var(--border-light); background: rgba(255, 255, 255, 0.75);
+            padding: 0.75rem 1.25rem; border-radius: var(--radius-pill);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+        }
+        .nav-logo { font-size: 1rem; font-weight: 700; letter-spacing: -0.02em; }
+        .nav-links { display: none; gap: 2.5rem; }
+        @media (min-width: 768px) { .nav-links { display: flex; } }
+        .nav-links a { font-size: 0.875rem; color: var(--text-muted); text-decoration: none; font-weight: 500; transition: color 0.2s; }
+        .nav-links a:hover { color: var(--text-dark); }
+
+        /* --- HERO SECTION --- */
+        .hero-section { position: relative; overflow: hidden; padding-top: 4rem; padding-bottom: 4rem; }
+        .blur-orb { position: absolute; border-radius: 50%; filter: blur(80px); z-index: -1; pointer-events: none; }
+        .blur-orb-1 { left: 50%; top: 10rem; transform: translateX(-50%); height: 600px; width: 600px; background-color: var(--white); opacity: 0.9; }
+        .blur-orb-2 { right: -100px; top: 12rem; height: 400px; width: 400px; background-color: #e2e2e9; opacity: 0.6; }
+        
+        .hero-content { display: flex; flex-direction: column; align-items: center; text-align: center; padding-top: 4rem; }
+        .hero-title { margin-top: 2.5rem; max-width: 64rem; font-size: 3.5rem; font-weight: 700; letter-spacing: -0.04em; line-height: 1.05; }
+        @media (min-width: 768px) { .hero-title { font-size: 5rem; } }
+        @media (min-width: 1024px) { .hero-title { font-size: 6rem; } }
+        
+        .hero-desc { margin-top: 2rem; max-width: 48rem; font-size: 1.25rem; line-height: 1.5; color: var(--text-muted); }
+        @media (min-width: 768px) { .hero-desc { font-size: 1.5rem; } }
+
+        .hero-actions { margin-top: 3rem; display: flex; flex-direction: column; gap: 1rem; width: 100%; max-width: 300px; }
+        @media (min-width: 640px) { .hero-actions { flex-direction: row; justify-content: center; max-width: none; } }
+
+        /* --- GRILLES COMMUNES (RÉUTILISABLES) --- */
+        .grid-def { display: grid; gap: 1.5rem; grid-template-columns: 1fr; }
+        @media (min-width: 1024px) { .grid-def { grid-template-columns: 1.1fr 0.9fr; align-items: stretch; } }
+        @media (min-width: 1024px) { .grid-def.reverse { grid-template-columns: 0.9fr 1.1fr; } }
+
+        /* Cartes sombres Héroïques (Le Pourquoi) */
+        .card-dark-hero {
+            background-color: var(--black); color: var(--white); padding: 3.5rem; border-radius: var(--radius-xl);
+            box-shadow: 0 30px 100px rgba(0, 0, 0, 0.2); display: flex; flex-direction: column; justify-content: center;
+            position: relative; overflow: hidden;
+        }
+        .card-dark-hero .tag-upper { color: rgba(255,255,255,0.5); }
+        .card-dark-hero h2 { margin-top: 1rem; font-size: 2.5rem; font-weight: 600; letter-spacing: -0.03em; line-height: 1.1; }
+        @media (min-width: 768px) { .card-dark-hero h2 { font-size: 3.25rem; } }
+        .card-dark-hero p { margin-top: 1.5rem; font-size: 1.15rem; line-height: 1.6; color: rgba(255,255,255,0.7); }
+
+        /* Cartes Blanches Info (La théorie) */
+        .def-right-col { display: flex; flex-direction: column; gap: 1.5rem; justify-content: center; }
+        .card-info { background: var(--white); padding: 2.25rem; border-radius: var(--radius-xl); box-shadow: 0 15px 50px rgba(0, 0, 0, 0.03); border: 1px solid var(--border-light); display: flex; gap: 1.25rem; }
+        @media(max-width: 480px) { .card-info { flex-direction: column; } }
+        .card-info h3 { font-size: 1.35rem; font-weight: 600; letter-spacing: -0.02em; }
+        .card-info p { margin-top: 0.5rem; font-size: 0.95rem; line-height: 1.6; color: var(--text-muted); }
+
+        /* Faux Inputs (Empty State UI) */
+        .mock-input {
+            width: 100%; border: 1px dashed var(--border-medium); background-color: var(--bg-main); padding: 12px 16px;
+            border-radius: 12px; color: var(--text-light-muted); font-size: 0.95rem; margin-top: 0.5rem; display: flex; align-items: center;
+        }
+        .mock-input-active { border: 1.5px solid var(--accent); background-color: var(--white); color: var(--text-dark); box-shadow: 0 0 0 3px rgba(238, 68, 8, 0.1); }
+        .cursor { display: inline-block; width: 2px; height: 1.1rem; background-color: var(--accent); margin-left: 2px; animation: blink 1s step-end infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        .ui-col { display: flex; flex-direction: column; gap: 1.5rem; justify-content: center;}
+        .mockup-container { background: var(--white); padding: 2.5rem; border-radius: var(--radius-xl); box-shadow: 0 24px 80px rgba(0, 0, 0, 0.05); border: 1px solid var(--border-light); }
+        .mockup-container h4 { font-size: 1.25rem; font-weight: 600; margin-bottom: 1.5rem; }
+
+        /* Les 3 Cartes Règles Communes */
+        .cards-center-head { text-align: center; max-width: 48rem; margin: 0 auto; }
+        .cards-center-head h2 { font-size: 2rem; font-weight: 600; letter-spacing: -0.03em; line-height: 1.15; margin-top: 1rem; }
+        @media (min-width: 768px) { .cards-center-head h2 { font-size: 3rem; } }
+        .cards-center-head p { margin-top: 1.25rem; font-size: 1.1rem; color: var(--text-muted); line-height: 1.6;}
+
+        .three-cards-grid { margin-top: 3.5rem; display: grid; gap: 1.5rem; grid-template-columns: 1fr; }
+        @media (min-width: 768px) { .three-cards-grid { grid-template-columns: repeat(3, 1fr); } }
+
+        .card-simple { background: var(--white); padding: 2.25rem; border-radius: var(--radius-xl); border: 1px solid var(--border-light); box-shadow: 0 15px 45px rgba(0, 0, 0, 0.03); }
+        .card-simple .icon-box-black { height: 2.75rem; width: 2.75rem; border-radius: 0.75rem; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: center; background: var(--black); color: var(--white);}
+        .card-simple h3 { font-size: 1.25rem; font-weight: 600; }
+        .card-simple p { margin-top: 0.6rem; font-size: 0.95rem; line-height: 1.6; color: var(--text-muted); }
+
+        /* Inter-section Title Separator */
+        .pillar-title {
+            text-align: center; font-size: 4rem; font-weight: 700; letter-spacing: -0.05em; margin: 8rem 0 2rem 0;
+            background: linear-gradient(180deg, #1d1d1f 0%, #86868b 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        /* --- COMPOSANTS SPÉCIFIQUES --- */
+        
+        /* Formulaire Saisie */
+        .form-preview-container { background: var(--white); padding: 1.5rem; border-radius: var(--radius-xl); box-shadow: 0 30px 90px rgba(0, 0, 0, 0.06); border: 1px solid var(--border-light); }
+        @media(min-width: 640px) { .form-preview-container { padding: 2.25rem; } }
+        .form-preview-header { background-color: #f5f5f7; padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid rgba(0,0,0,0.02); }
+        .form-header-top { display: flex; justify-content: space-between; align-items: flex-start; }
+        .form-header-top .num { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-light-muted); }
+        .form-header-top .progress-val { font-size: 2.75rem; font-weight: 700; letter-spacing: -0.05em; color: var(--text-dark); margin-top: 0.25rem; }
+        
+        .form-preview-fields { margin-top: 2rem; display: flex; flex-direction: column; gap: 1.5rem; }
+        .field-info-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.5rem; }
+        .field-info-row .label { font-size: 0.95rem; font-weight: 600; color: var(--text-dark); }
+        .field-info-row .help { font-size: 0.8rem; color: var(--text-light-muted); }
+        .field-input-mock.large { min-height: 90px; align-items: flex-start; }
+
+        /* Frise Méthode (Jalons) */
+        .card-method-box { background: var(--white); padding: 3rem; border-radius: var(--radius-xxl); box-shadow: 0 24px 90px rgba(0, 0, 0, 0.05); border: 1px solid var(--border-light);}
+        @media (min-width: 1024px) { .card-method-box { padding: 4.5rem; } }
+        .grid-method { display: grid; gap: 4rem; grid-template-columns: 1fr; }
+        @media (min-width: 1024px) { .grid-method { grid-template-columns: 0.9fr 1.1fr; align-items: start; } }
+        .method-left h2 { font-size: 2.5rem; font-weight: 600; letter-spacing: -0.04em; line-height: 1.1; margin-top: 1rem; }
+        @media (min-width: 768px) { .method-left h2 { font-size: 3.5rem; } }
+        .method-left p { margin-top: 1.5rem; font-size: 1.15rem; line-height: 1.6; color: var(--text-muted); }
+        
+        .ladder-container { padding-top: 0.5rem; }
+        .ladder-step { display: grid; grid-template-columns: 80px 1fr; gap: 1.5rem; }
+        @media (min-width: 640px) { .ladder-step { grid-template-columns: 120px 1fr; } }
+        .ladder-time { padding-top: 0.25rem; text-align: right; font-size: 0.9rem; font-weight: 600; color: var(--text-light-muted); }
+        .ladder-content-wrapper { position: relative; border-left: 2px solid #e5e5ea; padding-left: 2rem; padding-bottom: 2.5rem; }
+        .ladder-step:last-child .ladder-content-wrapper { padding-bottom: 0; border-left: transparent; }
+        .ladder-dot { position: absolute; left: -9px; top: 0.25rem; height: 16px; width: 16px; border-radius: 50%; background-color: #d2d2d7; border: 3px solid var(--white); box-sizing: content-box;}
+        .ladder-step.active .ladder-dot { background-color: var(--text-dark); }
+        
+        .ladder-card { border-radius: var(--radius-md); padding: 1.5rem; background-color: var(--bg-main); transition: all 0.3s ease; border: 1px solid transparent; }
+        .ladder-step.active .ladder-card { background-color: var(--black); color: var(--white); box-shadow: 0 15px 30px rgba(0,0,0,0.15); transform: scale(1.02); }
+        .ladder-card h3 { font-size: 1.25rem; font-weight: 600; letter-spacing: -0.02em; }
+        .ladder-card p { margin-top: 0.75rem; font-size: 1rem; line-height: 1.6; color: var(--text-muted); }
+        .ladder-step.active .ladder-card p { color: rgba(255,255,255,0.7); }
+
+        /* Bento KPI */
+        .kpi-bento-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+        @media (min-width: 768px) { .kpi-bento-grid { grid-template-columns: 1fr 1fr; } }
+        .kpi-card { padding: 3rem; border-radius: var(--radius-xl); display: flex; flex-direction: column; min-height: 340px; position: relative; overflow: hidden; }
+        .kpi-card-black { background-color: var(--black); color: var(--white); box-shadow: 0 30px 60px rgba(0,0,0,0.2); }
+        .kpi-card-white { background-color: var(--white); color: var(--text-dark); border: 1px solid var(--border-medium); box-shadow: 0 15px 40px rgba(0,0,0,0.04); }
+        
+        .kpi-eyebrow { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 1rem; display: block; }
+        .kpi-card-black .kpi-eyebrow { color: #86868b; }
+        .kpi-card-white .kpi-eyebrow { color: #6e6e73; }
+        
+        .kpi-card h3 { font-size: 1.75rem; font-weight: 600; letter-spacing: -0.03em; margin-bottom: 1rem; line-height: 1.1; }
+        .kpi-card p { font-size: 1rem; line-height: 1.5; margin-bottom: 2rem; }
+        .kpi-card-black p { color: #86868b; }
+        .kpi-card-white p { color: #6e6e73; }
+        .kpi-value-area { margin-top: auto; display: flex; align-items: baseline; gap: 0.5rem; }
+        .kpi-number { font-size: 4.5rem; font-weight: 700; letter-spacing: -0.04em; line-height: 1; color: var(--border-medium); }
+        .kpi-unit { font-size: 1.1rem; font-weight: 500; color: var(--text-light-muted); }
+
+        /* To Do List */
+        .todo-mockup { background: var(--white); padding: 0; border-radius: var(--radius-xl); box-shadow: 0 24px 80px rgba(0, 0, 0, 0.05); border: 1px solid var(--border-light); overflow: hidden; }
+        .todo-header { background: #f5f5f7; padding: 1.5rem 2rem; border-bottom: 1px solid var(--border-light); }
+        .todo-header h4 { font-size: 1.25rem; font-weight: 600; color: var(--text-dark); }
+        .todo-list { padding: 1rem 2rem; }
+        .todo-item { display: flex; align-items: center; padding: 1.25rem 0; border-bottom: 1px solid var(--border-light); }
+        .todo-item:last-child { border-bottom: none; }
+        .todo-checkbox { width: 22px; height: 22px; border: 1.5px dashed var(--text-light-muted); border-radius: 50%; margin-right: 1rem; }
+        .todo-text { font-size: 1.05rem; font-weight: 500; color: var(--text-light-muted); flex-grow: 1; display: flex; align-items: center;}
+
+        /* --- SYNTHÈSE FINALE --- */
+        .section-synthesis { padding-top: 6rem; padding-bottom: 10rem; }
+        .card-dark-synthesis { background-color: var(--black); color: var(--white); padding: 5rem 2rem; border-radius: var(--radius-xxl); text-align: center; box-shadow: 0 40px 150px rgba(0, 0, 0, 0.25); position: relative; overflow: hidden; }
+        .card-dark-synthesis::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.1), transparent 70%); pointer-events: none; }
+        .card-dark-synthesis h2 { margin-top: 1rem; font-size: 3rem; font-weight: 700; letter-spacing: -0.04em; line-height: 1.1; }
+        @media (min-width: 768px) { .card-dark-synthesis h2 { font-size: 4.5rem; } }
+        .card-dark-synthesis p { margin: 2rem auto 0 auto; max-width: 48rem; font-size: 1.25rem; line-height: 1.6; color: rgba(255, 255, 255, 0.7); }
+    </style>
+</head>
+<body>
+
+    <main>
+        <!-- NAV -->
+        <div class="container header-nav">
+            <nav class="nav-bar">
+                <div class="nav-logo"> CarryIt</div>
+                <div class="nav-links">
+                    <a href="#smart">La Toile</a>
+                    <a href="#jalons">La Grille</a>
+                    <a href="#kpi">Les Capteurs</a>
+                    <a href="#todo">Le Moteur</a>
+                </div>
+                <button class="btn btn-dark">Ouvrir l'App</button>
+            </nav>
+        </div>
+
+        <!-- HERO -->
+        <section class="hero-section">
+            <div class="blur-orb blur-orb-1"></div>
+            <div class="blur-orb blur-orb-2"></div>
+
+            <div class="container hero-content">
+                <div class="pill animate-fade-up">L'architecture d'exécution absolue</div>
+                
+                <h1 class="hero-title animate-fade-up delay-1">
+                    Nous fournissons la structure.<br>Vous fournissez l'effort.
+                </h1>
+                
+                <p class="hero-desc animate-fade-up delay-2">
+                    L'immensité de vos ambitions vous paralyse. CarryIt ne fera pas le travail à votre place. C'est un cadre vierge, d'une rigueur implacable, conçu pour forcer l'alignement entre votre vision à 3 ans et vos actions d'aujourd'hui.
+                </p>
+                
+                <div class="hero-actions animate-fade-up delay-3">
+                    <a href="#smart" class="btn btn-dark" style="padding: 1.25rem 2.5rem; font-size: 1.1rem;">
+                        Découvrir le système
+                        <svg class="icon-svg" width="20" height="20" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- PILIER 1 : L'OBJECTIF SMART                -->
+        <!-- ========================================== -->
+        <div class="pillar-title">1. La Destination</div>
+
+        <!-- SMART A : Définition -->
+        <section id="smart" class="sub-section">
+            <div class="container grid-def">
+                <div class="card-dark-hero">
+                    <p class="tag-upper">Le Fondement</p>
+                    <h2>On ne construit rien sur du flou. La toile exige des règles.</h2>
+                    <p>L'application ne devinera pas vos rêves. Face à une page blanche, l'esprit procrastine. CarryIt impose donc une cage de fer dès la première seconde : l'Objectif S.M.A.R.T.</p>
+                    <p>L'interface vous oblige à formuler une direction absolue, à exiger un critère mesurable et à définir une date d'échéance. C'est la fin des concepts vagues. Si vous ne pouvez pas l'écrire, vous ne pouvez pas l'atteindre.</p>
+                </div>
+
+                <div class="def-right-col">
+                    <div class="card-info">
+                        <div style="background: #f5f5f7; padding: 0.75rem; border-radius: 1rem; height: max-content;">
+                            <svg class="icon-svg" width="22" height="22" viewBox="0 0 24 24" style="color: var(--text-dark);"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+                        </div>
+                        <div>
+                            <h3>Anti-Paralysie</h3>
+                            <p>Une ambition massive ("devenir riche", "être en forme") paralyse le cerveau. La méthode force la réduction de l'immense à une cible unique et indiscutable.</p>
+                        </div>
+                    </div>
+                    <div class="card-info">
+                        <div style="background: #f5f5f7; padding: 0.75rem; border-radius: 1rem; height: max-content;">
+                            <svg class="icon-svg" width="22" height="22" viewBox="0 0 24 24" style="color: var(--text-dark);"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                        </div>
+                        <div>
+                            <h3>Anti-Bullshit</h3>
+                            <p>Les résolutions vagues s'évaporent au premier obstacle. La structure vous oblige à poser un contrat inviolable envers vous-même.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SMART B : Formulaire (Toile Vierge) -->
+        <section class="sub-section">
+            <div class="container grid-def reverse">
+                <div class="ui-col">
+                    <div class="form-preview-container">
+                        <div class="form-preview-header" style="background: var(--white); border: none; padding: 0 0 1.5rem 0;">
+                            <h4 style="font-size: 1.25rem; font-weight: 600;">Définissez votre vision</h4>
+                            <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.5rem;">C'est le sommet de la montagne. Soyez précis.</p>
+                        </div>
+
+                        <div class="form-preview-fields" style="margin-top: 0;">
+                            <div class="field-block">
+                                <div class="field-info-row">
+                                    <p class="label">S. L'Ambition Spécifique</p>
+                                </div>
+                                <div class="field-input-mock mock-input-active">
+                                    <p>Que voulez-vous accomplir exactement ?<span class="cursor"></span></p>
+                                </div>
+                            </div>
+                            
+                            <div class="field-block">
+                                <div class="field-info-row">
+                                    <p class="label">M. La Mesure du Succès</p>
+                                </div>
+                                <div class="field-input-mock">
+                                    <p>Quel est le chiffre qui prouvera la réussite ?</p>
+                                </div>
+                            </div>
+                            
+                            <div class="field-block">
+                                <div class="field-info-row">
+                                    <p class="label">T. La Date d'échéance</p>
+                                </div>
+                                <div class="field-input-mock">
+                                    <p>JJ / MM / AAAA</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-dark-hero" style="background-color: var(--white); color: var(--text-dark); box-shadow: 0 10px 40px rgba(0,0,0,0.05); border: 1px solid var(--border-light);">
+                    <div class="icon-box-black" style="background: var(--bg-main); color: var(--text-dark); margin-bottom: 1.5rem;">
+                        <svg class="icon-svg" width="22" height="22" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                    </div>
+                    <p class="tag-upper accent">Le Contrat</p>
+                    <h2 style="color: var(--text-dark);">Vous tenez le stylo.</h2>
+                    <p style="color: var(--text-muted); margin-top: 1rem;">CarryIt vous donne l'espace de saisie, mais le travail de réflexion vous appartient.</p>
+                    <p style="color: var(--text-muted); margin-top: 1rem;">Remplir ces champs ne prend pas 5 minutes. Cela demande de l'introspection, du réalisme et du courage. Ne passez pas à l'étape suivante tant que chaque ligne n'est pas irréfutable.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SMART C : Les 3 Règles -->
+        <section class="sub-section">
+            <div class="container">
+                <div class="cards-center-head">
+                    <p class="tag-upper">Règles de saisie</p>
+                    <h2>Un objectif n'est valide que s'il respecte le cadre.</h2>
+                    <p>L'interface rejettera ce qui ne peut être exécuté. Voici les lois de la destination.</p>
+                </div>
+
+                <div class="three-cards-grid">
+                    <div class="card-simple">
+                        <div class="icon-box-black"><svg class="icon-svg" width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg></div>
+                        <h3>Précision Chirurgicale</h3>
+                        <p>Bannissez les adjectifs ("beaucoup", "mieux", "plus"). Remplacez-les par des verbes d'action et des livrables finaux.</p>
+                    </div>
+                    
+                    <div class="card-simple">
+                        <div class="icon-box-black"><svg class="icon-svg" width="20" height="20" viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg></div>
+                        <h3>Preuve Incontestable</h3>
+                        <p>La validation doit être binaire. Un juge externe doit pouvoir regarder votre projet et dire "Oui, c'est fait" ou "Non, c'est raté".</p>
+                    </div>
+                    
+                    <div class="card-simple">
+                        <div class="icon-box-black"><svg class="icon-svg" width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div>
+                        <h3>Date Couperet</h3>
+                        <p>Sans échéance, il n'y a pas d'urgence. Sans urgence, il n'y a pas d'action. La date verrouille votre engagement temporel.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- PILIER 2 : LES JALONS                      -->
+        <!-- ========================================== -->
+        <div class="pillar-title">2. L'Architecture</div>
+
+        <!-- Jalon A : Définition -->
+        <section id="jalons" class="sub-section">
+            <div class="container grid-def">
+                <div class="card-dark-hero">
+                    <p class="tag-upper">La Déconstruction</p>
+                    <h2>Un jalon n’est pas une tâche. C’est un palier atteint.</h2>
+                    <p>Une fois l'objectif validé, CarryIt génère la grille temporelle. Mais c'est à vous de placer les barreaux. Un jalon est une étape de résultat de votre parcours. Il doit être assez concret pour être validé explicitement.</p>
+                    <p>Il marque un changement de niveau : avant ce jalon, vous n’aviez pas encore franchi ce seuil. Après lui, la situation a définitivement changé.</p>
+                </div>
+
+                <div class="def-right-col">
+                    <div class="card-info">
+                        <div style="background: #f5f5f7; padding: 0.75rem; border-radius: 1rem; height: max-content;">
+                            <svg class="icon-svg" width="22" height="22" viewBox="0 0 24 24" style="color: var(--text-dark);"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                        </div>
+                        <div>
+                            <h3>Résultat Tangible</h3>
+                            <p>Le jalon décrit ce qui existe déjà, ce qui est validé ou ce qui a profondément changé. Pas seulement ce que vous avez fait au quotidien.</p>
+                        </div>
+                    </div>
+                    <div class="card-info">
+                        <div style="background: #f5f5f7; padding: 0.75rem; border-radius: 1rem; height: max-content;">
+                            <svg class="icon-svg" width="22" height="22" viewBox="0 0 24 24" style="color: var(--text-dark);"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                        </div>
+                        <div>
+                            <h3>Validation Binaire</h3>
+                            <p>La fin du jalon doit pouvoir être constatée clairement : soit elle est atteinte, soit elle ne l'est pas. Aucune place à l'ambiguïté.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Jalon B : Méthode (Frise) -->
+        <section class="sub-section">
+            <div class="container card-method-box">
+                <div class="grid-method">
+                    <div class="method-left">
+                        <div class="icon-box-black">
+                            <svg class="icon-svg" width="22" height="22" viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+                        </div>
+                        <p class="tag-upper">Rolling Wave Planning</p>
+                        <h2>Reculez depuis la date finale.</h2>
+                        <p>L'app génère les blocs trimestriels. Ne partez pas de votre charge actuelle. Partez plutôt du résultat final (votre SMART), puis demandez-vous quels paliers doivent obligatoirement être franchis en amont pour y arriver.</p>
+                    </div>
+
+                    <div class="ladder-container">
+                        <div class="ladder-step">
+                            <div class="ladder-left-meta">Final</div>
+                            <div class="ladder-right-content">
+                                <div class="ladder-dot"></div>
+                                <div class="ladder-card" style="background: var(--white); border: 1px solid var(--border-medium);">
+                                    <h3 style="color: var(--text-light-muted);">Objectif atteint</h3>
+                                    <p>La hauteur de l’échelle est fixée : vous savez ce que vous voulez avoir construit ou validé.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ladder-step">
+                            <div class="ladder-left-meta">6 mois</div>
+                            <div class="ladder-right-content">
+                                <div class="ladder-dot"></div>
+                                <div class="ladder-card">
+                                    <h3 style="color: var(--text-light-muted);">Palier intermédiaire</h3>
+                                    <p>Quel résultat concret doit prouver que votre trajectoire actuelle est la bonne ?</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ladder-step active">
+                            <div class="ladder-left-meta">Maintenant</div>
+                            <div class="ladder-right-content">
+                                <div class="ladder-dot"></div>
+                                <div class="ladder-card">
+                                    <h3>Premier jalon actif</h3>
+                                    <p>Celui-ci doit être clair, précis et actionnable, car c’est sur lui que vous concentrez vos efforts immédiats.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Jalon C : Formulaire (Toile Vierge) -->
+        <section class="sub-section">
+            <div class="container grid-def">
+                <div class="ui-col">
+                    <div class="icon-box-black" style="margin-bottom: 1.25rem;">
+                        <svg class="icon-svg" width="22" height="22" viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                    </div>
+                    <p class="tag-upper">Saisie du jalon</p>
+                    <h2 style="font-size: 2.5rem; font-weight: 600; letter-spacing: -0.04em; line-height: 1.1;">Chaque barreau devient une fiche à compléter.</h2>
+                    <p style="font-size: 1.15rem; color: var(--text-muted); line-height: 1.6; margin-top: 1rem;">La fiche force trois décisions capitales : nommer le résultat, le décrire très simplement, puis écrire la règle stricte qui permettra de dire s'il est validé.</p>
+                </div>
+
+                <div class="form-preview-container">
+                    <div class="form-preview-header">
+                        <div class="form-header-top">
+                            <div>
+                                <p class="num">Jalon Actif</p>
+                                <p class="progress-val">Trimestre en cours</p>
+                            </div>
+                        </div>
+                        <div class="form-header-grid">
+                            <div class="header-grid-item">
+                                <svg class="icon-svg" width="16" height="16" viewBox="0 0 24 24" style="color: var(--text-light-muted);"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                <div><p class="label">Date cible</p><p class="val">JJ / MM / AAAA</p></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-preview-fields">
+                        <div class="field-block">
+                            <div class="field-info-row"><p class="label">Titre du jalon</p><p class="help">Un nom court.</p></div>
+                            <div class="field-input-mock active"><p>Nommez le palier à atteindre...<span class="cursor"></span></p></div>
+                        </div>
+                        <div class="field-block">
+                            <div class="field-info-row"><p class="label">Critère de validation</p><p class="help">Une règle vérifiable.</p></div>
+                            <div class="field-input-mock large"><p>Quelle est la preuve irréfutable de réussite ?</p></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Jalon D : Les 3 Règles -->
+        <section class="sub-section">
+            <div class="container">
+                <div class="cards-center-head">
+                    <p class="tag-upper">Règle pratique</p>
+                    <h2>Les jalons lointains restent larges. Le premier doit être chirurgical.</h2>
+                    <p>Plus un jalon est éloigné dans le temps, plus il tolère l'approximation. Plus il est proche, plus il doit être microscopique, incontestable et lié à une action immédiate.</p>
+                </div>
+
+                <div class="three-cards-grid">
+                    <div class="card-simple">
+                        <div class="icon-box-black"><svg class="icon-svg" width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div>
+                        <h3>Lointain</h3>
+                        <p>Gardez une formulation macro si le contexte peut changer. Son but est de donner un cap, pas de figer un plan irréaliste sur 5 ans.</p>
+                    </div>
+                    <div class="card-simple">
+                        <div class="icon-box-black"><svg class="icon-svg" width="20" height="20" viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg></div>
+                        <h3>Prochain</h3>
+                        <p>Le tout premier jalon doit se traduire par un résultat concret : ce qui sera immédiatement tangible une fois l'étape finie.</p>
+                    </div>
+                    <div class="card-simple">
+                        <div class="icon-box-black"><svg class="icon-svg" width="20" height="20" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg></div>
+                        <h3>Actif</h3>
+                        <p>S’il ne vous aide pas à trancher sur votre plan d'action de demain matin, c’est que votre jalon est encore trop vague.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- PILIER 3 : LES KPI                         -->
+        <!-- ========================================== -->
+        <div class="pillar-title">3. La Mesure</div>
+
+        <!-- KPI A : Définition -->
+        <section id="kpi" class="sub-section">
+            <div class="container grid-def">
+                <div class="card-dark-hero">
+                    <p class="tag-upper">Le Juge de paix</p>
+                    <h2>La vérité par les chiffres.</h2>
+                    <p>Face à un Jalon, l'esprit humain excelle à se mentir. On se sent occupé, donc on s'imagine progresser. Pour anéantir cette subjectivité, CarryIt branche des capteurs mathématiques.</p>
+                    <p>Mais l'application ne se connecte à aucune API pour aspirer vos données. C'est vous qui choisissez vos métriques. C'est vous qui saisissez vos avancées. L'interface vous force simplement à regarder la réalité en face.</p>
+                </div>
+
+                <div class="def-right-col">
+                    <div class="card-info">
+                        <div style="background: #f5f5f7; padding: 0.75rem; border-radius: 1rem; height: max-content;">
+                            <svg class="icon-svg" width="22" height="22" viewBox="0 0 24 24" style="color: var(--text-dark);"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </div>
+                        <div>
+                            <h3>Contre les Impressions</h3>
+                            <p>L'effort ressenti n'est pas corrélé à l'avancée réelle. Le KPI déconnecte l'émotion de l'évaluation du progrès.</p>
+                        </div>
+                    </div>
+                    <div class="card-info">
+                        <div style="background: #f5f5f7; padding: 0.75rem; border-radius: 1rem; height: max-content;">
+                            <svg class="icon-svg" width="22" height="22" viewBox="0 0 24 24" style="color: var(--text-dark);"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                        </div>
+                        <div>
+                            <h3>Saisie Consciente</h3>
+                            <p>Entrer manuellement sa donnée force la responsabilité. Si vous ne pouvez pas mettre à jour votre compteur, vous n'avez pas avancé.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- KPI B : Le Bento (Toile vierge) -->
+        <section class="sub-section">
+            <div class="container">
+                <div style="text-align: center; max-width: 54rem; margin: 0 auto;">
+                    <h2 style="font-size: 2.5rem; font-weight: 600; letter-spacing: -0.03em;">Le double capteur.</h2>
+                    <p style="font-size: 1.15rem; color: var(--text-muted); margin-top: 1rem; line-height: 1.6;">Rattachez jusqu'à deux compteurs à votre jalon actif pour équilibrer l'effort et le résultat.</p>
+                </div>
+
+                <div class="kpi-bento-grid">
+                    <!-- LEADING -->
+                    <div class="kpi-card kpi-card-black">
+                        <div>
+                            <span class="kpi-eyebrow">Leading Indicator</span>
+                            <h3>L'Indicateur d'avancée.</h3>
+                            <p>Définissez la métrique qui quantifie votre travail quotidien (ex: heures passées, kilomètres courus). C'est votre levier d'action.</p>
+                            <div class="mock-input" style="background: #1d1d1f; border-color: #515154; color: #86868b; margin-top: 1rem;">
+                                Quel effort allez-vous mesurer ?<span class="cursor" style="background: var(--white);"></span>
+                            </div>
+                        </div>
+                        <div class="kpi-value-area">
+                            <span class="kpi-number" style="color: rgba(255,255,255,0.1);">-</span>
+                            <span class="kpi-unit">[Unité]</span>
+                        </div>
+                    </div>
+
+                    <!-- LAGGING -->
+                    <div class="kpi-card kpi-card-white">
+                        <div>
+                            <span class="kpi-eyebrow">Lagging Indicator</span>
+                            <h3>L'Indicateur de résultat.</h3>
+                            <p>Définissez la métrique qui constate l'impact réel de votre effort (ex: chiffre d'affaires, poids perdu). C'est la preuve de progression.</p>
+                            <div class="mock-input" style="margin-top: 1rem;">
+                                Quel résultat attendez-vous ?
+                            </div>
+                        </div>
+                        <div class="kpi-value-area">
+                            <span class="kpi-number" style="color: rgba(0,0,0,0.05);">-</span>
+                            <span class="kpi-unit">[Unité]</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- KPI C : Les 3 Règles -->
+        <section class="sub-section">
+            <div class="container">
+                <div class="cards-center-head">
+                    <p class="tag-upper">Règles de mesure</p>
+                    <h2>Toutes les données ne se valent pas.</h2>
+                    <p>Un mauvais KPI vous fait courir dans la mauvaise direction avec le sourire. Choisissez vos capteurs avec une paranoïa absolue.</p>
+                </div>
+
+                <div class="three-cards-grid">
+                    <div class="card-simple">
+                        <div class="icon-box-black"><svg class="icon-svg" width="20" height="20" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg></div>
+                        <h3>Actionnabilité (Leading)</h3>
+                        <p>Votre premier KPI doit être sous votre contrôle direct. Si vous décidez de travailler le double demain, ce chiffre doit doubler.</p>
+                    </div>
+                    <div class="card-simple">
+                        <div class="icon-box-black"><svg class="icon-svg" width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg></div>
+                        <h3>Validation (Lagging)</h3>
+                        <p>Votre second KPI doit valider l'impact de l'effort. Si le Leading explose mais que le Lagging stagne, c'est que votre stratégie est mauvaise.</p>
+                    </div>
+                    <div class="card-simple">
+                        <div class="icon-box-black"><svg class="icon-svg" width="20" height="20" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></div>
+                        <h3>Zéro Vanity Metric</h3>
+                        <p>Bannissez les chiffres qui flattent l'ego mais ne font pas avancer le jalon (ex: nombre de likes, de visites superficielles). Seule la conversion compte.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- PILIER 4 : LA TO-DO LIST                   -->
+        <!-- ========================================== -->
+        <div class="pillar-title">4. L'Action</div>
+
+        <!-- TODO A : Définition -->
+        <section id="todo" class="sub-section">
+            <div class="container grid-def reverse">
+                <div class="card-dark-hero" style="background-color: var(--white); color: var(--text-dark); box-shadow: 0 10px 40px rgba(0,0,0,0.05); border: 1px solid var(--border-light);">
+                    <p class="tag-upper accent">Le Moteur</p>
+                    <h2 style="color: var(--text-dark);">Une page blanche sous haute surveillance.</h2>
+                    <p style="color: var(--text-muted);">C'est la fin de l'entonnoir. La tranchée quotidienne. C'est ici que l'exécution a lieu.</p>
+                    <p style="color: var(--text-dark); font-weight: 500; font-size: 1.15rem; margin-top: 1.5rem; padding-left: 1.5rem; border-left: 3px solid var(--accent);">
+                        CarryIt vous donne l'espace de saisie. Mais c'est à vous d'appliquer le filtre impitoyable de la méthode. Si la tâche que vous allez écrire ne fait pas bouger le KPI actif... ne l'écrivez pas.
+                    </p>
+                </div>
+
+                <div class="def-right-col">
+                    <div class="card-info" style="background: var(--bg-main);">
+                        <div style="background: var(--white); padding: 0.75rem; border-radius: 1rem; height: max-content;">
+                            <svg class="icon-svg" width="22" height="22" viewBox="0 0 24 24" style="color: var(--text-dark);"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+                        </div>
+                        <div>
+                            <h3>Le Filtre Impitoyable</h3>
+                            <p>Une To-Do list classique est une poubelle à urgences. Celle de CarryIt est un système de filtration lié exclusivement à votre Jalon.</p>
+                        </div>
+                    </div>
+                    <div class="card-info" style="background: var(--bg-main);">
+                        <div style="background: var(--white); padding: 0.75rem; border-radius: 1rem; height: max-content;">
+                            <svg class="icon-svg" width="22" height="22" viewBox="0 0 24 24" style="color: var(--text-dark);"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                        </div>
+                        <div>
+                            <h3>L'Exécution Pure</h3>
+                            <p>Tout le travail en amont (S.M.A.R.T, Jalons, KPI) a été fait pour vous libérer de la prise de décision tactique au quotidien. Il n'y a plus qu'à cocher.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TODO B : UI (Toile vierge) -->
+        <section class="sub-section">
+            <div class="container">
+                <div class="todo-mockup" style="max-width: 800px; margin: 0 auto;">
+                    <div class="todo-header">
+                        <span class="tag-upper accent" style="margin-bottom: 0.5rem; font-size: 0.75rem;">Usine à tâches</span>
+                        <h4>[Jalon Actif]</h4>
+                    </div>
+                    <div class="todo-list">
+                        <div class="todo-item">
+                            <div class="todo-checkbox"></div>
+                            <span class="todo-text" style="color: var(--text-dark);">Saisissez une action alignée sur votre KPI...<span class="cursor"></span></span>
+                        </div>
+                        <div class="todo-item" style="opacity: 0.5;">
+                            <div class="todo-checkbox"></div>
+                            <span class="todo-text">Appuyez sur Entrée pour valider</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TODO C : Les 3 Règles -->
+        <section class="sub-section">
+            <div class="container">
+                <div class="cards-center-head">
+                    <p class="tag-upper">Règles d'exécution</p>
+                    <h2>Gérez le "Comment" avec brutalité.</h2>
+                    <p>La liste de tâches est l'endroit où les projets meurent de distraction. Appliquez ces trois règles pour remplir l'espace.</p>
+                </div>
+
+                <div class="three-cards-grid">
+                    <div class="card-simple">
+                        <div class="icon-box-black"><svg class="icon-svg" width="20" height="20" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></div>
+                        <h3>Alignement Absolu</h3>
+                        <p>Demandez-vous systématiquement : "Si je coche cette ligne, est-ce que ça fait techniquement bouger la courbe de mon KPI ?" Si non, supprimez la tâche.</p>
+                    </div>
+                    <div class="card-simple">
+                        <div class="icon-box-black"><svg class="icon-svg" width="20" height="20" viewBox="0 0 24 24"><polyline points="4 14 10 14 10 20"></polyline><polyline points="20 10 14 10 14 4"></polyline><line x1="14" y1="10" x2="21" y2="3"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg></div>
+                        <h3>Granularité</h3>
+                        <p>Une tâche ne doit pas excéder 2 heures de travail. Si elle est trop grosse ("Coder l'application"), brisez-la en sous-tâches immédiates.</p>
+                    </div>
+                    <div class="card-simple">
+                        <div class="icon-box-black"><svg class="icon-svg" width="20" height="20" viewBox="0 0 24 24"><path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"></path><path d="M13 13l6 6"></path></svg></div>
+                        <h3>Verbe d'Action</h3>
+                        <p>Commencez vos tâches par un verbe impératif. Pas "Facture client", mais "Envoyer la facture au client". Le cerveau exécute ce qui est clair.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SYNTHÈSE FINALE -->
+        <section class="section-synthesis">
+            <div class="container">
+                <div class="card-dark-synthesis">
+                    <span class="tag-upper" style="color: rgba(255,255,255,0.4)">Le Système CarryIt</span>
+                    <h2>Le cadre est posé.</h2>
+                    <p>L'application impose la structure. Elle exige le SMART. Elle découpe les Jalons. Elle aligne les KPI avec la To-Do List. Mais à la fin, c'est à vous de remplir les cases et de faire le travail.</p>
+                    
+                    <div style="margin-top: 4rem;">
+                        <a href="#" class="btn btn-light" style="padding: 1.25rem 3rem; font-size: 1.25rem; font-weight: 600;">
+                            Prendre le contrôle
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+</body>
+</html>
