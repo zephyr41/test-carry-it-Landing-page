@@ -193,12 +193,14 @@
                 <input type="hidden" id="jalonKpiType">
                 <input type="hidden" id="jalonKpiMode">
                 <div class="m-field">
-                    <label class="m-label" for="jalonKpiTitre">Indicateur</label>
+                    <label class="m-label" for="jalonKpiTitre">Métrique</label>
+                    <span class="m-hint">ce que tu mesures</span>
                     <input class="m-input" type="text" id="jalonKpiTitre" placeholder="km courus, clients onboardés…" autocomplete="off">
                 </div>
                 <div class="m-row">
                     <div class="m-field">
                         <label class="m-label" for="jalonKpiCible">Cible</label>
+                        <span class="m-hint">le seuil que tu veux atteindre</span>
                         <input class="m-input" type="number" min="0" id="jalonKpiCible" placeholder="100">
                     </div>
                     <div class="m-field">
@@ -207,10 +209,27 @@
                     </div>
                 </div>
                 <div class="m-field">
-                    <label class="m-label">Mode</label>
+                    <label class="m-label">Mode de saisie</label>
+                    <span class="m-hint">impacte le calcul du total</span>
                     <div class="m-mode-toggle">
-                        <button type="button" class="m-mode-btn" data-mode="incremental" onclick="setKpiMode('incremental')">+ S'ajoute au total</button>
-                        <button type="button" class="m-mode-btn" data-mode="absolute" onclick="setKpiMode('absolute')">= Remplace la valeur</button>
+                        <button type="button" class="m-mode-btn" data-mode="incremental" onclick="setKpiMode('incremental')">
+                            <span class="m-mode-icon">
+                                <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M12 4v16m8-8H4"/></svg>
+                            </span>
+                            <span class="m-mode-body">
+                                <span class="m-mode-title">Cumulatif</span>
+                                <span class="m-mode-example">ex : 5 km → s'ajoute au total</span>
+                            </span>
+                        </button>
+                        <button type="button" class="m-mode-btn" data-mode="absolute" onclick="setKpiMode('absolute')">
+                            <span class="m-mode-icon">
+                                <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" stroke-width="2.2"/><path stroke-linecap="round" stroke-width="2.2" d="M12 2v3m0 14v3M2 12h3m14 0h3"/></svg>
+                            </span>
+                            <span class="m-mode-body">
+                                <span class="m-mode-title">Instantané</span>
+                                <span class="m-mode-example">ex : 150 abonnés → remplace</span>
+                            </span>
+                        </button>
                     </div>
                 </div>
                 <div class="m-error" id="jalonKpiError"></div>
@@ -2709,6 +2728,8 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             const freshness = getRelativeDayLabel(latestMeasure?.date || '');
 
             if (!kpi || !titre) {
+                const emptyQ  = isLeading ? "Mesure l'action réalisée." : "Mesure l'effet obtenu.";
+                const emptyEx = isLeading ? "Exemple : nombre d'heures entre chaque test utilisateur." : "Exemple : 3 utilisateurs sur 15 ont testé la V0.";
                 return `
                     <article class="kpi-unit kpi-unit--empty">
                         <div class="kpi-unit__header">
@@ -2718,7 +2739,8 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                             </div>
                             ${editButton}
                         </div>
-                        <div class="kpi-empty-copy">Aucun indicateur défini pour ce jalon.</div>
+                        <p class="kpi-empty-q">${emptyQ}</p>
+                        <span class="kpi-empty-ex">${emptyEx}</span>
                         <button class="add-btn" type="button" onclick="openJalonKpiModal(${i}, '${escHtml(jalon?.id || '')}', '${type}')">+ Définir le KPI</button>
                     </article>`;
             }
@@ -2759,6 +2781,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             if (!jalon) return '';
             const leading = getJalonKpiByType(jalon, 'leading');
             const lagging = getJalonKpiByType(jalon, 'lagging');
+
             return `
                 <div class="steering-pilotage-wrap">
                     <span class="section-label-pilotage">Indicateurs de Pilotage</span>
@@ -3552,7 +3575,8 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             document.getElementById('jalonKpiModalTitle').textContent = isLeading ? 'Configurer le KPI Effort' : 'Configurer le KPI Résultat';
             document.getElementById('jalonKpiType').value = kpiType;
             setKpiMode(getKpiMeasureMode(kpi, kpiType));
-            document.getElementById('jalonKpiTitre').value = kpi.titre || '';
+            const critereSuggestion = !isLeading && !(kpi.titre) ? (jalon.critere || jalon.kpi || '') : '';
+            document.getElementById('jalonKpiTitre').value = kpi.titre || critereSuggestion;
             document.getElementById('jalonKpiUnite').value = kpi.unite || '';
             document.getElementById('jalonKpiCible').value = kpi.cible !== null && kpi.cible !== undefined ? kpi.cible : '';
             document.getElementById('jalonKpiError').textContent = '';

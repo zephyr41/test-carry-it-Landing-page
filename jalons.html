@@ -644,17 +644,178 @@
         /* INTRO SECTION */
         .intro-section {
             margin-top: 60px;
-            padding: 60px 20px 40px;
+            padding: 60px 20px 56px;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
-            gap: 28px;
+            gap: 0;
             width: 100%;
             position: relative;
             overflow: visible;
-            min-height: 480px;
             z-index: 2;
+        }
+        .intro-inner { max-width: 620px; width: 100%; }
+        .intro-breadcrumb {
+            display: inline-block;
+            font-size: 11px;
+            color: var(--text-secondary);
+            letter-spacing: 0.06em;
+            border: 1px solid var(--c-border);
+            padding: var(--space-1) var(--space-4);
+            border-radius: var(--radius-full);
+            margin-bottom: var(--space-6);
+        }
+        .intro-ctas {
+            display: flex;
+            gap: var(--space-3);
+            justify-content: center;
+            margin-top: var(--space-6);
+            flex-wrap: wrap;
+        }
+        .btn-intro-primary {
+            background: var(--accent);
+            color: var(--c-blanc);
+            border: none;
+            padding: 13px 28px;
+            border-radius: var(--radius-full);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: var(--font-stack);
+            transition: background var(--duration-fast);
+        }
+        .btn-intro-primary:hover { background: var(--c-rouge-o); }
+        .btn-intro-secondary {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--c-border-med);
+            padding: 13px 22px;
+            border-radius: var(--radius-full);
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: var(--font-stack);
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            transition: border-color var(--duration-fast), color var(--duration-fast);
+        }
+        .btn-intro-secondary:hover {
+            border-color: var(--c-border-med);
+            color: var(--text-primary);
+        }
+        /* METHODE TIMELINE */
+        .methode-section {
+            display: none;
+            width: 100%;
+            padding: 0 20px;
+            margin-top: 52px;
+            text-align: left;
+        }
+        .methode-section.is-open {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .methode-header { text-align: center; margin-bottom: 40px; }
+        .methode-overline {
+            display: block;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            color: var(--accent);
+            text-transform: uppercase;
+            margin-bottom: var(--space-3);
+        }
+        .methode-title {
+            font-size: clamp(22px, 3.5vw, 32px);
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: var(--space-2);
+            line-height: 1.1;
+        }
+        .intro-section .methode-desc {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin: 0;
+        }
+        .methode-timeline {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            width: 100%;
+            max-width: 580px;
+        }
+        .methode-timeline::before {
+            content: '';
+            position: absolute;
+            left: 85px;
+            top: 10px;
+            bottom: 10px;
+            width: 1px;
+            background: var(--c-border);
+        }
+        .methode-step {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-3);
+            padding-bottom: var(--space-5);
+        }
+        .methode-label {
+            width: 68px;
+            flex-shrink: 0;
+            text-align: right;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            padding-top: 5px;
+        }
+        .methode-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--c-surface-2);
+            border: 1px solid var(--c-border-med);
+            flex-shrink: 0;
+            margin-top: var(--space-1);
+            position: relative;
+            z-index: 1;
+        }
+        .methode-dot--active {
+            background: var(--accent);
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px var(--accent-glow);
+        }
+        .methode-card {
+            background: var(--bg-card);
+            border: 1px solid var(--c-border);
+            border-radius: var(--radius-md);
+            padding: var(--space-4) var(--space-5);
+            flex: 1;
+            box-shadow: var(--shadow-sm);
+        }
+        .methode-card strong {
+            display: block;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-1);
+        }
+        .intro-section .methode-card p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin: 0;
+        }
+        .methode-card--active {
+            background: var(--c-rouge-o);
+            background: rgba(168,43,6,0.15);
+            border-color: var(--c-rouge-o);
         }
 
         .intro-section::before {
@@ -733,10 +894,75 @@
             color: rgba(255,255,255,0.88);
             line-height: 1.8;
         }
-        .intro-section p.intro-action .punch {
+        .intro-section p.intro-action .punch,
+        .intro-section p.intro-rule .punch {
             color: #ffffff;
             font-weight: 700;
             letter-spacing: 0.04em;
+        }
+        .intro-section p.intro-def {
+            font-size: 13px;
+            color: rgba(255,255,255,0.36);
+            line-height: 1.7;
+            margin: 18px auto 22px;
+            max-width: 520px;
+            font-style: italic;
+        }
+        .intro-section p.intro-rule {
+            font-size: 15px;
+            color: rgba(255,255,255,0.65);
+            line-height: 1.8;
+            margin-top: 18px;
+            max-width: 540px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .intro-section .time-marker {
+            color: var(--accent);
+            font-weight: 600;
+        }
+        .intro-def-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin: 22px auto;
+            max-width: 560px;
+            text-align: left;
+        }
+        .intro-def-card i {
+            color: rgba(255,255,255,0.28);
+            font-size: 15px;
+            flex-shrink: 0;
+            margin-top: 3px;
+        }
+        .intro-section .intro-def-card p {
+            font-size: 13px;
+            color: rgba(255,255,255,0.36);
+            line-height: 1.7;
+            margin: 0;
+            font-style: italic;
+        }
+        .intro-chips {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 14px auto 0;
+            flex-wrap: wrap;
+        }
+        .intro-chip {
+            background: rgba(238,68,8,0.10);
+            border: 1px solid rgba(238,68,8,0.22);
+            color: var(--accent);
+            font-size: 13px;
+            font-weight: 600;
+            padding: 6px 16px;
+            border-radius: 999px;
+            letter-spacing: 0.02em;
+            font-family: var(--font-stack);
         }
 
         .intro-followup {
@@ -1217,7 +1443,7 @@
             .btn-launch { padding: 12px 28px; font-size: 12px; }
         }
 
-        @media (min-width: 900px) {
+        @media (min-width: 769px) {
             .timeline-list {
                 transform: translateX(calc((var(--rail-offset) + var(--card-gap)) / -2));
             }
@@ -1236,14 +1462,69 @@
     </nav>
 
     <div class="intro-section">
-        <div>
-            <h2>Planifier l'impossible.</h2>
-            <p class="intro-method">On part de la fin, puis on revient vers aujourd'hui.</p>
-            <p class="intro-action">Si certains jalons sont flous, ce n'est pas grave.<br>Ce qui doit être clair maintenant : ton objectif final et ton prochain jalon.<br><span class="punch">Avancez.</span> Le reste se précisera en chemin.</p>
+        <div class="intro-inner">
+            <span class="intro-breadcrumb">Objectif final → Jalons → Saisie guidée</span>
+            <h2>Vous avez défini la hauteur de l'échelle.</h2>
+            <p class="intro-method">Placez les barreaux. Chaque jalon est un palier daté et validable.</p>
+            <div class="intro-ctas">
+                <button class="btn-intro-secondary" onclick="toggleMethode()">
+                    Comprendre la méthode
+                    <i class="ri-arrow-down-s-line" id="methodeArrow"></i>
+                </button>
+                <button class="btn-intro-primary" onclick="document.getElementById('timelineStart').scrollIntoView({behavior:'smooth'})">
+                    Placer mes jalons
+                </button>
+            </div>
         </div>
-        <div class="scroll-hint" onclick="document.getElementById('timelineStart').scrollIntoView({behavior:'smooth'})">
-            <span>Pose tes jalons</span>
-            <i class="ri-arrow-down-line"></i>
+
+        <div class="methode-section" id="methodeSection">
+            <div class="methode-header">
+                <span class="methode-overline">Méthode</span>
+                <h3 class="methode-title">Reculez depuis la date finale.</h3>
+                <p class="methode-desc">Partez du résultat final. Placez les paliers à franchir avant cette date.</p>
+            </div>
+            <div class="methode-timeline">
+                <div class="methode-step">
+                    <span class="methode-label">Final</span>
+                    <div class="methode-dot"></div>
+                    <div class="methode-card">
+                        <strong>Objectif atteint</strong>
+                        <p>Votre objectif SMART est fixé. Vous savez ce que vous voulez avoir atteint.</p>
+                    </div>
+                </div>
+                <div class="methode-step">
+                    <span class="methode-label">50%</span>
+                    <div class="methode-dot"></div>
+                    <div class="methode-card">
+                        <strong>Palier stratégique</strong>
+                        <p>Quel niveau doit déjà être atteint pour que l'objectif final reste réaliste ?</p>
+                    </div>
+                </div>
+                <div class="methode-step">
+                    <span class="methode-label">6 mois</span>
+                    <div class="methode-dot"></div>
+                    <div class="methode-card">
+                        <strong>Palier intermédiaire</strong>
+                        <p>Quel résultat concret doit prouver que la trajectoire est correcte ?</p>
+                    </div>
+                </div>
+                <div class="methode-step">
+                    <span class="methode-label">3 mois</span>
+                    <div class="methode-dot"></div>
+                    <div class="methode-card">
+                        <strong>Palier proche</strong>
+                        <p>Quel changement observable doit être validé avant de passer à la suite ?</p>
+                    </div>
+                </div>
+                <div class="methode-step">
+                    <span class="methode-label">Maintenant</span>
+                    <div class="methode-dot methode-dot--active"></div>
+                    <div class="methode-card methode-card--active">
+                        <strong>Premier jalon actif</strong>
+                        <p>C'est sur ce jalon que vous allez travailler maintenant. Il doit être précis et validable.</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1342,6 +1623,15 @@
     </div>
 
     <script>
+        function toggleMethode() {
+            const section = document.getElementById('methodeSection');
+            const arrow = document.getElementById('methodeArrow');
+            section.classList.toggle('is-open');
+            arrow.className = section.classList.contains('is-open')
+                ? 'ri-arrow-up-s-line'
+                : 'ri-arrow-down-s-line';
+        }
+
         function openPicker(el) {
             const inp = el.parentElement.querySelector('input[type="date"]');
             if (!inp) return;

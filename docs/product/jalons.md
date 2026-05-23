@@ -34,6 +34,7 @@ Il est défini par :
 - une **date cible**
 - un **critère de validation** : ce qui doit être atteint et ce qui prouve que le jalon est atteint
 - optionnellement un / plusieurs **KPI**
+- description 
 
 ## Fonction
 
