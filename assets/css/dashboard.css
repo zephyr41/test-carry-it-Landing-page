@@ -8509,11 +8509,12 @@ body {
 }
 
 .dashboard-brand-name {
-    font-family: 'Righteous', 'Inter', sans-serif;
-    font-size: 17px;
+    font-family: 'Rifton', serif;
+    font-size: 18px;
     font-weight: 400;
     letter-spacing: 0;
     line-height: 1;
+    text-transform: uppercase;
 }
 
 .dashboard-nav-divider {
