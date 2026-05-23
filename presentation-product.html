@@ -232,7 +232,14 @@
             background-color: var(--bg-secondary);
             border: 1px solid var(--border-medium);
         }
+        .kpi-milestone-context {
+            padding: 1.25rem 1.5rem;
+            border-radius: var(--radius-xl);
+            background-color: rgba(238,68,8,0.1);
+            border: 1px solid rgba(238,68,8,0.3);
+        }
         .smart-measure-card .tag-upper,
+        .kpi-milestone-context .tag-upper,
         .kpi-block-label {
             margin-bottom: 0.45rem;
             color: var(--text-light-muted);
@@ -242,6 +249,19 @@
             font-size: 1.05rem;
             font-weight: 600;
             line-height: 1.45;
+        }
+        .kpi-milestone-context h4 {
+            color: var(--text-dark);
+            font-size: 1.15rem;
+            font-weight: 600;
+            line-height: 1.25;
+            margin: 0;
+        }
+        .kpi-milestone-context p {
+            margin-top: 0.5rem;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.5;
         }
         .smart-measure-card strong { color: var(--accent); }
         .kpi-block-label { display: block; }
@@ -384,11 +404,12 @@
                 <p>Pour savoir si l’étape avance, CarryIt vous fait suivre deux choses : ce que vous avez fait cette semaine, et ce que cet effort a produit.</p>
             </div>
             <div class="kpi-panel">
-                <div class="smart-measure-card">
-                    <span class="tag-upper">Critère</span>
-                    <p>V0 utilisable de bout en bout et testée par 15 utilisateurs.</p>
+                <div class="kpi-milestone-context">
+                    <span class="tag-upper">Jalon actif</span>
+                    <h4>MVP validé</h4>
+                    <p>Critère : V0 utilisable de bout en bout et testée par 15 utilisateurs.</p>
                 </div>
-                <span class="kpi-block-label tag-upper">Mesures du jalon</span>
+                <span class="kpi-block-label tag-upper">Mesures d’avancée du jalon</span>
                 <div class="kpi-cards-wrapper">
                     <div class="kpi-card kpi-black">
                         <div>
