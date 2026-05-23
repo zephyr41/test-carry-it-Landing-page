@@ -273,9 +273,9 @@
         .kpi-type { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.55); margin-bottom: 0.5rem; display: block; }
         .kpi-white .kpi-type { color: var(--text-light-muted); }
         .kpi-card h4 { font-size: 1.25rem; font-weight: 600; margin-bottom: 1.5rem; line-height: 1.2; }
-        .kpi-val { font-size: 3.5rem; font-weight: 700; letter-spacing: -0.04em; line-height: 1; }
-        .kpi-unit { font-size: 1rem; font-weight: 500; color: rgba(255,255,255,0.55); margin-left: 5px; }
-        .kpi-white .kpi-unit { color: var(--text-muted); }
+        .kpi-val { font-size: 3.5rem; font-weight: 700; letter-spacing: -0.04em; line-height: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 0.35rem; }
+        .kpi-unit { display: block; font-size: 1rem; font-weight: 500; color: rgba(255,255,255,0.55); margin-left: 0; letter-spacing: 0; line-height: 1.15; }
+        .kpi-white .kpi-unit { color: var(--text-dark); }
 
         /* --- SECTION TODO --- */
         .todo-list { display: flex; flex-direction: column; }
@@ -411,7 +411,7 @@
                 </div>
                 <span class="kpi-block-label tag-upper">Mesures d’avancée du jalon</span>
                 <div class="kpi-cards-wrapper">
-                    <div class="kpi-card kpi-black">
+                    <div class="kpi-card kpi-white">
                         <div>
                             <span class="kpi-type">Effort fourni</span>
                             <h4>Temps consacré cette semaine</h4>

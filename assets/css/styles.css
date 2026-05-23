@@ -5768,17 +5768,24 @@
     font-weight: 700;
     letter-spacing: -0.04em;
     line-height: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
 }
 
 .product-flow-section .kpi-unit {
+    display: block;
     font-size: 1rem;
     font-weight: 500;
     color: rgba(255,255,255,0.55);
-    margin-left: 5px;
+    margin-left: 0;
+    letter-spacing: 0;
+    line-height: 1.15;
 }
 
 .product-flow-section .kpi-white .kpi-unit {
-    color: var(--text-muted);
+    color: var(--text-dark);
 }
 
 .product-flow-section .todo-list {
