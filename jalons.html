@@ -1446,6 +1446,28 @@
             .btn-launch { padding: 12px 28px; font-size: 12px; }
         }
 
+        .jalons-cta-block {
+            text-align: center;
+            padding: 64px 20px 48px;
+            max-width: 640px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        .jalons-cta-block h2 {
+            font-size: clamp(32px, 5vw, 52px);
+            font-weight: 800;
+            color: var(--c-blanc);
+            letter-spacing: -1.5px;
+            line-height: 1.05;
+            margin-bottom: 14px;
+        }
+        .jalons-cta-block p {
+            font-size: 16px;
+            color: var(--c-gris);
+            line-height: 1.65;
+            max-width: 480px;
+            margin: 0 auto;
+        }
 
     </style>
 </head>
@@ -1462,68 +1484,54 @@
     <div class="intro-section">
         <div class="intro-inner">
             <span class="intro-breadcrumb">Objectif final → Jalons → Saisie guidée</span>
-            <h2>Vous avez défini la hauteur de l'échelle.</h2>
-            <p class="intro-method">Placez les barreaux. Chaque jalon est un palier daté et validable.</p>
+            <h2>Posez les jalons de votre trajectoire.</h2>
+            <p class="intro-method">Chaque jalon est un palier daté et validable entre vous et votre objectif final.</p>
             <div class="intro-ctas">
                 <button class="btn-intro-secondary" onclick="toggleMethode()">
-                    Comprendre la méthode
+                    Comprendre les jalons
                     <i class="ri-arrow-down-s-line" id="methodeArrow"></i>
-                </button>
-                <button class="btn-intro-primary" onclick="document.getElementById('timelineStart').scrollIntoView({behavior:'smooth'})">
-                    Placer mes jalons
                 </button>
             </div>
         </div>
 
         <div class="methode-section" id="methodeSection">
             <div class="methode-header">
-                <span class="methode-overline">Méthode</span>
-                <h3 class="methode-title">Reculez depuis la date finale.</h3>
-                <p class="methode-desc">Partez du résultat final. Placez les paliers à franchir avant cette date.</p>
+                <span class="methode-overline">Définition</span>
+                <h3 class="methode-title">Un jalon, c'est quoi ?</h3>
+                <p class="methode-desc">Ni objectif (trop flou), ni tâche (trop petit). Un palier : un résultat concret, avec une date, et un critère binaire pour savoir si c'est atteint ou non.</p>
             </div>
             <div class="methode-timeline">
                 <div class="methode-step">
-                    <span class="methode-label">Final</span>
+                    <span class="methode-label">Ce n'est pas</span>
                     <div class="methode-dot"></div>
                     <div class="methode-card">
-                        <strong>Objectif atteint</strong>
-                        <p>Votre objectif SMART est fixé. Vous savez ce que vous voulez avoir atteint.</p>
+                        <strong>Une tâche</strong>
+                        <p>"Travailler sur mon projet" — trop vague, pas vérifiable. Une tâche se fait, un jalon se valide.</p>
                     </div>
                 </div>
                 <div class="methode-step">
-                    <span class="methode-label">50%</span>
+                    <span class="methode-label">Ce n'est pas</span>
                     <div class="methode-dot"></div>
                     <div class="methode-card">
-                        <strong>Palier stratégique</strong>
-                        <p>Quel niveau doit déjà être atteint pour que l'objectif final reste réaliste ?</p>
+                        <strong>Un vœu</strong>
+                        <p>"Être riche dans 5 ans" — sans date précise ni critère mesurable, c'est un vœu, pas un jalon.</p>
                     </div>
                 </div>
                 <div class="methode-step">
-                    <span class="methode-label">6 mois</span>
-                    <div class="methode-dot"></div>
-                    <div class="methode-card">
-                        <strong>Palier intermédiaire</strong>
-                        <p>Quel résultat concret doit prouver que la trajectoire est correcte ?</p>
-                    </div>
-                </div>
-                <div class="methode-step">
-                    <span class="methode-label">3 mois</span>
-                    <div class="methode-dot"></div>
-                    <div class="methode-card">
-                        <strong>Palier proche</strong>
-                        <p>Quel changement observable doit être validé avant de passer à la suite ?</p>
-                    </div>
-                </div>
-                <div class="methode-step">
-                    <span class="methode-label">Maintenant</span>
+                    <span class="methode-label">C'est</span>
                     <div class="methode-dot methode-dot--active"></div>
                     <div class="methode-card methode-card--active">
-                        <strong>Premier jalon actif</strong>
-                        <p>C'est sur ce jalon que vous allez travailler maintenant. Il doit être précis et validable.</p>
+                        <strong>Un palier daté et validable</strong>
+                        <p>Un résultat précis, une date butoir, un critère binaire : oui ou non. C'est atteint, ou ce ne l'est pas.</p>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+
+    <div class="jalons-cta-block">
+        <h2>À toi de jouer.</h2>
+        <p>Pose chaque étape entre aujourd'hui et ton objectif. Une date, un critère. C'est tout.</p>
     </div>
 
     <div class="main-container" id="timelineStart">
