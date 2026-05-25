@@ -286,23 +286,34 @@
       color: #94a3b8;
     }
 
-    .date-input {
-      width: 100%;
-      border: 1px solid var(--border-strong);
-      border-radius: 16px;
-      background: var(--surface);
-      color: var(--text);
-      padding: 12px 14px;
-      font-size: 0.94rem;
-      outline: none;
-      transition: border-color 0.15s ease, box-shadow 0.15s ease;
-      cursor: pointer;
+    .date-chip-smart {
+      display: inline-flex; align-items: center; gap: 8px;
+      width: 100%; padding: 12px 14px; border-radius: 16px;
+      background: var(--surface); border: 1px solid var(--border-strong);
+      color: var(--text); font-size: 0.94rem; font-family: inherit;
+      cursor: pointer; text-align: left;
+      transition: border-color 0.15s ease, background 0.15s ease;
     }
+    .date-chip-smart:hover { border-color: var(--primary); }
+    .date-chip-smart svg { flex-shrink: 0; opacity: 0.6; }
+    .date-chip-smart.has-value { color: var(--text); }
+    .date-chip-smart:not(.has-value) { color: #94a3b8; }
 
-    .date-input:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.12);
-    }
+    /* ── CALENDAR POPUP ── */
+    .cal-popup { position: fixed; z-index: 9999; background: #1a1c22; border: 1px solid rgba(255,253,246,0.14); border-radius: 12px; box-shadow: 0 8px 40px rgba(0,0,0,0.7); padding: 14px; width: 256px; user-select: none; }
+    .cal-popup.hidden { display: none; }
+    .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .cal-nav { background: transparent; border: none; color: rgba(255,253,246,0.55); cursor: pointer; padding: 4px 8px; border-radius: 5px; font-size: 16px; line-height: 1; transition: color 100ms, background 100ms; }
+    .cal-nav:hover { color: #FFFDF6; background: rgba(255,253,246,0.07); }
+    .cal-month-label { font-size: 14px; font-weight: 650; color: #FFFDF6; }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+    .cal-dow { text-align: center; font-size: 10px; font-weight: 700; color: rgba(255,253,246,0.35); padding-bottom: 6px; text-transform: uppercase; letter-spacing: 0.06em; }
+    .cal-day { text-align: center; padding: 5px 2px; font-size: 13px; color: rgba(255,253,246,0.75); border-radius: 5px; cursor: pointer; transition: background 80ms, color 80ms; }
+    .cal-day:hover { background: rgba(255,253,246,0.09); color: #FFFDF6; }
+    .cal-day.today { color: #EE4408; font-weight: 700; }
+    .cal-day.selected { background: #EE4408; color: #FFFDF6; font-weight: 700; }
+    .cal-day.selected:hover { background: #d83d08; }
+    .cal-day.empty { cursor: default; }
 
     .section-header {
       display: flex;
@@ -763,8 +774,13 @@
         const fieldHtml = section.fields.map(([fieldKey, label, placeholder, type]) => {
           const path = `${section.key}.${fieldKey}`;
           const val = escapeHtml(getValue(path));
+          const dateLabel = val ? new Date(val).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : 'Choisir une date…';
           const input = type === "date"
-            ? `<input type="date" data-field="${escapeHtml(path)}" value="${val}" class="date-input" />`
+            ? `<button type="button" class="date-chip-smart${val ? ' has-value' : ''}" onclick="openSmartCal(this, '${escapeHtml(path)}')" id="datebtn-${escapeHtml(path)}">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                <span>${dateLabel}</span>
+               </button>
+               <input type="hidden" data-field="${escapeHtml(path)}" value="${val}" id="datehidden-${escapeHtml(path)}" />`
             : `<textarea data-field="${escapeHtml(path)}" placeholder="${escapeHtml(placeholder)}">${val}</textarea>`;
           return `
             <label>
@@ -888,6 +904,80 @@
       form.titre = titreInput.value;
       saveForm();
     });
+  </script>
+  <div id="calPopup" class="cal-popup hidden"></div>
+  <script>
+  (function() {
+    const MONTHS_FR = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+    const DAYS_FR   = ['Lu','Ma','Me','Je','Ve','Sa','Di'];
+    let calState = { path: null, year: 0, month: 0, anchor: null };
+    const popup = document.getElementById('calPopup');
+
+    window.openSmartCal = function(btn, path) {
+      const hidden = document.getElementById('datehidden-' + path);
+      const val = hidden ? hidden.value : '';
+      const d = val ? new Date(val) : new Date();
+      calState = { path, year: d.getFullYear(), month: d.getMonth(), anchor: btn };
+      renderCal(); positionPopup(btn); popup.classList.remove('hidden');
+    };
+
+    function positionPopup(anchor) {
+      const rect = anchor.getBoundingClientRect();
+      let top = rect.bottom + 8, left = rect.left;
+      if (top + 320 > window.innerHeight) top = rect.top - 320 - 8;
+      if (left + 256 > window.innerWidth) left = window.innerWidth - 268;
+      popup.style.top = top + 'px'; popup.style.left = left + 'px';
+    }
+
+    function renderCal() {
+      const { year, month, path } = calState;
+      const hidden = document.getElementById('datehidden-' + path);
+      const sel = hidden && hidden.value ? new Date(hidden.value) : null;
+      const today = new Date();
+      let startDow = new Date(year, month, 1).getDay(); startDow = (startDow + 6) % 7;
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      let cells = '';
+      DAYS_FR.forEach(d => { cells += `<div class="cal-dow">${d}</div>`; });
+      for (let i = 0; i < startDow; i++) cells += `<div class="cal-day empty"></div>`;
+      for (let d = 1; d <= daysInMonth; d++) {
+        const isToday = today.getFullYear()===year && today.getMonth()===month && today.getDate()===d;
+        const isSel   = sel && sel.getFullYear()===year && sel.getMonth()===month && sel.getDate()===d;
+        const cls = ['cal-day', isToday?'today':'', isSel?'selected':''].filter(Boolean).join(' ');
+        cells += `<div class="${cls}" onclick="smartPickDay(${d})">${d}</div>`;
+      }
+      popup.innerHTML = `<div class="cal-header"><button class="cal-nav" onclick="smartCalNav(-1)">&#8249;</button><span class="cal-month-label">${MONTHS_FR[month]} ${year}</span><button class="cal-nav" onclick="smartCalNav(1)">&#8250;</button></div><div class="cal-grid">${cells}</div>`;
+    }
+
+    window.smartCalNav = function(dir) {
+      calState.month += dir;
+      if (calState.month > 11) { calState.month = 0; calState.year++; }
+      if (calState.month < 0)  { calState.month = 11; calState.year--; }
+      renderCal();
+    };
+
+    window.smartPickDay = function(d) {
+      const { year, month, path } = calState;
+      const iso = new Date(year, month, d).toISOString().slice(0, 10);
+      const hidden = document.getElementById('datehidden-' + path);
+      const btn    = document.getElementById('datebtn-'    + path);
+      if (hidden) {
+        hidden.value = iso;
+        hidden.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+      if (btn) {
+        btn.classList.add('has-value');
+        const span = btn.querySelector('span');
+        if (span) span.textContent = new Date(year, month, d).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+      }
+      popup.classList.add('hidden');
+    };
+
+    document.addEventListener('mousedown', function(e) {
+      if (!popup.classList.contains('hidden') && !popup.contains(e.target) && e.target !== calState.anchor && !calState.anchor?.contains(e.target))
+        popup.classList.add('hidden');
+    });
+    document.addEventListener('keydown', function(e) { if (e.key === 'Escape') popup.classList.add('hidden'); });
+  })();
   </script>
 </body>
 </html>

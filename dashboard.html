@@ -148,8 +148,9 @@
             <p class="m-sub">Enregistrez votre progression pour suivre votre évolution.</p>
             <form id="measureForm" onsubmit="handleMeasureSubmit(event)">
                 <div class="m-field">
-                    <label class="m-label" for="measureDate">Date</label>
-                    <input class="m-input" type="date" id="measureDate">
+                    <label class="m-label">Date</label>
+                    <button type="button" class="m-date-chip" id="measureDate-btn" onclick="openDashCal(this,'measureDate')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span>Choisir une date…</span></button>
+                    <input type="hidden" id="measureDate">
                     <div class="m-error" id="dateError"></div>
                 </div>
                 <div class="m-field">
@@ -172,8 +173,9 @@
             <p class="m-sub">Ajustez la date ou la valeur de votre mesure.</p>
             <form id="editMeasureForm" onsubmit="handleMeasureEditSubmit(event)">
                 <div class="m-field">
-                    <label class="m-label" for="editMeasureDate">Date</label>
-                    <input class="m-input" type="date" id="editMeasureDate">
+                    <label class="m-label">Date</label>
+                    <button type="button" class="m-date-chip" id="editMeasureDate-btn" onclick="openDashCal(this,'editMeasureDate')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span>Choisir une date…</span></button>
+                    <input type="hidden" id="editMeasureDate">
                     <div class="m-error" id="editDateError"></div>
                 </div>
                 <div class="m-field">
@@ -270,8 +272,9 @@
             <div class="m-context" id="jalonKpiMeasureContext" style="display:none;"></div>
             <form id="jalonKpiMeasureForm" onsubmit="handleJalonKpiMeasureSubmit(event)">
                 <div class="m-field">
-                    <label class="m-label" for="jalonKpiMeasureDate">Date</label>
-                    <input class="m-input" type="date" id="jalonKpiMeasureDate">
+                    <label class="m-label">Date</label>
+                    <button type="button" class="m-date-chip" id="jalonKpiMeasureDate-btn" onclick="openDashCal(this,'jalonKpiMeasureDate')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span>Choisir une date…</span></button>
+                    <input type="hidden" id="jalonKpiMeasureDate">
                     <div class="m-error" id="jalonKpiMeasureDateError"></div>
                 </div>
                 <div class="m-field">
@@ -3610,7 +3613,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             document.getElementById('dateError').classList.remove('show');
             document.getElementById('valueError').textContent = '';
             document.getElementById('valueError').classList.remove('show');
-            document.getElementById('measureDate').value = new Date().toISOString().split('T')[0];
+            setDashDate('measureDate', new Date().toISOString().split('T')[0]);
             openModal('measureModalOverlay');
             setTimeout(() => document.getElementById('measureValue').focus(), 100);
         }
@@ -3678,11 +3681,10 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             if (!measure) return;
             currentMeasureIndex = i;
 
-            const dateInput = document.getElementById('editMeasureDate');
             const valueInput = document.getElementById('editMeasureValue');
             const [d, mo, y] = (measure.date || '').split('/');
-            if (d && mo && y) dateInput.value = `${y}-${mo}-${d}`;
-            else dateInput.value = '';
+            if (d && mo && y) setDashDate('editMeasureDate', `${y}-${mo}-${d}`);
+            else setDashDate('editMeasureDate', '');
             valueInput.value = measure.value;
 
             document.getElementById('editDateError').classList.remove('show');
@@ -4090,7 +4092,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             context.textContent = mode === 'incremental'
                 ? `Total actuel : ${currentLabel}${unitSuffix}`
                 : `Valeur actuelle : ${currentLabel}${unitSuffix}`;
-            document.getElementById('jalonKpiMeasureDate').value = new Date().toISOString().slice(0, 10);
+            setDashDate('jalonKpiMeasureDate', new Date().toISOString().slice(0, 10));
             document.getElementById('jalonKpiMeasureValue').value = '';
             document.getElementById('jalonKpiMeasureDateError').textContent = '';
             document.getElementById('jalonKpiMeasureValueError').textContent = '';
@@ -4141,7 +4143,8 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                         <div class="m-history-edit-grid">
                             <label class="m-history-field">
                                 <span class="m-history-field-label">Date</span>
-                                <input class="m-input m-history-input" type="date" id="jalonKpiHistoryEditDate" value="${escHtml((m?.date || '').trim())}">
+                                <button type="button" class="m-date-chip" id="jalonKpiHistoryEditDate-btn" onclick="openDashCal(this,'jalonKpiHistoryEditDate')" data-iso="${escHtml((m?.date || '').trim())}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span>${(m?.date || '').trim() ? formatDateJalonLong(m.date) : 'Choisir…'}</span></button>
+                                <input type="hidden" id="jalonKpiHistoryEditDate" value="${escHtml((m?.date || '').trim())}">
                             </label>
                             <label class="m-history-field">
                                 <span class="m-history-field-label">${mode === 'incremental' ? 'Valeur de la mesure' : 'Valeur enregistrée'}</span>
@@ -4227,7 +4230,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             const mode = getKpiMeasureMode(kpi, kpiType);
             applyJalonKpiMeasure(i, jalonId, kpiType, { date, value, mode });
             document.getElementById('jalonKpiMeasureValue').value = '';
-            document.getElementById('jalonKpiMeasureDate').value = new Date().toISOString().slice(0, 10);
+            setDashDate('jalonKpiMeasureDate', new Date().toISOString().slice(0, 10));
             renderDashboard();
             closeJalonKpiMeasureModal();
         }
@@ -4431,6 +4434,107 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             };
             reader.readAsText(file);
         }
+    </script>
+
+    <!-- CUSTOM CALENDAR -->
+    <div id="dashCalPopup" style="position:fixed;z-index:99999;background:#1a1c22;border:1px solid rgba(255,253,246,0.14);border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,0.7);padding:14px;width:256px;user-select:none;display:none;"></div>
+    <style>
+        .m-date-chip { display:inline-flex;align-items:center;gap:7px;width:100%;padding:8px 12px;border-radius:8px;background:rgba(255,253,246,0.04);border:1px solid rgba(255,253,246,0.12);color:rgba(255,253,246,0.8);font-size:13px;font-weight:500;font-family:inherit;cursor:pointer;text-align:left;transition:background 120ms,border-color 120ms; }
+        .m-date-chip:hover { background:rgba(255,253,246,0.08);border-color:rgba(255,253,246,0.22);color:#FFFDF6; }
+        .m-date-chip svg { flex-shrink:0;opacity:0.6; }
+        .m-date-chip.has-value { color:rgba(255,253,246,0.9); }
+        /* reuse cal-* classes from jalons if loaded, else define inline */
+        #dashCalPopup .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+        #dashCalPopup .cal-nav{background:transparent;border:none;color:rgba(255,253,246,0.55);cursor:pointer;padding:4px 8px;border-radius:5px;font-size:16px;line-height:1;}
+        #dashCalPopup .cal-nav:hover{color:#FFFDF6;background:rgba(255,253,246,0.07);}
+        #dashCalPopup .cal-month-label{font-size:14px;font-weight:650;color:#FFFDF6;}
+        #dashCalPopup .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+        #dashCalPopup .cal-dow{text-align:center;font-size:10px;font-weight:700;color:rgba(255,253,246,0.35);padding-bottom:6px;text-transform:uppercase;letter-spacing:0.06em;}
+        #dashCalPopup .cal-day{text-align:center;padding:5px 2px;font-size:13px;color:rgba(255,253,246,0.75);border-radius:5px;cursor:pointer;}
+        #dashCalPopup .cal-day:hover{background:rgba(255,253,246,0.09);color:#FFFDF6;}
+        #dashCalPopup .cal-day.today{color:#EE4408;font-weight:700;}
+        #dashCalPopup .cal-day.selected{background:#EE4408;color:#FFFDF6;font-weight:700;}
+        #dashCalPopup .cal-day.empty{cursor:default;}
+    </style>
+    <script>
+    (function(){
+        const MONTHS_FR=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+        const DAYS_FR=['Lu','Ma','Me','Je','Ve','Sa','Di'];
+        let dc={id:null,year:0,month:0,anchor:null};
+        const popup=document.getElementById('dashCalPopup');
+
+        function setDashDate(id,iso){
+            const inp=document.getElementById(id);
+            const btn=document.getElementById(id+'-btn');
+            if(inp) inp.value=iso||'';
+            if(btn){
+                const span=btn.querySelector('span');
+                if(iso){
+                    const d=new Date(iso+'T12:00:00');
+                    const label=d.toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'});
+                    if(span) span.textContent=label;
+                    btn.classList.add('has-value');
+                } else {
+                    if(span) span.textContent='Choisir une date…';
+                    btn.classList.remove('has-value');
+                }
+            }
+        }
+        window.setDashDate=setDashDate;
+
+        window.openDashCal=function(btnEl,id){
+            const inp=document.getElementById(id);
+            const val=inp?inp.value:'';
+            const d=val?new Date(val+'T12:00:00'):new Date();
+            dc={id,year:d.getFullYear(),month:d.getMonth(),anchor:btnEl};
+            renderDashCal();
+            const rect=btnEl.getBoundingClientRect();
+            let top=rect.bottom+8,left=rect.left;
+            if(top+320>window.innerHeight) top=rect.top-320-8;
+            if(left+256>window.innerWidth) left=window.innerWidth-268;
+            popup.style.top=top+'px';popup.style.left=left+'px';popup.style.display='block';
+        };
+
+        function renderDashCal(){
+            const{year,month,id}=dc;
+            const inp=document.getElementById(id);
+            const val=inp?inp.value:'';
+            const sel=val?new Date(val+'T12:00:00'):null;
+            const today=new Date();
+            let startDow=new Date(year,month,1).getDay();startDow=(startDow+6)%7;
+            const dim=new Date(year,month+1,0).getDate();
+            let cells='';
+            DAYS_FR.forEach(d=>{cells+=`<div class="cal-dow">${d}</div>`;});
+            for(let i=0;i<startDow;i++) cells+=`<div class="cal-day empty"></div>`;
+            for(let d=1;d<=dim;d++){
+                const isT=today.getFullYear()===year&&today.getMonth()===month&&today.getDate()===d;
+                const isS=sel&&sel.getFullYear()===year&&sel.getMonth()===month&&sel.getDate()===d;
+                const cls=['cal-day',isT?'today':'',isS?'selected':''].filter(Boolean).join(' ');
+                cells+=`<div class="${cls}" onclick="dashPickDay(${d})">${d}</div>`;
+            }
+            popup.innerHTML=`<div class="cal-header"><button class="cal-nav" onclick="dashCalNav(-1)">&#8249;</button><span class="cal-month-label">${MONTHS_FR[month]} ${year}</span><button class="cal-nav" onclick="dashCalNav(1)">&#8250;</button></div><div class="cal-grid">${cells}</div>`;
+        }
+
+        window.dashCalNav=function(dir){
+            dc.month+=dir;
+            if(dc.month>11){dc.month=0;dc.year++;}
+            if(dc.month<0){dc.month=11;dc.year--;}
+            renderDashCal();
+        };
+
+        window.dashPickDay=function(d){
+            const{year,month,id}=dc;
+            const iso=new Date(year,month,d).toISOString().slice(0,10);
+            setDashDate(id,iso);
+            popup.style.display='none';
+        };
+
+        document.addEventListener('mousedown',function(e){
+            if(popup.style.display!=='none'&&!popup.contains(e.target)&&!dc.anchor?.contains(e.target))
+                popup.style.display='none';
+        });
+        document.addEventListener('keydown',function(e){if(e.key==='Escape')popup.style.display='none';});
+    })();
     </script>
 </body>
 </html>
