@@ -1496,6 +1496,77 @@
         }
 
 
+        /* ── CUSTOM DATE CHIP ── */
+        .date-chip {
+            display: inline-flex; align-items: center; gap: 7px;
+            padding: 5px 10px; border-radius: 6px;
+            background: rgba(255,253,246,0.06);
+            border: 1px solid rgba(255,253,246,0.12);
+            color: rgba(255,253,246,0.85);
+            font-size: 13px; font-weight: 500; font-family: inherit;
+            cursor: pointer;
+            transition: background 120ms, border-color 120ms, color 120ms;
+        }
+        .date-chip:hover {
+            background: rgba(255,253,246,0.10);
+            border-color: rgba(255,253,246,0.24);
+            color: #FFFDF6;
+        }
+        .date-chip svg { flex-shrink: 0; opacity: 0.7; }
+        .date-chip:hover svg { opacity: 1; }
+
+        /* ── CALENDAR POPUP ── */
+        .cal-popup {
+            position: fixed; z-index: 9999;
+            background: #1a1c22;
+            border: 1px solid rgba(255,253,246,0.14);
+            border-radius: 12px;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.7);
+            padding: 14px;
+            width: 256px;
+            user-select: none;
+        }
+        .cal-popup.hidden { display: none; }
+        .cal-header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .cal-nav {
+            background: transparent; border: none;
+            color: rgba(255,253,246,0.55); cursor: pointer;
+            padding: 4px 8px; border-radius: 5px;
+            font-size: 16px; line-height: 1;
+            transition: color 100ms, background 100ms;
+        }
+        .cal-nav:hover { color: #FFFDF6; background: rgba(255,253,246,0.07); }
+        .cal-month-label {
+            font-size: 14px; font-weight: 650;
+            color: #FFFDF6; letter-spacing: 0.01em;
+        }
+        .cal-grid {
+            display: grid; grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+        }
+        .cal-dow {
+            text-align: center; font-size: 10px; font-weight: 700;
+            color: rgba(255,253,246,0.35); padding-bottom: 6px;
+            text-transform: uppercase; letter-spacing: 0.06em;
+        }
+        .cal-day {
+            text-align: center; padding: 5px 2px;
+            font-size: 13px; color: rgba(255,253,246,0.75);
+            border-radius: 5px; cursor: pointer;
+            transition: background 80ms, color 80ms;
+        }
+        .cal-day:hover { background: rgba(255,253,246,0.09); color: #FFFDF6; }
+        .cal-day.other-month { color: rgba(255,253,246,0.2); }
+        .cal-day.today { color: #EE4408; font-weight: 700; }
+        .cal-day.selected {
+            background: #EE4408; color: #FFFDF6; font-weight: 700;
+        }
+        .cal-day.selected:hover { background: #d83d08; }
+        .cal-day.empty { cursor: default; }
+
     </style>
 </head>
 <body>
@@ -1503,6 +1574,7 @@
     <nav class="navbar">
         <a class="navbar-logo" href="index.html" style="text-decoration:none; color:inherit;">CARRY IT</a>
         <div style="display:flex; gap:8px; align-items:center;">
+            <a href="objectif.html" class="btn-reset" style="text-decoration:none;">← Retour</a>
             <a href="dashboard.html" class="btn-reset" style="text-decoration:none;">Dashboard</a>
             <button class="btn-reset" onclick="resetMilestones()">Réinitialiser tout</button>
         </div>
@@ -1698,25 +1770,31 @@
 
         function generateDates() {
             const dates = [];
-            const timeDiff = deadline.getTime() - today.getTime();
-            const smart = getSmartData();
+            const MIN_GAP_MS = 21 * 24 * 60 * 60 * 1000; // stop if < 3 weeks from deadline
+
+            let step = 1;
+            while (true) {
+                const d = new Date(today);
+                d.setMonth(d.getMonth() + step * 3);
+                if (d.getTime() >= deadline.getTime() - MIN_GAP_MS) break;
+                const totalMonths = step * 3;
+                const label = totalMonths < 12
+                    ? `À ${totalMonths} mois`
+                    : totalMonths === 12 ? 'À 1 an'
+                    : totalMonths % 12 === 0 ? `À ${totalMonths / 12} ans`
+                    : `À ${totalMonths} mois`;
+                dates.push({ label, tag: label, date: d });
+                step++;
+            }
 
             dates.push({ label: "Vision Finale", tag: "Jalon final", date: deadline });
-            dates.push({ label: "Mi-Parcours", tag: "Mi-parcours", date: new Date(today.getTime() + (timeDiff / 2)) });
 
-            const d1y = new Date(today); d1y.setFullYear(d1y.getFullYear() + 1);
-            dates.push({ label: "À 1 An", tag: "An 1", date: (d1y < deadline ? d1y : deadline) });
+            // Assign rank tags after sorting by date ascending
+            dates.sort((a, b) => a.date - b.date);
+            const total = dates.length;
+            dates.forEach((d, i) => { d.tag = `Jalon ${i + 1}/${total}`; });
 
-            const d9m = new Date(today); d9m.setMonth(d9m.getMonth() + 9);
-            dates.push({ label: "À 9 Mois", tag: "9 mois", date: d9m });
-
-            const d6m = new Date(today); d6m.setMonth(d6m.getMonth() + 6);
-            dates.push({ label: "À 6 Mois", tag: "6 mois", date: d6m });
-
-            const d3m = new Date(today); d3m.setMonth(d3m.getMonth() + 3);
-            dates.push({ label: "À 3 Mois", tag: "3 mois", date: d3m });
-
-            return dates.sort((a, b) => b.date - a.date);
+            return dates.sort((a, b) => b.date - a.date); // descending — index 0 = deadline
         }
 
         // --- DATA ---
@@ -1789,11 +1867,9 @@
         }
 
         function deleteMilestone(id) {
-            if(confirm("Supprimer ce jalon ?")) {
-                milestones = milestones.filter(m => m.id !== id);
-                save();
-                render();
-            }
+            milestones = milestones.filter(m => m.id !== id);
+            save();
+            render();
         }
 
         // --- RENDER ---
@@ -1820,6 +1896,7 @@
                 const month = d.toLocaleDateString('fr-FR', { month: 'short' }).replace('.', '');
                 const year = d.getFullYear();
                 const dateInputValue = m.date.split('T')[0];
+                const dateLabel = d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
                 const isFinal = index === 0;
 
                 const milestoneNumber = total - index;
@@ -1842,10 +1919,13 @@
                                 ${isFinal ? `<span class="jcard-pct">100%</span>` : (m.tag || '').includes('50') || (m.tag || '').toLowerCase().includes('parcours') ? `<span class="jcard-pct">50%</span>` : ''}
                             </div>
                             <div class="jcard-right">
-                                <span class="jalon-date-wrap">
-                                    <svg class="jalon-cal-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" onclick="openPicker(this)"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-                                    <input type="date" class="jalon-date-input" value="${dateInputValue}" onclick="try{this.showPicker()}catch(e){}" onchange="updateDate('${m.id}', this.value)">
-                                </span>
+                                <button class="date-chip" onclick="openDatePicker(this, '${m.id}')">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="3" y="4" width="18" height="18" rx="2"/>
+                                        <path d="M16 2v4M8 2v4M3 10h18"/>
+                                    </svg>
+                                    ${dateLabel}
+                                </button>
                                 ${!isFinal ? `<button class="card__action" onclick="deleteMilestone('${m.id}')">Supprimer</button>` : ''}
                             </div>
                         </div>
@@ -2001,6 +2081,98 @@
     <!-- GLOW SECTIONS -->
     <div class="middle-section"></div>
     <div class="glow-section glow-orange"></div>
+
+    <!-- CUSTOM CALENDAR POPUP -->
+    <div id="calPopup" class="cal-popup hidden"></div>
+
+    <script>
+    (function() {
+        const MONTHS_FR = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+        const DAYS_FR   = ['Lu','Ma','Me','Je','Ve','Sa','Di'];
+
+        let calState = { targetId: null, year: 0, month: 0, anchorEl: null };
+        const popup = document.getElementById('calPopup');
+
+        function openDatePicker(chipEl, milestoneId) {
+            const m = milestones.find(x => x.id === milestoneId);
+            const d = m ? new Date(m.date) : new Date();
+            calState = { targetId: milestoneId, year: d.getFullYear(), month: d.getMonth(), anchorEl: chipEl };
+            renderCal();
+            positionPopup(chipEl);
+            popup.classList.remove('hidden');
+        }
+
+        function positionPopup(anchor) {
+            const rect = anchor.getBoundingClientRect();
+            const ph = 320, pw = 256;
+            let top = rect.bottom + 8, left = rect.left;
+            if (top + ph > window.innerHeight) top = rect.top - ph - 8;
+            if (left + pw > window.innerWidth) left = window.innerWidth - pw - 12;
+            popup.style.top = top + 'px';
+            popup.style.left = left + 'px';
+        }
+
+        function renderCal() {
+            const { year, month, targetId } = calState;
+            const m = milestones.find(x => x.id === targetId);
+            const sel = m ? new Date(m.date) : null;
+            const today = new Date();
+
+            const firstDay = new Date(year, month, 1);
+            // Monday-based: 0=Mo, 6=Su
+            let startDow = firstDay.getDay(); // 0=Su … 6=Sa
+            startDow = (startDow + 6) % 7;    // shift: 0=Mo
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            let cells = '';
+            DAYS_FR.forEach(d => { cells += `<div class="cal-dow">${d}</div>`; });
+
+            for (let i = 0; i < startDow; i++) cells += `<div class="cal-day empty"></div>`;
+
+            for (let d = 1; d <= daysInMonth; d++) {
+                const isToday = today.getFullYear()===year && today.getMonth()===month && today.getDate()===d;
+                const isSel   = sel && sel.getFullYear()===year && sel.getMonth()===month && sel.getDate()===d;
+                const cls = ['cal-day', isToday?'today':'', isSel?'selected':''].filter(Boolean).join(' ');
+                cells += `<div class="${cls}" onclick="pickDay(${d})">${d}</div>`;
+            }
+
+            popup.innerHTML = `
+                <div class="cal-header">
+                    <button class="cal-nav" onclick="calNav(-1)">&#8249;</button>
+                    <span class="cal-month-label">${MONTHS_FR[month]} ${year}</span>
+                    <button class="cal-nav" onclick="calNav(1)">&#8250;</button>
+                </div>
+                <div class="cal-grid">${cells}</div>`;
+        }
+
+        window.openDatePicker = openDatePicker;
+
+        window.calNav = function(dir) {
+            calState.month += dir;
+            if (calState.month > 11) { calState.month = 0; calState.year++; }
+            if (calState.month < 0)  { calState.month = 11; calState.year--; }
+            renderCal();
+        };
+
+        window.pickDay = function(d) {
+            const { year, month, targetId } = calState;
+            const date = new Date(year, month, d);
+            const iso = date.toISOString().slice(0, 10);
+            updateDate(targetId, iso);
+            popup.classList.add('hidden');
+        };
+
+        document.addEventListener('mousedown', function(e) {
+            if (!popup.classList.contains('hidden') && !popup.contains(e.target) && e.target !== calState.anchorEl && !calState.anchorEl?.contains(e.target)) {
+                popup.classList.add('hidden');
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') popup.classList.add('hidden');
+        });
+    })();
+    </script>
 
 </body>
 </html>
