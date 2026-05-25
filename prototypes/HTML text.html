@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CarryIT — Dashboard v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  @font-face {
+    font-family: "Rifton";
+    src: url("../../fonts/rifton-regular.woff2") format("woff2");
+    font-weight: 400; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: "Rifton";
+    src: url("../../fonts/rifton-italic.woff2") format("woff2");
+    font-weight: 400; font-style: italic; font-display: swap;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body, #root { height: 100%; }
+  body {
+    background: #080809;
+    color: #FFFDF6;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,253,246,0.1); border-radius: 3px; }
+
+  button:focus-visible, a:focus-visible {
+    outline: 2px solid #EE4408;
+    outline-offset: 2px;
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel" src="BlocVision.jsx"></script>
+<script type="text/babel" src="EspaceExecution.jsx"></script>
+<script type="text/babel" src="PilotageJalon.jsx"></script>
+<script type="text/babel" src="Modals.jsx"></script>
+<script type="text/babel" src="TopNav.jsx"></script>
+<script type="text/babel" src="VisionView.jsx"></script>
+<script type="text/babel" src="JalonKPICard.jsx"></script>
+<script type="text/babel" src="JalonsView.jsx"></script>
+<script type="text/babel" src="TodoView.jsx"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+
+<script type="text/babel">
+// ── INITIAL DATA ──────────────────────────────────────────
+const INITIAL_STATE = {
+  smart: {
+    S: "Lancer un SaaS B2B à 400 clients actifs payants",
+    M: "400 clients actifs payants mesurés mensuellement",
+    A: "Marché validé, MVP développé, équipe en place",
+    R: "Basé sur 12 mois de traction actuelle à +20 clients/mois",
+    T: "31 décembre 2026",
+  },
+  kpi: {
+    label: "Clients actifs payants",
+    unit: "clients",
+    target: 400,
+    measures: [
+      { date: "01/01/2026", value: 12 },
+      { date: "01/02/2026", value: 35 },
+      { date: "01/03/2026", value: 78 },
+      { date: "01/04/2026", value: 134 },
+      { date: "04/05/2026", value: 247 },
+    ],
+  },
+  jalons: [
+    {
+      id: "j1", title: "Cadrage produit", date: "Avr 2026", month: "MOIS 1",
+      done: true,
+      validation: "Cahier des charges, ICP et USP finalisés et exploitables.",
+      kpis: [{
+        label: "Documents produits finalisés",
+        value: 3, unit: "docs",
+        target: 3, type: "lagging",
+        mode: "cumulative", frequency: "Mensuel",
+        lastUpdate: "il y a 3 semaines",
+        history: [0, 1, 2, 3, 3, 3],
+      }],
+      tasks: [
+        { id: "t1", title: "Rédiger le cahier des charges", done: true, priority: "high" },
+        { id: "t2", title: "Définir l'ICP principal", done: true, priority: "high" },
+        { id: "t3", title: "Formuler la USP", done: true },
+      ],
+    },
+    {
+      id: "j2", title: "MVP testable", date: "Juil 2026", month: "MOIS 4",
+      done: false,
+      validation: "MVP testable avec onboarding terminé pour 10 utilisateurs.",
+      kpis: [
+        {
+          label: "Utilisateurs onboardés",
+          value: 3, unit: "utilisateurs",
+          target: 10, type: "lagging",
+          mode: "cumulative", frequency: "Hebdomadaire",
+          lastUpdate: "il y a 5 jours",
+          history: [0, 0, 1, 1, 2, 3],
+        },
+        {
+          label: "Sessions de test par semaine",
+          value: 2, unit: "sessions",
+          target: 5, type: "leading",
+          mode: "current", frequency: "Hebdomadaire",
+          lastUpdate: "il y a 2 jours",
+          history: [0, 1, 1, 2, 1, 2],
+        },
+      ],
+      tasks: [
+        { id: "t4", title: "Développer l'onboarding SMART", done: true, priority: "high" },
+        { id: "t5", title: "Intégrer le dashboard KPI", done: false, priority: "high" },
+        { id: "t6", title: "Recruter 10 beta-testeurs", done: false },
+        { id: "t7", title: "Préparer le guide utilisateur V1", done: false },
+        { id: "t8", title: "Configurer le suivi analytique", done: false },
+      ],
+    },
+    {
+      id: "j3", title: "Lancement public", date: "Oct 2026", month: "MOIS 7",
+      done: false,
+      validation: "Produit en production, landing page live, 50 premiers clients payants.",
+      kpis: [{
+        label: "Clients payants",
+        value: 0, unit: "clients",
+        target: 50, type: "lagging",
+        mode: "current", frequency: "Hebdomadaire",
+        lastUpdate: "jamais",
+        history: [0, 0, 0, 0, 0, 0],
+      }],
+      tasks: [
+        { id: "t9", title: "Préparer la landing page", done: false },
+        { id: "t10", title: "Configurer le paiement Stripe", done: false, priority: "high" },
+      ],
+    },
+    {
+      id: "j4", title: "400 clients actifs", date: "Déc 2026", month: "MOIS 12",
+      done: false,
+      validation: "400 clients actifs payants avec NPS supérieur à 40.",
+      kpis: [{
+        label: "Clients actifs",
+        value: 0, unit: "clients",
+        target: 400, type: "lagging",
+        mode: "current", frequency: "Mensuel",
+        lastUpdate: "jamais",
+        history: [0, 0, 0, 0, 0, 0],
+      }],
+      tasks: [
+        { id: "t11", title: "Optimiser le funnel d'acquisition", done: false },
+        { id: "t12", title: "Lancer campagne de croissance", done: false },
+      ],
+    },
+  ],
+};
+
+// ── TWEAK DEFAULTS ────────────────────────────────────────
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "density": "comfort",
+  "railSide": "left",
+  "startView": "vision"
+}/*EDITMODE-END*/;
+
+// ── TOAST ─────────────────────────────────────────────────
+const Toast = ({ message, onDismiss }) => {
+  React.useEffect(() => {
+    const t = setTimeout(onDismiss, 4500);
+    return () => clearTimeout(t);
+  }, [onDismiss]);
+
+  const toastStyles = {
+    wrap: {
+      position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)',
+      background: '#1A1A1C', border: '1px solid rgba(255,253,246,0.14)',
+      borderRadius: 8, padding: '12px 18px',
+      display: 'flex', alignItems: 'center', gap: 14,
+      boxShadow: '0 8px 32px rgba(0,0,0,0.6)', zIndex: 200,
+      fontSize: 13.5, color: '#FFFDF6',
+    },
+    dismiss: {
+      background: 'none', border: 'none', color: '#929292',
+      cursor: 'pointer', display: 'flex', alignItems: 'center',
+    },
+  };
+
+  return (
+    <div style={toastStyles.wrap}>
+      <span>{message}</span>
+      <button style={toastStyles.dismiss} onClick={onDismiss}>
+        <i data-lucide="x" style={{width:14,height:14}}></i>
+      </button>
+    </div>
+  );
+};
+
+// ── MAIN APP ──────────────────────────────────────────────
+const App = () => {
+  const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
+
+  const [activeView, setActiveView] = React.useState(tweaks.startView || 'jalons');
+  const [smart, setSmart] = React.useState(INITIAL_STATE.smart);
+  const [kpi, setKpi] = React.useState(INITIAL_STATE.kpi);
+  const [jalons, setJalons] = React.useState(INITIAL_STATE.jalons);
+  const [activeJalonId, setActiveJalonId] = React.useState('j2');
+  const [showAddMeasure, setShowAddMeasure] = React.useState(false);
+  const [showEditSmart, setShowEditSmart] = React.useState(false);
+  const [toast, setToast] = React.useState(null);
+  const [viewKey, setViewKey] = React.useState(0);
+
+  // Re-render Lucide icons whenever DOM changes
+  React.useEffect(() => {
+    if (window.lucide) window.lucide.createIcons();
+  });
+
+  const switchView = (v) => {
+    setActiveView(v);
+    setViewKey(k => k + 1);
+  };
+
+  const handleAddMeasure = (measure) => {
+    setKpi(prev => ({ ...prev, measures: [...prev.measures, measure] }));
+    setToast({ message: 'Mesure ajoutée' });
+  };
+
+  const handleEditSmart = (newSmart) => {
+    setSmart(newSmart);
+    setToast({ message: 'Objectif mis à jour' });
+  };
+
+  const handleValidateJalon = (jalonId) => {
+    setJalons(prev => prev.map(j => j.id === jalonId ? { ...j, done: true } : j));
+    setToast({ message: 'Jalon validé' });
+  };
+
+  const handleUpdateKPI = (jalonId, kpiIndex, nextKpi) => {
+    setJalons(prev => prev.map(j => {
+      if (j.id !== jalonId) return j;
+      const kpis = [...(j.kpis || [])];
+      if (nextKpi._deleted) {
+        kpis.splice(kpiIndex, 1);
+        setToast({ message: 'KPI supprimé' });
+      } else {
+        kpis[kpiIndex] = nextKpi;
+      }
+      return { ...j, kpis };
+    }));
+  };
+
+  const handleAddKPI = (jalonId, type) => {
+    setJalons(prev => prev.map(j => {
+      if (j.id !== jalonId) return j;
+      if ((j.kpis || []).length >= 2) return j;
+      const newKpi = {
+        label: type === 'leading' ? "Nouvel indicateur d'avancée" : "Nouvel indicateur de résultat",
+        value: 0, unit: '',
+        target: null, type,
+        mode: 'cumulative', frequency: 'Hebdomadaire',
+        lastUpdate: 'jamais', history: [0],
+      };
+      return { ...j, kpis: [...(j.kpis || []), newKpi] };
+    }));
+    setToast({ message: 'KPI ajouté' });
+  };
+
+  const handleAddMeasureToKPI = (kpi) => {
+    setToast({ message: `Mesure pour "${kpi.label}" — TODO modal` });
+  };
+
+  return (
+    <div>
+      <TopNav activeView={activeView} onChange={switchView} />
+
+      <main key={viewKey}>
+        {activeView === 'vision' && (
+          <VisionView
+            kpiData={kpi}
+            smart={smart}
+            jalons={jalons}
+            onAddMeasure={() => setShowAddMeasure(true)}
+            onEditSmart={() => setShowEditSmart(true)}
+            density={tweaks.density}
+          />
+        )}
+        {activeView === 'jalons' && (
+          <JalonsView
+            jalons={jalons}
+            activeJalonId={activeJalonId}
+            onSelectJalon={setActiveJalonId}
+            onValidate={handleValidateJalon}
+            onUpdateKPI={handleUpdateKPI}
+            onAddKPI={handleAddKPI}
+            onAddMeasure={handleAddMeasureToKPI}
+            railSide={tweaks.railSide}
+            density={tweaks.density}
+          />
+        )}
+        {activeView === 'todo' && (
+          <TodoView
+            jalons={jalons}
+            activeJalonId={activeJalonId}
+            onSelectJalon={setActiveJalonId}
+            onValidate={handleValidateJalon}
+            density={tweaks.density}
+          />
+        )}
+      </main>
+
+      <AddMeasureModal
+        open={showAddMeasure}
+        onClose={() => setShowAddMeasure(false)}
+        kpiLabel={kpi.label}
+        onSave={handleAddMeasure}
+      />
+
+      <EditSmartModal
+        open={showEditSmart}
+        onClose={() => setShowEditSmart(false)}
+        smart={smart}
+        onSave={handleEditSmart}
+      />
+
+      {toast && (
+        <Toast message={toast.message} onDismiss={() => setToast(null)} />
+      )}
+
+      <TweaksPanel title="Tweaks">
+        <TweakSection label="Navigation" />
+        <TweakRadio
+          label="Vue par défaut"
+          value={tweaks.startView}
+          options={['vision', 'jalons', 'todo']}
+          onChange={(v) => setTweak('startView', v)}
+        />
+        <TweakSection label="Mise en page" />
+        <TweakRadio
+          label="Densité"
+          value={tweaks.density}
+          options={['comfort', 'compact']}
+          onChange={(v) => setTweak('density', v)}
+        />
+        <TweakRadio
+          label="Timeline"
+          value={tweaks.railSide}
+          options={['left', 'right']}
+          onChange={(v) => setTweak('railSide', v)}
+        />
+      </TweaksPanel>
+    </div>
+  );
+};
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+</script>
+</body>
+</html>
