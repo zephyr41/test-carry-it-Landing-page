@@ -68,6 +68,20 @@
                 type="button"
                 role="tab"
                 draggable="true"
+                data-view="jalons"
+                aria-selected="false"
+                onclick="switchDashboardView('jalons')">
+                <span class="db-main-tab-icon">
+                    <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 21V5m0 0l14 5L4 15"/>
+                    </svg>
+                </span>
+                Jalons
+            </button>
+            <button class="db-main-tab"
+                type="button"
+                role="tab"
+                draggable="true"
                 data-view="execution"
                 aria-selected="false"
                 onclick="switchDashboardView('execution')">
@@ -78,20 +92,6 @@
                     </svg>
                 </span>
                 To-do list
-            </button>
-            <button class="db-main-tab"
-                type="button"
-                role="tab"
-                draggable="true"
-                data-view="jalons"
-                aria-selected="false"
-                onclick="switchDashboardView('jalons')">
-                <span class="db-main-tab-icon">
-                    <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12h18M3 6h18M3 18h12"/>
-                    </svg>
-                </span>
-                Jalons
             </button>
         </div>
     </nav>

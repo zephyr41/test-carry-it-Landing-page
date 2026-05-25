@@ -1,340 +1,238 @@
-# Spécification — KPI Graph (CarryIt)
+# Spec — KPI Global (CarryIT)
+
+Graphique de suivi du KPI principal d'un objectif SMART. Affiché dans l'onglet **Pilotage & Vision**.
+
+---
 
 ## 1. Objectif
 
-Permettre à l’utilisateur de suivre l’évolution d’un KPI associé à un objectif SMART.
+Permettre à l'utilisateur de suivre l'évolution du KPI principal associé à son objectif SMART.
 
 ---
 
 ## 2. Modèle de données
 
-### 2.1 Structure d’un KPI
+### 2.1 Structure d'une mesure
 
-* `labelKPI` : libellé du KPI
-* `unitLabel` : unité métier affichée (ex : clients, €, %, kg)
-* `valueType` : type de valeur (`integer`, `decimal`, `currency`, `percent`)
+```json
+{ "id": "...", "date": "JJ/MM/AAAA", "value": 42 }
+```
 
-### 2.2 Structure d’une mesure
+### 2.2 Règles
 
-* `id`
-* `date` : obligatoire
-* `value` : obligatoire
+- Plusieurs mesures possibles à la même date
+- Tri automatique par date croissante
+- Aucune valeur négative autorisée
+- **Même date** : les mesures sont **moyennées** pour le graphique (une seule valeur par date)
+- Valeurs entières uniquement en V1
 
-### 2.3 Règles
+### 2.3 Source de vérité
 
-* plusieurs mesures possibles à la même date
-* tri automatique par date croissante
-* aucune valeur négative autorisée
-
-### 2.4 Format de valeur — V1
-
-* V1 : valeurs entières uniquement
-* aucune valeur décimale saisissable en V1
+- Stockage dans **localStorage** (clé sur l'objet `allObjectifs[i].measures`)
+- Mise à jour immédiate de l'interface après chaque action
+- Données conservées après refresh
 
 ---
 
-## 3. Type de graphique
+## 3. Graphique
 
-### 3.1 Type principal
+### 3.1 Librairie
 
-* line chart
-* points visibles (markers)
+**LightweightCharts** (standalone) — `LightweightCharts.createChart()`
 
-### 3.2 Variantes futures
+### 3.2 Type
 
-* step chart pour KPI cumulatifs
-* scatter chart pour données irrégulières
+Line chart (`LightweightCharts.LineSeries`) avec markers visibles.
+
+### 3.3 Couleur de la courbe
+
+`#EE4408` (orange CarryIT)
+
+### 3.4 Dimensions
+
+- Largeur : `container.offsetWidth` (responsive)
+- Hauteur minimale : **380px** sur desktop (`container.offsetHeight - 28`)
+- `handleScroll: false`, `handleScale: false`
 
 ---
 
 ## 4. Axe Y
 
-### 4.1 Type
-
-* axe linéaire
-
-### 4.2 Règles de calcul
-
-* `minY = 0`
-* maximum de **7 labels** affichés sur l’axe Y
-* `maxYBrut = valeur maximale visible + 20 %`
-* `stepY` calculé automatiquement selon les données visibles
-* `stepY` doit rester lisible (ex : 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000)
-* `maxYFinal` = arrondi au multiple supérieur de `stepY`
-
-### 4.3 Règles d’affichage
-
-* aucune valeur négative affichée
-* aucun float brut affiché
-* labels Y formatés selon le type de valeur et l’unité
-
-### 4.4 Cas particuliers
-
-* si toutes les valeurs sont à `0` : conserver un axe Y `0 → 5`
-* si aucune mesure n’existe : ne pas afficher de courbe, afficher l’état vide
+- Linéaire, **toujours ≥ 0** (`minValue: 0`)
+- Maximum dynamique : `Math.ceil(maxVal * 1.15)` (fallback : `10` si aucune valeur)
+- Affiché à **gauche** (`leftPriceScale: visible: true`)
+- Axe droit masqué
+- Format : entiers uniquement (`Math.round(price)`)
+- Marges : `top: 0.12, bottom: 0.08`
 
 ---
 
 ## 5. Axe X
 
-### 5.1 Type
+- Axe temps continu (dates ISO `YYYY-MM-DD`)
+- Espacement proportionnel au temps réel
+- Format des labels : `JJ/MM` (ex : `14/03`)
+- Labels auto-adaptatifs à la largeur disponible (LightweightCharts gère la densité)
+- `rightOffset: 5` pour ne pas coller au bord droit
+- `fitContent()` appelé après injection des données
 
-* axe temps continu
+### 5.1 Même date — comportement
 
-### 5.2 Structure de date
-
-* une mesure stocke **la date uniquement** (`JJ/MM/AAAA`)
-* pas d’heure en V1
-
-### 5.3 Positionnement
-
-* espacement **proportionnel au temps réel écoulé**
-* tri chronologique automatique
-
-### 5.4 Labels X
-
-* format d’affichage : `JJ/MM`
-* les labels s’adaptent à la largeur disponible
-* si la densité est trop forte, certains labels sont masqués automatiquement
-* objectif : éviter tout chevauchement
-
-### 5.5 Timezone
-
-* les dates affichées utilisent la timezone locale de l’utilisateur
+Quand plusieurs mesures existent à la même date :
+- Valeurs **moyennées** → un seul point affiché sur le graphique
+- Clic sur le point → ouvre le modal d'édition pour la **première** mesure de cette date
 
 ---
 
-## 6. Points / markers
+## 6. Interactions
 
-### 6.1 Règles générales
+### 6.1 Crosshair
 
-* chaque mesure correspond à un point visible
-* chaque point est cliquable
+- Ligne verticale et horizontale : `rgba(255,255,255,0.12)`, width 1px
+- Crosshair marker : rayon 5, couleur `#EE4408` (fond + bordure)
 
-### 6.2 Même date
+### 6.2 Clic sur point
 
-* plusieurs mesures peuvent exister à la même date
-* décalage visuel **horizontal** pour éviter la superposition
-* hypothèse V1 : **2 à 3 mesures max** sur une même date
+- Déclenché via `chart.subscribeClick(param => {...})`
+- Condition : `param.seriesData.get(lineSeries)` doit exister
+- Ouvre le **modal d'édition** de la première mesure de cette date
 
-### 6.3 Hover / clic
+### 6.3 Clic hors point
 
-* hover/clic sur le point exact uniquement
-* pas de sélection automatique du point le plus proche
+- Rien ne se passe
 
----
+### 6.4 Hover
 
-## 7. Interactions
-
-### 7.1 Hover
-
-* le tooltip apparaît immédiatement au survol
-
-### 7.2 Tooltip
-
-Contenu :
-
-* date
-* valeur formatée
-
-Règles :
-
-* aucune action dans le tooltip
-* le tooltip est informatif uniquement
-
-### 7.3 Clic hors point
-
-* si l’utilisateur clique sur la ligne mais pas sur un point, rien ne se passe
-
-### 7.4 Clic sur point
-
-* ouvre le modal d’édition
+- Tooltip natif LightweightCharts (crosshair)
+- Affiche : date + valeur
 
 ---
 
-## 8. Ajout d’une mesure
+## 7. Ajout d'une mesure
 
-### 8.1 Modal
+### 7.1 Déclencheur
 
-Champs :
+Bouton `+ Ajouter une mesure` dans l'en-tête de la carte KPI global.
 
-* date (obligatoire)
-* valeur (obligatoire)
+### 7.2 Modal
 
-### 8.2 Actions
+**Champs**
+- Date (obligatoire, `type="date"`)
+- Valeur (obligatoire, `type="number"`, `min="0"`)
 
-* Enregistrer
-* Annuler
+**Actions**
+- `Enregistrer`
+- `Annuler`
 
----
-
-## 9. Édition d’une mesure
-
-### 9.1 Modal
-
-Champs :
-
-* date
-* valeur
-
-### 9.2 Actions
-
-* Sauvegarder
-* Supprimer
-* Fermer via croix
-
-### 9.3 Fermeture du modal
-
-* clic sur croix : oui
-* clic sur overlay : non
-* touche `Esc` : oui
-
-### 9.4 Modifications non sauvegardées
-
-* si l’utilisateur ferme après modification, les changements sont sauvegardés automatiquement
+**Validation**
+- Bouton actif en permanence
+- Erreurs affichées en temps réel + au submit
+- Messages :
+  - `Valeur requise`
+  - `La valeur doit être positive`
 
 ---
 
-## 10. Validation formulaire
+## 8. Édition d'une mesure
 
-### 10.1 Bouton sauvegarde
+### 8.1 Déclencheur
 
-* bouton actif en permanence
-* validation au moment de la saisie et au submit
+Clic sur un point du graphique → ouvre le modal d'édition.
 
-### 10.2 Affichage des erreurs
+### 8.2 Modal
 
-* erreurs affichées en temps réel pendant la saisie
-* revalidation au submit
+**Champs**
+- Date (pré-remplie)
+- Valeur (pré-remplie)
 
-### 10.3 Champ valeur
+**Actions**
+- `Sauvegarder`
+- `Supprimer`
+- Fermer via `×`
 
-* saisie clavier uniquement
+### 8.3 Fermeture du modal
 
-### 10.4 Règles de validation
+- Bouton `×` : ferme
+- Clic overlay : ne ferme pas
+- Touche `Esc` : ferme
 
-#### Date
+### 8.4 Modifications non sauvegardées
 
-* obligatoire
-* format valide
-
-#### Valeur
-
-* obligatoire
-* numérique
-* ≥ 0
-* entière uniquement en V1
-
-### 10.5 Messages d’erreur
-
-* `Valeur requise`
-* `La valeur doit être positive`
-
-### 10.6 Valeur vide
-
-* erreur immédiate
+Fermeture → changements sauvegardés automatiquement.
 
 ---
 
-## 11. Suppression
+## 9. Suppression
 
-### 11.1 Comportement
-
-* suppression immédiate
-* affichage d’un message temporaire de confirmation avec possibilité d’annulation
-
-### 11.2 Undo
-
-* message temporaire du type : `Valeur supprimée — cliquer pour annuler`
-* durée d’affichage : **5 à 10 secondes**
-
-### 11.3 Dernière mesure supprimée
-
-* retour vers l’état vide
+- Suppression immédiate
+- Toast temporaire (5–10s) : `Valeur supprimée — cliquer pour annuler`
+- Dernière mesure supprimée → retour vers état vide
 
 ---
 
-## 12. États d’interface
+## 10. États d'interface
 
-### 12.1 Empty state
+### 10.1 Empty state
 
-* texte : `Entrez une mesure`
-* CTA : `Ajouter une mesure`
+Affiché dans la zone graphique.
 
-### 12.2 Cas particulier
+```
+[icône +]  Aucune mesure enregistrée · Ajouter une mesure
+```
+CTA inline cliquable (ouvre le modal d'ajout).
 
-* si toutes les valeurs existantes sont à `0` : afficher `Aucune progression enregistrée`
+### 10.2 Cas particulier — toutes valeurs à 0
 
-### 12.3 États supportés
+- Message : `Aucune progression enregistrée`
 
-* 1 point
-* plusieurs points
-* ajout
-* édition
-* suppression
+### 10.3 États supportés
 
----
-
-## 13. Persistance locale
-
-### 13.1 Source de vérité
-
-* stockage dans le **local storage**
-
-### 13.2 Après action
-
-* mise à jour immédiate de l’interface
-* persistance immédiate en local
-* pas de loader en V1
-
-### 13.3 Rechargement de page
-
-* les données sont conservées après refresh
+- 0 point (empty state)
+- 1 point
+- Plusieurs points
+- Ajout en cours
+- Édition en cours
+- Suppression (avec undo)
 
 ---
 
-## 14. Volumétrie / responsive
+## 11. Style visuel
 
-### 14.1 Nombre de points attendu en V1
-
-* cible principale : entre **< 20** et **20–100** points par KPI
-
-### 14.2 Mobile
-
-* même graph en version simplifiée
-
-### 14.3 Markers si densité élevée
-
-* à préciser
-
-### 14.4 Taille minimale du graph
-
-* hauteur minimale : **380 px** sur dekstop
+- Background chart : `transparent`
+- Couleur texte axes : `rgba(255,255,255,0.35)`
+- Grille : `rgba(255,255,255,0.04)` (horizontale + verticale)
+- Bordure axes : `rgba(255,255,255,0.06)`
+- Watermark : masqué
+- Attribution logo : masqué
 
 ---
 
-## 15. Contraintes techniques
+## 12. Contraintes techniques
 
-* pas de float brut affiché
-* axe Y toujours ≥ 0
-* données triées chronologiquement
-* performance stable avec plusieurs dizaines à centaines de points
-
----
-
-## 16. Décisions produit
-
-* pas de ligne de cible SMART dans le graph
-* graph orienté lisibilité
-* interaction principale : édition via les points
-* comportement X proportionnel au temps réel
-* comportement Y borné à 0 avec max dynamique
+- Pas de float brut affiché sur l'axe Y
+- Axe Y toujours ≥ 0
+- Données triées chronologiquement avant injection
+- Même date → valeurs moyennées (pas d'affichage de points multiples par date)
+- Performance stable avec plusieurs dizaines à centaines de points
+- Pas de scroll ni de zoom (désactivés)
 
 ---
 
-## 17. Points encore ouverts
+## 13. Décisions produit
 
-* formatage V2 des valeurs décimales, monétaires et pourcentages
-* stratégie d’affichage des markers quand la densité devient forte
-* variantes de rendu futures (`step`, `scatter`)
-* mode logarithmique V2
+- Pas de ligne de cible SMART dans le graphique
+- Graphique orienté lisibilité, pas analyse
+- Interaction principale : édition via les points
+- Axe X : proportionnel au temps réel
+- Axe Y : borné à 0, max dynamique + 15%
+- Librairie : LightweightCharts (non SVG custom)
+
+---
+
+## 14. Points ouverts (V2)
+
+- Formatage des valeurs décimales, monétaires, pourcentages
+- Stratégie d'affichage quand densité de points forte
+- Variantes de rendu (step, scatter)
+- Mode logarithmique
+- Affichage de plusieurs mesures distinctes par date (sans averaging)

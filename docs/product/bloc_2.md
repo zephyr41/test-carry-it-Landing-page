@@ -1,319 +1,262 @@
-Tu es UX/UI designer senior spécialisé en SaaS de productivité, dashboards structurés et interfaces d’exécution.
+# Spec — Zone 2 & Zone 3 du Dashboard
 
-Je développe CarryIT, une web app responsive desktop-first de structuration et pilotage d’objectifs long terme.
+## Contexte produit
 
-CONTEXTE PRODUIT — CARRYIT
+CarryIT relie vision long terme, pilotage moyen terme et exécution court terme.
 
-CarryIT permet à un utilisateur individuel de structurer et suivre une ambition long terme.
+- **Zone 2 — To-do list** : onglet d'exécution court terme (tâches liées aux jalons)
+- **Zone 3 — KPI de jalon** : bloc de pilotage moyen terme dans l'onglet Jalons
 
-L’utilisateur crée :
-- un objectif SMART ;
-- des jalons ;
-- des KPI ;
-- des tâches liées aux jalons.
+Ces deux zones sont dans des **onglets séparés**. Elles ne fusionnent pas.
 
-Principe central :
-CarryIT relie le long terme au court terme :
-- le long terme donne la direction ;
-- le moyen terme permet le pilotage à moyen terme et de valider la direction ; 
-- le court terme permet l’exécution concrète quotidienne.
+---
 
-CarryIT n’est pas :
-- une simple to-do list ;
-- une app de motivation ;
-- un task manager générique ;
-- une page blanche ;
-- un outil qui décide à la place de l’utilisateur.
+## Zone 2 — To-do list (onglet "To-do list")
 
-Rôle de l’utilisateur :
-- décider ;
-- valider ;
-- exécuter ;
-- ajuster.
+### Rôle
 
-Rôle de l’application :
-- structurer ;
-- rendre visible ;
-- relier objectif, jalons, KPI et tâches ;
-- permettre le suivi ;
-- aider l’utilisateur à comprendre où il en est.
+Permettre à l'utilisateur d'exécuter ses tâches au quotidien, organisées par jalon.
 
-Je veux repenser deux zones précises du dashboard.
+Question principale : **"Qu'est-ce que je dois faire maintenant pour avancer sur ce jalon ?"**
 
---------------------------------------------------
-ZONE 2 — ESPACE D’EXÉCUTION
---------------------------------------------------
+---
 
-Nom :
-Exécution
+### Structure
 
-Temporalité :
-Court terme
+#### Onglets de jalons (milestone tabs)
 
-État :
-Dynamique / opérationnel
+Ligne d'onglets horizontaux (scroll si nécessaire), un onglet par jalon.
 
-Rôle :
-L’Espace d’Exécution affiche les jalons sous forme d’onglets horizontaux.  
-Chaque onglet représente un jalon. Lorsqu’un jalon est sélectionné, la section affiche uniquement les actions liées à ce jalon.
+**Ordre d'affichage**
+1. Jalon actif (en cours) — en premier
+2. Jalons à venir — par ordre chronologique
+3. Jalons validés — compactés, libellé `Ancien · [titre]`
 
-Logique UX / UI 
+**Contenu d'un onglet**
+- Dot de statut : orange (`active`) ou bleu avec checkmark (`complete`)
+- Titre du jalon
+- Compteur tâches `X/Y` (si tâches liées existent) — masqué si 0
 
-Cette zone est un espace d'execution court terem
-Elle doit permettre à l’utilisateur de faire du rolling wave inconsciememnt.
-Le court terme (le jalon en cours) doit être exécuté en prioirité. mais si il veut. il peut aussi ajouter des taches àd 'autre j'alons en secondarie.
+**Interactions**
+- Clic sur un onglet → affiche le critère + les tâches de ce jalon
+- Drag-and-drop d'une tâche sur un onglet → réassigne la tâche à ce jalon
 
-Contenu attendu :
+---
 
-2 partie : 
-la partie haute qui parle du jalon : 
-- Titre du jalon (titre de l'onglet)
-- Rang du jalon (1/5 par exemple)
-- critère de validation du jalon
+#### Critère de validation (criterion card)
 
-La partie To do LIST / KANBAN
-- kanban ou liste ;
-- tâches liées au jalon sélectionné ;
-- actions concrètes ;
-- tâches en cours ;
-- tâches à faire ;
-- tâches terminées ;
-- ajout de tâche ;
-- changement de statut ;
-- organisation des tâches.
+Affiché sous les onglets quand un jalon est sélectionné.
 
-Question principale à laquelle cette zone doit répondre :
-“Qu’est-ce que je dois faire maintenant pour avancer sur le jalon sélectionné ?”
+**Contenu**
+```
+🎯 VALIDATION · [Titre du jalon] : [Texte du critère]
+```
+- Bouton `✓ Valider` → valide le jalon (désactivé si déjà validé)
+- Si jalon validé : carte en état `completed` (visuellement atténuée)
 
-Cette zone ne doit pas faire :
-- analyse stratégique lourde ;
-- diagnostic de progression détaillé ;
-- timeline complète des jalons ;
-- affichage dominant des KPI ;
-- résumé long de l’objectif SMART.
+---
 
-Elle doit rester orientée action.
+#### Liste de tâches
 
-Problèmes UX actuels :
-- ce n’est pas intuitif ;
-- trop chargé visuellement ;
-- hiérarchie peu claire ; (on a 2 fois le titre par exemple du jalon. on a aps assez la séparation de la partie jalon et to do list ce n'est pas séparé. trop chargé visuellement. )
-- on ne comprend pas assez vite quoi faire maintenant ;
-- risque de ressembler à une simple to-do list.
-- on ne peut pas valider un jalon quand on recharge la page. il ne reste pas validé
-- un jalon validé doit être enlever de la zone moyen terme. mais dans la zone court terme on a la possibilié de le reactivé pour le revoir
+Zone principale sous la criterion card.
 
-Objectif UX de cette zone :
-Permettre à l’utilisateur de voir rapidement :
-1. le jalon concerné ;
-2. les tâches liées ;
-3. la tâche ou le groupe de tâches prioritaire ;
-4. l’état d’avancement opérationnel ;
-5. l’action suivante possible.
+**Toggle de vue** : `Liste` | `Board` (kanban)
 
---------------------------------------------------
-ZONE 3 — PILOTAGE DE JALON
---------------------------------------------------
+---
 
-Nom :
-Pilotage de Jalon
+### Vue Liste
 
-Cette zone permet à l’utilisateur de piloter son projet sur du moyen terme.
-plus précisement elle permet de prendre du recul sur le jalons en cours l'éxécution court terme. 
- ici voir son jalon, ça description. mesurer un / des KPI par rapport au jalons en cours(Leading / Laggin (voir KPI.md pour la définition d'un KPI). 
+Tâches groupées par statut, chaque groupe collapsible.
 
-la difference entre la Long terme (voir dahsboard.md) et cette zone. c'est que cette zone il y vient souvent aussi. elle est la pour montrer les résultats et diriger le court terme. 
+**Groupes**
+| Groupe | Statut | Comportement |
+|---|---|---|
+| En cours | `doing` | Visible par défaut |
+| À faire | `todo` | Visible par défaut |
+| Terminées | `done` | Collapsé par défaut |
 
-Rôle :
-Ajuster le “où j'en suis dans mon jalon ? comment je sais qu'il est validé ; et quels sont les résultats de mes actions court terme sur mon jalon  qui ducoup sont visible ici via les KPI. 
+**Structure d'une ligne de tâche** (gauche → droite)
+- `⠿` grip — drag & drop pour réordonner
+- Checkbox / contrôle de statut
+- Titre de la tâche (texte éditable inline)
+- Chevron `▶` — affiche/masque les sous-tâches (hover sur toutes les tâches)
+- Compteur sous-tâches `X/Y` (si existent)
+- Bouton supprimer
 
-Contenu attendu :
+**Sous-tâches**
+- Indentation + bordure gauche (hiérarchie visuelle, pas de changement de taille texte)
+- Chevron discret si pas de sous-tâches → clic crée directement la première
+- Déplaçables entre tâches parentes (drag & drop)
 
-cette secction est divisé en 2 bloc : la timeline : 
-- timeline des jalons (avec la progression visible ) ;
-- Nom du jalon
-- Date du jalon (en mm-yyyy : ex Sep 2026)
--  le nom de l'étape de validation du jalon
+**Drag & drop — indicateur d'insertion**
+- Barre fine `1px rgba(238,68,8,0.55)` entre les lignes (tâches)
+- Barre fine `1px rgba(255,253,246,0.3)` (sous-tâches)
+- La zone "Ajouter une action" ne capture pas les drops
 
+**Ajout de tâche**
+- Bouton fantôme `+ Ajouter une action...` dans chaque groupe
+- Clic → affiche input inline focusé
+- `Enter` ou `blur` → crée la tâche et ferme l'input
 
-La partie carte de chaque jalon (quand on clique sur chaque jalons. en dessous + d'information s'affiche sur le jalon)
+---
 
-voir 3. définitiion produit  jalons.md pour voir le contenue de la carte
+### Vue Kanban (Board)
 
-Question principale à laquelle cette zone doit répondre :
-“Est-ce que ce jalon avance correctement, Que donne le résultat de mes efforts ?  dois-je ajuster mon exécution ?”
+3 colonnes côte à côte.
 
-Cette zone ne doit pas faire :
-- afficher un kanban complet ;
-- devenir une liste de tâches ;
-- gérer l’exécution quotidienne ;
-- multiplier les actions opérationnelles ;
-- surcharger l’utilisateur avec trop de données.
+| Colonne | Statut |
+|---|---|
+| À faire | `todo` |
+| En cours | `doing` |
+| Terminé | `done` |
 
-Elle doit rester orientée pilotage.
+**Carte kanban**
+- Titre de la tâche
+- Menu `⋯` → ouvre le panneau détail de la tâche
+- Bouton `×` → supprime la tâche
+- Compteur sous-tâches (si existent)
+- Draggable entre colonnes
 
-Problèmes UX actuels :
-- ce n’est pas intuitif ;
-- Il n'y a aucun KPI. on ne peut définir aucun KPI
-- Moche.
-- hiérarchie peu claire ; entre la timeline et la cate qui présente le jalon
-- l’utilisateur  ne  comprend pas ce qu’il doit analyser en priorité.
+**Ajout** : carte "+ Nouvelle tâche..." dans la colonne À faire
 
-Objectif UX de cette zone :
-Permettre à l’utilisateur de comprendre rapidement :
-1. Ou en est t'il dans la timeline: 
-Le principe et de se rappeler : 
-La desc du jalons, son critère de validation . et ses KPI par rapport au critère du validation.
+---
 
---------------------------------------------------
-MISSION
---------------------------------------------------
+### États à gérer
 
-Je veux que tu proposes une refonte UX/UI complète de ces deux zones.
+| État | Affichage |
+|---|---|
+| Aucun jalon | Lien `+ Planifier les jalons` |
+| Jalon sans tâche | Critère visible, liste vide avec `+ Ajouter une action...` |
+| Toutes les tâches terminées | Message "Toutes les actions sont cochées. Ce jalon est-il prêt à être validé ?" |
+| Jalon validé | Criterion card atténuée, bouton Valider désactivé |
 
-Contraintes importantes :
-- ne pas fusionner les deux zones ;
-- garder une séparation claire entre exécution et pilotage ;
-- réduire la charge visuelle ;
-- clarifier la hiérarchie d’information ;
-- éviter les blocs de même poids visuel ;
-- éviter les widgets décoratifs ;
-- éviter les formulations motivationnelles ;
-- conserver une interface SaaS sobre, lisible, structurée ;
-- desktop-first ;
-- responsive ensuite ;
-- peu de couleurs ;
-- couleurs uniquement pour statut, risque, progression ou priorité ;
-- microcopy neutre et opérationnelle.
+---
 
---------------------------------------------------
-SORTIE ATTENDUE
---------------------------------------------------
+## Zone 3 — KPI de jalon (dans l'onglet "Jalons")
 
-Pour chaque zone, fournis :
+### Rôle
 
-1. Diagnostic UX
-Explique pourquoi la zone peut manquer d’intuitivité aujourd’hui.
+Permettre à l'utilisateur de mesurer la progression d'un jalon via 2 indicateurs complémentaires.
 
-2. Objectif UX précis
-Formule l’objectif principal de la zone en une phrase.
+Question principale : **"Est-ce que mes efforts produisent les résultats attendus sur ce jalon ?"**
 
-3. Hiérarchie d’information
-Classe les éléments en :
-- P0 : visible immédiatement ;
-- P1 : visible dans la carte ;
-- P2 : secondaire ou accessible après interaction.
+---
 
-4. Structure UI recommandée
-Décris :
-- le layout ;
-- les blocs ;
-- les composants ;
-- l’ordre de lecture ;
-- le poids visuel ;
-- les CTA principaux ;
-- les CTA secondaires.
+### Les 2 types de KPI
 
-5. Fonctionnalités attendues
-Liste les fonctionnalités nécessaires.
+| Type | Libellé | Couleur accent | Description |
+|---|---|---|---|
+| `leading` | Effort | `#5BAEC9` (bleu) | Ce que je fais — indicateur d'avancée |
+| `lagging` | Résultat | `#EE4408` (orange) | Ce que ça donne — indicateur de résultat |
 
-Pour l’Espace d’Exécution, couvre au minimum :
-- vue liste ;
-- vue kanban si pertinent ;
-- tâches du jalon sélectionné ;
-- tâche prioritaire ou focus actuel ;
-- ajout de tâche ;
-- changement de statut ;
-- filtre par statut ;
-- état vide ;
-- état sans tâche ;
-- état toutes les tâches terminées.
+Chaque jalon peut avoir **0, 1 ou 2 KPI**.
 
-Pour le Pilotage de Jalon, couvre au minimum :
-- timeline des jalons ;
-- jalon sélectionné ;
-- KPI du jalon ;
-- valeur actuelle ;
-- valeur cible ;
-- progression ;
-- échéance ;
-- statut ;
-- diagnostic ;
-- action “mettre à jour le KPI” ;
-- action “ajuster le jalon” ;
-- état KPI non renseigné ;
-- état jalon en retard ;
-- état jalon terminé.
+**États de la grille KPI**
+- 0 KPI : 2 cartes vides avec CTA "Définir le KPI" pour chaque type
+- 1 KPI : carte remplie + espace vide du type complémentaire
+- 2 KPI : 2 cartes côte à côte (`repeat(auto-fit, minmax(260px, 1fr))`)
 
-6. Wireframe textuel
-Fais un wireframe séparé pour :
-- Zone 2 — Espace d’Exécution ;
-- Zone 3 — Pilotage de Jalon.
+---
 
-Ne fais pas un wireframe commun.
+### Structure d'une KPI card
 
-7. Microcopy
-Propose les libellés :
-- titres ;
-- sous-titres ;
-- boutons ;
-- statuts ;
-- badges ;
-- messages vides ;
-- messages de diagnostic ;
-- labels KPI ;
-- labels de tâches.
+**En-tête**
+- Titre de catégorie (`Effort` ou `Résultat`)
+- Phrasing (`Ce que je fais` ou `Ce que ça donne`)
+- Bouton `Modifier le KPI` (édition des métadonnées)
 
-La microcopy doit être neutre, claire et opérationnelle.
+**Corps**
+- Titre factuel du KPI (ex : "Km courus cette semaine")
+- Valeur courante (grande taille) + unité ou cible
+- Barre de progression + % atteint (si cible définie)
+- Indicateur de fraîcheur (date relative de la dernière mesure)
+- Sparkline SVG (historique visuel — visible si ≥ 2 mesures)
 
-8. États UX à prévoir
-Décris les états pour chaque zone.
+**Footer**
+- Bouton `+ Ajouter une mesure`
 
-Pour l’Espace d’Exécution :
-- aucune tâche ;
-- tâche en cours ;
-- toutes les tâches terminées ;
-- jalon sélectionné sans tâche ;
-- aucun jalon sélectionné ;
-- chargement ;
-- erreur.
+**État vide (KPI non défini)**
+- Description de ce que le KPI doit mesurer
+- Exemple concret
+- Bouton `+ Définir le KPI`
 
-Pour le Pilotage de Jalon :
-- aucun jalon sélectionné ;
-- jalon actif ;
-- jalon en avance ;
-- jalon en retard ;
-- KPI non renseigné ;
-- KPI à jour ;
-- jalon terminé ;
-- donnée manquante.
+---
 
-9. Recommandations UI concrètes
-Donne des recommandations sur :
-- espacement ;
-- typographie ;
-- densité ;
-- badges ;
-- progress bars ;
-- couleurs ;
-- icônes ;
-- séparateurs ;
-- cartes ;
-- boutons ;
-- éléments à supprimer.
+### KPIActionMenu (menu `...`)
 
-10. Erreurs à éviter
-Liste ce qu’il ne faut pas faire pour :
-- ne pas transformer l’Espace d’Exécution en simple to-do list ;
-- ne pas transformer le Pilotage de Jalon en dashboard analytique trop lourd ;
-- ne pas mélanger court terme et moyen terme.
+Déclenché par le bouton `...` sur une KPI card remplie.
 
-11. Proposition finale recommandée
-Donne une version finale claire et exploitable des deux zones, en expliquant pourquoi elle correspond au positionnement CarryIT.
+| Action | Comportement |
+|---|---|
+| Modifier le titre | Édition inline du titre |
+| Définir / Modifier la cible | Édition inline de la cible |
+| Modifier la fréquence | Toggle Hebdomadaire ↔ Mensuel |
+| Mode de mesure | Toggle Cumulatif ↔ Valeur actuelle |
+| Voir l'historique | Ouvre KPIHistorySheet |
+| Supprimer ce KPI | Supprime le KPI du jalon |
 
-Format de réponse :
-- structuré ;
-- concret ;
-- orienté produit ;
-- directement exploitable pour concevoir l’écran ;
-- sans généralités vagues.
+Fermeture : clic extérieur. Position : ancré au bouton, aligné à droite.
+
+---
+
+### KPIHistorySheet (panneau slide-in)
+
+Panneau latéral droit (`440px max-width`) affichant l'historique des mesures.
+
+**Déclencheurs**
+- Clic sur la sparkline
+- Clic sur la date de dernière mesure (freshness)
+
+**Contenu**
+- En-tête : type (couleur accent) + titre du KPI + bouton fermer
+- Liste des mesures (antéchronologique) : date · delta vs précédent · valeur + unité · bouton supprimer
+- `Aucune mesure` si vide
+
+**Comportement**
+- Backdrop semi-transparent avec blur
+- Animation slide-in : `translateX(100% → 0)`, 240ms cubic-bezier
+- Clic backdrop ou `×` → ferme
+- Suppression d'une mesure → recharge le panneau sans fermer
+
+---
+
+### Modal — Ajout de mesure (KPI jalon)
+
+**Champs**
+- Date (obligatoire)
+- Valeur (obligatoire, ≥ 0)
+
+**Actions**
+- `Enregistrer`
+- `Annuler`
+
+---
+
+### Mode de mesure
+
+Deux modes sélectionnables par toggle :
+
+- **Cumulatif (Σ)** — chaque mesure s'ajoute au total. Ex : `+5 km`
+- **Valeur actuelle (→)** — chaque mesure remplace l'état courant. Ex : `72 kg`
+
+Mode stocké sur le KPI, choisi par l'utilisateur.
+
+---
+
+### Données — KPI jalon
+
+```json
+{
+  "id": "...",
+  "type": "leading | lagging",
+  "titre": "...",
+  "unite": "...",
+  "description": "...",
+  "mode": "cumulative | current",
+  "target": null,
+  "frequence": "weekly | monthly",
+  "measures": [
+    { "id": "...", "date": "JJ/MM/AAAA", "value": 12 }
+  ]
+}
+```
