@@ -62,7 +62,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 19V5M4 19h16M9 16V9M14 16V7M19 16v-4"/>
                     </svg>
                 </span>
-                Pilotage & Vision
+                Vision
             </button>
             <button class="db-main-tab"
                 type="button"
@@ -1043,39 +1043,37 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             const key = `${i}-${status}`;
             const collapsed = todoGroupCollapsed[key] === true;
             return `
-                <button class="task-group ${status}${collapsed ? ' collapsed' : ''}" type="button"
-                    onclick="toggleGroupBlock(${i}, '${status}'); event.stopPropagation();"
+                <div class="task-section-wrap ${status}"
                     ondragover="taskListDragOver(event)"
                     ondragleave="taskListDragLeave(event)"
                     ondrop="dropTaskList(event, ${i}, '${status}')">
-                    <span>${label}</span>
-                    <strong>${groupTasks.length}</strong>
-                </button>
-                <div class="task-list-dropzone ${status}" style="display:${collapsed ? 'none' : ''};"
-                    ondragover="taskListDragOver(event)"
-                    ondragleave="taskListDragLeave(event)"
-                    ondrop="dropTaskList(event, ${i}, '${status}')">
-                    ${groupTasks.map((t, ti) => renderTaskItem(t, i, ti)).join('')}
-                    ${addRow}
+                    <button class="task-group ${status}${collapsed ? ' collapsed' : ''}" type="button"
+                        onclick="toggleGroupBlock(${i}, '${status}'); event.stopPropagation();">
+                        <span>${label}</span>
+                        <strong>${groupTasks.length}</strong>
+                    </button>
+                    <div class="task-list-dropzone ${status}" style="display:${collapsed ? 'none' : ''};">
+                        ${groupTasks.map((t, ti) => renderTaskItem(t, i, ti)).join('')}
+                        ${addRow}
+                    </div>
                 </div>`;
         }
 
         function renderDoneTaskGroup(done, i) {
             const collapsed = todoDoneCollapsed[i] !== false;
-            return `<button class="task-group done${collapsed ? ' collapsed' : ''}" type="button" onclick="toggleDoneBlock(${i}); event.stopPropagation();"
+            return `<div class="task-section-wrap done"
                 ondragover="taskListDragOver(event)"
                 ondragleave="taskListDragLeave(event)"
                 ondrop="dropTaskList(event, ${i}, 'done')">
-                <span>Terminées</span>
-                <strong>${done.length}</strong>
-            </button>
-            <div class="done-group task-list-dropzone done" style="display:${collapsed ? 'none' : 'block'};"
-                ondragover="taskListDragOver(event)"
-                ondragleave="taskListDragLeave(event)"
-                ondrop="dropTaskList(event, ${i}, 'done')">
-                ${done.length
-                    ? done.map((t, ti) => renderTaskItem(t, i, ti)).join('')
-                    : ''}
+                <button class="task-group done${collapsed ? ' collapsed' : ''}" type="button" onclick="toggleDoneBlock(${i}); event.stopPropagation();">
+                    <span>Terminées</span>
+                    <strong>${done.length}</strong>
+                </button>
+                <div class="done-group task-list-dropzone done" style="display:${collapsed ? 'none' : 'block'};">
+                    ${done.length
+                        ? done.map((t, ti) => renderTaskItem(t, i, ti)).join('')
+                        : ''}
+                </div>
             </div>`;
         }
 
@@ -1099,7 +1097,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
         function renderAddTaskRow(i, status = 'todo', primary = false) {
             const inputId = `todoInput-${i}-${status}`;
             return `
-                <div class="add-task-row ${status} ${primary ? 'primary' : ''}" ondragover="event.stopPropagation();" ondragenter="event.stopPropagation();">
+                <div class="add-task-row ${status} ${primary ? 'primary' : ''}" ondragover="taskListDragOver(event)" ondragleave="taskListDragLeave(event)" ondrop="dropTaskList(event, ${i}, '${status}')">
                     <button class="add-task-ghost-btn" type="button"
                         id="addTaskGhostBtn-${i}-${status}"
                         onclick="openAddTaskEditor(${i}, '${status}'); event.stopPropagation();">
@@ -1303,7 +1301,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
 
         function dropTaskList(event, i, status) {
             event.preventDefault();
-            document.querySelectorAll('.task-list-dropzone.drag-over,.task-group.drag-over').forEach(el => el.classList.remove('drag-over'));
+            document.querySelectorAll('.task-list-dropzone.drag-over,.task-group.drag-over,.task-section-wrap.drag-over').forEach(el => el.classList.remove('drag-over'));
             const rawTaskId = event.dataTransfer?.getData('text/plain') || kanbanDragState.taskId;
             const taskId = Number(rawTaskId);
             if (!Number.isFinite(taskId)) return;
@@ -1333,7 +1331,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
 
         function endTaskListDrag(event) {
             event.currentTarget.classList.remove('dragging');
-            document.querySelectorAll('.task-list-dropzone.drag-over,.task-group.drag-over').forEach(el => el.classList.remove('drag-over'));
+            document.querySelectorAll('.task-list-dropzone.drag-over,.task-group.drag-over,.task-section-wrap.drag-over').forEach(el => el.classList.remove('drag-over'));
             document.querySelectorAll('.milestone-tab.drag-over,.msb-milestone.drag-over').forEach(el => el.classList.remove('drag-over'));
             document.querySelectorAll('.task-row.drag-hover').forEach(el => el.classList.remove('drag-hover'));
             clearInsertionClasses();

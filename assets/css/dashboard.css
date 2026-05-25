@@ -7154,9 +7154,11 @@ body {
 }
 
 .task-list-dropzone.drag-over,
-.task-group.drag-over {
+.task-group.drag-over,
+.task-section-wrap.drag-over {
     background: rgba(255,253,246,0.03);
     box-shadow: inset 2px 0 0 rgba(255,253,246,0.15);
+    border-radius: 6px;
 }
 
 .milestone-tab.drag-over {
