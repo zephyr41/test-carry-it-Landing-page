@@ -142,6 +142,19 @@ body::before {
     color: #FFFDF6;
 }
 
+.db-main-tab[draggable="true"] {
+    cursor: grab;
+}
+.db-main-tab[draggable="true"]:active {
+    cursor: grabbing;
+}
+.db-main-tab.drag-over {
+    color: #FFFDF6;
+    border-bottom-color: rgba(238,68,8,0.4);
+    background: rgba(255,253,246,0.04);
+    border-radius: 4px 4px 0 0;
+}
+
 .proj-badges {
     display: flex;
     flex-wrap: wrap;

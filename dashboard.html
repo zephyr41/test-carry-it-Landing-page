@@ -49,10 +49,11 @@
             </div>
         </div>
 
-        <div class="dashboard-nav-tabs db-main-tabs" role="tablist" aria-label="Sections du dashboard">
+        <div class="dashboard-nav-tabs db-main-tabs" role="tablist" aria-label="Sections du dashboard" id="dbMainTabs">
             <button class="db-main-tab active"
                 type="button"
                 role="tab"
+                draggable="true"
                 data-view="pilotage"
                 aria-selected="true"
                 onclick="switchDashboardView('pilotage')">
@@ -66,6 +67,7 @@
             <button class="db-main-tab"
                 type="button"
                 role="tab"
+                draggable="true"
                 data-view="execution"
                 aria-selected="false"
                 onclick="switchDashboardView('execution')">
@@ -76,6 +78,20 @@
                     </svg>
                 </span>
                 To-do list
+            </button>
+            <button class="db-main-tab"
+                type="button"
+                role="tab"
+                draggable="true"
+                data-view="jalons"
+                aria-selected="false"
+                onclick="switchDashboardView('jalons')">
+                <span class="db-main-tab-icon">
+                    <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12h18M3 6h18M3 18h12"/>
+                    </svg>
+                </span>
+                Jalons
             </button>
         </div>
     </nav>
@@ -101,6 +117,16 @@
 
             <button onclick="closeSyncModal()" style="width:100%;padding:12px;background:none;border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:rgba(255,255,255,0.5);font-size:14px;cursor:pointer;margin-top:12px;">Fermer</button>
         </div>
+    </div>
+
+    <!-- KPI Action Menu (inline dropdown) -->
+    <div id="kpiActionMenuPanel" style="display:none;position:fixed;z-index:200;min-width:220px;background:#1A1A1C;border:1px solid rgba(255,253,246,0.12);border-radius:10px;padding:6px;box-shadow:0 12px 32px rgba(0,0,0,0.55)"></div>
+
+    <!-- KPI History Sheet (slide-in right panel) -->
+    <div id="kpiHistoryBackdrop" style="display:none;position:fixed;inset:0;z-index:150;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px)" onclick="closeKpiHistorySheet()"></div>
+    <div id="kpiHistorySheet" style="display:none;position:fixed;top:0;right:0;bottom:0;z-index:151;width:min(440px,100%);background:#0F0F11;border-left:1px solid rgba(255,253,246,0.1);display:flex;flex-direction:column;transform:translateX(100%);transition:transform 240ms cubic-bezier(0.16,1,0.3,1)">
+        <div id="kpiHistorySheetHead" style="padding:24px 28px 18px;display:flex;align-items:flex-start;gap:12px;border-bottom:1px solid rgba(255,253,246,0.08)"></div>
+        <div id="kpiHistorySheetBody" style="flex:1;overflow-y:auto;padding:12px 0"></div>
     </div>
 
     <!-- Dashboard -->
@@ -631,7 +657,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
         }
 
         function switchDashboardView(viewName) {
-            currentDashboardView = viewName === 'pilotage' ? 'pilotage' : 'execution';
+            currentDashboardView = ['pilotage', 'execution', 'jalons'].includes(viewName) ? viewName : 'pilotage';
             document.querySelectorAll('.db-main-tab').forEach(tab => {
                 const isActive = tab.dataset.view === currentDashboardView;
                 tab.classList.toggle('active', isActive);
@@ -779,12 +805,16 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                             </div>
                         </div>
 
+                        <!-- Citation -->
+                        <p class="db-citation">"C'est quand t'as envie d'abandonner que tout commence."</p>
+                    </div>
+
+                    <div class="db-view db-view-jalons ${currentDashboardView === 'jalons' ? 'active' : ''}"
+                        data-view="jalons"
+                        ${currentDashboardView === 'jalons' ? '' : 'hidden'}>
                         <div class="db-section">
                             ${buildJalonsPanel(obj, i)}
                         </div>
-
-                        <!-- Citation -->
-                        <p class="db-citation">"C'est quand t'as envie d'abandonner que tout commence."</p>
                     </div>
 
                 </div>
@@ -2376,14 +2406,15 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
         }
 
         // ──────────────────────────────────────────────────────────
-        // JALONS HORIZONTAL TIMELINE
+        // JALONS VERTICAL RAIL — v2 design
         // ──────────────────────────────────────────────────────────
         function buildJalonsPanel(obj, i) {
             const jalons = getSortedProjectJalons(obj);
 
             if (jalons.length === 0) {
-                return `<div style="text-align:center;padding:4px 0 0;">
-                    <a href="#" onclick="openJalonsForProject(${i})" style="font-size:12px;color:rgba(255,255,255,0.25);text-decoration:none;border-bottom:1px dashed rgba(255,255,255,0.12);padding-bottom:2px;">+ Planifier les jalons de ce projet</a>
+                return `<div style="padding:32px 0;text-align:center">
+                    <p style="font-size:13px;color:#929292;margin-bottom:16px">Aucun jalon planifié pour ce projet.</p>
+                    <a href="#" onclick="openJalonsForProject(${i});return false" style="font-size:12px;color:rgba(255,253,246,0.25);text-decoration:none;border-bottom:1px dashed rgba(255,253,246,0.12);padding-bottom:2px">+ Planifier les jalons de ce projet</a>
                 </div>`;
             }
 
@@ -2392,125 +2423,153 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                 : (getNextActiveJalon(obj)?.id || jalons[0]?.id);
             const selectedJalon = jalons.find(j => j.id === selectedJalonId) || jalons[0];
             const selectedIndex = Math.max(0, jalons.findIndex(j => j.id === selectedJalon?.id));
+            const total = jalons.length;
+            const currentIndex = jalons.findIndex(j => (j.statut || 'pending') !== 'completed');
 
-            const statusLabels = { completed: 'Terminé', in_progress: 'En cours', pending: 'À venir', late: 'En retard' };
-            const statusChips = { completed: 'pt-chip--done', in_progress: 'pt-chip--active', pending: 'pt-chip--upcoming', late: 'pt-chip--late' };
-            const isLate = (jalon) => {
-                if (!jalon) return false;
-                const st = jalon.statut || 'pending';
-                if (st === 'completed') return false;
-                const t = new Date(jalon.date || '').getTime();
-                if (Number.isNaN(t)) return false;
-                const now = new Date();
-                now.setHours(0, 0, 0, 0);
-                return t < now.getTime();
-            };
+            function jalonStatus(jalon, ji) {
+                if ((jalon.statut || 'pending') === 'completed') return 'done';
+                if (ji === currentIndex) return 'active';
+                return 'upcoming';
+            }
 
-            let timelineItems = '';
+            // ── RAIL ─────────────────────────────────────────────
+            let railItems = '';
             jalons.forEach((jalon, ji) => {
-                const status = jalon.statut || 'pending';
+                const st = jalonStatus(jalon, ji);
                 const isSelected = jalon.id === selectedJalon?.id;
-                const isDone = status === 'completed';
-                const late = isLate(jalon);
-                const isActive = status === 'in_progress' || late;
-                const milestoneState = isDone ? 'milestone--done' : late ? 'milestone--late' : isActive ? 'milestone--active' : '';
-                const dotText = isDone ? '✓' : String(ji + 1);
-                const shortTitle = escHtml((jalon.titre || jalon.title || '').split(' ').slice(0,2).join(' '));
+                const isLast = ji === total - 1;
+                const title = escHtml(jalon.titre || jalon.title || 'Jalon');
+                const shortDate = formatDateJalonCourt(jalon.date);
+                const parts = shortDate ? shortDate.split(' ') : [];
+                const monthShort = parts[0] ? parts[0].toUpperCase() : '';
+                const year = parts[1] || '';
+                const monthLabel = escHtml(jalon.month || (jalon.mois ? `MOIS ${jalon.mois}` : `MOIS ${ji + 1}`));
 
-                // Active dot: horizontal fill based on lagging KPI progress
-                let dotStyle = '';
-                if (isActive && !isDone) {
-                    const lagKpi = getJalonKpiByType(jalon, 'lagging');
-                    const lagCurrent = lagKpi ? getKpiCurrentValue(lagKpi) : null;
-                    const lagTarget = lagKpi ? getKpiTargetValue(lagKpi) : null;
-                    const pct = (lagCurrent !== null && lagTarget !== null && lagTarget > 0)
-                        ? Math.max(0, Math.min(100, Math.round((lagCurrent / lagTarget) * 100)))
-                        : 0;
-                    dotStyle = ` style="background:linear-gradient(to right,#EE4408 ${pct}%,#1A1A1C ${pct}%);border:2px solid #EE4408;box-shadow:0 0 0 3px rgba(238,68,8,0.12);color:#FFFDF6;"`;
-                }
+                const sc = {
+                    done:     { dot: '#0A2A53', inner: '#FFFDF6', line: 'rgba(10,42,83,0.55)',    dateColor: '#7aa8d8' },
+                    active:   { dot: '#EE4408', inner: '#FFFDF6', line: 'rgba(238,68,8,0.55)',    dateColor: '#EE4408' },
+                    upcoming: { dot: 'transparent', inner: '#929292', line: 'rgba(255,253,246,0.1)', dateColor: '#929292' },
+                }[st];
 
-                timelineItems += `
-                    <button class="pt-milestone ${milestoneState} ${isSelected ? 'is-selected' : ''}" type="button"
-                        onclick="selectJalon(${i}, '${escHtml(jalon.id || '')}')"
-                        ondragover="jalonDropOver(event)" ondragleave="jalonDropLeave(event)"
-                        ondrop="dropTaskOnJalon(event, ${i}, '${escHtml(jalon.id || '')}')"
-                        title="${escHtml(jalon.titre || jalon.title || '')}"
-                        aria-current="${isSelected ? 'step' : 'false'}">
-                        <div class="pt-dot"${dotStyle}>${dotText}</div>
-                        <div class="pt-m-title">${shortTitle}</div>
-                    </button>`;
+                const dotBorder = st === 'upcoming' ? '1.5px solid rgba(255,253,246,0.2)' : 'none';
+                const dotShadow = st === 'active' ? (isSelected ? '0 0 0 5px rgba(238,68,8,0.18)' : '0 0 0 3px rgba(238,68,8,0.1)') : 'none';
+                const checkSvg = st === 'done' ? `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="${sc.inner}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>` : '';
+
+                railItems += `
+                <div onclick="selectJalon(${i}, '${escHtml(jalon.id || '')}')"
+                    style="display:grid;grid-template-columns:56px 28px 1fr;gap:12px;cursor:pointer;padding-bottom:24px;position:relative;align-items:start;user-select:none">
+                    <div style="padding-top:1px;text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:2px">
+                        <span style="font-size:11px;font-weight:600;color:${sc.dateColor};letter-spacing:0.04em;font-family:ui-monospace,monospace">${year}</span>
+                        <span style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:${st === 'upcoming' ? '#666' : sc.dateColor}">${monthShort}</span>
+                    </div>
+                    <div style="position:relative;width:28px;display:flex;justify-content:center;align-items:flex-start;padding-top:1px">
+                        ${!isLast ? `<div style="position:absolute;top:23px;bottom:-3px;left:50%;width:1.5px;background:${sc.line};transform:translateX(-50%)"></div>` : ''}
+                        <div style="width:22px;height:22px;border-radius:50%;background:${sc.dot};display:flex;align-items:center;justify-content:center;border:${dotBorder};box-shadow:${dotShadow};color:${sc.inner};position:relative;z-index:1;flex-shrink:0">${checkSvg}</div>
+                    </div>
+                    <div style="padding:1px 8px 4px 4px;border-radius:6px;background:${isSelected ? 'rgba(255,253,246,0.04)' : 'transparent'};margin-left:-4px;margin-right:-8px">
+                        <div style="font-size:9.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:#666;margin-bottom:2px">${monthLabel}</div>
+                        <div style="font-size:13px;font-weight:${isSelected ? 600 : 500};color:${st === 'upcoming' ? '#929292' : '#FFFDF6'};line-height:1.3;letter-spacing:-0.005em;margin-bottom:3px">${title}</div>
+                        <div style="font-size:10px;color:#666;font-family:ui-monospace,monospace">Jalon ${ji + 1}/${total}</div>
+                    </div>
+                </div>`;
             });
 
-            const total = jalons.length;
+            // ── DETAIL ───────────────────────────────────────────
+            const detailSt = jalonStatus(selectedJalon, selectedIndex);
             const rawStatus = selectedJalon?.statut || 'pending';
-            const statut = isLate(selectedJalon) ? 'late' : rawStatus;
-            const statusLabel = statusLabels[statut] || 'À venir';
-            const statusChip = statusChips[statut] || 'pt-chip--upcoming';
-            const title = selectedJalon?.titre || selectedJalon?.title || '';
+            const title = escHtml(selectedJalon?.titre || selectedJalon?.title || 'Jalon');
             const date = formatDateJalonLong(selectedJalon?.date);
-            const desc = selectedJalon?.desc || selectedJalon?.description || '';
-            const validationText = selectedJalon?.critere || selectedJalon?.kpi || '';
+            const validationText = escHtml(selectedJalon?.critere || selectedJalon?.kpi || '');
+            const monthLabel = escHtml(selectedJalon?.month || (selectedJalon?.mois ? `MOIS ${selectedJalon.mois}` : `MOIS ${selectedIndex + 1}`));
             const num = selectedIndex + 1;
 
-            const daysLeft = (() => {
-                if (!selectedJalon?.date || rawStatus === 'completed') return null;
-                const t = new Date(selectedJalon.date).getTime();
-                if (Number.isNaN(t)) return null;
-                const now = new Date(); now.setHours(0,0,0,0);
-                return Math.ceil((t - now.getTime()) / 86400000);
-            })();
-            const deadlineStr = date
-                ? rawStatus === 'completed'
-                    ? `Validé : ${escHtml(date)}`
-                    : daysLeft !== null && daysLeft >= 0
-                        ? `Échéance : ${escHtml(date)} — <strong>${daysLeft} jour${daysLeft > 1 ? 's' : ''} restant${daysLeft > 1 ? 's' : ''}</strong>`
-                        : `<span style="color:#e05545">Dépassé : ${escHtml(date)}</span>`
-                : '';
+            const stConf = {
+                done:     { bg: 'rgba(10,42,83,0.25)',   color: '#7aa8d8', border: 'rgba(10,42,83,0.55)',    label: 'Terminé',  dot: '#7aa8d8' },
+                active:   { bg: 'rgba(238,68,8,0.1)',     color: '#EE4408', border: 'rgba(238,68,8,0.35)',   label: 'En cours', dot: '#EE4408' },
+                upcoming: { bg: 'rgba(255,253,246,0.04)', color: '#929292', border: 'rgba(255,253,246,0.1)', label: 'À venir',  dot: '#929292' },
+            }[detailSt] || {};
 
-            const kpiHtml = renderJalonKpiCards(selectedJalon, i, statut);
+            // Task progress
+            const tasks = selectedJalon?.tasks || [];
+            const doneTasks = tasks.filter(t => t.done || t.statut === 'completed').length;
+            const totalTasks = tasks.length;
+            const taskPct = totalTasks > 0 ? Math.round((doneTasks / totalTasks) * 100) : 0;
+            const taskBarColor = detailSt === 'done' ? '#0A2A53' : '#404025';
+            const taskBlock = totalTasks > 0 ? `
+                <div style="font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:#929292;margin-bottom:10px">Avancement des tâches</div>
+                <div style="background:rgba(255,253,246,0.025);border:1px solid rgba(255,253,246,0.06);border-radius:10px;padding:14px 18px;margin-bottom:24px;display:flex;align-items:center;gap:18px">
+                    <div>
+                        <div style="font-size:22px;font-weight:700;color:#FFFDF6;letter-spacing:-0.02em;min-width:48px">${doneTasks}<span style="font-size:13px;font-weight:400;color:#929292">/${totalTasks}</span></div>
+                        <div style="font-size:11px;color:#929292;margin-top:2px">tâches</div>
+                    </div>
+                    <div style="flex:1">
+                        <div style="height:5px;background:rgba(255,253,246,0.06);border-radius:3px;overflow:hidden"><div style="height:100%;width:${taskPct}%;background:${taskBarColor};border-radius:3px"></div></div>
+                        <div style="font-size:11.5px;color:#929292;margin-top:5px">${taskPct}% complétées</div>
+                    </div>
+                </div>` : '';
 
-            const actionBtn = rawStatus === 'completed'
-                ? `<button class="pt-btn-validate" onclick="reactivateJalon(${i}, '${escHtml(selectedJalon?.id || '')}')">Réactiver</button>`
-                : `<button class="pt-btn-validate" onclick="completeJalon(${i}, '${escHtml(selectedJalon?.id || '')}')">Valider</button>`;
+            const validateLabel = rawStatus === 'completed' ? 'Réactiver' : (detailSt === 'done' ? 'Jalon validé' : 'Valider ce jalon');
+            const validateOnclick = rawStatus === 'completed'
+                ? `reactivateJalon(${i}, '${escHtml(selectedJalon?.id || '')}')`
+                : `completeJalon(${i}, '${escHtml(selectedJalon?.id || '')}')`;
+            const validateStyle = detailSt === 'done'
+                ? 'background:rgba(10,42,83,0.5);color:#7aa8d8;border:1px solid rgba(10,42,83,0.7)'
+                : 'background:#0A2A53;color:#FFFDF6;border:none';
+
+            const kpiHtml = renderJalonKpiCardsV2(selectedJalon, i, detailSt);
 
             return `
-            <div class="pt-shell">
-                <div class="pt-shell-label">Jalons</div>
+            <div style="max-width:1240px;margin:0 auto">
+                <div style="display:grid;grid-template-columns:280px 1fr;gap:16px;align-items:start">
 
-                <div class="pt-timeline" aria-label="Timeline des jalons">
-                    ${timelineItems}
-                </div>
+                    <!-- RAIL -->
+                    <div style="background:#111112;border:1px solid rgba(255,253,246,0.08);border-radius:10px;padding:24px 20px 16px;position:sticky;top:84px">
+                        <div style="font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:#929292;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid rgba(255,253,246,0.07);display:flex;justify-content:space-between;align-items:center">
+                            <span>Timeline</span>
+                            <span style="color:#FFFDF6;font-weight:600;font-family:ui-monospace,monospace">${total}</span>
+                        </div>
+                        ${railItems}
+                        <a href="#" onclick="openJalonsForProject(${i});return false" style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#929292;text-decoration:none;padding:6px 4px;border-radius:6px">
+                            + Ajouter un jalon
+                        </a>
+                    </div>
 
-                <div class="pt-card">
-                    <header class="pt-header">
-                        <div class="pt-header-top-row">
-                            <div class="pt-header-main">
-                                <div class="pt-section-key">Mois ${num} · Jalon ${num} sur ${total}</div>
-                                <div class="pt-title">${title ? escHtml(title) : 'Jalon sans titre'}</div>
-                                ${deadlineStr ? `<div class="pt-deadline">${deadlineStr}</div>` : ''}
-                            </div>
-                            <div class="pt-header-actions">
-                                <div class="pt-chip ${statusChip}"><span class="pt-chip-dot" aria-hidden="true"></span>${statusLabel}</div>
-                                ${actionBtn}
-                                <a href="#" onclick="openJalonsForProject(${i}); return false;" class="pt-btn-edit-jalons-icon" style="margin-left:auto;" title="Modifier les jalons">
-                                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 1.5L12.5 4.5L4.5 12.5H1.5V9.5L9.5 1.5Z"/></svg>
-                                </a>
-                            </div>
+                    <!-- DETAIL CARD -->
+                    <div style="background:#111112;border:1px solid rgba(255,253,246,0.08);border-radius:10px;padding:28px 32px 24px">
+                        <div style="display:flex;align-items:center;gap:10px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:#929292;margin-bottom:14px;flex-wrap:wrap">
+                            <span>Jalon ${num}/${total}</span>
+                            <span style="display:inline-flex;align-items:center;justify-content:center;padding:3px 9px;border-radius:4px;background:rgba(255,253,246,0.05);border:1px solid rgba(255,253,246,0.1);color:#FFFDF6;font-size:10.5px;font-family:ui-monospace,monospace;letter-spacing:0.03em">${monthLabel}</span>
+                            <span style="margin-left:auto;display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:9999px;background:${stConf.bg};color:${stConf.color};border:1px solid ${stConf.border};font-size:11.5px;font-weight:500;text-transform:none;letter-spacing:0">
+                                <span style="width:6px;height:6px;border-radius:50%;background:${stConf.dot};display:inline-block;flex-shrink:0"></span>${stConf.label}
+                            </span>
                         </div>
 
-                        <div class="pt-info-grid">
-                            <div class="pt-info-col">
-                                <div class="pt-section-key">Objectif</div>
-                                <div class="pt-objective-text">${desc ? escHtml(desc) : '<span class="pt-empty-text">—</span>'}</div>
-                            </div>
-                            <div class="pt-info-col">
-                                <div class="pt-section-key">Critère</div>
-                                <div class="pt-critere-highlight">${validationText ? escHtml(validationText) : '<span class="pt-empty-text">—</span>'}</div>
-                            </div>
-                        </div>
-                    </header>
+                        <h2 style="font-family:inherit;font-size:26px;font-weight:700;color:#FFFDF6;letter-spacing:-0.02em;line-height:1.15;margin-bottom:8px">${title}</h2>
+                        <div style="font-size:13.5px;color:#929292;margin-bottom:24px">Échéance · ${date || '—'}</div>
 
-                    ${kpiHtml}
+                        <div style="height:1px;background:rgba(255,253,246,0.07);margin:0 0 22px"></div>
+
+                        <div style="font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:#929292;margin-bottom:10px">Critère de validation</div>
+                        <p style="font-size:14.5px;color:#FFFDF6;line-height:1.55;margin-bottom:28px;font-weight:400;max-width:640px">${validationText || '<span style="color:#929292">—</span>'}</p>
+
+                        <div style="font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:#929292;margin-bottom:10px">KPI de jalon</div>
+                        ${kpiHtml}
+
+                        ${taskBlock}
+
+                        <div style="display:flex;gap:10px;align-items:center;padding-top:18px;border-top:1px solid rgba(255,253,246,0.07)">
+                            <button onclick="${validateOnclick}" style="${validateStyle};display:inline-flex;align-items:center;gap:7px;padding:10px 18px;border-radius:8px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit">${validateLabel}</button>
+                            <a href="#" onclick="openJalonsForProject(${i});return false" style="display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border-radius:8px;background:transparent;color:#929292;border:1px solid rgba(255,253,246,0.1);font-size:13px;font-weight:500;text-decoration:none">
+                                <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                Modifier
+                            </a>
+                            <button onclick="openJalonKpiModal(${i}, '${escHtml(selectedJalon?.id||'')}', 'lagging')" style="margin-left:auto;display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border-radius:8px;background:transparent;color:#929292;border:1px solid rgba(255,253,246,0.1);font-size:13px;font-weight:500;cursor:pointer;font-family:inherit">
+                                <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                                Ajouter un KPI
+                            </button>
+                        </div>
+                    </div>
+
                 </div>
             </div>`;
         }
@@ -2781,6 +2840,169 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                 </div>`;
         }
 
+        // ── KPI CARDS V2 — design prototype ──────────────────────
+        function buildSparklineSvg(history, accent) {
+            if (!Array.isArray(history) || history.length < 2) return '';
+            const sW = 96, sH = 32;
+            const max = Math.max(...history, 1);
+            const min = Math.min(...history, 0);
+            const range = (max - min) || 1;
+            const xs = history.map((_, k) => (k / (history.length - 1)) * sW);
+            const ys = history.map(v => sH - ((v - min) / range) * (sH - 6) - 3);
+            const path = xs.map((x, k) => `${k === 0 ? 'M' : 'L'}${x.toFixed(1)},${ys[k].toFixed(1)}`).join(' ');
+            const area = `${path} L${sW},${sH} L0,${sH} Z`;
+            const lx = xs[xs.length - 1].toFixed(1);
+            const ly = ys[ys.length - 1].toFixed(1);
+            const gid = 'spk' + accent.replace('#','') + history.length;
+            return `<svg width="${sW}" height="${sH}" viewBox="0 0 ${sW} ${sH}" style="display:block">
+                <defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${accent}" stop-opacity="0.22"/><stop offset="100%" stop-color="${accent}" stop-opacity="0"/></linearGradient></defs>
+                <path d="${area}" fill="url(#${gid})"/>
+                <path d="${path}" fill="none" stroke="${accent}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="${lx}" cy="${ly}" r="3" fill="#0F0F11"/>
+                <circle cx="${lx}" cy="${ly}" r="2" fill="${accent}"/>
+            </svg>`;
+        }
+
+        function renderJalonKpiCardV2(kpi, jalon, i, type) {
+            const isLeading = type === 'leading';
+            const accent = isLeading ? '#5BAEC9' : '#EE4408';
+            const accentSoft = isLeading ? 'rgba(91,174,201,0.12)' : 'rgba(238,68,8,0.12)';
+            const accentBorder = isLeading ? 'rgba(91,174,201,0.32)' : 'rgba(238,68,8,0.32)';
+            const typeLabel = isLeading ? "Indicateur d'avancée" : "Indicateur de résultat";
+            const typeIcon = isLeading
+                ? `<svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2 9L5 6L7 8L10 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 4H10V7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+                : `<svg width="11" height="11" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.5"/><circle cx="6" cy="6" r="1.8" fill="currentColor"/></svg>`;
+
+            if (!kpi || !(kpi.titre || kpi.label || kpi.name)) {
+                return `<div style="display:flex;flex-direction:column;gap:14px;padding:24px;border-radius:12px;border:1px dashed rgba(255,253,246,0.12);background:rgba(255,253,246,0.02)">
+                    <div style="font-size:13px;color:rgba(255,253,246,0.74);line-height:1.5">Aucun <strong style="color:#FFFDF6;font-weight:600">${escHtml(typeLabel)}</strong> défini. Mesure ${isLeading ? 'ce que tu fais' : 'ce que ça donne'}.</div>
+                    <button onclick="openJalonKpiModal(${i}, '${escHtml(jalon?.id||'')}', '${type}')" style="display:inline-flex;align-items:center;gap:9px;padding:12px 14px;border-radius:9px;border:1px solid ${accentBorder};background:${accentSoft};color:${accent};font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;text-align:left">
+                        + ${escHtml(typeLabel)}
+                    </button>
+                </div>`;
+            }
+
+            const label = escHtml(kpi.titre || kpi.label || kpi.name || '');
+            const unit = kpi.unite || kpi.unit || '';
+            const current = getKpiCurrentValue(kpi);
+            const target = getKpiTargetValue(kpi);
+            const currentStr = Number.isFinite(current) ? formatMetricValue(current) : '0';
+            const modeLabel = kpi.mode === 'current' ? 'Valeur actuelle' : 'Cumulatif';
+            const modeGlyph = kpi.mode === 'current' ? '→' : 'Σ';
+            const frequency = kpi.frequency || kpi.frequence || 'Hebdomadaire';
+            const latestMeasure = getLatestKpiMeasure(kpi);
+            const lastUpdate = getRelativeDayLabel(latestMeasure?.date || '');
+            const sparkHtml = buildSparklineSvg(kpi.history, accent);
+            const hasTarget = typeof target === 'number' && target > 0;
+            const pct = hasTarget ? Math.min(100, Math.round((current / target) * 100)) : null;
+
+            const jid = escHtml(jalon?.id||'');
+            const progressHtmlFull = hasTarget
+                ? `<div style="display:flex;align-items:center;gap:10px">
+                    <div style="flex:1;height:2.5px;background:rgba(255,253,246,0.08);border-radius:2px;overflow:hidden"><div style="height:100%;width:${Math.min(pct,100)}%;background:${accent};border-radius:2px"></div></div>
+                    <span style="font-size:11.5px;font-variant-numeric:tabular-nums;color:rgba(255,253,246,0.74);font-family:ui-monospace,monospace;white-space:nowrap">${pct}%</span>
+                    <span data-kpi-target-key="${i}-${jid}-${type}" onclick="startInlineKpiTargetEdit(${i},'${jid}','${type}')" title="Modifier la cible" style="font-size:11px;color:#666;font-family:ui-monospace,monospace;cursor:pointer">/ ${escHtml(String(target))}</span>
+                   </div>`
+                : `<button onclick="startInlineKpiTargetEdit(${i},'${jid}','${type}')" style="display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:6px;border:1px dashed rgba(255,253,246,0.14);color:rgba(255,253,246,0.5);font-size:12px;font-family:inherit;background:transparent;cursor:pointer;width:100%;text-align:left">
+                    <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                    Définir une cible
+                   </button>`;
+
+            return `
+            <div style="background:#0F0F11;border:1px solid rgba(255,253,246,0.08);border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;gap:18px;position:relative;overflow:visible">
+                <div style="position:absolute;top:0;left:0;height:2px;width:32px;background:${accent};border-top-left-radius:12px"></div>
+                <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;position:relative">
+                    <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 9px;border-radius:9999px;background:${accentSoft};border:1px solid ${accentBorder};color:${accent};font-size:10.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;white-space:nowrap">
+                        <span style="display:inline-flex;width:11px;height:11px;align-items:center;justify-content:center">${typeIcon}</span>${escHtml(typeLabel)}
+                    </span>
+                    <button onclick="toggleKpiActionMenu(event,${i},'${jid}','${type}')" style="width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;border:none;background:transparent;color:rgba(255,253,246,0.42);border-radius:6px;cursor:pointer" title="Actions">
+                        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+                    </button>
+                </div>
+                <div data-kpi-title-key="${i}-${jid}-${type}" onclick="startInlineKpiTitleEdit(${i},'${jid}','${type}')" title="Cliquer pour modifier" style="font-size:14px;font-weight:500;color:rgba(255,253,246,0.74);letter-spacing:-0.005em;line-height:1.3;cursor:text;padding:4px 6px;border-radius:5px;margin:-4px -6px" onmouseenter="this.style.background='rgba(255,253,246,0.04)'" onmouseleave="this.style.background='transparent'">${label}</div>
+                <div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;align-items:flex-end">
+                    <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+                        <div style="display:flex;align-items:baseline;gap:8px;font-size:48px;font-weight:700;color:#FFFDF6;letter-spacing:-0.04em;line-height:0.95;font-variant-numeric:tabular-nums">
+                            <span>${escHtml(currentStr)}</span>
+                            ${unit ? `<span style="font-size:14px;font-weight:500;color:#929292;letter-spacing:-0.005em">${escHtml(unit)}</span>` : ''}
+                        </div>
+                        <div onclick="cycleKpiMode(${i},'${jid}','${type}')" title="Changer le mode" style="display:inline-flex;align-items:center;gap:6px;font-size:11px;color:rgba(255,253,246,0.42);cursor:pointer;padding:2px 6px;border-radius:4px;margin:-2px -6px" onmouseenter="this.style.background='rgba(255,253,246,0.05)'" onmouseleave="this.style.background='transparent'">
+                            <span style="font-family:ui-monospace,monospace;font-size:11.5px;color:rgba(255,253,246,0.5);font-weight:600">${modeGlyph}</span>
+                            <span>${escHtml(modeLabel)}</span>
+                        </div>
+                    </div>
+                    ${sparkHtml ? `<div onclick="openKpiHistorySheet(${i},'${jid}','${type}')" title="Voir l'historique" style="padding:4px;margin:-4px;border-radius:6px;cursor:pointer" onmouseenter="this.style.background='rgba(255,253,246,0.04)'" onmouseleave="this.style.background='transparent'">${sparkHtml}</div>` : ''}
+                </div>
+                ${progressHtmlFull}
+                <div style="display:flex;align-items:center;gap:12px;padding-top:14px;border-top:1px solid rgba(255,253,246,0.06)">
+                    <div style="font-size:11.5px;color:rgba(255,253,246,0.45);display:flex;align-items:center;gap:8px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+                        <button onclick="cycleKpiFrequency(${i},'${jid}','${type}')" title="Changer la fréquence" style="background:none;border:none;color:inherit;font-family:inherit;font-size:inherit;cursor:pointer;padding:0">${escHtml(frequency)}</button>
+                        <span style="width:2.5px;height:2.5px;border-radius:50%;background:rgba(255,253,246,0.25);flex-shrink:0;display:inline-block"></span>
+                        <button onclick="openKpiHistorySheet(${i},'${jid}','${type}')" title="Voir l'historique" style="background:none;border:none;color:inherit;font-family:inherit;font-size:inherit;cursor:pointer;padding:0">MAJ ${escHtml(lastUpdate)}</button>
+                    </div>
+                    <button onclick="openJalonKpiMeasureModal(${i}, '${jid}', '${type}')" style="display:inline-flex;align-items:center;gap:5px;padding:7px 11px;border-radius:7px;background:${accent};border:none;color:#FFFDF6;font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;white-space:nowrap">
+                        <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        Mesure
+                    </button>
+                </div>
+            </div>`;
+        }
+
+        function renderJalonKpiCardsV2(jalon, i, status) {
+            if (!jalon) return '';
+            const leading = getJalonKpiByType(jalon, 'leading');
+            const lagging = getJalonKpiByType(jalon, 'lagging');
+            const hasLeading = leading && (leading.titre || leading.label || leading.name);
+            const hasLagging = lagging && (lagging.titre || lagging.label || lagging.name);
+            const hasAny = hasLeading || hasLagging;
+            const jid = escHtml(jalon?.id || '');
+
+            // No KPIs → full empty state
+            if (!hasAny) {
+                return `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-bottom:28px">
+                    <div style="grid-column:1/-1;display:flex;flex-direction:column;align-items:flex-start;gap:14px;padding:24px;border-radius:12px;border:1px dashed rgba(255,253,246,0.12);background:rgba(255,253,246,0.02)">
+                        <div style="font-size:13px;color:rgba(255,253,246,0.74);line-height:1.5">Aucun KPI pour <strong style="color:#FFFDF6;font-weight:600">${escHtml(jalon.titre||jalon.title||'ce jalon')}</strong>. Crée jusqu'à <strong style="color:#FFFDF6">2 KPI</strong> à partir du critère de validation.</div>
+                        <div style="display:flex;gap:10px;flex-wrap:wrap;width:100%">
+                            <button onclick="openJalonKpiModal(${i},'${jid}','leading')" style="flex:1 1 200px;display:inline-flex;align-items:center;gap:9px;padding:12px 14px;border-radius:9px;border:1px solid rgba(91,174,201,0.36);background:rgba(91,174,201,0.06);color:#5BAEC9;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;text-align:left">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                                <span>Indicateur d'avancée<span style="display:block;margin-top:2px;font-size:11.5px;font-weight:500;color:rgba(255,253,246,0.55)">Ce que tu fais qui crée la traction</span></span>
+                            </button>
+                            <button onclick="openJalonKpiModal(${i},'${jid}','lagging')" style="flex:1 1 200px;display:inline-flex;align-items:center;gap:9px;padding:12px 14px;border-radius:9px;border:1px solid rgba(238,68,8,0.36);background:rgba(238,68,8,0.06);color:#EE4408;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;text-align:left">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                                <span>Indicateur de résultat<span style="display:block;margin-top:2px;font-size:11.5px;font-weight:500;color:rgba(255,253,246,0.55)">Le résultat que tu vises</span></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>`;
+            }
+
+            // Exactly 1 KPI → show it + dashed "add 2nd" button
+            if (hasLeading && !hasLagging) {
+                return `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-bottom:28px">
+                    ${renderJalonKpiCardV2(leading, jalon, i, 'leading')}
+                    <button onclick="openJalonKpiModal(${i},'${jid}','lagging')" style="display:flex;align-items:center;justify-content:center;gap:8px;min-height:120px;padding:16px;border-radius:12px;border:1px dashed rgba(255,253,246,0.14);background:transparent;color:rgba(255,253,246,0.5);font-size:13px;font-weight:500;font-family:inherit;cursor:pointer" onmouseenter="this.style.borderColor='rgba(255,253,246,0.32)';this.style.color='#FFFDF6'" onmouseleave="this.style.borderColor='rgba(255,253,246,0.14)';this.style.color='rgba(255,253,246,0.5)'">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        Ajouter un indicateur de résultat
+                    </button>
+                </div>`;
+            }
+            if (hasLagging && !hasLeading) {
+                return `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-bottom:28px">
+                    ${renderJalonKpiCardV2(lagging, jalon, i, 'lagging')}
+                    <button onclick="openJalonKpiModal(${i},'${jid}','leading')" style="display:flex;align-items:center;justify-content:center;gap:8px;min-height:120px;padding:16px;border-radius:12px;border:1px dashed rgba(255,253,246,0.14);background:transparent;color:rgba(255,253,246,0.5);font-size:13px;font-weight:500;font-family:inherit;cursor:pointer" onmouseenter="this.style.borderColor='rgba(255,253,246,0.32)';this.style.color='#FFFDF6'" onmouseleave="this.style.borderColor='rgba(255,253,246,0.14)';this.style.color='rgba(255,253,246,0.5)'">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        Ajouter un indicateur d'avancée
+                    </button>
+                </div>`;
+            }
+
+            // Both KPIs exist → show both
+            return `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-bottom:28px">
+                ${renderJalonKpiCardV2(lagging, jalon, i, 'lagging')}
+                ${renderJalonKpiCardV2(leading, jalon, i, 'leading')}
+            </div>`;
+        }
+
         // ──────────────────────────────────────────────────────────
         // JALON TASK BLOCK — bloc unifié jalon actif + tâches
         // ──────────────────────────────────────────────────────────
@@ -2842,6 +3064,230 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             if (currentDashboardView === 'pilotage') {
                 setTimeout(() => initKPIChart(i, allObjectifs[i]), 0);
             }
+        }
+
+        // ── KPI V2 DATA HELPERS ───────────────────────────────────
+        function updateJalonKpiProp(i, jalonId, kpiType, updates) {
+            const obj = allObjectifs[i];
+            if (!obj?.jalons) return;
+            const jalon = obj.jalons.find(j => (j.id||'') === jalonId);
+            if (!jalon) return;
+            if (!Array.isArray(jalon.kpis)) jalon.kpis = [];
+            const kpi = jalon.kpis.find(k => (k?.type||'') === kpiType);
+            if (!kpi) return;
+            Object.assign(kpi, updates);
+            saveAllObjectifs();
+            renderDashboard();
+            if (currentDashboardView === 'jalons') jalonPopupState[i] = jalonId;
+        }
+
+        function deleteJalonKpiByType(i, jalonId, kpiType) {
+            const obj = allObjectifs[i];
+            if (!obj?.jalons) return;
+            const jalon = obj.jalons.find(j => (j.id||'') === jalonId);
+            if (!jalon || !Array.isArray(jalon.kpis)) return;
+            jalon.kpis = jalon.kpis.filter(k => (k?.type||'') !== kpiType);
+            saveAllObjectifs();
+            renderDashboard();
+        }
+
+        function cycleKpiMode(i, jalonId, kpiType) {
+            const obj = allObjectifs[i];
+            if (!obj?.jalons) return;
+            const jalon = obj.jalons.find(j => (j.id||'') === jalonId);
+            const kpi = (jalon?.kpis||[]).find(k => (k?.type||'') === kpiType);
+            if (!kpi) return;
+            const next = (kpi.mode === 'current') ? 'cumulative' : 'current';
+            updateJalonKpiProp(i, jalonId, kpiType, {mode: next});
+        }
+
+        function cycleKpiFrequency(i, jalonId, kpiType) {
+            const obj = allObjectifs[i];
+            if (!obj?.jalons) return;
+            const jalon = obj.jalons.find(j => (j.id||'') === jalonId);
+            const kpi = (jalon?.kpis||[]).find(k => (k?.type||'') === kpiType);
+            if (!kpi) return;
+            const next = (kpi.frequency === 'Mensuel' || kpi.frequence === 'Mensuel') ? 'Hebdomadaire' : 'Mensuel';
+            updateJalonKpiProp(i, jalonId, kpiType, {frequency: next, frequence: next});
+        }
+
+        // ── KPI ACTION MENU ───────────────────────────────────────
+        let _kpiMenuData = null;
+
+        function toggleKpiActionMenu(event, i, jalonId, kpiType) {
+            event.stopPropagation();
+            const panel = document.getElementById('kpiActionMenuPanel');
+            if (_kpiMenuData && _kpiMenuData.i === i && _kpiMenuData.jalonId === jalonId && _kpiMenuData.type === kpiType) {
+                closeKpiActionMenu(); return;
+            }
+            _kpiMenuData = { i, jalonId, type: kpiType };
+            const obj = allObjectifs[i];
+            const jalon = (obj?.jalons||[]).find(j=>(j.id||'')===jalonId);
+            const kpi = (jalon?.kpis||[]).find(k=>(k?.type||'')===kpiType);
+            const hasTarget = kpi && (typeof kpi.cible === 'number' && kpi.cible > 0 || typeof kpi.target === 'number' && kpi.target > 0);
+            const items = [
+                {id:'edit-title', icon:'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z', label:'Modifier le titre'},
+                {id:'edit-target', icon:'M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 0v10m0 0l-3-3m3 3l3-3', label: hasTarget ? 'Modifier la cible' : 'Définir une cible'},
+                {id:'edit-frequency', icon:'M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15', label:'Modifier la fréquence'},
+                {id:'edit-mode', icon:'M4 6h16M4 12h8m-8 6h16', label:'Mode de mesure'},
+                {id:'history', icon:'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2', label:"Voir l'historique"},
+                {id:'sep'},
+                {id:'delete', icon:'M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16', label:'Supprimer ce KPI', danger:true},
+            ];
+            panel.innerHTML = items.map(it => {
+                if (it.id === 'sep') return `<div style="height:1px;background:rgba(255,253,246,0.08);margin:4px 0"></div>`;
+                return `<button onmousedown="kpiMenuAction('${it.id}');event.stopPropagation()" onmouseenter="this.style.background='rgba(255,253,246,0.06)'" onmouseleave="this.style.background='transparent'" style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:6px;background:transparent;border:none;color:${it.danger?'#ff6b56':'#FFFDF6'};font-size:13px;font-weight:500;font-family:inherit;cursor:pointer;text-align:left;width:100%">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="${it.icon}"/></svg>
+                    ${escHtml(it.label)}
+                </button>`;
+            }).join('');
+            const btn = event.currentTarget;
+            const rect = btn.getBoundingClientRect();
+            panel.style.display = 'block';
+            panel.style.top = (rect.bottom + 6) + 'px';
+            const panelW = 220;
+            let left = rect.right - panelW;
+            if (left < 8) left = 8;
+            panel.style.left = left + 'px';
+            panel.style.right = 'auto';
+            setTimeout(() => document.addEventListener('click', closeKpiActionMenu, {once:true}), 0);
+        }
+
+        function closeKpiActionMenu() {
+            document.getElementById('kpiActionMenuPanel').style.display = 'none';
+            _kpiMenuData = null;
+        }
+
+        function kpiMenuAction(action) {
+            const saved = _kpiMenuData;
+            closeKpiActionMenu();
+            if (!saved) return;
+            const {i, jalonId, type} = saved;
+            if (action === 'edit-title') startInlineKpiTitleEdit(i, jalonId, type);
+            else if (action === 'edit-target') startInlineKpiTargetEdit(i, jalonId, type);
+            else if (action === 'edit-frequency') cycleKpiFrequency(i, jalonId, type);
+            else if (action === 'edit-mode') cycleKpiMode(i, jalonId, type);
+            else if (action === 'history') openKpiHistorySheet(i, jalonId, type);
+            else if (action === 'delete') deleteJalonKpiByType(i, jalonId, type);
+        }
+
+        // ── INLINE KPI EDITING ────────────────────────────────────
+        function startInlineKpiTitleEdit(i, jalonId, type) {
+            const sel = `[data-kpi-title-key="${i}-${jalonId}-${type}"]`;
+            const el = document.querySelector(sel);
+            if (!el) { openJalonKpiModal(i, jalonId, type); return; }
+            const current = el.textContent;
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = current;
+            input.style.cssText = 'font-size:14px;font-weight:500;color:#FFFDF6;letter-spacing:-0.005em;line-height:1.3;width:100%;background:rgba(255,253,246,0.04);border:1px solid rgba(91,174,201,0.32);border-radius:5px;padding:4px 6px;font-family:inherit;outline:none;box-sizing:border-box';
+            el.replaceWith(input);
+            input.focus();
+            const commit = () => {
+                const val = input.value.trim();
+                if (val && val !== current) updateJalonKpiProp(i, jalonId, type, {titre: val, label: val});
+                else renderDashboard();
+            };
+            input.addEventListener('blur', commit);
+            input.addEventListener('keydown', e => { if (e.key==='Enter') input.blur(); if (e.key==='Escape') { input.value=current; input.blur(); } });
+        }
+
+        function startInlineKpiTargetEdit(i, jalonId, type) {
+            const sel = `[data-kpi-target-key="${i}-${jalonId}-${type}"]`;
+            const el = document.querySelector(sel);
+            if (!el) { openJalonKpiModal(i, jalonId, type); return; }
+            const current = el.textContent;
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.value = current.replace(/[^0-9.]/g,'');
+            input.style.cssText = 'font-size:11px;color:#FFFDF6;width:60px;background:rgba(255,253,246,0.04);border:1px solid rgba(91,174,201,0.32);border-radius:4px;padding:2px 5px;font-family:ui-monospace,monospace;outline:none;text-align:center';
+            el.replaceWith(input);
+            input.focus(); input.select();
+            const commit = () => {
+                const val = parseFloat(input.value);
+                if (!isNaN(val) && val > 0) updateJalonKpiProp(i, jalonId, type, {cible: val, target: val});
+                else renderDashboard();
+            };
+            input.addEventListener('blur', commit);
+            input.addEventListener('keydown', e => { if (e.key==='Enter') input.blur(); if (e.key==='Escape') renderDashboard(); });
+        }
+
+        // ── KPI HISTORY SHEET ─────────────────────────────────────
+        function openKpiHistorySheet(i, jalonId, kpiType) {
+            const obj = allObjectifs[i];
+            const jalon = (obj?.jalons||[]).find(j=>(j.id||'')===jalonId);
+            const kpi = (jalon?.kpis||[]).find(k=>(k?.type||'')===kpiType);
+            if (!kpi) return;
+            const accent = kpiType === 'leading' ? '#5BAEC9' : '#EE4408';
+            const label = kpi.titre || kpi.label || kpi.name || '—';
+            const measures = Array.isArray(kpi.measures) ? [...kpi.measures].reverse() : [];
+            const history = kpi.history || [];
+            const allEntries = measures.length > 0 ? measures : history.map((v,idx) => {
+                const d = new Date(); const step = (kpi.frequency==='Mensuel'||kpi.frequence==='Mensuel') ? 30 : 7;
+                d.setDate(d.getDate() - idx * step);
+                return {valeur: v, value: v, date: d.toISOString()};
+            });
+            const head = document.getElementById('kpiHistorySheetHead');
+            head.innerHTML = `
+                <div style="flex:1;min-width:0">
+                    <div style="font-size:10.5px;font-weight:700;letter-spacing:0.1em;color:${accent};text-transform:uppercase;margin-bottom:6px">Historique des mesures</div>
+                    <div style="font-size:18px;font-weight:700;color:#FFFDF6;letter-spacing:-0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(label)}</div>
+                </div>
+                <button onclick="closeKpiHistorySheet()" style="width:30px;height:30px;border-radius:6px;border:none;background:transparent;color:#929292;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>`;
+            const fmt = (d) => { try { return new Date(d).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'}); } catch{return d;} };
+            const body = document.getElementById('kpiHistorySheetBody');
+            if (allEntries.length === 0) {
+                body.innerHTML = `<div style="padding:40px 28px;font-size:13.5px;color:#929292;text-align:center">Aucune mesure enregistrée.</div>`;
+            } else {
+                body.innerHTML = allEntries.map((m,idx) => {
+                    const val = m.valeur ?? m.value ?? 0;
+                    const prev = allEntries[idx+1];
+                    const prevVal = prev ? (prev.valeur ?? prev.value ?? 0) : null;
+                    const delta = prevVal !== null ? val - prevVal : null;
+                    const deltaStr = delta === null ? '—' : (delta > 0 ? `+${delta}` : `${delta}`);
+                    return `<div style="display:grid;grid-template-columns:1fr auto auto;gap:16px;align-items:center;padding:14px 28px;border-bottom:1px solid rgba(255,253,246,0.05)">
+                        <div>
+                            <div style="font-size:13px;color:#FFFDF6">${fmt(m.date)}</div>
+                            <div style="font-size:11.5px;color:#929292;font-family:ui-monospace,monospace">${deltaStr} vs précédent</div>
+                        </div>
+                        <div style="font-size:18px;font-weight:700;color:#FFFDF6;font-variant-numeric:tabular-nums;letter-spacing:-0.01em">${val}<span style="font-size:11px;color:#929292;font-weight:400;margin-left:4px">${escHtml(kpi.unite||kpi.unit||'')}</span></div>
+                        <button onclick="deleteKpiHistoryEntry(${i},'${escHtml(jalonId)}','${kpiType}',${idx})" style="width:26px;height:26px;border-radius:6px;border:none;background:transparent;color:rgba(255,253,246,0.3);cursor:pointer;display:flex;align-items:center;justify-content:center">
+                            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6M9 6V4h6v2"/></svg>
+                        </button>
+                    </div>`;
+                }).join('');
+            }
+            const backdrop = document.getElementById('kpiHistoryBackdrop');
+            const sheet = document.getElementById('kpiHistorySheet');
+            backdrop.style.display = 'block';
+            sheet.style.display = 'flex';
+            sheet.style.flexDirection = 'column';
+            setTimeout(() => { sheet.style.transform = 'translateX(0)'; }, 10);
+        }
+
+        function closeKpiHistorySheet() {
+            const sheet = document.getElementById('kpiHistorySheet');
+            const backdrop = document.getElementById('kpiHistoryBackdrop');
+            sheet.style.transform = 'translateX(100%)';
+            setTimeout(() => { sheet.style.display = 'none'; backdrop.style.display = 'none'; }, 250);
+        }
+
+        function deleteKpiHistoryEntry(i, jalonId, kpiType, reversedIdx) {
+            const obj = allObjectifs[i];
+            const jalon = (obj?.jalons||[]).find(j=>(j.id||'')===jalonId);
+            const kpi = (jalon?.kpis||[]).find(k=>(k?.type||'')===kpiType);
+            if (!kpi) return;
+            if (Array.isArray(kpi.measures) && kpi.measures.length > 0) {
+                const fwdIdx = kpi.measures.length - 1 - reversedIdx;
+                kpi.measures.splice(fwdIdx, 1);
+            } else if (Array.isArray(kpi.history)) {
+                const fwdIdx = kpi.history.length - 1 - reversedIdx;
+                kpi.history.splice(fwdIdx, 1);
+            }
+            saveAllObjectifs();
+            openKpiHistorySheet(i, jalonId, kpiType);
         }
 
         function getFilteredTasksForView(obj, i) {
@@ -3833,8 +4279,74 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
         // ──────────────────────────────────────────────────────────
         // INIT
         // ──────────────────────────────────────────────────────────
+        // ── TAB DRAG-AND-DROP REORDER ─────────────────────────────
+        const TAB_ORDER_KEY = 'carryit-tab-order';
+        let _tabDragSrc = null;
+
+        function initTabDrag() {
+            const container = document.getElementById('dbMainTabs');
+            if (!container) return;
+
+            // Restore saved order
+            const saved = localStorage.getItem(TAB_ORDER_KEY);
+            if (saved) {
+                try {
+                    const order = JSON.parse(saved);
+                    order.forEach(view => {
+                        const tab = container.querySelector(`[data-view="${view}"]`);
+                        if (tab) container.appendChild(tab);
+                    });
+                } catch(_) {}
+            }
+
+            container.addEventListener('dragstart', e => {
+                const tab = e.target.closest('.db-main-tab');
+                if (!tab) return;
+                _tabDragSrc = tab;
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/plain', tab.dataset.view);
+                requestAnimationFrame(() => tab.style.opacity = '0.4');
+            });
+
+            container.addEventListener('dragend', e => {
+                const tab = e.target.closest('.db-main-tab');
+                if (tab) tab.style.opacity = '';
+                container.querySelectorAll('.db-main-tab').forEach(t => t.classList.remove('drag-over'));
+                _tabDragSrc = null;
+            });
+
+            container.addEventListener('dragover', e => {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+                const target = e.target.closest('.db-main-tab');
+                if (!target || target === _tabDragSrc) return;
+                container.querySelectorAll('.db-main-tab').forEach(t => t.classList.remove('drag-over'));
+                target.classList.add('drag-over');
+                // Reorder in DOM
+                const tabs = [...container.querySelectorAll('.db-main-tab')];
+                const srcIdx = tabs.indexOf(_tabDragSrc);
+                const tgtIdx = tabs.indexOf(target);
+                if (srcIdx < tgtIdx) container.insertBefore(_tabDragSrc, target.nextSibling);
+                else container.insertBefore(_tabDragSrc, target);
+            });
+
+            container.addEventListener('dragleave', e => {
+                const tab = e.target.closest('.db-main-tab');
+                if (tab) tab.classList.remove('drag-over');
+            });
+
+            container.addEventListener('drop', e => {
+                e.preventDefault();
+                container.querySelectorAll('.db-main-tab').forEach(t => t.classList.remove('drag-over'));
+                // Persist new order
+                const order = [...container.querySelectorAll('.db-main-tab')].map(t => t.dataset.view);
+                localStorage.setItem(TAB_ORDER_KEY, JSON.stringify(order));
+            });
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             applyDashboardTheme(getDashboardTheme());
+            initTabDrag();
             loadAllObjectifs();
             renderCarousel();
 
