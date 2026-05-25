@@ -182,3 +182,103 @@ cahier des charges + ICP + USP finalisés et exploitables
 **3 documentations techniques sont faites (Cahier des charges, ICP, USP)**
 
 KPI : Nombre de document finit
+
+---
+
+### 4. Onglet Jalons (Vue dédiée)
+
+L'onglet Jalons est un espace dédié au pilotage des jalons. Il est séparé des autres vues (Pilotage & Vision, To-do list) et accessible depuis la navigation principale.
+
+**Layout**
+- Rail vertical gauche (`280px`) : timeline des jalons avec sélection active
+- Carte détail droite (`flex:1`) : jalon sélectionné avec KPI, critère de validation, tâches
+
+**Rail (timeline)**
+- Chaque item affiche : date (année + mois), dot de statut, libellé MOIS, titre, compteur Jalon X/Y
+- Statuts visuels : `done` (bleu foncé #0A2A53), `active` (orange #EE4408 + glow), `upcoming` (transparent + border)
+- Ligne de connexion verticale entre items, colorée selon statut
+- Clic sur un item → met à jour la carte détail à droite
+- Bouton "+ Ajouter un jalon" en bas du rail
+
+**Carte détail**
+- Bandeau position : `Jalon X/Y` + badge `MOIS N` (monospace) + chip de statut (Terminé / En cours / À venir)
+- Titre du jalon (26px, bold)
+- Échéance
+- Séparateur horizontal
+- Bloc "Critère de validation" — texte descriptif
+- Bloc "KPI de jalon" — grille KPI cards (voir 4.1)
+- Bloc "Avancement des tâches" — barre de progression + compteur tâches complétées
+- Actions footer : `Valider ce jalon` + `Modifier` + `Ajouter un KPI` (margin-left auto)
+
+---
+
+### 4.1 KPI Cards v2 (Jalons)
+
+Chaque jalon peut avoir jusqu'à 2 KPI : un indicateur d'avancée (leading, bleu #5BAEC9) et un indicateur de résultat (lagging, orange #EE4408).
+
+**Structure d'une KPI card**
+- Barre accent top-left (2px × 32px, couleur du type)
+- Chip de type : `Indicateur d'avancée` ou `Indicateur de résultat` avec icône SVG
+- Bouton `...` → ouvre le KPIActionMenu (voir 4.2)
+- Titre du KPI — clic inline → édition directe (input in-place)
+- Valeur courante (48px bold) + unité
+- Mode row (Σ Cumulatif / → Valeur actuelle) — clic → toggle du mode
+- Sparkline SVG (historique visuel) — clic → ouvre KPIHistorySheet (voir 4.3)
+- Barre de progression avec % + cible cliquable (édition inline) — ou bouton "Définir une cible" si pas de cible
+- Footer : fréquence (clic → toggle Hebdomadaire/Mensuel) · MAJ date (clic → ouvre historique) | bouton `+ Mesure`
+
+**États de la grille KPI**
+- 0 KPI → empty state avec 2 boutons : créer indicateur d'avancée + indicateur de résultat
+- 1 KPI → card + bouton dashed "Ajouter un 2e KPI" du type complémentaire
+- 2 KPI → 2 cards côte à côte (`repeat(auto-fit, minmax(260px, 1fr))`)
+
+---
+
+### 4.2 KPIActionMenu
+
+Menu dropdown inline déclenché par le bouton `...` (more-horizontal) d'une KPI card.
+
+**Items**
+| Action | Comportement |
+|---|---|
+| Modifier le titre | Active l'édition inline du titre |
+| Définir / Modifier la cible | Active l'édition inline de la cible |
+| Modifier la fréquence | Toggle Hebdomadaire ↔ Mensuel |
+| Mode de mesure | Toggle Cumulatif ↔ Valeur actuelle |
+| Voir l'historique | Ouvre le KPIHistorySheet |
+| Supprimer ce KPI | Supprime le KPI du jalon |
+
+Le menu se ferme au clic extérieur. Position : ancré au bouton `...`, aligné à droite.
+
+---
+
+### 4.3 KPIHistorySheet
+
+Panneau slide-in depuis la droite (440px max-width) affichant l'historique des mesures d'un KPI.
+
+**Déclencheurs** : clic sur la sparkline ou clic sur "MAJ X" dans le footer de la KPI card.
+
+**Contenu**
+- En-tête : overline (type du KPI, couleur accent) + titre + bouton fermer
+- Liste des mesures (ordre antéchronologique) : date · delta vs précédent · valeur + unité · bouton supprimer
+- Message "Aucune mesure" si historique vide
+
+**Comportement**
+- Backdrop semi-transparent avec blur
+- Animation slide-in (translateX 100% → 0, 240ms cubic-bezier)
+- Clic backdrop ou bouton × → ferme le panneau
+- Suppression d'une entrée → recharge le panneau sans fermer
+
+---
+
+### 5. Navigation — Réordonnancement des onglets
+
+Les 3 onglets principaux (Pilotage & Vision, Jalons, To-do list) sont réordonnables par drag-and-drop.
+
+**Comportement**
+- `draggable="true"` sur chaque onglet
+- Curseur `grab` / `grabbing` pendant le drag
+- Highlight visuel de l'onglet cible pendant le survol (`drag-over`)
+- Réordonnancement en temps réel dans le DOM pendant le drag
+- Ordre persisté dans `localStorage` (clé `carryit-tab-order`)
+- Ordre restauré automatiquement au rechargement de la page
