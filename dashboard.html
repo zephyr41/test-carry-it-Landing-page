@@ -808,8 +808,10 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                             </div>
                         </div>
 
+                        ${buildActiveJalonBlock(obj, i)}
+
                         <!-- Citation -->
-                        <p class="db-citation">"C'est quand t'as envie d'abandonner que tout commence."</p>
+                        <p class="db-citation" style="margin-top:16px">"C'est quand t'as envie d'abandonner que tout commence."</p>
                     </div>
 
                     <div class="db-view db-view-jalons ${currentDashboardView === 'jalons' ? 'active' : ''}"
@@ -1614,7 +1616,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                     <div class="task-name ${status === 'doing' ? 'strong' : ''}">
                         <span class="task-title"
                             onclick="openTaskPanel(${i}, ${task.id}); event.stopPropagation();"
-                            ondblclick="openTaskPanel(${i}, ${task.id}); editTask(${i}, ${task.id}); event.stopPropagation();">${escHtml(task.text)}</span>
+                            ondblclick="openTaskPanel(${i}, ${task.id}); editTask(${i}, ${task.id}, event); event.stopPropagation();">${escHtml(task.text)}</span>
                         ${subtasks.length ? `<span class="task-sub-count">${doneSubtasks}/${subtasks.length}</span>` : ''}
                     </div>
                     <button class="row-action"
@@ -1659,7 +1661,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                         onclick="toggleSubtask(${i}, ${task.id}, ${s.id}); event.stopPropagation();"
                         ontouchstart="event.stopPropagation();"
                         ontouchend="toggleSubtask(${i}, ${task.id}, ${s.id}); event.stopPropagation(); event.preventDefault();">${SUBTASK_ICON}</button>
-                    <span class="subtask-text" onclick="inlineEditSubtask(${i}, ${task.id}, ${s.id}, this); event.stopPropagation();">${escHtml(s.text)}</span>
+                    <span class="subtask-text" onclick="inlineEditSubtask(${i}, ${task.id}, ${s.id}, this, event); event.stopPropagation();">${escHtml(s.text)}</span>
                     <button class="subtask-del" onclick="deleteSubtask(${i}, ${task.id}, ${s.id}); event.stopPropagation();">×</button>
                 </div>
             `).join('');
@@ -1770,13 +1772,26 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             refreshTodoList(i);
         }
 
-        function editTask(i, taskId) {
+        function editTask(i, taskId, e) {
             todoEditState[i] = taskId;
             refreshTodoList(i);
             setTimeout(() => {
                 const input = document.getElementById(`todoEditInput-${i}-${taskId}`);
-                if (input) {
-                    input.focus();
+                if (!input) return;
+                input.focus();
+                if (e) {
+                    const rect = input.getBoundingClientRect();
+                    const clickX = e.clientX - rect.left - parseFloat(getComputedStyle(input).paddingLeft || 0);
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    const cs = getComputedStyle(input);
+                    ctx.font = `${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+                    const text = input.value;
+                    let pos = text.length;
+                    for (let n = 0; n <= text.length; n++) {
+                        if (ctx.measureText(text.slice(0, n)).width >= clickX) { pos = n > 0 ? n - 1 : 0; break; }
+                    }
+                    input.setSelectionRange(pos, pos);
                 }
             }, 0);
         }
@@ -2075,7 +2090,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                         ${getTaskStatusLabel(getTaskStatus(task))}
                     </span>
                 </div>
-                <h3 class="cp-task-title" id="taskPanelTitle" onclick="inlineEditPanelTitle(${i}, ${taskId}, this)" title="Modifier le titre">${escHtml(task.text)}</h3>
+                <h3 class="cp-task-title" id="taskPanelTitle" onclick="inlineEditPanelTitle(${i}, ${taskId}, this, event)" title="Modifier le titre">${escHtml(task.text)}</h3>
                 <div class="cp-fields">
                     ${nextJalon ? `
                     <div class="cp-field-row">
@@ -2122,7 +2137,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                         onclick="toggleSubtask(${i}, ${task.id}, ${s.id}); renderTaskPanel();"
                         ontouchstart="event.stopPropagation();"
                         ontouchend="toggleSubtask(${i}, ${task.id}, ${s.id}); renderTaskPanel(); event.preventDefault();">${SUBTASK_ICON}</button>
-                    <span class="subtask-text" onclick="inlineEditSubtask(${i}, ${task.id}, ${s.id}, this); event.stopPropagation();">${escHtml(s.text)}</span>
+                    <span class="subtask-text" onclick="inlineEditSubtask(${i}, ${task.id}, ${s.id}, this, event); event.stopPropagation();">${escHtml(s.text)}</span>
                     <button class="subtask-del" onclick="deleteSubtask(${i}, ${task.id}, ${s.id}); renderTaskPanel();">×</button>
                 </div>
             `).join('');
@@ -2161,17 +2176,18 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             refreshTodoList(i);
         }
 
-        function inlineEditSubtask(i, taskId, subId, el) {
+        function inlineEditSubtask(i, taskId, subId, el, e) {
+            if (el.contentEditable === 'true') return;
             const orig = el.textContent;
             el.contentEditable = 'true';
             el.classList.add('editing');
             el.focus();
-            const range = document.createRange();
-            range.selectNodeContents(el);
-            range.collapse(false);
-            const sel = window.getSelection();
-            sel.removeAllRanges();
-            sel.addRange(range);
+            if (e) {
+                const range = document.caretRangeFromPoint
+                    ? document.caretRangeFromPoint(e.clientX, e.clientY)
+                    : (() => { const pos = document.caretPositionFromPoint && document.caretPositionFromPoint(e.clientX, e.clientY); if (pos) { const r = document.createRange(); r.setStart(pos.offsetNode, pos.offset); r.collapse(true); return r; } })();
+                if (range) { const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range); }
+            }
 
             el.onkeydown = (e) => {
                 if (e.key === 'Enter') { e.preventDefault(); el.blur(); }
@@ -2206,18 +2222,18 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             }
         }
 
-        function inlineEditTask(i, taskId, el) {
+        function inlineEditTask(i, taskId, el, e) {
+            if (el.contentEditable === 'true') return;
             const orig = el.textContent;
             el.contentEditable = 'true';
             el.classList.add('editing');
             el.focus();
-            // curseur en fin de texte
-            const range = document.createRange();
-            range.selectNodeContents(el);
-            range.collapse(false);
-            const sel = window.getSelection();
-            sel.removeAllRanges();
-            sel.addRange(range);
+            if (e) {
+                const range = document.caretRangeFromPoint
+                    ? document.caretRangeFromPoint(e.clientX, e.clientY)
+                    : (() => { const pos = document.caretPositionFromPoint && document.caretPositionFromPoint(e.clientX, e.clientY); if (pos) { const r = document.createRange(); r.setStart(pos.offsetNode, pos.offset); r.collapse(true); return r; } })();
+                if (range) { const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range); }
+            }
 
             el.onkeydown = (e) => {
                 if (e.key === 'Enter') { e.preventDefault(); el.blur(); }
@@ -2283,17 +2299,48 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             });
         }
 
-        function inlineEditPanelTitle(i, taskId, el) {
+        function inlineEditListTitle(i, taskId, el, e) {
+            if (el.contentEditable === 'true') return;
+            const orig = el.textContent;
+            el.contentEditable = 'true';
+            el.focus();
+            if (e) {
+                const range = document.caretRangeFromPoint
+                    ? document.caretRangeFromPoint(e.clientX, e.clientY)
+                    : (() => { const pos = document.caretPositionFromPoint && document.caretPositionFromPoint(e.clientX, e.clientY); if (pos) { const r = document.createRange(); r.setStart(pos.offsetNode, pos.offset); r.collapse(true); return r; } })();
+                if (range) { const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range); }
+            }
+            el.onkeydown = (ev) => {
+                if (ev.key === 'Enter') { ev.preventDefault(); el.blur(); }
+                if (ev.key === 'Escape') { el.textContent = orig; el.blur(); }
+                ev.stopPropagation();
+            };
+            el.onblur = () => {
+                el.contentEditable = 'false';
+                const text = el.textContent.trim();
+                if (text && text !== orig) {
+                    const task = getTaskById(i, taskId);
+                    if (task) { task.text = text; saveAllObjectifs(); refreshTodoList(i); }
+                } else {
+                    el.textContent = orig;
+                }
+                el.onblur = null;
+                el.onkeydown = null;
+            };
+        }
+
+        function inlineEditPanelTitle(i, taskId, el, e) {
+            if (el.contentEditable === 'true') return;
             const orig = el.textContent;
             el.contentEditable = 'true';
             el.classList.add('editing');
             el.focus();
-            const range = document.createRange();
-            range.selectNodeContents(el);
-            range.collapse(false);
-            const sel = window.getSelection();
-            sel.removeAllRanges();
-            sel.addRange(range);
+            if (e) {
+                const range = document.caretRangeFromPoint
+                    ? document.caretRangeFromPoint(e.clientX, e.clientY)
+                    : (() => { const pos = document.caretPositionFromPoint && document.caretPositionFromPoint(e.clientX, e.clientY); if (pos) { const r = document.createRange(); r.setStart(pos.offsetNode, pos.offset); r.collapse(true); return r; } })();
+                if (range) { const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range); }
+            }
             el.onkeydown = (e) => {
                 if (e.key === 'Enter') { e.preventDefault(); el.blur(); }
                 if (e.key === 'Escape') { el.textContent = orig; el.blur(); }
@@ -2407,6 +2454,40 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
         }
 
         // ──────────────────────────────────────────────────────────
+        // ──────────────────────────────────────────────────────────
+        // ACTIVE JALON BLOCK — shown in Pilotage view
+        // ──────────────────────────────────────────────────────────
+        function buildActiveJalonBlock(obj, i) {
+            const jalon = getNextActiveJalon(obj);
+            if (!jalon) return '';
+            const jalons = getSortedProjectJalons(obj);
+            const jalonIdx = jalons.findIndex(j => String(j?.id || '') === String(jalon?.id || ''));
+            const monthLabel = jalon.month || (jalon.mois ? `MOIS ${jalon.mois}` : `MOIS ${jalonIdx + 1}`);
+            const title = escHtml(getJalonLabel(jalon));
+            const date = formatDateJalonCourt(jalon.date);
+            return `
+            <div class="db-section" style="margin-top:12px">
+                <div class="db-section-header">
+                    <span class="db-section-label">Exécution · Jalon en cours</span>
+                </div>
+                <div class="db-card" style="padding:18px 22px;display:flex;align-items:center;gap:20px;cursor:pointer" onclick="switchDashboardView('jalons')">
+                    <div style="flex:1;min-width:0">
+                        <div style="font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:#929292;margin-bottom:4px">${escHtml(monthLabel)} · Jalon en cours</div>
+                        <div style="font-size:16px;font-weight:600;color:#FFFDF6;letter-spacing:-0.01em">${title}</div>
+                        ${date ? `<div style="font-size:12.5px;color:#929292;margin-top:2px">${escHtml(date)}</div>` : ''}
+                    </div>
+                    <div style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:9999px;background:rgba(238,68,8,0.1);color:#EE4408;font-size:11.5px;font-weight:500;white-space:nowrap;flex-shrink:0">
+                        <span style="width:5px;height:5px;border-radius:50%;background:#EE4408;display:inline-block"></span>
+                        En cours
+                    </div>
+                    <div style="margin-left:auto;color:#929292;display:inline-flex;align-items:center;gap:6px;font-size:12.5px;white-space:nowrap;flex-shrink:0">
+                        Voir le jalon
+                        <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </div>
+                </div>
+            </div>`;
+        }
+
         // JALONS VERTICAL RAIL — v2 design
         // ──────────────────────────────────────────────────────────
         function buildJalonsPanel(obj, i) {
