@@ -1571,10 +1571,11 @@
 </head>
 <body>
 
+    <a href="objectif.html" title="Retour" style="position:fixed;left:20px;top:140px;z-index:999;width:36px;height:36px;border-radius:50%;background:rgba(255,253,246,0.06);border:1px solid rgba(255,253,246,0.1);display:flex;align-items:center;justify-content:center;color:var(--c-gris);text-decoration:none;font-size:18px;line-height:1;transition:background 0.15s,color 0.15s" onmouseover="this.style.background='rgba(255,253,246,0.12)';this.style.color='#FFFDF6'" onmouseout="this.style.background='rgba(255,253,246,0.06)';this.style.color='var(--c-gris)'">‹</a>
+
     <nav class="navbar">
         <a class="navbar-logo" href="index.html" style="text-decoration:none; color:inherit;">CARRY IT</a>
         <div style="display:flex; gap:8px; align-items:center;">
-            <a href="objectif.html" class="btn-reset" style="text-decoration:none;">← Retour</a>
             <a href="dashboard.html" class="btn-reset" style="text-decoration:none;">Dashboard</a>
             <button class="btn-reset" onclick="resetMilestones()">Réinitialiser tout</button>
         </div>
@@ -1769,32 +1770,67 @@
         const deadline = getDeadline();
 
         function generateDates() {
-            const dates = [];
-            const MIN_GAP_MS = 21 * 24 * 60 * 60 * 1000; // stop if < 3 weeks from deadline
+            const MIN_GAP_MS = 30 * 24 * 60 * 60 * 1000;
+            const totalMs = deadline.getTime() - today.getTime();
+            const totalMonths = totalMs / (30.44 * 24 * 60 * 60 * 1000);
 
-            let step = 1;
-            while (true) {
-                const d = new Date(today);
-                d.setMonth(d.getMonth() + step * 3);
-                if (d.getTime() >= deadline.getTime() - MIN_GAP_MS) break;
-                const totalMonths = step * 3;
-                const label = totalMonths < 12
-                    ? `À ${totalMonths} mois`
-                    : totalMonths === 12 ? 'À 1 an'
-                    : totalMonths % 12 === 0 ? `À ${totalMonths / 12} ans`
-                    : `À ${totalMonths} mois`;
-                dates.push({ label, tag: label, date: d });
-                step++;
+            const addMonths = (base, n) => {
+                const d = new Date(base);
+                d.setMonth(d.getMonth() + n);
+                return d;
+            };
+
+            const halfDate = new Date(today.getTime() + totalMs / 2);
+
+            let candidates;
+            if (totalMonths >= 3 && totalMonths <= 12) {
+                // CAS 1 — Moyen (3–12 mois) : Décollage + Mi-parcours + Final
+                candidates = [
+                    { label: 'Décollage', date: addMonths(today, 1) },
+                    { label: 'Mi-parcours', date: halfDate },
+                    { label: 'Vision Finale', date: deadline },
+                ];
+            } else if (totalMonths > 12) {
+                // CAS 2 — Long (>1 an) : J+3 + J+6 + Année 1 + Mi-parcours + Final
+                candidates = [
+                    { label: 'Premier trimestre', date: addMonths(today, 3) },
+                    { label: '6 mois', date: addMonths(today, 6) },
+                    { label: 'Année 1', date: addMonths(today, 12) },
+                    { label: 'Mi-parcours', date: halfDate },
+                    { label: 'Vision Finale', date: deadline },
+                ];
+            } else {
+                // < 3 mois : Final seulement
+                candidates = [{ label: 'Vision Finale', date: deadline }];
             }
 
-            dates.push({ label: "Vision Finale", tag: "Jalon final", date: deadline });
+            // Sort ascending
+            candidates.sort((a, b) => a.date - b.date);
 
-            // Assign rank tags after sorting by date ascending
-            dates.sort((a, b) => a.date - b.date);
-            const total = dates.length;
-            dates.forEach((d, i) => { d.tag = `Jalon ${i + 1}/${total}`; });
+            // Remove non-final dates too close to deadline or to today
+            const filtered = candidates.filter(c => {
+                if (c.label === 'Vision Finale') return true;
+                if (c.date.getTime() - today.getTime() < MIN_GAP_MS) return false;
+                if (deadline.getTime() - c.date.getTime() < MIN_GAP_MS) return false;
+                return true;
+            });
 
-            return dates.sort((a, b) => b.date - a.date); // descending — index 0 = deadline
+            // Deduplicate: drop earlier if two dates within MIN_GAP_MS
+            const deduped = [];
+            for (const c of filtered) {
+                const prev = deduped[deduped.length - 1];
+                if (prev && c.label !== 'Vision Finale' && Math.abs(c.date.getTime() - prev.date.getTime()) < MIN_GAP_MS) {
+                    deduped[deduped.length - 1] = c; // keep later
+                } else {
+                    deduped.push(c);
+                }
+            }
+
+            deduped.sort((a, b) => a.date - b.date);
+            const total = deduped.length;
+            deduped.forEach((d, i) => { d.tag = `Jalon ${i + 1}/${total}`; });
+
+            return deduped.sort((a, b) => b.date - a.date); // descending — index 0 = deadline
         }
 
         // --- DATA ---
@@ -1915,8 +1951,12 @@
                     <div class="item-card card card--spacious">
                         <div class="jcard-top">
                             <div style="display:flex;flex-direction:column;gap:3px;">
-                                <span class="jcard-tag">JALON ${milestoneNumber} / ${total}</span>
-                                ${isFinal ? `<span class="jcard-pct">100%</span>` : (m.tag || '').includes('50') || (m.tag || '').toLowerCase().includes('parcours') ? `<span class="jcard-pct">50%</span>` : ''}
+                                ${isFinal
+                                    ? `<span class="jcard-tag" style="color:var(--c-action);border:1px solid rgba(238,68,8,0.35);background:rgba(238,68,8,0.08);padding:2px 7px;border-radius:4px">OBJECTIF SMART</span>
+                                       <span style="font-size:10px;color:var(--c-muted);letter-spacing:0.05em">Jalon ${milestoneNumber} / ${total} · 100 %</span>`
+                                    : `<span class="jcard-tag">JALON ${milestoneNumber} / ${total}</span>
+                                       ${(m.tag || '').includes('50') || (m.tag || '').toLowerCase().includes('parcours') ? `<span class="jcard-pct">50%</span>` : ''}`
+                                }
                             </div>
                             <div class="jcard-right">
                                 <button class="date-chip" onclick="openDatePicker(this, '${m.id}')">
