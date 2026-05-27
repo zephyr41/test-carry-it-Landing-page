@@ -817,7 +817,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                     <div class="db-view db-view-jalons ${currentDashboardView === 'jalons' ? 'active' : ''}"
                         data-view="jalons"
                         ${currentDashboardView === 'jalons' ? '' : 'hidden'}>
-                        <div class="db-section">
+                        <div class="db-section" id="jalons-section-${i}">
                             ${buildJalonsPanel(obj, i)}
                         </div>
                     </div>
@@ -2490,6 +2490,77 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
 
         // JALONS VERTICAL RAIL — v2 design
         // ──────────────────────────────────────────────────────────
+        function buildJalonDetailCard(obj, i, selectedJalon, selectedIndex, total) {
+            const jalons = getSortedProjectJalons(obj);
+            const currentIndex = jalons.findIndex(j => (j.statut || 'pending') !== 'completed');
+            const detailSt = (selectedJalon?.statut || 'pending') === 'completed' ? 'done'
+                : selectedIndex === currentIndex ? 'active' : 'upcoming';
+            const rawStatus = selectedJalon?.statut || 'pending';
+            const title = escHtml(selectedJalon?.titre || selectedJalon?.title || 'Jalon');
+            const date = formatDateJalonLong(selectedJalon?.date);
+            const validationText = escHtml(selectedJalon?.critere || selectedJalon?.kpi || '');
+            const monthLabel = escHtml(selectedJalon?.month || (selectedJalon?.mois ? `MOIS ${selectedJalon.mois}` : `MOIS ${selectedIndex + 1}`));
+            const num = selectedIndex + 1;
+            const stConf = {
+                done:     { bg: 'rgba(10,42,83,0.25)',   color: '#7aa8d8', border: 'rgba(10,42,83,0.55)',    label: 'Terminé',  dot: '#7aa8d8' },
+                active:   { bg: 'rgba(238,68,8,0.1)',     color: '#EE4408', border: 'rgba(238,68,8,0.35)',   label: 'En cours', dot: '#EE4408' },
+                upcoming: { bg: 'rgba(255,253,246,0.04)', color: '#929292', border: 'rgba(255,253,246,0.1)', label: 'À venir',  dot: '#929292' },
+            }[detailSt] || {};
+            const tasks = selectedJalon?.tasks || [];
+            const doneTasks = tasks.filter(t => t.done || t.statut === 'completed').length;
+            const totalTasks = tasks.length;
+            const taskPct = totalTasks > 0 ? Math.round((doneTasks / totalTasks) * 100) : 0;
+            const taskBarColor = detailSt === 'done' ? '#0A2A53' : '#404025';
+            const taskBlock = totalTasks > 0 ? `
+                <div style="font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:#929292;margin-bottom:10px">Avancement des tâches</div>
+                <div style="background:rgba(255,253,246,0.025);border:1px solid rgba(255,253,246,0.06);border-radius:10px;padding:14px 18px;margin-bottom:24px;display:flex;align-items:center;gap:18px">
+                    <div>
+                        <div style="font-size:22px;font-weight:700;color:#FFFDF6;letter-spacing:-0.02em;min-width:48px">${doneTasks}<span style="font-size:13px;font-weight:400;color:#929292">/${totalTasks}</span></div>
+                        <div style="font-size:11px;color:#929292;margin-top:2px">tâches</div>
+                    </div>
+                    <div style="flex:1">
+                        <div style="height:5px;background:rgba(255,253,246,0.06);border-radius:3px;overflow:hidden"><div style="height:100%;width:${taskPct}%;background:${taskBarColor};border-radius:3px"></div></div>
+                        <div style="font-size:11.5px;color:#929292;margin-top:5px">${taskPct}% complétées</div>
+                    </div>
+                </div>` : '';
+            const validateLabel = rawStatus === 'completed' ? 'Réactiver' : (detailSt === 'done' ? 'Jalon validé' : 'Valider ce jalon');
+            const validateOnclick = rawStatus === 'completed'
+                ? `reactivateJalon(${i}, '${escHtml(selectedJalon?.id || '')}')`
+                : `completeJalon(${i}, '${escHtml(selectedJalon?.id || '')}')`;
+            const validateStyle = detailSt === 'done'
+                ? 'background:rgba(10,42,83,0.5);color:#7aa8d8;border:1px solid rgba(10,42,83,0.7)'
+                : 'background:#0A2A53;color:#FFFDF6;border:none';
+            const kpiHtml = renderJalonKpiCardsV2(selectedJalon, i, detailSt);
+            return `<div id="jalons-detail-${i}" style="background:#111112;border:1px solid rgba(255,253,246,0.08);border-radius:10px;padding:28px 32px 24px">
+                        <div style="display:flex;align-items:center;gap:10px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:#929292;margin-bottom:14px;flex-wrap:wrap">
+                            <span>Jalon ${num}/${total}</span>
+                            <span style="display:inline-flex;align-items:center;justify-content:center;padding:3px 9px;border-radius:4px;background:rgba(255,253,246,0.05);border:1px solid rgba(255,253,246,0.1);color:#FFFDF6;font-size:10.5px;font-family:ui-monospace,monospace;letter-spacing:0.03em">${monthLabel}</span>
+                            <span style="margin-left:auto;display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:9999px;background:${stConf.bg};color:${stConf.color};border:1px solid ${stConf.border};font-size:11.5px;font-weight:500;text-transform:none;letter-spacing:0">
+                                <span style="width:6px;height:6px;border-radius:50%;background:${stConf.dot};display:inline-block;flex-shrink:0"></span>${stConf.label}
+                            </span>
+                        </div>
+                        <h2 style="font-family:inherit;font-size:26px;font-weight:700;color:#FFFDF6;letter-spacing:-0.02em;line-height:1.15;margin-bottom:8px">${title}</h2>
+                        <div style="font-size:13.5px;color:#929292;margin-bottom:24px">Échéance · ${date || '—'}</div>
+                        <div style="height:1px;background:rgba(255,253,246,0.07);margin:0 0 22px"></div>
+                        <div style="font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:#929292;margin-bottom:10px">Critère de validation</div>
+                        <p style="font-size:14.5px;color:#FFFDF6;line-height:1.55;margin-bottom:28px;font-weight:400;max-width:640px">${validationText || '<span style="color:#929292">—</span>'}</p>
+                        <div style="font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:#929292;margin-bottom:10px">KPI de jalon</div>
+                        ${kpiHtml}
+                        ${taskBlock}
+                        <div style="display:flex;gap:10px;align-items:center;padding-top:18px;border-top:1px solid rgba(255,253,246,0.07)">
+                            <button onclick="${validateOnclick}" style="${validateStyle};display:inline-flex;align-items:center;gap:7px;padding:10px 18px;border-radius:8px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit">${validateLabel}</button>
+                            <a href="#" onclick="openJalonsForProject(${i});return false" style="display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border-radius:8px;background:transparent;color:#929292;border:1px solid rgba(255,253,246,0.1);font-size:13px;font-weight:500;text-decoration:none">
+                                <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                Modifier
+                            </a>
+                            <button onclick="openJalonKpiModal(${i}, '${escHtml(selectedJalon?.id||'')}', 'lagging')" style="margin-left:auto;display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border-radius:8px;background:transparent;color:#929292;border:1px solid rgba(255,253,246,0.1);font-size:13px;font-weight:500;cursor:pointer;font-family:inherit">
+                                <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                                Ajouter un KPI
+                            </button>
+                        </div>
+                    </div>`;
+        }
+
         function buildJalonsPanel(obj, i) {
             const jalons = getSortedProjectJalons(obj);
 
@@ -2538,7 +2609,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                 const checkSvg = st === 'done' ? `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="${sc.inner}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>` : '';
 
                 railItems += `
-                <div onclick="selectJalon(${i}, '${escHtml(jalon.id || '')}')"
+                <div data-jid="${escHtml(jalon.id || '')}" onclick="selectJalon(${i}, '${escHtml(jalon.id || '')}')"
                     style="display:grid;grid-template-columns:56px 28px 1fr;gap:12px;cursor:pointer;padding-bottom:24px;position:relative;align-items:start;user-select:none">
                     <div style="padding-top:1px;text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:2px">
                         <span style="font-size:11px;font-weight:600;color:${sc.dateColor};letter-spacing:0.04em;font-family:ui-monospace,monospace">${year}</span>
@@ -2548,109 +2619,43 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                         ${!isLast ? `<div style="position:absolute;top:23px;bottom:-3px;left:50%;width:1.5px;background:${sc.line};transform:translateX(-50%)"></div>` : ''}
                         <div style="width:22px;height:22px;border-radius:50%;background:${sc.dot};display:flex;align-items:center;justify-content:center;border:${dotBorder};box-shadow:${dotShadow};color:${sc.inner};position:relative;z-index:1;flex-shrink:0">${checkSvg}</div>
                     </div>
-                    <div style="padding:1px 8px 4px 4px;border-radius:6px;background:${isSelected ? 'rgba(255,253,246,0.04)' : 'transparent'};margin-left:-4px;margin-right:-8px">
+                    <div data-jbody style="padding:1px 8px 4px 4px;border-radius:6px;background:${isSelected ? 'rgba(255,253,246,0.04)' : 'transparent'};margin-left:-4px;margin-right:-8px">
                         <div style="font-size:9.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:#666;margin-bottom:2px">${monthLabel}</div>
-                        <div style="font-size:13px;font-weight:${isSelected ? 600 : 500};color:${st === 'upcoming' ? '#929292' : '#FFFDF6'};line-height:1.3;letter-spacing:-0.005em;margin-bottom:3px">${title}</div>
+                        <div data-jtitle style="font-size:13px;font-weight:${isSelected ? 600 : 500};color:${st === 'upcoming' ? '#929292' : '#FFFDF6'};line-height:1.3;letter-spacing:-0.005em;margin-bottom:3px">${title}</div>
                         <div style="font-size:10px;color:#666;font-family:ui-monospace,monospace">Jalon ${ji + 1}/${total}</div>
                     </div>
                 </div>`;
             });
 
-            // ── DETAIL ───────────────────────────────────────────
-            const detailSt = jalonStatus(selectedJalon, selectedIndex);
-            const rawStatus = selectedJalon?.statut || 'pending';
-            const title = escHtml(selectedJalon?.titre || selectedJalon?.title || 'Jalon');
-            const date = formatDateJalonLong(selectedJalon?.date);
-            const validationText = escHtml(selectedJalon?.critere || selectedJalon?.kpi || '');
-            const monthLabel = escHtml(selectedJalon?.month || (selectedJalon?.mois ? `MOIS ${selectedJalon.mois}` : `MOIS ${selectedIndex + 1}`));
-            const num = selectedIndex + 1;
-
-            const stConf = {
-                done:     { bg: 'rgba(10,42,83,0.25)',   color: '#7aa8d8', border: 'rgba(10,42,83,0.55)',    label: 'Terminé',  dot: '#7aa8d8' },
-                active:   { bg: 'rgba(238,68,8,0.1)',     color: '#EE4408', border: 'rgba(238,68,8,0.35)',   label: 'En cours', dot: '#EE4408' },
-                upcoming: { bg: 'rgba(255,253,246,0.04)', color: '#929292', border: 'rgba(255,253,246,0.1)', label: 'À venir',  dot: '#929292' },
-            }[detailSt] || {};
-
-            // Task progress
-            const tasks = selectedJalon?.tasks || [];
-            const doneTasks = tasks.filter(t => t.done || t.statut === 'completed').length;
-            const totalTasks = tasks.length;
-            const taskPct = totalTasks > 0 ? Math.round((doneTasks / totalTasks) * 100) : 0;
-            const taskBarColor = detailSt === 'done' ? '#0A2A53' : '#404025';
-            const taskBlock = totalTasks > 0 ? `
-                <div style="font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:#929292;margin-bottom:10px">Avancement des tâches</div>
-                <div style="background:rgba(255,253,246,0.025);border:1px solid rgba(255,253,246,0.06);border-radius:10px;padding:14px 18px;margin-bottom:24px;display:flex;align-items:center;gap:18px">
-                    <div>
-                        <div style="font-size:22px;font-weight:700;color:#FFFDF6;letter-spacing:-0.02em;min-width:48px">${doneTasks}<span style="font-size:13px;font-weight:400;color:#929292">/${totalTasks}</span></div>
-                        <div style="font-size:11px;color:#929292;margin-top:2px">tâches</div>
-                    </div>
-                    <div style="flex:1">
-                        <div style="height:5px;background:rgba(255,253,246,0.06);border-radius:3px;overflow:hidden"><div style="height:100%;width:${taskPct}%;background:${taskBarColor};border-radius:3px"></div></div>
-                        <div style="font-size:11.5px;color:#929292;margin-top:5px">${taskPct}% complétées</div>
-                    </div>
-                </div>` : '';
-
-            const validateLabel = rawStatus === 'completed' ? 'Réactiver' : (detailSt === 'done' ? 'Jalon validé' : 'Valider ce jalon');
-            const validateOnclick = rawStatus === 'completed'
-                ? `reactivateJalon(${i}, '${escHtml(selectedJalon?.id || '')}')`
-                : `completeJalon(${i}, '${escHtml(selectedJalon?.id || '')}')`;
-            const validateStyle = detailSt === 'done'
-                ? 'background:rgba(10,42,83,0.5);color:#7aa8d8;border:1px solid rgba(10,42,83,0.7)'
-                : 'background:#0A2A53;color:#FFFDF6;border:none';
-
-            const kpiHtml = renderJalonKpiCardsV2(selectedJalon, i, detailSt);
-
             return `
-            <div style="max-width:1240px;margin:0 auto">
-                <div style="display:grid;grid-template-columns:280px 1fr;gap:16px;align-items:start">
+            <div>
+                <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:28px;gap:24px;flex-wrap:wrap">
+                    <div>
+                        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.16em;color:#929292;margin-bottom:8px">Jalons</div>
+                        <h2 style="font-family:inherit;font-size:22px;font-weight:700;color:#FFFDF6;letter-spacing:-0.02em;line-height:1.2;margin-bottom:4px">Pilotage des jalons</h2>
+                        <p style="font-size:13px;color:#929292;margin:0">Chaque étape mesurable vers l'objectif. Sélectionnez un jalon pour voir ses critères et ses KPI.</p>
+                    </div>
+                    <a href="#" onclick="openJalonsForProject(${i});return false" style="display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;background:transparent;color:#FFFDF6;border:1px solid rgba(255,253,246,0.14);font-size:12.5px;font-weight:500;text-decoration:none;font-family:inherit;white-space:nowrap">
+                        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        Nouveau jalon
+                    </a>
+                </div>
+                <div style="display:grid;grid-template-columns:280px 1fr;gap:32px;align-items:start">
 
-                    <!-- RAIL -->
-                    <div style="background:#111112;border:1px solid rgba(255,253,246,0.08);border-radius:10px;padding:24px 20px 16px;position:sticky;top:84px">
-                        <div style="font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:#929292;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid rgba(255,253,246,0.07);display:flex;justify-content:space-between;align-items:center">
+                    <!-- RAIL (plain sticky, no card) -->
+                    <div style="position:sticky;top:84px;padding-top:4px">
+                        <div style="font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:#929292;margin-bottom:22px;padding-bottom:12px;border-bottom:1px solid rgba(255,253,246,0.07);display:flex;justify-content:space-between;align-items:center">
                             <span>Timeline</span>
                             <span style="color:#FFFDF6;font-weight:600;font-family:ui-monospace,monospace">${total}</span>
                         </div>
                         ${railItems}
-                        <a href="#" onclick="openJalonsForProject(${i});return false" style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#929292;text-decoration:none;padding:6px 4px;border-radius:6px">
+                        <button onclick="openJalonsForProject(${i})" style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#929292;background:none;border:none;cursor:pointer;font-family:inherit;padding:8px 4px;border-radius:6px;padding-left:86px">
                             + Ajouter un jalon
-                        </a>
+                        </button>
                     </div>
 
                     <!-- DETAIL CARD -->
-                    <div style="background:#111112;border:1px solid rgba(255,253,246,0.08);border-radius:10px;padding:28px 32px 24px">
-                        <div style="display:flex;align-items:center;gap:10px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:#929292;margin-bottom:14px;flex-wrap:wrap">
-                            <span>Jalon ${num}/${total}</span>
-                            <span style="display:inline-flex;align-items:center;justify-content:center;padding:3px 9px;border-radius:4px;background:rgba(255,253,246,0.05);border:1px solid rgba(255,253,246,0.1);color:#FFFDF6;font-size:10.5px;font-family:ui-monospace,monospace;letter-spacing:0.03em">${monthLabel}</span>
-                            <span style="margin-left:auto;display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:9999px;background:${stConf.bg};color:${stConf.color};border:1px solid ${stConf.border};font-size:11.5px;font-weight:500;text-transform:none;letter-spacing:0">
-                                <span style="width:6px;height:6px;border-radius:50%;background:${stConf.dot};display:inline-block;flex-shrink:0"></span>${stConf.label}
-                            </span>
-                        </div>
-
-                        <h2 style="font-family:inherit;font-size:26px;font-weight:700;color:#FFFDF6;letter-spacing:-0.02em;line-height:1.15;margin-bottom:8px">${title}</h2>
-                        <div style="font-size:13.5px;color:#929292;margin-bottom:24px">Échéance · ${date || '—'}</div>
-
-                        <div style="height:1px;background:rgba(255,253,246,0.07);margin:0 0 22px"></div>
-
-                        <div style="font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:#929292;margin-bottom:10px">Critère de validation</div>
-                        <p style="font-size:14.5px;color:#FFFDF6;line-height:1.55;margin-bottom:28px;font-weight:400;max-width:640px">${validationText || '<span style="color:#929292">—</span>'}</p>
-
-                        <div style="font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:#929292;margin-bottom:10px">KPI de jalon</div>
-                        ${kpiHtml}
-
-                        ${taskBlock}
-
-                        <div style="display:flex;gap:10px;align-items:center;padding-top:18px;border-top:1px solid rgba(255,253,246,0.07)">
-                            <button onclick="${validateOnclick}" style="${validateStyle};display:inline-flex;align-items:center;gap:7px;padding:10px 18px;border-radius:8px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit">${validateLabel}</button>
-                            <a href="#" onclick="openJalonsForProject(${i});return false" style="display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border-radius:8px;background:transparent;color:#929292;border:1px solid rgba(255,253,246,0.1);font-size:13px;font-weight:500;text-decoration:none">
-                                <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                                Modifier
-                            </a>
-                            <button onclick="openJalonKpiModal(${i}, '${escHtml(selectedJalon?.id||'')}', 'lagging')" style="margin-left:auto;display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border-radius:8px;background:transparent;color:#929292;border:1px solid rgba(255,253,246,0.1);font-size:13px;font-weight:500;cursor:pointer;font-family:inherit">
-                                <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                                Ajouter un KPI
-                            </button>
-                        </div>
-                    </div>
+                    ${buildJalonDetailCard(obj, i, selectedJalon, selectedIndex, total)}
 
                 </div>
             </div>`;
@@ -2662,7 +2667,27 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
 
         function selectJalon(i, jalonId) {
             jalonPopupState[i] = jalonId;
-            renderDashboard();
+            const section = document.getElementById(`jalons-section-${i}`);
+            if (!section) { renderDashboard(); return; }
+            const detailEl = document.getElementById(`jalons-detail-${i}`);
+            if (detailEl) {
+                const obj = allObjectifs[i];
+                const jalons = getSortedProjectJalons(obj);
+                const selectedJalon = jalons.find(j => j.id === jalonId) || jalons[0];
+                const selectedIndex = Math.max(0, jalons.findIndex(j => j.id === selectedJalon?.id));
+                const total = jalons.length;
+                detailEl.outerHTML = buildJalonDetailCard(obj, i, selectedJalon, selectedIndex, total);
+                // Update rail item highlights without re-rendering rail
+                section.querySelectorAll('[data-jid]').forEach(el => {
+                    const active = el.getAttribute('data-jid') === jalonId;
+                    const body = el.querySelector('[data-jbody]');
+                    if (body) body.style.background = active ? 'rgba(255,253,246,0.04)' : 'transparent';
+                    const titleEl = el.querySelector('[data-jtitle]');
+                    if (titleEl) titleEl.style.fontWeight = active ? '600' : '500';
+                });
+            } else {
+                section.innerHTML = buildJalonsPanel(allObjectifs[i], i);
+            }
         }
 
         function buildJalonPilotCard(jalon, total, idx, i) {
