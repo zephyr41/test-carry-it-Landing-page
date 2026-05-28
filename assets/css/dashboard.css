@@ -4124,6 +4124,78 @@ select.m-input {
     border-top: 1px solid rgba(255,253,246,0.08);
 }
 
+/* ── KPI MODAL — compact overrides (scoped, does not affect other modals) ── */
+#jalonKpiModalOverlay .m-box {
+    width: 440px;
+    padding: 22px 22px 20px;
+    border-radius: 14px;
+}
+#jalonKpiModalOverlay .m-title {
+    font-size: 15px;
+    margin: 0 0 14px;
+}
+#jalonKpiModalOverlay .m-field {
+    gap: 4px;
+    margin-bottom: 11px;
+}
+#jalonKpiModalOverlay .m-label {
+    font-size: 12px;
+}
+#jalonKpiModalOverlay .m-hint {
+    font-size: 10.5px;
+}
+#jalonKpiModalOverlay .m-row {
+    gap: 8px;
+}
+#jalonKpiModalOverlay .m-input {
+    padding: 8px 12px;
+    font-size: 13px;
+}
+#jalonKpiModalOverlay select.m-input {
+    height: 38px;
+}
+#jalonKpiModalOverlay .m-mode-toggle {
+    gap: 5px;
+}
+#jalonKpiModalOverlay .m-mode-btn {
+    padding: 7px 10px;
+    gap: 8px;
+}
+#jalonKpiModalOverlay .m-mode-icon {
+    width: 24px;
+    height: 24px;
+}
+#jalonKpiModalOverlay .m-mode-title {
+    font-size: 11.5px;
+}
+#jalonKpiModalOverlay .m-mode-example {
+    font-size: 9.5px;
+}
+#jalonKpiModalOverlay .m-btns {
+    margin-top: 16px;
+}
+#jalonKpiModalOverlay .m-btn-cancel,
+#jalonKpiModalOverlay .m-btn-ok {
+    height: 36px;
+    font-size: 13px;
+}
+#jalonKpiModalOverlay .m-history-wrap {
+    margin-top: 16px;
+    padding-top: 14px;
+}
+#jalonKpiModalOverlay .m-history-title {
+    margin-bottom: 8px;
+}
+#jalonKpiModalOverlay .m-history-list {
+    gap: 6px;
+    max-height: 168px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+#jalonKpiModalOverlay .m-history-row {
+    padding: 8px 10px;
+}
+
 .m-history-title {
     font-size: 10px;
     font-weight: 800;
