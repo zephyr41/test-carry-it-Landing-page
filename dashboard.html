@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Dashboard · Carry It</title>
+    <link rel="icon" type="image/png" href="assets/images/site/logo_png.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -2545,18 +2546,24 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                 : 'background:#0A2A53;color:#FFFDF6;border:none';
             const kpiHtml = renderJalonKpiCardsV2(selectedJalon, i, detailSt);
             return `<div id="jalons-detail-${i}" style="padding:4px 0 0">
-                        <div style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:#929292;margin-bottom:10px;flex-wrap:wrap">
-                            <span>Jalon ${num}/${total}</span>
-                            <span aria-hidden="true">·</span>
-                            <span>${monthLabel}</span>
-                            <span aria-hidden="true">·</span>
-                            <span style="display:inline-flex;align-items:center;gap:4px;color:${stConf.color}"><span style="width:5px;height:5px;border-radius:50%;background:${stConf.dot};display:inline-block;flex-shrink:0"></span>${stConf.label}</span>
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:10px">
+                            <div style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:#929292;flex-wrap:wrap">
+                                <span>Jalon ${num}/${total}</span>
+                                <span aria-hidden="true">·</span>
+                                <span>${monthLabel}</span>
+                                <span aria-hidden="true">·</span>
+                                <span style="display:inline-flex;align-items:center;gap:4px;color:${stConf.color}"><span style="width:5px;height:5px;border-radius:50%;background:${stConf.dot};display:inline-block;flex-shrink:0"></span>${stConf.label}</span>
+                            </div>
+                            <button onclick="openJalonEditModal(${i},'${escHtml(selectedJalon?.id||'')}')" style="display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:500;color:#929292;background:none;border:none;cursor:pointer;font-family:inherit;padding:4px 0;flex-shrink:0" title="Modifier ce jalon">
+                                <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                Modifier
+                            </button>
                         </div>
-                        <h2 style="font-family:inherit;font-size:26px;font-weight:700;color:#FFFDF6;letter-spacing:-0.02em;line-height:1.15;margin-bottom:8px">${title}</h2>
+                        <h2 data-jalon-title onclick="startInlineJalonTitleEdit(${i},'${escHtml(selectedJalon?.id||'')}')" style="font-family:inherit;font-size:26px;font-weight:700;color:#FFFDF6;letter-spacing:-0.02em;line-height:1.15;margin-bottom:8px;cursor:text" title="Cliquer pour modifier">${title}</h2>
                         <div style="font-size:13.5px;color:#929292;margin-bottom:24px">Échéance · ${date || '—'}</div>
                         <div style="height:1px;background:rgba(255,253,246,0.07);margin:0 0 22px"></div>
                         <div style="font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:#929292;margin-bottom:10px">Critère de validation</div>
-                        <p style="font-size:14.5px;color:#FFFDF6;line-height:1.55;margin-bottom:28px;font-weight:400;max-width:640px">${validationText || '<span style="color:#929292">—</span>'}</p>
+                        <p data-jalon-critere onclick="startInlineJalonCritereEdit(${i},'${escHtml(selectedJalon?.id||'')}')" style="font-size:14.5px;color:#FFFDF6;line-height:1.55;margin-bottom:28px;font-weight:400;max-width:640px;cursor:text" title="Cliquer pour modifier">${validationText || '<span style="color:#929292">—</span>'}</p>
                         <div style="font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:#929292;margin-bottom:10px">KPI de jalon</div>
                         ${kpiHtml}
                         ${taskBlock}
@@ -3298,7 +3305,6 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             }
             _jalonMenuData = { i, jalonId };
             const items = [
-                {id:'edit', label:'Modifier le jalon', icon:'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'},
                 {id:'add-kpi', label:'Ajouter un KPI', icon:'M12 4v16m8-8H4'},
             ];
             panel.innerHTML = items.map(it =>
@@ -3327,11 +3333,326 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             closeJalonSecondaryMenu();
             if (!saved) return;
             const { i, jalonId } = saved;
-            if (action === 'edit') openJalonsForProject(i);
-            else if (action === 'add-kpi') openJalonKpiModal(i, jalonId, 'lagging');
+            if (action === 'add-kpi') openJalonKpiModal(i, jalonId, 'lagging');
         }
 
         document.addEventListener('click', function() { closeJalonSecondaryMenu(); });
+
+        // ── JALON EDIT MODAL (jalons-edit.html card style) ───────
+        let _jalonEditModalState = null;
+
+        // ── iOS drum picker for modal ─────────────────────────────
+        (function() {
+            const DAYS_   = Array.from({length:31},(_,i)=>i+1);
+            const MONTHS_ = ['Jan','Fév','Mar','Avr','Mai','Juin','Juil','Août','Sep','Oct','Nov','Déc'];
+            const YEARS_  = Array.from({length:36},(_,i)=>2015+i);
+            const IH      = 42;
+            let _jemPickerAnchor = null;
+
+            function injectCss() {
+                if (document.getElementById('jemPickerCss')) return;
+                const s = document.createElement('style');
+                s.id = 'jemPickerCss';
+                s.textContent = `
+                    #jemCalPopup{position:fixed;z-index:9999;background:#16181f;border:1px solid rgba(255,253,246,0.12);border-radius:18px;box-shadow:0 12px 50px rgba(0,0,0,0.8);width:280px;overflow:hidden;user-select:none;}
+                    #jemCalPopup.hidden{display:none;}
+                    .jem-toolbar{display:flex;align-items:center;justify-content:space-between;padding:13px 16px 10px;border-bottom:1px solid rgba(255,253,246,0.07);}
+                    .jem-toolbar-label{font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,253,246,0.35);}
+                    .jem-done-btn{background:transparent;border:none;color:#EE4408;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;padding:2px 0;}
+                    .jem-picker-wrap{position:relative;height:210px;}
+                    .jem-picker-cols{display:flex;height:100%;}
+                    .jem-picker-col{flex:1;height:210px;overflow-y:scroll;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+                    .jem-picker-col::-webkit-scrollbar{display:none;}
+                    .jem-picker-spacer{height:84px;pointer-events:none;flex-shrink:0;}
+                    .jem-item{height:42px;scroll-snap-align:center;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:400;color:rgba(255,253,246,0.85);cursor:pointer;}
+                    .jem-picker-col+.jem-picker-col{border-left:1px solid rgba(255,253,246,0.06);}
+                    .jem-picker-wrap::before,.jem-picker-wrap::after{content:'';position:absolute;left:0;right:0;z-index:2;height:84px;pointer-events:none;}
+                    .jem-picker-wrap::before{top:0;background:linear-gradient(to bottom,#16181f 0%,rgba(22,24,31,0) 100%);}
+                    .jem-picker-wrap::after{bottom:0;background:linear-gradient(to top,#16181f 0%,rgba(22,24,31,0) 100%);}
+                    .jem-highlight{position:absolute;top:50%;left:10px;right:10px;height:42px;transform:translateY(-50%);background:rgba(238,68,8,0.10);border:1px solid rgba(238,68,8,0.28);border-radius:10px;pointer-events:none;z-index:1;}
+                `;
+                document.head.appendChild(s);
+            }
+
+            function buildCol(items, colId) {
+                const t = [...items,...items,...items];
+                return `<div class="jem-picker-col" id="${colId}"><div class="jem-picker-spacer"></div>${t.map(v=>`<div class="jem-item">${v}</div>`).join('')}<div class="jem-picker-spacer"></div></div>`;
+            }
+
+            function getOrCreatePopup() {
+                let p = document.getElementById('jemCalPopup');
+                if (!p) {
+                    p = document.createElement('div');
+                    p.id = 'jemCalPopup';
+                    p.className = 'hidden';
+                    document.body.appendChild(p);
+                }
+                return p;
+            }
+
+            function setVal(col, items, val) {
+                const idx = items.findIndex(v=>v===val);
+                if (idx>=0) col.scrollTop = (items.length+idx)*IH;
+            }
+            function getVal(col, items) {
+                const raw = Math.round(col.scrollTop/IH);
+                return items[((raw%items.length)+items.length)%items.length];
+            }
+            function setupInfinite(col, n) {
+                let jumping=false;
+                col.addEventListener('scroll',function(){
+                    if(jumping){jumping=false;return;}
+                    const st=this.scrollTop;
+                    if(st<n*IH){jumping=true;this.scrollTop=st+n*IH;}
+                    else if(st>=2*n*IH){jumping=true;this.scrollTop=st-n*IH;}
+                });
+            }
+
+            window.openJemDatePicker = function(chipEl) {
+                injectCss();
+                const popup = getOrCreatePopup();
+                _jemPickerAnchor = chipEl;
+                const hiddenInput = document.getElementById('jem-date');
+                const d = hiddenInput && hiddenInput.value ? new Date(hiddenInput.value+'T12:00:00') : new Date();
+                popup.innerHTML = `
+                    <div class="jem-toolbar">
+                        <span class="jem-toolbar-label">Date du jalon</span>
+                        <button class="jem-done-btn" onclick="jemIosDone()">Confirmer</button>
+                    </div>
+                    <div class="jem-picker-wrap">
+                        <div class="jem-highlight"></div>
+                        <div class="jem-picker-cols">
+                            ${buildCol(YEARS_,'jemColYear')}
+                            ${buildCol(MONTHS_,'jemColMonth')}
+                            ${buildCol(DAYS_,'jemColDay')}
+                        </div>
+                    </div>`;
+                const rect = chipEl.getBoundingClientRect();
+                const ph=270, pw=280;
+                let top=rect.bottom+8, left=rect.left;
+                if(top+ph>window.innerHeight) top=rect.top-ph-8;
+                if(left+pw>window.innerWidth) left=window.innerWidth-pw-12;
+                popup.style.top=top+'px'; popup.style.left=left+'px';
+                popup.classList.remove('hidden');
+                requestAnimationFrame(()=>{
+                    const yc=document.getElementById('jemColYear');
+                    const mc=document.getElementById('jemColMonth');
+                    const dc=document.getElementById('jemColDay');
+                    const yr=YEARS_.includes(d.getFullYear())?d.getFullYear():new Date().getFullYear();
+                    setVal(yc,YEARS_,yr);
+                    setVal(mc,MONTHS_,MONTHS_[d.getMonth()]);
+                    setVal(dc,DAYS_,d.getDate());
+                    setupInfinite(yc,YEARS_.length);
+                    setupInfinite(mc,MONTHS_.length);
+                    setupInfinite(dc,DAYS_.length);
+                });
+            };
+
+            window.jemIosDone = function() {
+                const popup = document.getElementById('jemCalPopup');
+                const yc=document.getElementById('jemColYear');
+                const mc=document.getElementById('jemColMonth');
+                const dc=document.getElementById('jemColDay');
+                if(!yc) return;
+                const year  = getVal(yc,YEARS_);
+                const month = MONTHS_.indexOf(getVal(mc,MONTHS_));
+                const day   = getVal(dc,DAYS_);
+                const maxDay = new Date(year,month+1,0).getDate();
+                const date  = new Date(year,month,Math.min(day,maxDay),12,0,0);
+                const iso   = `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+                const hiddenInput = document.getElementById('jem-date');
+                if(hiddenInput) hiddenInput.value = iso;
+                const label = document.getElementById('jem-date-label');
+                if(label) label.textContent = date.toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'});
+                if(popup) popup.classList.add('hidden');
+            };
+
+            document.addEventListener('mousedown', function(e) {
+                const popup = document.getElementById('jemCalPopup');
+                if (!popup || popup.classList.contains('hidden')) return;
+                if (!popup.contains(e.target) && e.target!==_jemPickerAnchor && !_jemPickerAnchor?.contains(e.target))
+                    popup.classList.add('hidden');
+            });
+        })();
+
+        function openJalonEditModal(i, jalonId) {
+            const obj = allObjectifs[i];
+            if (!obj) return;
+            const jalons = getSortedProjectJalons(obj);
+            const jalon  = jalons.find(j => j.id === jalonId) || jalons[0];
+            if (!jalon) return;
+            const total = jalons.length;
+            const idx   = Math.max(0, jalons.findIndex(j => j.id === jalon.id));
+            _jalonEditModalState = { i, jalonId };
+
+            const dateLabel = jalon.date ? new Date(jalon.date).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'}) : 'Choisir une date';
+            const toISO     = d => { if(!d) return ''; const dt=new Date(d); return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`; };
+            const rawDate   = toISO(jalon.date);
+            const titre     = escHtml(jalon.titre  || jalon.title || '');
+            const desc      = escHtml(jalon.desc   || '');
+            const critere   = escHtml(jalon.critere || jalon.kpi || '');
+
+            const IS = 'width:100%;box-sizing:border-box;background:#1C1C1F;border:1px solid rgba(255,253,246,0.12);border-radius:10px;padding:10px 14px;font-family:inherit;font-size:14px;color:#FFFDF6;outline:none;transition:border-color 0.15s,box-shadow 0.15s';
+            const FI = `this.style.borderColor='rgba(238,68,8,0.8)';this.style.boxShadow='0 0 0 3px rgba(238,68,8,0.15)'`;
+            const FO = `this.style.borderColor='rgba(255,253,246,0.12)';this.style.boxShadow='none'`;
+
+            let overlay = document.getElementById('jalonEditModalOverlay');
+            if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.id = 'jalonEditModalOverlay';
+                overlay.style.cssText = 'position:fixed;inset:0;z-index:6000;background:rgba(0,0,0,0.72);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box';
+                overlay.addEventListener('mousedown', e => { if (e.target === overlay) closeJalonEditModal(); });
+                document.body.appendChild(overlay);
+            }
+            overlay.style.display = 'flex';
+            overlay.innerHTML = `
+                <div style="background:#111113;border:1px solid rgba(255,253,246,0.1);border-radius:16px;padding:28px;width:min(560px,100%);max-height:88vh;overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,0,0.8);position:relative">
+                    <button onclick="closeJalonEditModal()" style="position:absolute;top:16px;right:16px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;background:rgba(255,253,246,0.06);border:none;border-radius:6px;color:#929292;cursor:pointer;font-family:inherit" title="Fermer">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                    </button>
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-right:36px">
+                        <span style="font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#929292">JALON ${idx+1} / ${total}</span>
+                        ${rawDate ? `<span style="font-size:11px;color:rgba(146,146,146,0.6)">·</span><span style="font-size:11px;color:rgba(146,146,146,0.6)">${dateLabel}</span>` : ''}
+                    </div>
+                    <div style="height:1px;background:rgba(255,253,246,0.07);margin:0 0 22px"></div>
+                    <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:22px">
+                        <label style="font-size:13px;font-weight:600;color:#FFFDF6">Titre du jalon</label>
+                        <span style="font-size:11px;color:#929292">Un nom court.</span>
+                        <input id="jem-title" type="text" value="${titre}" placeholder="Ex : Premier client payant" style="${IS}" onfocus="${FI}" onblur="${FO}">
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:22px">
+                        <label style="font-size:13px;font-weight:600;color:#FFFDF6">Description du jalon</label>
+                        <span style="font-size:11px;color:#929292">L'objectif, en une phrase simple.</span>
+                        <textarea id="jem-desc" rows="2" placeholder="Ex : Terminer un marathon complet." style="${IS};resize:none;line-height:1.55" onfocus="${FI}" onblur="${FO}">${desc}</textarea>
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:22px">
+                        <label style="font-size:13px;font-weight:600;color:#FFFDF6">Critère de validation</label>
+                        <span style="font-size:11px;color:#929292">Une règle claire que tu peux vérifier.</span>
+                        <textarea id="jem-critere" rows="3" placeholder="Une règle simple, vérifiable oui ou non." style="${IS};resize:none;line-height:1.55" onfocus="${FI}" onblur="${FO}">${critere}</textarea>
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:6px">
+                        <label style="font-size:13px;font-weight:600;color:#FFFDF6">Échéance</label>
+                        <span style="font-size:11px;color:#929292">Date cible du jalon.</span>
+                        <div>
+                            <button id="jem-date-chip" onclick="openJemDatePicker(this)" style="display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border-radius:8px;background:rgba(238,68,8,0.10);border:1px solid rgba(238,68,8,0.35);color:#EE4408;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;transition:background 120ms">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                                <span id="jem-date-label">${dateLabel}</span>
+                            </button>
+                            <input id="jem-date" type="hidden" value="${rawDate}">
+                        </div>
+                    </div>
+                    <div style="height:1px;background:rgba(255,253,246,0.07);margin:22px 0 18px"></div>
+                    <div style="display:flex;justify-content:flex-end">
+                        <button onclick="saveJalonEditModal()" style="padding:10px 24px;border-radius:8px;background:#EE4408;color:#fff;border:none;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit">Sauvegarder</button>
+                    </div>
+                </div>`;
+        }
+
+        function closeJalonEditModal() {
+            const overlay = document.getElementById('jalonEditModalOverlay');
+            if (overlay) overlay.style.display = 'none';
+            _jalonEditModalState = null;
+        }
+
+        function saveJalonEditModal() {
+            if (!_jalonEditModalState) return;
+            const { i, jalonId } = _jalonEditModalState;
+            const obj = allObjectifs[i];
+            if (!obj) return;
+            const jalon = (obj.jalons || []).find(j => j.id === jalonId);
+            if (!jalon) return;
+            const titleEl   = document.getElementById('jem-title');
+            const descEl    = document.getElementById('jem-desc');
+            const critereEl = document.getElementById('jem-critere');
+            const dateEl    = document.getElementById('jem-date');
+            if (titleEl)   { jalon.titre  = titleEl.value.trim();   jalon.title = jalon.titre; }
+            if (descEl)    { jalon.desc   = descEl.value.trim(); }
+            if (critereEl) { jalon.critere = critereEl.value.trim(); jalon.kpi   = jalon.critere; }
+            if (dateEl && dateEl.value) jalon.date = new Date(dateEl.value + 'T12:00:00').toISOString();
+            saveAllObjectifs();
+            closeJalonEditModal();
+            const jalons = getSortedProjectJalons(obj);
+            const selectedIndex = Math.max(0, jalons.findIndex(j => j.id === jalonId));
+            const updatedJalon  = jalons.find(j => j.id === jalonId) || jalons[0];
+            const detailEl = document.getElementById(`jalons-detail-${i}`);
+            if (detailEl) detailEl.outerHTML = buildJalonDetailCard(obj, i, updatedJalon, selectedIndex, jalons.length);
+            // refresh rail title
+            const rail = document.querySelector(`[data-jid="${CSS.escape(jalonId)}"] [data-jtitle]`);
+            if (rail) rail.textContent = jalon.titre || jalon.title || '';
+            showToast('Jalon mis à jour');
+        }
+
+        // ── INLINE TITLE / CRITÈRE EDITING ───────────────────────
+        function startInlineJalonTitleEdit(i, jalonId) {
+            const detail = document.getElementById(`jalons-detail-${i}`);
+            if (!detail) return;
+            const h2 = detail.querySelector('[data-jalon-title]');
+            if (!h2) return;
+            const current = h2.textContent;
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = current;
+            input.style.cssText = 'width:100%;box-sizing:border-box;font-family:inherit;font-size:26px;font-weight:700;color:#FFFDF6;letter-spacing:-0.02em;line-height:1.15;background:transparent;border:none;border-bottom:2px solid rgba(238,68,8,0.7);outline:none;padding:0 0 4px;margin-bottom:8px';
+            h2.replaceWith(input);
+            input.focus();
+            input.select();
+            const commit = () => {
+                const val = input.value.trim();
+                const obj = allObjectifs[i];
+                if (val && val !== current && obj) {
+                    const jalon = (obj.jalons || []).find(j => j.id === jalonId);
+                    if (jalon) { jalon.titre = val; jalon.title = val; saveAllObjectifs(); }
+                }
+                const newH2 = document.createElement('h2');
+                newH2.setAttribute('data-jalon-title', '');
+                newH2.setAttribute('onclick', `startInlineJalonTitleEdit(${i},'${jalonId}')`);
+                newH2.setAttribute('title', 'Cliquer pour modifier');
+                newH2.style.cssText = 'font-family:inherit;font-size:26px;font-weight:700;color:#FFFDF6;letter-spacing:-0.02em;line-height:1.15;margin-bottom:8px;cursor:text';
+                newH2.textContent = val || current;
+                input.replaceWith(newH2);
+                if (val && val !== current) {
+                    const rail = document.querySelector(`[data-jid="${CSS.escape(jalonId)}"] [data-jtitle]`);
+                    if (rail) rail.textContent = val;
+                }
+            };
+            input.addEventListener('blur', commit);
+            input.addEventListener('keydown', e => {
+                if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
+                if (e.key === 'Escape') { input.value = current; input.blur(); }
+            });
+        }
+
+        function startInlineJalonCritereEdit(i, jalonId) {
+            const detail = document.getElementById(`jalons-detail-${i}`);
+            if (!detail) return;
+            const p = detail.querySelector('[data-jalon-critere]');
+            if (!p) return;
+            const obj = allObjectifs[i];
+            const jalon = obj ? (obj.jalons || []).find(j => j.id === jalonId) : null;
+            const current = jalon ? (jalon.critere || jalon.kpi || '') : p.textContent;
+            const ta = document.createElement('textarea');
+            ta.value = current;
+            ta.rows = 3;
+            ta.style.cssText = 'width:100%;box-sizing:border-box;font-family:inherit;font-size:14.5px;color:#FFFDF6;line-height:1.55;font-weight:400;background:rgba(255,253,246,0.04);border:1px solid rgba(238,68,8,0.5);border-radius:8px;outline:none;padding:10px 12px;resize:none;margin-bottom:28px;box-shadow:0 0 0 3px rgba(238,68,8,0.12)';
+            p.replaceWith(ta);
+            ta.focus();
+            const commit = () => {
+                const val = ta.value.trim();
+                if (obj && jalon) { jalon.critere = val; jalon.kpi = val; saveAllObjectifs(); }
+                const newP = document.createElement('p');
+                newP.setAttribute('data-jalon-critere', '');
+                newP.setAttribute('onclick', `startInlineJalonCritereEdit(${i},'${jalonId}')`);
+                newP.setAttribute('title', 'Cliquer pour modifier');
+                newP.style.cssText = 'font-size:14.5px;color:#FFFDF6;line-height:1.55;margin-bottom:28px;font-weight:400;max-width:640px;cursor:text';
+                newP.textContent = val || '';
+                if (!val) newP.innerHTML = '<span style="color:#929292">—</span>';
+                ta.replaceWith(newP);
+            };
+            ta.addEventListener('blur', commit);
+            ta.addEventListener('keydown', e => {
+                if (e.key === 'Escape') { ta.value = current; ta.blur(); }
+            });
+        }
 
         // ── INLINE KPI EDITING ────────────────────────────────────
         function startInlineKpiTitleEdit(i, jalonId, type) {
