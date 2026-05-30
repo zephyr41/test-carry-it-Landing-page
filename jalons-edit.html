@@ -1510,22 +1510,24 @@
         .date-chip:hover { background: rgba(238,68,8,0.18); border-color: rgba(238,68,8,0.6); }
         .date-chip svg { flex-shrink: 0; opacity: 0.9; }
 
-        /* ── CALENDAR POPUP ── */
-        .cal-popup { position: fixed; z-index: 9999; background: #1a1c22; border: 1px solid rgba(255,253,246,0.14); border-radius: 12px; box-shadow: 0 8px 40px rgba(0,0,0,0.7); padding: 14px; width: 256px; user-select: none; }
+        /* ── IOS DRUM PICKER ── */
+        .cal-popup { position: fixed; z-index: 9999; background: #16181f; border: 1px solid rgba(255,253,246,0.12); border-radius: 18px; box-shadow: 0 12px 50px rgba(0,0,0,0.8); width: 280px; overflow: hidden; user-select: none; }
         .cal-popup.hidden { display: none; }
-        .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-        .cal-nav { background: transparent; border: none; color: rgba(255,253,246,0.55); cursor: pointer; padding: 4px 8px; border-radius: 5px; font-size: 16px; line-height: 1; transition: color 100ms, background 100ms; }
-        .cal-nav:hover { color: #FFFDF6; background: rgba(255,253,246,0.07); }
-        .cal-month-label { font-size: 14px; font-weight: 650; color: #FFFDF6; }
-        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
-        .cal-dow { text-align: center; font-size: 10px; font-weight: 700; color: rgba(255,253,246,0.35); padding-bottom: 6px; text-transform: uppercase; letter-spacing: 0.06em; }
-        .cal-day { text-align: center; padding: 5px 2px; font-size: 13px; color: rgba(255,253,246,0.75); border-radius: 5px; cursor: pointer; transition: background 80ms, color 80ms; }
-        .cal-day:hover { background: rgba(255,253,246,0.09); color: #FFFDF6; }
-        .cal-day.other-month { color: rgba(255,253,246,0.2); }
-        .cal-day.today { color: #EE4408; font-weight: 700; }
-        .cal-day.selected { background: #EE4408; color: #FFFDF6; font-weight: 700; }
-        .cal-day.selected:hover { background: #d83d08; }
-        .cal-day.empty { cursor: default; }
+        .ios-toolbar { display: flex; align-items: center; justify-content: space-between; padding: 13px 16px 10px; border-bottom: 1px solid rgba(255,253,246,0.07); }
+        .ios-toolbar-label { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,253,246,0.35); }
+        .ios-done-btn { background: transparent; border: none; color: #EE4408; font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit; padding: 2px 0; transition: opacity 100ms; }
+        .ios-done-btn:hover { opacity: 0.75; }
+        .ios-picker-wrap { position: relative; height: 210px; }
+        .ios-picker-cols { display: flex; height: 100%; }
+        .ios-picker-col { flex: 1; height: 210px; overflow-y: scroll; scroll-snap-type: y mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+        .ios-picker-col::-webkit-scrollbar { display: none; }
+        .ios-picker-spacer { height: 84px; pointer-events: none; flex-shrink: 0; }
+        .ios-item { height: 42px; scroll-snap-align: center; display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 400; color: rgba(255,253,246,0.85); cursor: pointer; }
+        .ios-picker-col + .ios-picker-col { border-left: 1px solid rgba(255,253,246,0.06); }
+        .ios-picker-wrap::before, .ios-picker-wrap::after { content: ''; position: absolute; left: 0; right: 0; z-index: 2; height: 84px; pointer-events: none; }
+        .ios-picker-wrap::before { top: 0; background: linear-gradient(to bottom, #16181f 0%, rgba(22,24,31,0) 100%); }
+        .ios-picker-wrap::after  { bottom: 0; background: linear-gradient(to top, #16181f 0%, rgba(22,24,31,0) 100%); }
+        .ios-highlight { position: absolute; top: 50%; left: 10px; right: 10px; height: 42px; transform: translateY(-50%); background: rgba(238,68,8,0.10); border: 1px solid rgba(238,68,8,0.28); border-radius: 10px; pointer-events: none; z-index: 1; }
 
         /* ── Simple form rows ── */
         .je-list { display: flex; flex-direction: column; gap: 12px; max-width: 680px; margin: 0 auto; padding: 32px 20px 24px; }
@@ -1926,63 +1928,114 @@
     <div id="calPopup" class="cal-popup hidden"></div>
     <script>
     (function() {
-        const MONTHS_FR = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
-        const DAYS_FR   = ['Lu','Ma','Me','Je','Ve','Sa','Di'];
-        let calState = { targetId: null, year: 0, month: 0, anchorEl: null };
+        const DAYS   = Array.from({length: 31}, (_, i) => i + 1);
+        const MONTHS = ['Jan','Fév','Mar','Avr','Mai','Juin','Juil','Août','Sep','Oct','Nov','Déc'];
+        const YEARS  = Array.from({length: 36}, (_, i) => 2015 + i); // 2015-2050
+        const ITEM_H = 42;
+
+        let iosState = { targetId: null, anchorEl: null };
         const popup = document.getElementById('calPopup');
-        function openDatePicker(chipEl, milestoneId) {
-            const m = milestones.find(x => x.id === milestoneId);
-            const d = m ? new Date(m.date) : new Date();
-            calState = { targetId: milestoneId, year: d.getFullYear(), month: d.getMonth(), anchorEl: chipEl };
-            renderCal(); positionPopup(chipEl); popup.classList.remove('hidden');
+
+        function buildCol(items, colId) {
+            const t = [...items, ...items, ...items];
+            return `<div class="ios-picker-col" id="${colId}"><div class="ios-picker-spacer"></div>${t.map(v => `<div class="ios-item">${v}</div>`).join('')}<div class="ios-picker-spacer"></div></div>`;
         }
+
+        function buildPopup() {
+            popup.innerHTML = `
+                <div class="ios-toolbar">
+                    <span class="ios-toolbar-label">Date du jalon</span>
+                    <button class="ios-done-btn" onclick="iosDone()">Confirmer</button>
+                </div>
+                <div class="ios-picker-wrap">
+                    <div class="ios-highlight"></div>
+                    <div class="ios-picker-cols">
+                        ${buildCol(YEARS,  'ios-col-year')}
+                        ${buildCol(MONTHS, 'ios-col-month')}
+                        ${buildCol(DAYS,   'ios-col-day')}
+                    </div>
+                </div>`;
+        }
+
+        function setVal(colEl, items, value) {
+            const idx = items.findIndex(v => v === value);
+            if (idx >= 0) colEl.scrollTop = (items.length + idx) * ITEM_H;
+        }
+
+        function getVal(colEl, items) {
+            const raw = Math.round(colEl.scrollTop / ITEM_H);
+            return items[((raw % items.length) + items.length) % items.length];
+        }
+
+        function setupInfinite(colEl, n) {
+            let jumping = false;
+            colEl.addEventListener('scroll', function() {
+                if (jumping) { jumping = false; return; }
+                const st = this.scrollTop;
+                if (st < n * ITEM_H) {
+                    jumping = true;
+                    this.scrollTop = st + n * ITEM_H;
+                } else if (st >= 2 * n * ITEM_H) {
+                    jumping = true;
+                    this.scrollTop = st - n * ITEM_H;
+                }
+            });
+        }
+
         function positionPopup(anchor) {
             const rect = anchor.getBoundingClientRect();
-            const ph = 320, pw = 256;
+            const ph = 270, pw = 280;
             let top = rect.bottom + 8, left = rect.left;
             if (top + ph > window.innerHeight) top = rect.top - ph - 8;
-            if (left + pw > window.innerWidth) left = window.innerWidth - pw - 12;
+            if (left + pw > window.innerWidth)  left = window.innerWidth - pw - 12;
             popup.style.top = top + 'px'; popup.style.left = left + 'px';
         }
-        function renderCal() {
-            const { year, month, targetId } = calState;
-            const m = milestones.find(x => x.id === targetId);
-            const sel = m ? new Date(m.date) : null;
-            const today = new Date();
-            const firstDay = new Date(year, month, 1);
-            let startDow = firstDay.getDay(); startDow = (startDow + 6) % 7;
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-            let cells = '';
-            DAYS_FR.forEach(d => { cells += `<div class="cal-dow">${d}</div>`; });
-            for (let i = 0; i < startDow; i++) cells += `<div class="cal-day empty"></div>`;
-            for (let d = 1; d <= daysInMonth; d++) {
-                const isToday = today.getFullYear()===year && today.getMonth()===month && today.getDate()===d;
-                const isSel   = sel && sel.getFullYear()===year && sel.getMonth()===month && sel.getDate()===d;
-                const cls = ['cal-day', isToday?'today':'', isSel?'selected':''].filter(Boolean).join(' ');
-                cells += `<div class="${cls}" onclick="pickDay(${d})">${d}</div>`;
-            }
-            popup.innerHTML = `<div class="cal-header"><button class="cal-nav" onclick="calNav(-1)">&#8249;</button><span class="cal-month-label">${MONTHS_FR[month]} ${year}</span><button class="cal-nav" onclick="calNav(1)">&#8250;</button></div><div class="cal-grid">${cells}</div>`;
-        }
-        window.openDatePicker = openDatePicker;
-        window.calNav = function(dir) {
-            calState.month += dir;
-            if (calState.month > 11) { calState.month = 0; calState.year++; }
-            if (calState.month < 0)  { calState.month = 11; calState.year--; }
-            renderCal();
+
+        window.openDatePicker = function(chipEl, milestoneId) {
+            const m = milestones.find(x => x.id === milestoneId);
+            const d = m && m.date ? new Date(m.date) : new Date();
+            iosState = { targetId: milestoneId, anchorEl: chipEl };
+            buildPopup();
+            positionPopup(chipEl);
+            popup.classList.remove('hidden');
+            requestAnimationFrame(() => {
+                const yc = document.getElementById('ios-col-year');
+                const mc = document.getElementById('ios-col-month');
+                const dc = document.getElementById('ios-col-day');
+                const yr = YEARS.includes(d.getFullYear()) ? d.getFullYear() : new Date().getFullYear();
+                setVal(yc, YEARS,  yr);
+                setVal(mc, MONTHS, MONTHS[d.getMonth()]);
+                setVal(dc, DAYS,   d.getDate());
+                setupInfinite(yc, YEARS.length);
+                setupInfinite(mc, MONTHS.length);
+                setupInfinite(dc, DAYS.length);
+            });
         };
-        window.pickDay = function(d) {
-            const { year, month, targetId } = calState;
-            const date = new Date(year, month, d, 12, 0, 0);
-            const iso = date.toISOString().slice(0, 10);
-            updateDate(targetId, iso);
+
+        window.iosDone = function() {
+            const yc = document.getElementById('ios-col-year');
+            const mc = document.getElementById('ios-col-month');
+            const dc = document.getElementById('ios-col-day');
+            if (!yc) return;
+            const year  = getVal(yc, YEARS);
+            const month = MONTHS.indexOf(getVal(mc, MONTHS));
+            const day   = getVal(dc, DAYS);
+            const maxDay = new Date(year, month + 1, 0).getDate();
+            const date = new Date(year, month, Math.min(day, maxDay), 12, 0, 0);
+            updateDate(iosState.targetId, date.toISOString().slice(0, 10));
             popup.classList.add('hidden');
         };
+
         document.addEventListener('mousedown', function(e) {
-            if (!popup.classList.contains('hidden') && !popup.contains(e.target) && e.target !== calState.anchorEl && !calState.anchorEl?.contains(e.target)) {
+            if (!popup.classList.contains('hidden') && !popup.contains(e.target) &&
+                e.target !== iosState.anchorEl && !iosState.anchorEl?.contains(e.target)) {
                 popup.classList.add('hidden');
             }
         });
-        document.addEventListener('keydown', function(e) { if (e.key === 'Escape') popup.classList.add('hidden'); });
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') popup.classList.add('hidden');
+            if (e.key === 'Enter')  window.iosDone();
+        });
     })();
     </script>
 
