@@ -1530,6 +1530,43 @@
         .ios-picker-wrap::after  { bottom: 0; background: linear-gradient(to top, #16181f 0%, rgba(22,24,31,0) 100%); }
         .ios-highlight { position: absolute; top: 50%; left: 10px; right: 10px; height: 42px; transform: translateY(-50%); background: rgba(238,68,8,0.10); border: 1px solid rgba(238,68,8,0.28); border-radius: 10px; pointer-events: none; z-index: 1; }
 
+        /* ── RETRO WHY ACCORDION ──────────────────────────────── */
+        .retro-why { width: 100%; max-width: 580px; margin-top: 24px; text-align: left; }
+        .retro-why-toggle {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 10px 0;
+            background: transparent;
+            border: none;
+            border-top: 1px solid var(--c-border);
+            cursor: pointer;
+            color: rgba(255,253,246,0.35);
+            font-size: 11px;
+            font-weight: 600;
+            font-family: var(--font-stack);
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+            transition: color 150ms;
+        }
+        .retro-why-toggle:hover { color: var(--c-gris); }
+        .retro-chevron { width: 12px; height: 12px; flex-shrink: 0; transition: transform 220ms cubic-bezier(0.16,1,0.3,1); }
+        .retro-why.is-open .retro-chevron { transform: rotate(180deg); }
+        .retro-why-body { display: none; padding: 16px 0 4px; }
+        .retro-why.is-open .retro-why-body { display: block; }
+        .retro-copy-block { display: flex; flex-direction: column; gap: 16px; }
+        .retro-section { }
+        .retro-copy-block p { font-size: 13px; line-height: 1.7; color: rgba(255,253,246,0.45); margin: 0; }
+        .retro-section-label { display: block; font-size: 10px; font-weight: 600; color: rgba(255,253,246,0.3); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; }
+        .maze-steps { display: flex; flex-direction: column; gap: 36px; }
+        .maze-step-num { display: block; font-size: 11px; font-weight: 700; color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 4px; }
+        .maze-step-title { display: block; font-size: 15px; font-weight: 700; color: var(--c-blanc); margin-bottom: 5px; }
+        .maze-step-desc { display: block; font-size: 13px; color: var(--c-gris); line-height: 1.6; margin-bottom: 16px; }
+        .maze-wrap { display: flex; justify-content: center; }
+        .maze-svg { width: 100%; max-width: 260px; height: auto; border-radius: 8px; display: block; box-shadow: 0 4px 20px rgba(0,0,0,0.35); }
+
     </style>
 </head>
 <body>
@@ -1602,6 +1639,32 @@
         <span class="methode-overline">Méthode</span>
         <span class="trajectoire-label">Planifiez vos jalons en rétroplanning.</span>
         <span class="trajectoire-sub">Partez de la date finale, puis remontez jusqu'au premier jalon.<br>Chaque jalon doit être daté et vérifiable.</span>
+
+        <div class="retro-why">
+            <button class="retro-why-toggle" aria-expanded="false"
+                onclick="var el=this.closest('.retro-why');el.classList.toggle('is-open');this.setAttribute('aria-expanded',el.classList.contains('is-open'))">
+                <span>Pourquoi en rétroplanning ?</span>
+                <svg class="retro-chevron" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+            <div class="retro-why-body">
+
+                <div class="retro-copy-block">
+                    <div class="retro-section">
+                        <span class="retro-section-label">Pourquoi utiliser le rétroplanning ?</span>
+                        <p>Partir du présent ouvre trop de possibilités. Partir de la fin force à garder uniquement les étapes nécessaires.</p>
+                        <p><strong>Biais d'optimisme / sous-estimation</strong><br>La planification depuis le présent peut faire sous-estimer les délais, les obstacles et les temps morts. Le rétroplanning sert à rendre ces contraintes plus visibles.</p>
+                        <p><strong>Complexité</strong><br>Le rétroplanning est surtout utile quand l'objectif est complexe, long, ou composé de plusieurs étapes dépendantes.</p>
+                    </div>
+                    <div class="retro-section">
+                        <span class="retro-section-label">Planification vers l'avant</span>
+                        <p>Elle sert à l'exécution quotidienne : choisir les prochaines actions concrètes avec les ressources disponibles maintenant.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </div>
 
     <div class="main-container" id="timelineStart">
