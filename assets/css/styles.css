@@ -1869,6 +1869,7 @@
         .pain-section h2 {
             font-size: var(--text-h2);
             font-weight: 700;
+            font-family: var(--font-primary);
             color: var(--color-text-primary);
             margin-bottom: var(--space-16);
             line-height: 1.3;
@@ -2059,6 +2060,34 @@
             height: 1px;
             background: rgba(255, 255, 255, 0.06);
             width: 100%;
+        }
+
+        .pain-narrative {
+            margin: var(--space-48) 0;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .pain-para {
+            font-size: 15px;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.72);
+            line-height: 1.7;
+            font-family: var(--font-primary);
+            margin: 0;
+        }
+
+        .pain-para strong {
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .pain-para--opener {
+            font-size: 18px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 6px;
         }
 
         /* Pain Statements Format (legacy) */

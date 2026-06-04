@@ -566,3 +566,26 @@ CarryIT est une structure pour ceux qui ont une ambition sérieuse, qui savent q
 > Ce n’est pas une app pour cocher des tâches au hasard. C’est un cadre pour relier ce que vous voulez construire dans dix ans à ce que vous faites aujourd’hui.
 
 
+
+
+
+  ---
+  ---
+  Questions to Consider
+
+  - "Does the closing section (#ajustement + 'Voilà Carry IT') earn a different visual treatment than the four product steps before it? Should it feel like arrival rather than step 5?"
+
+  yes its an conclusion. an conclusion of the all system in one dashboard
+
+  - "The section-closing accent lines were meant to anchor the payoff of each section — but do they land harder if they appear once instead of four times?"
+
+à mon avis on ne clarifie pas la valeur ajouté encore de chaque section.
+
+ce qu'il faut fair ecomprendre : 
+
+le smart donne une cible
+
+les jalons donnes les grandes étapes et nous donne sur quoi ce concentre Maintenant. un objectif très précis à court terme. 
+
+
+  ---
