@@ -5,6 +5,7 @@ Point d'entree pour travailler sans bruit.
 ## A ouvrir en premier
 
 - [index.html](index.html)
+- [index-v2.html](index-v2.html)
 - [dashboard.html](dashboard.html)
 - [objectif.html](objectif.html)
 - [objectif-intro.html](objectif-intro.html)
@@ -38,7 +39,6 @@ Point d'entree pour travailler sans bruit.
 ## Archive
 
 - [archive/dashboardV2.html](archive/dashboardV2.html)
-- [archive/index-v2.html](archive/index-v2.html)
 - [archive/mockup-presentation-produit.html](archive/mockup-presentation-produit.html)
 - [archive/presentation-product.html](archive/presentation-product.html)
 

@@ -782,7 +782,7 @@
         #smart .smart-intro-muted { color: rgba(255,253,246,0.74); hyphens: none; margin-top: 0.6rem; }
         #smart .smart-pivot { font-size: var(--type-lead); font-weight: 650; color: rgba(255,253,246,0.96); line-height: 1.52; margin-top: 0.4rem; margin-bottom: 0; }
         #smart .smart-cible { font-family: 'Inter', var(--font-stack); font-size: clamp(1.7rem, 3.2vw, 2.35rem); font-weight: 700; font-style: italic; color: var(--text-dark); margin-top: -0.2rem; line-height: 1.05; }
-        #smart .smart-cta-line { margin-top: 0.9rem; padding: 1.1rem 0 0; border-top: 1px solid rgba(238,68,8,0.28); border-radius: 0; background: transparent; font-size: var(--type-body); color: #FFFDF6; }
+        #smart .smart-cta-line { margin-top: 0.9rem; padding: 1.1rem 0 0 !important; border-top: 1px solid rgba(238,68,8,0.28); border-left: none !important; border-radius: 0; background: transparent; font-size: var(--type-body); color: #FFFDF6; }
         #smart .smart-cta-line strong { color: var(--text-dark); font-weight: 700; }
         #smart .mockup-box { padding: 1.5rem; }
         #smart .smart-question { padding: 0.55rem 0; }
@@ -852,7 +852,7 @@
         .product-flow-section .ladder-step:not(.active):hover .ladder-card { transform: translateX(3px); }
         .product-flow-section .ladder-step.active .ladder-card {
             background-color: rgba(255,253,246,0.06);
-            border-color: rgba(255,253,246,0.22);
+            border: 1px solid rgba(255,253,246,0.22) !important;
             box-shadow: inset 0 1px 0 rgba(238,68,8,0.45);
             padding: 1.4rem 1.65rem;
         }
@@ -884,8 +884,8 @@
         #jalons .critere-tag { color: var(--accent); border-color: rgba(238,68,8,0.4); font-size: 0.7rem; }
         #jalons .critere-text { font-size: 0.95rem; font-weight: 600; color: var(--text-dark); }
         #jalons .jalons-critere-highlight {
-            margin-top: 0.35rem; padding: 0.85rem 0 0;
-            border-radius: 0; background: transparent;
+            margin-top: 0.35rem; padding: 0.85rem 0 0 !important;
+            border-left: none !important; border-radius: 0; background: transparent;
             font-size: var(--type-body); color: #FFFDF6; font-weight: 650; line-height: 1.48;
         }
 
@@ -1588,7 +1588,7 @@
                         <li>savoir quel palier viser maintenant ;</li>
                         <li>rester concentré sur ce qui compte à court terme.</li>
                     </ul>
-                    <p class="jalons-critere-highlight">Les jalons définissent les grandes étapes. Chaque jalon actif devient ton objectif court terme : <strong>tu sais exactement sur quoi te concentrer maintenant.</strong></p>
+                    <p class="jalons-critere-highlight">Les jalons définissent les grandes étapes.<br>Chaque jalon actif devient ton objectif court terme : <strong>tu sais exactement sur quoi te concentrer maintenant.</strong></p>
                 </div>
             </div>
         </section>

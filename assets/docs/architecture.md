@@ -25,7 +25,6 @@ Ces fichiers doivent rester visibles en premier :
 Variante de travail, a traiter comme secondaire :
 
 - `archive/dashboardV2.html`
-- `archive/index-v2.html`
 - `archive/mockup-presentation-produit.html`
 - `archive/presentation-product.html`
 
