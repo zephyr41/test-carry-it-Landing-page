@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, shrink-to-fit=no">
-    <title>Carry It</title>
+    <title>CARRY IT</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- Toutes les fonts en une seule requête non-bloquante (Inter + Archivo Black + Roboto Mono) -->
@@ -12,11 +12,22 @@
     <!-- Chart.js différé — pas nécessaire au premier rendu -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
     <!-- Critical CSS inline — rendu immédiat navbar + hero sans attendre le CSS complet -->
-    <style>@font-face{font-family:Rifton;src:url('assets/fonts/rifton/rifton-regular.otf') format('opentype');font-weight:400;font-style:normal}@font-face{font-family:Rifton;src:url('assets/fonts/rifton/rifton-italic.otf') format('opentype');font-weight:400;font-style:italic}:root{color-scheme:dark;--color-background-base:#080809;--color-background-secondary:#1C1C1E;--color-background-card:#0D1D32;--color-background-elevated:#2A2A2E;--color-text-primary:#FFFDF6;--color-text-secondary:#A8A8A8;--color-text-tertiary:#86868B;--color-text-informational:#929292;--color-accent-action:#EE4408;--color-accent-secondary:#F34C0A;--color-confirm-validity:#0A2A53;--color-focus-tracker:#404025;--color-border-subtle:rgba(255,255,255,0.08);--color-border-default:rgba(255,255,255,0.1);--color-border-strong:rgba(255,255,255,0.15);--color-interactive-hover:rgba(255,255,255,0.08);--color-interactive-active:rgba(238,68,8,0.1);--color-interactive-disabled:rgba(255,255,255,0.3);--color-success:#34C759;--color-warning:#FF9500;--color-error:#FF3B30;--font-primary:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;--font-display:'Rifton',serif;--text-h1:48px;--text-h2:32px;--text-h3:24px;--text-body:16px;--text-small:14px;--text-caption:12px;--space-8:8px;--space-16:16px;--space-24:24px;--space-32:32px;--space-48:48px;--space-64:64px;--space-96:96px;--space-120:120px;--container-max:1200px;--navbar-height:72px;--btn-height:48px;--btn-radius:8px}*{margin:0;padding:0;box-sizing:border-box}body,html{overflow-x:hidden;overflow-x:clip;width:100%;max-width:100%}h1,h2,h3,label,p,span{color:inherit}body{background-color:var(--color-background-base);color:var(--color-text-primary);font-family:var(--font-primary);font-size:var(--text-body);line-height:1.6}.navbar{position:fixed;top:0;left:0;right:0;height:var(--navbar-height);background:rgba(5,6,8,.9);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--color-border-default);padding:0 var(--space-48);display:flex;justify-content:space-between;align-items:center;z-index:1000}.navbar-logo{font-family:var(--font-display);font-size:20px;color:var(--color-text-primary);text-decoration:none;font-weight:400}.navbar-title{position:absolute;left:50%;transform:translateX(-50%);font-size:18px;font-weight:600;color:var(--color-text-primary);margin:0;font-family:var(--font-primary);letter-spacing:-.3px}.navbar-links{display:flex;gap:var(--space-32);align-items:center}.navbar-link{font-family:var(--font-primary);font-size:var(--text-small);font-weight:500;color:var(--color-text-secondary);text-decoration:none;transition:all .2s ease;position:relative}.navbar-link:hover{color:var(--color-text-primary);transform:translateY(-1px)}.navbar-link.cta{background-color:transparent;color:rgba(255,255,255,.7);padding:8px 18px;border-radius:var(--btn-radius);border:1px solid rgba(255,255,255,.18);font-weight:600}.navbar-link.cta:hover{background-color:rgba(255,255,255,.06);color:rgba(255,255,255,.9);border-color:rgba(255,255,255,.3);transform:none}.container{max-width:var(--container-max);margin:0 auto;padding:0 var(--space-24)}.btn{font-family:var(--font-primary);font-size:var(--text-body);font-weight:600;height:var(--btn-height);padding:0 var(--space-32);border-radius:var(--btn-radius);border:none;cursor:pointer;transition:all .2s ease;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;min-width:180px}.btn-primary{background-color:var(--color-accent-action);color:var(--color-text-primary);box-shadow:0 4px 20px rgba(255,94,0,.4)}.btn-primary:hover{background-color:#ff5d1a;transform:translateY(-2px);box-shadow:0 8px 30px rgba(255,94,0,.6)}.btn-secondary{background:rgba(255,255,255,.08);color:var(--color-text-primary);border:1px solid rgba(255,255,255,.3);backdrop-filter:blur(10px);box-shadow:0 4px 15px rgba(0,0,0,.3)}.btn-secondary:hover{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.5);box-shadow:0 6px 20px rgba(0,0,0,.4);transform:translateY(-2px)}.overline{font-size:var(--text-small);font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--color-accent-action)}.h1,h1{font-size:var(--text-h1);font-weight:700;line-height:1.2;color:var(--color-text-primary)}.h2,h2{font-size:var(--text-h2);font-weight:600;line-height:1.3;color:var(--color-text-primary)}.h3,h3{font-size:var(--text-h3);font-weight:600;line-height:1.4;color:var(--color-text-primary)}a,button,div,p,span{font-family:var(--font-primary)}.hero-section{position:relative;display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:100vh;padding-top:calc(var(--navbar-height) + var(--space-96));padding-bottom:var(--space-96);overflow:hidden}.hero-video-bg{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:0}.hero-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,rgba(10,10,15,.65) 0,rgba(10,10,15,.5) 40%,rgba(255,94,0,.1) 70%,rgba(10,10,15,.6) 100%);z-index:1}.hero-content{position:relative;z-index:5;max-width:800px;text-align:center;display:flex;flex-direction:column;align-items:center;animation:heroFadeIn 1.2s ease-out}@keyframes heroFadeIn{from{opacity:0;transform:translateY(30px)}}</style>
+    <style>@font-face{font-family:Rifton;src:url('assets/fonts/rifton/rifton-regular.otf') format('opentype');font-weight:400;font-style:normal}@font-face{font-family:Rifton;src:url('assets/fonts/rifton/rifton-italic.otf') format('opentype');font-weight:400;font-style:italic}:root{color-scheme:dark;--color-background-base:#080809;--color-background-secondary:#1C1C1E;--color-background-card:#0D1D32;--color-background-elevated:#2A2A2E;--color-text-primary:#FFFDF6;--color-text-secondary:#A8A8A8;--color-text-tertiary:#86868B;--color-text-informational:#929292;--color-accent-action:#EE4408;--color-accent-secondary:#F34C0A;--color-confirm-validity:#0A2A53;--color-focus-tracker:#404025;--color-border-subtle:rgba(255,255,255,0.08);--color-border-default:rgba(255,255,255,0.1);--color-border-strong:rgba(255,255,255,0.15);--color-interactive-hover:rgba(255,255,255,0.08);--color-interactive-active:rgba(238,68,8,0.1);--color-interactive-disabled:rgba(255,255,255,0.3);--color-success:#34C759;--color-warning:#FF9500;--color-error:#FF3B30;--font-primary:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;--font-display:'Rifton',serif;--text-h1:48px;--text-h2:32px;--text-h3:24px;--text-body:16px;--text-small:14px;--text-caption:12px;--space-8:8px;--space-16:16px;--space-24:24px;--space-32:32px;--space-48:48px;--space-64:64px;--space-96:96px;--space-120:120px;--container-max:1200px;--navbar-height:72px;--btn-height:48px;--btn-radius:8px}*{margin:0;padding:0;box-sizing:border-box}body,html{overflow-x:hidden;overflow-x:clip;width:100%;max-width:100%}h1,h2,h3,label,p,span{color:inherit}body{background-color:var(--color-background-base);color:var(--color-text-primary);font-family:var(--font-primary);font-size:var(--text-body);line-height:1.6}.navbar{position:fixed;top:0;left:0;right:0;height:var(--navbar-height);background:rgba(5,6,8,.9);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--color-border-default);padding:0 var(--space-48);display:flex;justify-content:space-between;align-items:center;z-index:1000}.navbar-logo{font-family:var(--font-display);font-size:20px;color:var(--color-text-primary);text-decoration:none;font-weight:400}.navbar-title{position:absolute;left:50%;transform:translateX(-50%);font-size:18px;font-weight:600;color:var(--color-text-primary);margin:0;font-family:var(--font-primary);letter-spacing:-.3px}.navbar-links{display:flex;gap:var(--space-32);align-items:center}.navbar-link{font-family:var(--font-primary);font-size:var(--text-small);font-weight:500;color:var(--color-text-secondary);text-decoration:none;transition:all .2s ease;position:relative}.navbar-link:hover{color:var(--color-text-primary);transform:translateY(-1px)}.navbar-link.cta{background-color:transparent;color:rgba(255,255,255,.7);padding:8px 18px;border-radius:var(--btn-radius);border:1px solid rgba(255,255,255,.18);font-weight:600}.navbar-link.cta:hover{background-color:rgba(255,255,255,.06);color:rgba(255,255,255,.9);border-color:rgba(255,255,255,.3);transform:none}.container{max-width:var(--container-max);margin:0 auto;padding:0 var(--space-24)}.btn{font-family:var(--font-primary);font-size:var(--text-body);font-weight:600;height:var(--btn-height);padding:0 var(--space-32);border-radius:var(--btn-radius);border:none;cursor:pointer;transition:all .2s ease;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;min-width:180px}.btn-primary{background-color:var(--color-accent-action);color:var(--color-text-primary);border:1px solid rgba(255,253,246,.16);box-shadow:none}.btn-primary:hover{background-color:#d83a06;transform:translateY(-1px);box-shadow:none}.btn-secondary{background:rgba(255,255,255,.08);color:var(--color-text-primary);border:1px solid rgba(255,255,255,.3);backdrop-filter:blur(10px);box-shadow:0 4px 15px rgba(0,0,0,.3)}.btn-secondary:hover{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.5);box-shadow:0 6px 20px rgba(0,0,0,.4);transform:translateY(-2px)}.overline{font-size:var(--text-small);font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--color-accent-action)}.h1,h1{font-size:var(--text-h1);font-weight:700;line-height:1.2;color:var(--color-text-primary)}.h2,h2{font-size:var(--text-h2);font-weight:600;line-height:1.3;color:var(--color-text-primary)}.h3,h3{font-size:var(--text-h3);font-weight:600;line-height:1.4;color:var(--color-text-primary)}a,button,div,p,span{font-family:var(--font-primary)}.hero-section{position:relative;display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:100vh;padding-top:calc(var(--navbar-height) + var(--space-96));padding-bottom:var(--space-96);overflow:hidden}.hero-video-bg{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:0}.hero-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,rgba(10,10,15,.65) 0,rgba(10,10,15,.5) 40%,rgba(238,68,8,.04) 70%,rgba(10,10,15,.6) 100%);z-index:1}.hero-content{position:relative;z-index:5;max-width:800px;text-align:center;display:flex;flex-direction:column;align-items:center;animation:heroFadeIn 1.2s ease-out}@keyframes heroFadeIn{from{opacity:0;transform:translateY(30px)}}</style>
     <!-- Full CSS chargé de façon non-bloquante -->
     <link rel="preload" href="assets/css/styles.css?v=1" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="assets/css/styles.css?v=1"></noscript>
     <style>
+        .btn-primary {
+            border: 1px solid rgba(255, 253, 246, 0.16);
+            box-shadow: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #d83a06;
+            transform: translateY(-1px);
+            box-shadow: none;
+        }
+
         @media (min-width: 1025px) {
             .hero-section {
                 padding-top: calc(var(--navbar-height) + 84px);
@@ -947,11 +958,24 @@
         #kpi .kpi-truth-line strong { color: var(--text-muted); font-weight: 500; }
         #kpi .kpi-feature-label { color: var(--text-dark); font-weight: 600; font-size: 1.02rem; }
         #kpi .kpi-feature-list li { color: var(--text-dark); font-size: 1.02rem; font-weight: 500; }
+        /* Layout pass: subtitle owns its bottom rhythm via flex gap, not the inherited 64px margin */
+        .product-flow-section .section-subtitle { margin-bottom: 0; }
+
+        /* Issue 1: label before the invest/produce split */
+        #kpi .kpi-proof-title {
+            display: block;
+            margin-top: 0.35rem;
+            color: rgba(255,253,246,0.66);
+            font-size: var(--type-label);
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
         #kpi .kpi-proof-pair {
             display: grid;
             grid-template-columns: 1fr;
             gap: 0;
-            margin-top: 0.6rem;
+            margin-top: 0.45rem;
             border-top: 1px solid rgba(255,253,246,0.08);
             padding-top: 0.75rem;
         }
@@ -1082,14 +1106,27 @@
         .product-flow-section .todo-item.checked .todo-check { background-color: var(--accent); border-color: var(--accent); }
         .product-flow-section .todo-item.checked .todo-text { text-decoration: line-through; color: var(--text-light-muted); }
         #todo .todo-feature-line {
-            margin-top: 0.35rem;
-            padding: 0.85rem 0 0;
+            margin: 0;
+            padding: 0;
             border-radius: 0;
             background: transparent;
             color: #FFFDF6;
             font-size: var(--type-body);
             font-weight: 650;
             line-height: 1.48;
+        }
+        #todo .todo-obsession-intro {
+            color: rgba(255,253,246,0.52);
+            font-size: var(--type-body);
+            font-weight: 550;
+            line-height: 1.5;
+        }
+        #todo .todo-obsession-question {
+            color: #FFFDF6;
+            font-size: var(--type-lead);
+            font-weight: 700;
+            line-height: 1.35;
+            font-style: italic;
         }
 
         /* #ajustement override — conclusion section */
@@ -1111,6 +1148,40 @@
             100% { transform: perspective(1000px) rotateX(3deg) rotateY(-3deg); }
         }
         #ajustement .section-subtitle { font-size: 1.05rem; color: rgba(255,253,246,0.78); margin: 1.15rem 0 1.6rem; line-height: 1.62; font-weight: 550; }
+
+        #ajustement .system-steps {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        #ajustement .system-step {
+            display: grid;
+            grid-template-columns: 26px 1fr;
+            gap: 12px;
+            align-items: start;
+        }
+        #ajustement .system-step-num {
+            display: grid;
+            place-items: center;
+            width: 22px;
+            height: 22px;
+            margin-top: 2px;
+            border-radius: 999px;
+            background: rgba(238, 68, 8, 0.12);
+            color: #EE4408;
+            font-size: 10px;
+            font-weight: 850;
+            flex-shrink: 0;
+        }
+        #ajustement .system-step-text {
+            color: rgba(255, 253, 246, 0.88);
+            font-size: var(--type-body);
+            font-weight: 600;
+            line-height: 1.45;
+        }
         #ajustement .section-text h2 { font-size: clamp(2.3rem, 4vw, 3.5rem); }
 
         /* Demo dashboard, section 5 */
@@ -1279,13 +1350,13 @@
 
             <div class="hero-cta-cluster">
                 <div class="hero-ctas">
-                    <button class="btn btn-primary" onclick="document.getElementById('painSection').scrollIntoView({behavior:'smooth'})">
+                    <button class="btn btn-primary" onclick="window.location.href='objectif-intro.html'">
                         <span class="btn-label-desktop">Commencer maintenant</span>
                         <span class="btn-label-mobile">Commencer</span>
                     </button>
                     <button class="btn btn-secondary" onclick="document.getElementById('presentationSection').scrollIntoView({behavior:'smooth'})">
-                        <span class="btn-label-desktop">Voir le manifeste</span>
-                        <span class="btn-label-mobile">Voir le manifeste</span>
+                        <span class="btn-label-desktop">Voir le système</span>
+                        <span class="btn-label-mobile">Voir le système</span>
                     </button>
                 </div>
             </div>
@@ -1314,22 +1385,21 @@
 
                 <p class="pain-para">on comprend pas pourquoi on a beau mettre des efforts énormes. <strong>nos grands projets n'avancent pas comme on veut.</strong></p>
 
-                <p class="pain-para">et quand on regarde les 2/3 gros objectifs qu'on fait en parallèle. Genre vraiiiiiment longs parce qu'on est ambitieux. <strong>On arrive pas à savoir où on en est réellement.</strong></p>
+                <p class="pain-para">et quand on regarde les 2/3 gros objectifs qu'on fait en parallèle. Genre ceux qui sont vraiiiiiment longs parce qu'on est ambitieux. <strong>On arrive pas à savoir où on en est réellement.</strong></p>
 
-                <p class="pain-para">fin.. On en a une très, très vaguee idée... On se dit qu'on en fait pas assez. on a pas de vision lucide sur ce qu'on fait.</p>
+                <p class="pain-para">Fin.. On en a une très très vague idée... On se dit juste qu'on en fait pas assez. parcequ'on a pas de vision lucide sur ce qu'on fait.</p>
 
-                <p class="pain-para">Alors souvent, on continue, parce qu'on se dit "oklm je suis persévérant moi". Mais y'a un moment on fournit tellement d'efforts et malgré le plateau. <strong>ça bouge pas (aled).</strong></p>
+                <p class="pain-para">Alors souvent, on continue, parce qu'on se dit "oklm je suis persévérant moi". (ça c'est la phase cool).<br> Après y'a la phase moins cool.  un moment où on fournit tellement d'efforts et malgré le plateau. <strong>ça bouge pas (aled).</strong></p>
 
             </div>
 
             <p class="pain-conclusion">
-                <span class="pain-desktop">L'effort ne suffit pas. Sans lucidité sur ta progression, tu doutes.<br>
+                <span class="pain-desktop">Parceque l'effort ne suffit pas. Sans lucidité sur ta progression, tu doutes.<br>
                 <strong>Pourquoi aucun outil ne te montre réellement ta progression ?</strong></span>
                 <span class="pain-mobile">L'effort ne suffit pas. Sans lucidité sur ta progression, tu doutes. <strong>Pourquoi aucun outil ne te montre réellement ta progression ?</strong></span>
             </p>
         </div>
     </section>
-
     <!-- SECTION 3: MARKET GAP - Apple Bento Redesign -->
     <section class="market-gap-section">
         <div class="mg-container">
@@ -1367,8 +1437,8 @@
                                 <span class="problem-copy-mobile">Les usines à gaz</span>
                             </h3>
                             <span class="problem-highlight">
-                                <span class="problem-copy-desktop">Des outils puissants mais vides au départ.</span>
-                                <span class="problem-copy-mobile">Puissants, mais vides au départ.</span>
+                                <span class="problem-copy-desktop">Puissants, mais vides au départ.</span>
+                                <span class="problem-copy-mobile">Puissants, mais vides.</span>
                             </span>
                             <p class="problem-desc">
                                 <span class="problem-copy-desktop">Tu passes des heures à construire le système avant même de pouvoir l'utiliser.</span>
@@ -1409,7 +1479,7 @@
                                 <span class="problem-copy-mobile">Parfaites à court terme.</span>
                             </span>
                             <p class="problem-desc">
-                                <span class="problem-copy-desktop">Mais rien ne te permet de voir tes tâches et ta progression au même endroit.</span>
+                                <span class="problem-copy-desktop">Mais rien ne relie tes tâches à tes jalons, tes KPI et ton objectif long terme.</span>
                                 <span class="problem-copy-mobile">Mais rien ne relie tes tâches à ta progression réelle.</span>
                             </p>
                         </div>
@@ -1471,8 +1541,8 @@
                 <p class="mg-founder-intro">Je suis exactement comme toi. J'ai cherché l'outil parfait pour mes projets.</p>
 
                 <p class="mg-conclusion">
-                    <span class="problem-copy-desktop">Il manquait un système pour relier vision long terme et exécution quotidienne.</span>
-                    <span class="problem-copy-mobile">Il manquait un système pour relier vision long terme et exécution quotidienne.</span>
+                    <span class="problem-copy-desktop">Il manquait un système déjà structuré pour relier vision long terme et exécution quotidienne.</span>
+                    <span class="problem-copy-mobile">Il manquait un système déjà structuré.</span>
                 </p>
 
                 <div class="section-bridge" aria-hidden="true">
@@ -1487,9 +1557,358 @@
         </div>
     </section>
 
+
+    <style>
+    #systemPreviewSection {
+        background: #06090F;
+        border-top: 1px solid rgba(255, 253, 246, 0.05);
+        border-bottom: 1px solid rgba(255, 253, 246, 0.06);
+        padding: clamp(76px, 9vw, 116px) 24px;
+    }
+
+    .product-proof-inner {
+        max-width: 1160px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: minmax(0, 0.86fr) minmax(360px, 1.14fr);
+        gap: clamp(48px, 7vw, 92px);
+        align-items: start;
+    }
+
+    .product-proof-copy {
+        max-width: 430px;
+        padding-top: 8px;
+    }
+
+    .product-proof-title {
+        margin: 0;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        color: #FFFDF6;
+        font-size: clamp(32px, 4.5vw, 58px);
+        line-height: 1.02;
+        letter-spacing: -0.04em;
+        font-weight: 850;
+        text-wrap: balance;
+    }
+
+    /* §1 — what CARRY IT does: bridge sentence, closer to heading, brighter */
+    .product-proof-copy > p:first-of-type {
+        margin: 24px 0 0;
+        max-width: 390px;
+        color: rgba(255, 253, 246, 0.76);
+        font-size: 16px;
+        line-height: 1.6;
+        font-weight: 500;
+    }
+
+    /* §2 — the how: steps sequence, more breathing room, slightly more muted */
+    .product-proof-copy > p:last-of-type {
+        margin: 40px 0 0;
+        max-width: 390px;
+        color: rgba(255, 253, 246, 0.54);
+        font-size: 15px;
+        line-height: 1.75;
+        text-wrap: pretty;
+    }
+
+    /* Dashboard */
+    .product-proof-dashboard {
+        position: relative;
+        min-width: 0;
+        border: 1px solid rgba(255, 253, 246, 0.08);
+        border-radius: 12px;
+        background: #080809;
+        box-shadow: 0 30px 88px rgba(0, 0, 0, 0.42);
+        overflow: hidden;
+    }
+
+    .proof-dashboard-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 18px;
+        padding: 14px 18px;
+        border-bottom: 1px solid rgba(255, 253, 246, 0.07);
+        background: #0c0c0e;
+    }
+
+    .proof-dashboard-brand {
+        color: rgba(255, 253, 246, 0.86);
+        font-size: 12px;
+        font-weight: 850;
+        letter-spacing: 0.1em;
+    }
+
+    .proof-dashboard-context {
+        color: rgba(255, 253, 246, 0.42);
+        font-size: 12px;
+        font-weight: 650;
+    }
+
+    /* Chain: vision (long terme) → jalon (carte réelle) → aujourd'hui */
+    .proof-chain {
+        position: relative;
+        padding: 20px;
+        display: grid;
+        gap: 0;
+    }
+
+    .proof-chain-step {
+        position: relative;
+        display: grid;
+        grid-template-columns: 24px 1fr;
+        gap: 14px;
+        align-items: start;
+        padding-bottom: 16px;
+    }
+    .proof-chain-step:last-child {
+        padding-bottom: 0;
+    }
+
+    /* node + vertical connector linking the three levels */
+    .proof-chain-node {
+        position: relative;
+        display: grid;
+        place-items: center;
+        width: 22px;
+        height: 22px;
+        margin-top: 2px;
+        border-radius: 999px;
+        background: rgba(238, 68, 8, 0.1);
+        color: #EE4408;
+        font-size: 10px;
+        font-weight: 850;
+        z-index: 1;
+    }
+    .proof-chain-step:not(:last-child) .proof-chain-node::after {
+        content: '';
+        position: absolute;
+        top: 24px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 1px;
+        height: calc(100% + 14px);
+        background: rgba(238, 68, 8, 0.18);
+    }
+
+    .proof-chain-label {
+        display: block;
+        margin-bottom: 6px;
+        color: rgba(255, 253, 246, 0.34);
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+    }
+
+    /* Vision level — long terme, 1 ligne tronquée */
+    .proof-chain-vision .proof-chain-vision-title {
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        color: #FFFDF6;
+        font-size: 14px;
+        line-height: 1.35;
+        font-weight: 700;
+    }
+    .proof-chain-vision-horizon {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        margin-top: 6px;
+        color: rgba(255, 253, 246, 0.42);
+        font-size: 11px;
+        font-weight: 650;
+        letter-spacing: 0.02em;
+    }
+    .proof-chain-vision-horizon::before {
+        content: '';
+        width: 4px;
+        height: 4px;
+        border-radius: 999px;
+        background: rgba(238, 68, 8, 0.55);
+    }
+
+    /* Jalon level — wrap reuses the existing .demo-db jl-pilot-card styling */
+    .proof-chain-jalon .demo-db {
+        background: transparent;
+        border: none;
+        overflow: visible;
+    }
+
+    /* Aujourd'hui level — focal execution row */
+    .proof-chain-today {
+        padding: 12px 14px;
+        border-radius: 9px;
+        background: rgba(238, 68, 8, 0.04);
+        border: 1px solid rgba(238, 68, 8, 0.13);
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .proof-todo-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 13px;
+        line-height: 1.35;
+        font-weight: 600;
+    }
+
+    .proof-todo-check {
+        flex-shrink: 0;
+        width: 16px;
+        height: 16px;
+        border-radius: 4px;
+        border: 1.5px solid rgba(255, 253, 246, 0.22);
+        display: grid;
+        place-items: center;
+    }
+
+    .proof-todo-item--done .proof-todo-check {
+        background: rgba(238, 68, 8, 0.18);
+        border-color: rgba(238, 68, 8, 0.4);
+    }
+
+    .proof-todo-item--done .proof-todo-check::after {
+        content: '';
+        width: 7px;
+        height: 5px;
+        border-left: 1.5px solid #EE4408;
+        border-bottom: 1.5px solid #EE4408;
+        transform: rotate(-45deg) translateY(-1px);
+        display: block;
+    }
+
+    .proof-todo-text {
+        color: rgba(255, 253, 246, 0.72);
+    }
+
+    .proof-todo-item--done .proof-todo-text {
+        color: rgba(255, 253, 246, 0.34);
+        text-decoration: line-through;
+        text-decoration-color: rgba(255, 253, 246, 0.2);
+    }
+    .proof-map-row--active .proof-chain-node {
+        background: rgba(238, 68, 8, 0.2);
+    }
+    .proof-map-row--active .proof-chain-label {
+        color: rgba(238, 68, 8, 0.72);
+    }
+
+    .proof-today-badge {
+        display: inline-block;
+        margin-top: 10px;
+        padding: 3px 8px;
+        border-radius: 4px;
+        background: rgba(238, 68, 8, 0.14);
+        color: #EE4408;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+    }
+
+    @media (max-width: 860px) {
+        .product-proof-inner {
+            grid-template-columns: 1fr;
+        }
+
+        .product-proof-copy {
+            max-width: 100%;
+        }
+    }
+    </style>
+
+    <section id="systemPreviewSection">
+        <div class="product-proof-inner">
+            <div class="product-proof-copy">
+                <h2 class="product-proof-title">La lucidité à court terme, la vision à long terme.</h2>
+                <p>CARRY IT relie ton ambition long terme à ton exécution quotidienne.</p>
+                <p>Définis une ambition claire. Découpe-la en paliers. Exécute les tâches. Mesure ce que tu produis réellement.</p>
+            </div>
+
+            <div class="product-proof-dashboard" aria-label="Aperçu CARRY IT reliant vision, étapes et exécution">
+                <div class="proof-dashboard-top">
+                    <span class="proof-dashboard-brand">CARRY IT</span>
+                    <span class="proof-dashboard-context">Aperçu dashboard</span>
+                </div>
+                <div class="proof-chain">
+                    <div class="proof-chain-step proof-chain-vision">
+                        <span class="proof-chain-node">1</span>
+                        <div>
+                            <span class="proof-chain-label">Vision</span>
+                            <div class="proof-chain-vision-title">Atteindre 1 000 utilisateurs actifs mensuels.</div>
+                            <span class="proof-chain-vision-horizon">Objectif long terme · 2 ans</span>
+                        </div>
+                    </div>
+
+                    <div class="proof-chain-step proof-chain-jalon">
+                        <span class="proof-chain-node">2</span>
+                        <div>
+                            <span class="proof-chain-label">Étapes</span>
+                            <div class="demo-db">
+                                <div class="jl-pilot-card">
+                                    <div class="jl-pilot-header">
+                                        <div class="jl-detail-meta">
+                                            <span class="jl-detail-num">Jalon 2/4</span>
+                                            <span class="jl-detail-status in-progress">En cours</span>
+                                        </div>
+                                    </div>
+                                    <div class="jl-pilot-title">Onboarding Bêta</div>
+                                    <div class="jl-pilot-section">
+                                        <span class="jl-pilot-label">CARRY IT Te fait mesurer</span>
+                                    </div>
+                                    <div class="jl-kpi-block">
+                                        <div class="jl-kpi-grid">
+                                            <div>
+                                                <span class="jl-kpi-type">Effort</span>
+                                                <div class="jl-kpi-name">Heures investies</div>
+                                                <div class="jl-kpi-values"><span class="jl-kpi-current">12</span><span class="jl-kpi-sep">/</span><span class="jl-kpi-target">15h</span></div>
+                                            </div>
+                                            <div>
+                                                <span class="jl-kpi-type">Résultat</span>
+                                                <div class="jl-kpi-name">Testeurs bêta</div>
+                                                <div class="jl-kpi-values"><span class="jl-kpi-current">9</span><span class="jl-kpi-sep">/</span><span class="jl-kpi-target">15</span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="proof-chain-step proof-map-row--active">
+                        <span class="proof-chain-node">3</span>
+                        <div>
+                            <span class="proof-chain-label">Exécution</span>
+                            <div class="proof-chain-today">
+                                <div class="proof-todo-item proof-todo-item--done">
+                                    <span class="proof-todo-check"></span>
+                                    <span class="proof-todo-text">Écrire les specs du flow d'onboarding</span>
+                                </div>
+                                <div class="proof-todo-item">
+                                    <span class="proof-todo-check"></span>
+                                    <span class="proof-todo-text">Corriger le crash sur l'écran de login</span>
+                                </div>
+                                <div class="proof-todo-item">
+                                    <span class="proof-todo-check"></span>
+                                    <span class="proof-todo-text">Appeler Théo — retour bêta</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
     <div class="product-flow-section" id="productFlow">
         <div class="container product-flow-header product-value-header" id="presentationSection">
-            <h1>Voici Carry IT</h1>
+            <h1>Voici CARRY IT</h1>
         </div>
 
         <section id="smart" class="product-flow-panel">
@@ -1501,7 +1920,7 @@
                     <p class="smart-intro-muted">Une grande ambition paraît irréaliste tant qu'elle reste floue. On sous-estime le temps, les contraintes, les aléas.</p>
                     <p class="smart-pivot">Quand elle devient précise, datée, mesurable et observable, elle cesse d'être une idée.</p>
                     <p class="smart-cible">Elle devient une cible.</p>
-                    <p class="smart-cta-line"><strong>Carry IT te fait définir ta cible.</strong></p>
+                    <p class="smart-cta-line"><strong>CARRY IT te fait définir ta cible.</strong></p>
                 </div>
                 <div class="mockup-box smart-builder">
                     <div class="smart-input-preview">
@@ -1581,14 +2000,14 @@
                 <div class="section-text">
                     <span class="tag-upper">2. Jalons</span>
                     <h2>Une ambition ne se pilote pas à l'aveugle.</h2>
-                    <p>Dans Carry IT, tu définis les jalons de ton ambition : des paliers majeurs entre ton point de départ et ton objectif final.</p>
-                    <p>Ils permettent de :</p>
+                    <p>Dans CARRY IT, tu poses les paliers majeurs entre ton point de départ et ton objectif final.</p>
+                    <p>Chaque jalon sert à :</p>
                     <ul class="section-list">
                         <li>voir les grandes étapes ;</li>
                         <li>savoir quel palier viser maintenant ;</li>
                         <li>rester concentré sur ce qui compte à court terme.</li>
                     </ul>
-                    <p class="jalons-critere-highlight">Les jalons définissent les grandes étapes.<br>Chaque jalon actif devient ton objectif court terme : <strong>tu sais exactement sur quoi te concentrer maintenant.</strong></p>
+                    <p class="jalons-critere-highlight">Le prochain jalon devient ton objectif à court terme.<br><strong>Tu sais sur quoi concentrer tes efforts maintenant.</strong></p>
                 </div>
             </div>
         </section>
@@ -1599,17 +2018,18 @@
                     <span class="tag-upper">3. KPI</span>
                     <h2>Être occupé ne veut pas dire avancer.</h2>
                     <p class="section-subtitle">Une fois l'objectif court terme défini, tu peux cocher des tâches, accumuler des heures, et avancer avec la mauvaise méthode.</p>
-                    <div class="kpi-proof-pair" aria-label="Ce que CarryIT compare">
+                    <span class="kpi-proof-title">CARRY IT te fait mesurer :</span>
+                    <div class="kpi-proof-pair" aria-label="Ce que CARRY IT compare">
                         <div class="kpi-proof-item">
                             <span class="kpi-proof-label">Ce que tu investis</span>
-                            <p>temps, énergie, actions</p>
+                            <p>Temps, Énergie, Actions</p>
                         </div>
                         <div class="kpi-proof-item">
                             <span class="kpi-proof-label">Ce que ça produit</span>
-                            <p>résultats, progrès, preuves observables</p>
+                            <p>Résultats, Progrès, Preuves concrètes</p>
                         </div>
                     </div>
-                    <p class="kpi-insight">On ne mesure pas seulement l'effort. Carry IT montre si cet effort rapproche réellement du jalon et de l'objectif.</p>
+                    <p class="kpi-insight">On ne mesure pas seulement l'effort.<span style='display:block;margin-top:0.55em'>CARRY IT te permet de voir si ce que tu mesures te rapproche réellement de l'objectif long terme.</span></p>
                 </div>
                 <div class="kpi-panel">
                     <div class="kpi-block">
@@ -1675,8 +2095,9 @@
                 <div class="section-text">
                     <span class="tag-upper">4. Tâches</span>
                     <h2>Relier l'exécution à la vision.</h2>
-                    <p class="section-subtitle">Tes tâches quotidiennes sont reliées aux étapes majeures de tes ambitions.</p>
-                    <p class="todo-feature-line">Chaque tâche est reliée au prochain palier, pour savoir si l'action du jour rapproche vraiment de l'objectif.</p>
+                    <p class="section-subtitle">Tes tâches quotidiennes sont reliées aux étapes majeures de tes ambitions.<br>Chaque tâche est reliée au jalon en cours.</p>
+                    <p class="todo-obsession-intro">Ta seule obsession doit être :</p>
+                    <p class="todo-obsession-question">Quelle tâche dois-je faire maintenant pour faire avancer le jalon en cours&nbsp;?</p>
                 </div>
             </div>
         </section>
@@ -1684,13 +2105,13 @@
         <section id="ajustement" class="product-flow-panel">
             <div class="container grid-duo">
                 <div class="section-text">
-                    <span class="tag-upper">Le système complet</span>
-                    <h2>Voilà Carry IT</h2>
-                    <p class="section-desc">Carry IT rassemble le système dans une seule vue :</p>
+                    <span class="tag-upper">Dashboard</span>
+                    <h2>Le système complet</h2>
+                    <p class="section-desc">CARRY IT rassemble le système dans une seule vue :</p>
                     <ul class="section-list">
-                        <li>ton objectif, précis, daté et mesurable ;</li>
-                        <li>tes grandes étapes et leur critère de validation ;</li>
-                        <li>tes efforts et tes résultats, reliés à tes objectifs court et moyen terme ;</li>
+                        <li>ton objectif, précis, daté et mesurable.</li>
+                        <li>tes grandes étapes et leur critère de validation.</li>
+                        <li>tes efforts et tes résultats, reliés à tes objectifs court et moyen terme.</li>
                         <li>tes tâches, directement connectées aux étapes majeures.</li>
                     </ul>
                     <p class="section-closing">Tu relies ce que tu veux construire dans 5 ans à ce que tu fais aujourd'hui.</p>
@@ -1702,7 +2123,7 @@
                             <span class="demo-nav-sep">/</span>
                             <span class="demo-nav-project">CARRY IT App</span>
                         </div>
-                        <div class="demo-nav-tabs" id="demoTabs" role="tablist" aria-label="Aperçu du dashboard CarryIT">
+                        <div class="demo-nav-tabs" id="demoTabs" role="tablist" aria-label="Aperçu du dashboard CARRY IT">
                             <button class="demo-nav-tab" type="button" role="tab" aria-selected="false" data-demo-tab="vision">
                                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 19V5M4 19h16M9 16V9M14 16V7M19 16v-4"/></svg>
                                 Vision
@@ -2073,14 +2494,14 @@
             <div class="footer-brand">
                 <picture>
                     <source srcset="assets/images/site/logo_png.webp" type="image/webp">
-                    <img src="assets/images/site/logo_png.png" alt="CarryIT" class="footer-logo" loading="lazy">
+                    <img src="assets/images/site/logo_png.png" alt="CARRY IT" class="footer-logo" loading="lazy">
                 </picture>
                 <span class="footer-tagline">De l'ambition à l'exécution.</span>
             </div>
             <nav class="footer-nav">
                 <a href="#heroSection">Le système</a>
                 <a href="#manifestSection">Le manifeste</a>
-                <a href="objectif-intro.html" class="footer-nav-accent">Tester CarryIT</a>
+                <a href="objectif-intro.html" class="footer-nav-accent">Tester CARRY IT</a>
             </nav>
             <div class="footer-contact">
                 <a href="mailto:nils@carryit.fr">nils@carryit.fr</a>
@@ -2095,7 +2516,7 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <span>&copy; 2026 CarryIT</span>
+            <span>&copy; 2026 CARRY IT</span>
             <span class="footer-bottom-sep"></span>
             <a href="mentions-legales.html">Mentions légales</a>
         </div>
