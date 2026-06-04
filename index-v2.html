@@ -1115,6 +1115,19 @@
             font-weight: 650;
             line-height: 1.48;
         }
+        #todo .todo-obsession-intro {
+            color: rgba(255,253,246,0.52);
+            font-size: var(--type-body);
+            font-weight: 550;
+            line-height: 1.5;
+        }
+        #todo .todo-obsession-question {
+            color: #FFFDF6;
+            font-size: var(--type-lead);
+            font-weight: 700;
+            line-height: 1.35;
+            font-style: italic;
+        }
 
         /* #ajustement override — conclusion section */
         #ajustement { border-top: 1px solid rgba(238,68,8,0.4); background: linear-gradient(180deg, #0f0e0c 0%, #0a0908 100%) !important; }
@@ -1135,6 +1148,40 @@
             100% { transform: perspective(1000px) rotateX(3deg) rotateY(-3deg); }
         }
         #ajustement .section-subtitle { font-size: 1.05rem; color: rgba(255,253,246,0.78); margin: 1.15rem 0 1.6rem; line-height: 1.62; font-weight: 550; }
+
+        #ajustement .system-steps {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        #ajustement .system-step {
+            display: grid;
+            grid-template-columns: 26px 1fr;
+            gap: 12px;
+            align-items: start;
+        }
+        #ajustement .system-step-num {
+            display: grid;
+            place-items: center;
+            width: 22px;
+            height: 22px;
+            margin-top: 2px;
+            border-radius: 999px;
+            background: rgba(238, 68, 8, 0.12);
+            color: #EE4408;
+            font-size: 10px;
+            font-weight: 850;
+            flex-shrink: 0;
+        }
+        #ajustement .system-step-text {
+            color: rgba(255, 253, 246, 0.88);
+            font-size: var(--type-body);
+            font-weight: 600;
+            line-height: 1.45;
+        }
         #ajustement .section-text h2 { font-size: clamp(2.3rem, 4vw, 3.5rem); }
 
         /* Demo dashboard, section 5 */
@@ -1338,16 +1385,16 @@
 
                 <p class="pain-para">on comprend pas pourquoi on a beau mettre des efforts énormes. <strong>nos grands projets n'avancent pas comme on veut.</strong></p>
 
-                <p class="pain-para">et quand on regarde les 2/3 gros objectifs qu'on fait en parallèle. Genre vraiiiiiment longs parce qu'on est ambitieux. <strong>On arrive pas à savoir où on en est réellement.</strong></p>
+                <p class="pain-para">et quand on regarde les 2/3 gros objectifs qu'on fait en parallèle. Genre ceux qui sont vraiiiiiment longs parce qu'on est ambitieux. <strong>On arrive pas à savoir où on en est réellement.</strong></p>
 
-                <p class="pain-para">fin.. On en a une très, très vaguee idée... On se dit qu'on en fait pas assez. on a pas de vision lucide sur ce qu'on fait.</p>
+                <p class="pain-para">Fin.. On en a une très très vague idée... On se dit juste qu'on en fait pas assez. parcequ'on a pas de vision lucide sur ce qu'on fait.</p>
 
-                <p class="pain-para">Alors souvent, on continue, parce qu'on se dit "oklm je suis persévérant moi". Mais y'a un moment on fournit tellement d'efforts et malgré le plateau. <strong>ça bouge pas (aled).</strong></p>
+                <p class="pain-para">Alors souvent, on continue, parce qu'on se dit "oklm je suis persévérant moi". (ça c'est la phase cool).<br> Après y'a la phase moins cool.  un moment où on fournit tellement d'efforts et malgré le plateau. <strong>ça bouge pas (aled).</strong></p>
 
             </div>
 
             <p class="pain-conclusion">
-                <span class="pain-desktop">L'effort ne suffit pas. Sans lucidité sur ta progression, tu doutes.<br>
+                <span class="pain-desktop">Parceque l'effort ne suffit pas. Sans lucidité sur ta progression, tu doutes.<br>
                 <strong>Pourquoi aucun outil ne te montre réellement ta progression ?</strong></span>
                 <span class="pain-mobile">L'effort ne suffit pas. Sans lucidité sur ta progression, tu doutes. <strong>Pourquoi aucun outil ne te montre réellement ta progression ?</strong></span>
             </p>
@@ -2048,8 +2095,9 @@
                 <div class="section-text">
                     <span class="tag-upper">4. Tâches</span>
                     <h2>Relier l'exécution à la vision.</h2>
-                    <p class="section-subtitle">Tes tâches quotidiennes partent du jalon actif, pas d'une liste isolée.</p>
-                    <p class="todo-feature-line">L'action du jour garde un lien direct avec l'objectif long terme.</p>
+                    <p class="section-subtitle">Tes tâches quotidiennes sont reliées aux étapes majeures de tes ambitions.<br>Chaque tâche est reliée au jalon en cours.</p>
+                    <p class="todo-obsession-intro">Ta seule obsession doit être :</p>
+                    <p class="todo-obsession-question">Quelle tâche dois-je faire maintenant pour faire avancer le jalon en cours&nbsp;?</p>
                 </div>
             </div>
         </section>
@@ -2059,14 +2107,14 @@
                 <div class="section-text">
                     <span class="tag-upper">Dashboard</span>
                     <h2>Le système complet</h2>
-                    <p class="section-desc">CARRY IT centralise le cadre de pilotage :</p>
+                    <p class="section-desc">CARRY IT rassemble le système dans une seule vue :</p>
                     <ul class="section-list">
-                        <li>ton objectif, précis, daté et mesurable ;</li>
-                        <li>tes grandes étapes et leur critère de validation ;</li>
-                        <li>tes efforts et tes résultats, reliés à tes objectifs court et moyen terme ;</li>
+                        <li>ton objectif, précis, daté et mesurable.</li>
+                        <li>tes grandes étapes et leur critère de validation.</li>
+                        <li>tes efforts et tes résultats, reliés à tes objectifs court et moyen terme.</li>
                         <li>tes tâches, directement connectées aux étapes majeures.</li>
                     </ul>
-                    <p class="section-closing">Tu gardes le lien entre l'ambition longue et l'exécution du jour.</p>
+                    <p class="section-closing">Tu relies ce que tu veux construire dans 5 ans à ce que tu fais aujourd'hui.</p>
                 </div>
                 <div class="demo-db" id="demoDashboard">
                     <div class="demo-nav">
