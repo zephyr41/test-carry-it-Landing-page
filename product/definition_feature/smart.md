@@ -49,8 +49,6 @@ Exemple 3 : (Spécifique)Atteindre 2 000€/mois de revenu freelance (Résultat 
 Quelle métrique permettra de déterminer sans ambiguïté si l'objectif est atteint ?
 Cette métrique doit être quantifiable et suivable dans le temps.
 
-ça doit indiquer un résultat. pas un KPI de lagging
-  - **lagging** : suivi d'un résultat SURTOUT PAS LE SUIVI D'une avancé
 
 - mesurable selon une définition explicite
 - exprimé avec une unité claire
@@ -59,6 +57,8 @@ Cette métrique doit être quantifiable et suivable dans le temps.
 - non ambigu (définition reproductible)
 
 
+ça doit indiquer un résultat. pas un KPI de lagging
+  - **lagging** : suivi d'un résultat SURTOUT PAS LE SUIVI D'une avancé
 avec les 3 exemples
 | ❌ Non mesurable | ✅ Mesurable |
 |----------------|------------|
