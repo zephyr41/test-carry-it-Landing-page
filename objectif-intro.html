@@ -434,6 +434,30 @@
             outline-offset: 4px;
         }
 
+        .fnref {
+            color: var(--accent);
+            font-size: 0.6em;
+            font-weight: 900;
+            vertical-align: super;
+            line-height: 0;
+        }
+
+        .preview-col {
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .card-fn {
+            color: var(--text-58);
+            font-size: 11.5px;
+            line-height: 1.55;
+            font-weight: 500;
+            font-style: italic;
+            padding: 0 4px;
+        }
+
         @keyframes signalPulse {
             0%, 72%, 100% {
                 box-shadow: 0 0 0 0 var(--accent-glow);
@@ -533,6 +557,7 @@
                 </div>
             </div>
 
+            <div class="preview-col">
             <div class="system-preview" aria-label="Aperçu du système créé pendant l'onboarding">
                 <div class="preview-top">
                     <span class="preview-brand">CARRY IT</span>
@@ -542,9 +567,9 @@
                     <span class="preview-label"><strong>1.</strong> Objectif SMART</span>
                     <div class="smart-line-row is-active"><span class="smart-letter">S</span> Atteindre 1 000 utilisateurs actifs mensuels.</div>
                     <div class="smart-line-row"><span class="smart-letter">M</span> Mesurer les utilisateurs actifs.</div>
-                    <div class="smart-line-row"><span class="smart-letter">A</span> Clarifier les ressources disponibles.</div>
-                    <div class="smart-line-row"><span class="smart-letter">R</span> Vérifier la charge tenable.</div>
-                    <div class="smart-line-row"><span class="smart-letter">T</span> Fixer la date limite.</div>
+                    <div class="smart-line-row"><span class="smart-letter">A</span> Atteignable d'ici juin 2028 ?</div>
+                    <div class="smart-line-row"><span class="smart-letter">R</span> Réaliste sur 4 ans ?</div>
+                    <div class="smart-line-row is-active"><span class="smart-letter">T</span> Juin 2028 — 4 ans.</div>
 
                     <div class="preview-divider" aria-hidden="true"></div>
 
@@ -556,6 +581,8 @@
                     </div>
 
                 </div>
+            </div>
+            <p class="card-fn">*Les gens confondent atteignable et réaliste aujourd'hui, et atteignable et réaliste dans 3 ans, en y mettant 10h/semaine.</p>
             </div>
         </section>
     </main>
