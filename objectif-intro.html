@@ -40,11 +40,28 @@
             -webkit-backdrop-filter: blur(16px);
             border-bottom: 1px solid var(--border);
             display: grid;
-            grid-template-columns: 36px minmax(220px, 360px) 1fr;
+            grid-template-columns: 36px 1fr 36px;
             align-items: center;
-            gap: 24px;
             padding: 0 clamp(24px, 4vw, 52px);
             height: 64px;
+        }
+
+        .nav-progress {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 3px;
+            background: rgba(255,253,246,0.14);
+            pointer-events: none;
+        }
+
+        .nav-progress::before {
+            content: "";
+            display: block;
+            width: 12%;
+            height: 100%;
+            background: var(--accent);
         }
 
         .nav-back {
@@ -71,80 +88,14 @@
             font-size: 15px;
             color: rgba(255,253,246,0.3);
             letter-spacing: 1px;
-            justify-self: end;
+            justify-self: center;
+            grid-column: 2;
         }
 
         .page {
             width: min(1180px, calc(100% - 72px));
             margin: 0 auto;
             padding: 72px 0 112px;
-        }
-
-        .progress-header {
-            display: grid;
-            gap: 8px;
-            min-width: 0;
-        }
-
-        .progress-meta {
-            display: flex;
-            align-items: end;
-            justify-content: space-between;
-            gap: 18px;
-        }
-
-        .page-title {
-            display: block;
-            font-size: 0.625rem;
-            font-weight: 800;
-            letter-spacing: 0.14em;
-            text-transform: uppercase;
-            color: rgba(255,253,246,0.42);
-            margin-bottom: 3px;
-        }
-
-        .progress-name {
-            display: block;
-            color: rgba(255,253,246,0.88);
-            font-size: 0.8125rem;
-            font-weight: 800;
-            letter-spacing: -0.01em;
-        }
-
-        .progress-count {
-            color: rgba(255,253,246,0.46);
-            font-size: 0.8125rem;
-            font-weight: 800;
-            white-space: nowrap;
-            font-variant-numeric: tabular-nums;
-        }
-
-        .progress-track {
-            position: relative;
-            height: 3px;
-            border-radius: 999px;
-            background: rgba(255,253,246,0.09);
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            display: block;
-            width: 0;
-            height: 100%;
-            border-radius: inherit;
-            background: var(--accent);
-        }
-
-        .progress-track::before {
-            content: "";
-            position: absolute;
-            left: 0;
-            top: 50%;
-            width: 7px;
-            height: 7px;
-            border-radius: 999px;
-            background: var(--accent);
-            transform: translateY(-50%);
         }
 
         .intro-section {
@@ -174,7 +125,7 @@
         .copy {
             max-width: 54ch;
             display: grid;
-            gap: 14px;
+            gap: 12px;
         }
 
         .copy p {
@@ -187,36 +138,57 @@
         }
 
         .copy-context {
-            max-width: 54ch;
+            max-width: 46ch;
             color: rgba(255,253,246,0.58);
-            font-size: 1rem;
+            font-size: 0.9375rem;
             line-height: 1.62;
             font-weight: 500;
             letter-spacing: 0.005em;
+            margin-top: 14px;
+        }
+
+        .brand-word {
+            font-family: 'Rifton', serif;
+            color: rgba(255,253,246,0.72);
+            letter-spacing: 0.04em;
         }
 
         .copy-setup {
-            color: rgba(255,253,246,0.78);
-            font-size: 1.0625rem;
-            line-height: 1.58;
-            font-weight: 600;
-            letter-spacing: 0;
-            margin-top: 2px;
+            max-width: 42ch;
+            color: var(--text);
+            font-size: clamp(1.1875rem, 1.4vw, 1.375rem);
+            line-height: 1.42;
+            font-weight: 760;
+            letter-spacing: -0.012em;
+        }
+
+        .strike-soft {
+            color: rgba(255,253,246,0.72);
+            text-decoration-line: line-through;
+            text-decoration-color: var(--accent);
+            text-decoration-thickness: 0.14em;
+            text-decoration-skip-ink: none;
         }
 
         .outcome-lines {
             display: grid;
             gap: 8px;
-            margin-top: 4px;
+            max-width: 40ch;
+            margin-top: 8px;
         }
 
         .outcome-lines p {
-            color: var(--text);
-            font-size: clamp(1.1875rem, 1.35vw, 1.3125rem);
-            line-height: 1.46;
-            font-weight: 850;
-            letter-spacing: -0.012em;
+            color: rgba(255,253,246,0.82);
+            font-size: 1.0625rem;
+            line-height: 1.5;
+            font-weight: 620;
+            letter-spacing: -0.002em;
             margin: 0;
+        }
+
+        .outcome-lines p:first-child {
+            color: rgba(255,253,246,0.92);
+            font-weight: 720;
         }
 
         .system-preview {
@@ -386,7 +358,7 @@
         .actions {
             display: flex;
             align-items: center;
-            padding-top: 34px;
+            padding-top: 14px;
         }
 
         .btn-primary {
@@ -422,12 +394,8 @@
 
         @media (max-width: 640px) {
             nav {
-                grid-template-columns: 36px minmax(0, 1fr) auto;
-                gap: 14px;
+                grid-template-columns: 36px 1fr 36px;
                 padding: 0 20px;
-            }
-            .nav-logo {
-                display: none;
             }
             .page {
                 width: min(100% - 32px, 620px);
@@ -445,12 +413,16 @@
                 font-size: 0.9375rem;
                 line-height: 1.58;
             }
+            .copy-setup {
+                font-size: 1.125rem;
+                line-height: 1.44;
+            }
             .outcome-lines {
                 gap: 7px;
             }
             .outcome-lines p {
-                font-size: 1.125rem;
-                line-height: 1.42;
+                font-size: 1rem;
+                line-height: 1.48;
             }
             .intro-section {
                 grid-template-columns: 1fr;
@@ -481,19 +453,8 @@
         <button class="nav-back" onclick="goBack()" aria-label="Retour">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
         </button>
-        <div class="progress-header" aria-label="Progression de l'onboarding">
-            <div class="progress-meta">
-                <div>
-                    <span class="page-title">Première étape</span>
-                    <span class="progress-name">Objectif long terme</span>
-                </div>
-                <span class="progress-count">Départ</span>
-            </div>
-            <div class="progress-track" aria-hidden="true">
-                <span class="progress-fill"></span>
-            </div>
-        </div>
         <span class="nav-logo">CARRY IT</span>
+        <div class="nav-progress" aria-label="Progression de l'onboarding"></div>
     </nav>
 
     <main class="page">
@@ -502,12 +463,12 @@
                 <h1 class="section-question" id="intro-title">Gravis ta plus grande ambition.</h1>
 
                 <div class="copy">
-                    <p class="copy-context">Si tu as des objectifs très ambitieux, tu vas traverser des périodes difficiles. CARRY IT est fait pour ces périodes-là.</p>
-                    <p class="copy-setup">En 20 minutes environ, tu poses un cap long terme précis, daté et mesurable.</p>
+                    <p class="copy-setup">En 20 minutes environ, tu poses un objectif précis, daté, mesurable, <span class="strike-soft">atteignable et réaliste</span>.</p>
                     <div class="outcome-lines">
                         <p>Tu le découpes en jalons clairs.</p>
-                        <p>Tu vas pouvoir exécuter les actions pour avancer avec lucidité.</p>
+                        <p>Pour exécuter les actions et avancer avec lucidité.</p>
                     </div>
+                    <p class="copy-context">Si tu as des objectifs très ambitieux, tu vas traverser des périodes difficiles.<br><span class="brand-word">CARRY IT</span> est fait pour ces périodes-là.</p>
                 </div>
 
                 <div class="actions">
