@@ -6,43 +6,71 @@
 
 ## Ce qu'est un objectif SMART
 
-SMART n'est pas un format bureaucratique.
-C'est la différence entre une ambition qui tient dans le temps et une intention qui meurt en 3 semaines.
+SMART est la base de tout objectif dans carry it
+C'est la différence entre une vision, une idée. et un objectif précis.
 
-CarryIT commence par là parce que **si l'objectif est flou, tout ce qui suit l'est aussi** — les jalons, les KPI, les tâches. Le flou ne s'exécute pas.
+CarryIT commence par là parce que **si l'objectif est flou, tout ce qui suit l'est aussi** les jalons, les KPI, les tâches. Le flou ne peut pas se prévoir et s'exécuter.
+
+énorme difference entre finir un marathon dans le temps officiel et vouloir finir un marathon en  < 2H30
 
 ---
 
 ## Les 5 critères
 
 ### S — Spécifique
-L'objectif dit exactement quoi, pas juste dans quelle direction.
+L'objectif dit spécifiquement quoi, pas juste un objectif. cela doit être ultra spécifique avec un résultat exact qui rendra cet objectif réussi
+
+donc un spécifique est composé de phase : 
+Spécifique
+Résultat (Seuil, ou autre précision)
+
+Voici 3 idée qui se transforme en smart
+Exemple 1 : Réussir dans la tec
+Exemple 2 : Progresser en sport
+Exemple 3 : Générer de l'argent
+
+à chaque étape on prend reprend le SMART qui se transforme
 
 | ❌ Flou | ✅ Spécifique |
 |--------|--------------|
-| "Réussir dans la tech" | "Lancer une app iOS sur l'App Store" |
-| "Progresser en sport" | "Courir un semi-marathon" |
-| "Générer de l'argent" | "Atteindre 2 000€/mois de revenu freelance" |
+| "Réussir dans la tech" | " (Spécifique) Lancer une app iOS sur l'App Store (résultat précis) en open source " |
+| "Progresser en sport" | " '(Spécifique) Courir un semi-marathon (résultat précis) en 8 min 32 s/km sois 3H" |
+| "Générer de l'argent" | "(Spécifique)Atteindre 2 000€/mois de revenu freelance (Résultat précis) Net, Avant Impots ect.." |
 
 **Règle :** Si quelqu'un d'autre peut comprendre exactement ce que tu veux accomplir, c'est spécifique.
 
 ---
+Voici 3 exemples devenu spécifique qui se transforme en smart
+Exemple 1 : (Spécifique) Lancer une app iOS sur l'App Store (résultat précis) en open source 
+Exemple 2 : (Spécifique) Courir un semi-marathon (résultat précis) en moins de 3H
+Exemple 3 : (Spécifique)Atteindre 2 000€/mois de revenu freelance (Résultat précis) Net, Avant Impots ect..
 
 ### M — Mesurable
-Il y a un chiffre cible. Sans ça, tu ne sais jamais si t'es en train de gagner.
+Quelle métrique permettra de déterminer sans ambiguïté si l'objectif est atteint ?
+Cette métrique doit être quantifiable et suivable dans le temps.
 
+ça doit indiquer un résultat. pas un KPI de lagging
+  - **lagging** : suivi d'un résultat SURTOUT PAS LE SUIVI D'une avancé
+
+- mesurable selon une définition explicite
+- exprimé avec une unité claire
+- mesurable ou calculable à partir de données traçables
+- directement lié au résultat final de l’objectif spécifique
+- non ambigu (définition reproductible)
+
+
+avec les 3 exemples
 | ❌ Non mesurable | ✅ Mesurable |
 |----------------|------------|
-| "Beaucoup d'utilisateurs" | "1 000 utilisateurs actifs" |
-| "Être plus fort" | "Faire 10 tractions lestées à +20kg" |
-| "Un bon revenu" | "3 500€ net/mois" |
+|Nombre d'heure de code | Nombre d'utilisateur actif|
+|Nombre d'heure d'entrainnement||
 
 **Règle :** Si tu ne peux pas mettre un nombre, c'est encore du flou.
 
 ---
 
 ### A — Atteignable
-L'ambition est calibrée. Pas insurmontable (tu abandonneras). Pas trop facile (tu stagneras).
+Atteignable veux explicitement dire : 
 
 C'est **le seul critère subjectif** — il dépend de toi, de là où t'en es, et de ce que tu sacrifies pour y arriver.
 
