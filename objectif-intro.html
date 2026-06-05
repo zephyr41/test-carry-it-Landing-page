@@ -114,64 +114,6 @@
             text-wrap: balance;
         }
 
-        .smart-section {
-            padding: 48px 0;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .smart-heading {
-            font-size: 13px;
-            font-weight: 600;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            color: var(--muted);
-            margin-bottom: 24px;
-        }
-
-        .smart-table {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .smart-row {
-            display: flex;
-            align-items: baseline;
-            gap: 20px;
-            padding: 16px 0;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .smart-row:first-child {
-            border-top: 1px solid var(--border);
-        }
-
-        .smart-letter {
-            font-family: 'Rifton', serif;
-            font-size: 18px;
-            color: var(--accent);
-            min-width: 18px;
-            flex-shrink: 0;
-        }
-
-        .smart-content {
-            display: flex;
-            align-items: baseline;
-            gap: 16px;
-            flex-wrap: wrap;
-        }
-
-        .smart-content strong {
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--text);
-            min-width: 110px;
-        }
-
-        .smart-content span {
-            font-size: 15px;
-            color: rgba(255,253,246,0.45);
-        }
-
         .copy {
             max-width: 620px;
         }
@@ -237,14 +179,23 @@
             background: rgba(255,255,255,0.04);
         }
 
+        .skip-link {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--muted);
+            text-decoration: none;
+            padding: 8px 4px;
+            transition: color 0.15s;
+            white-space: nowrap;
+        }
+        .skip-link:hover { color: rgba(255,253,246,0.55); }
+
         @media (max-width: 640px) {
             nav { padding: 0 20px; }
             .page { padding: 48px 24px 80px; }
             .page-title { margin-bottom: 48px; }
             .section-question { font-size: 22px; }
             .copy p { font-size: 16px; }
-            .smart-content { gap: 8px; }
-            .smart-content strong { min-width: unset; }
             .actions {
                 flex-direction: column;
                 align-items: stretch;
@@ -253,6 +204,7 @@
             .btn-secondary {
                 width: 100%;
             }
+            .skip-link { text-align: center; }
         }
     </style>
 </head>
@@ -281,6 +233,7 @@
 
         <div class="actions">
             <a href="objectif.html" class="btn-primary">Commencer</a>
+            <a href="objectif.html" class="skip-link">Je connais déjà le SMART</a>
         </div>
     </main>
 
@@ -289,6 +242,13 @@
             if (window.history.length > 1) history.back();
             else window.location.href = 'index.html';
         }
+
+        // Returning users who've already validated an objectif skip straight to the form
+        try {
+            if (localStorage.getItem('carryItObjectifSMART')) {
+                window.location.replace('objectif.html');
+            }
+        } catch (_) {}
     </script>
 </body>
 </html>
