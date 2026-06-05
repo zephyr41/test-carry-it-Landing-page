@@ -110,7 +110,66 @@
             line-height: 1.2;
             letter-spacing: -0.5px;
             margin-bottom: 28px;
-            max-width: 12ch;
+            max-width: 20ch;
+            text-wrap: balance;
+        }
+
+        .smart-section {
+            padding: 48px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .smart-heading {
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 24px;
+        }
+
+        .smart-table {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .smart-row {
+            display: flex;
+            align-items: baseline;
+            gap: 20px;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .smart-row:first-child {
+            border-top: 1px solid var(--border);
+        }
+
+        .smart-letter {
+            font-family: 'Rifton', serif;
+            font-size: 18px;
+            color: var(--accent);
+            min-width: 18px;
+            flex-shrink: 0;
+        }
+
+        .smart-content {
+            display: flex;
+            align-items: baseline;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .smart-content strong {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+            min-width: 110px;
+        }
+
+        .smart-content span {
+            font-size: 15px;
+            color: rgba(255,253,246,0.45);
         }
 
         .copy {
@@ -184,6 +243,8 @@
             .page-title { margin-bottom: 48px; }
             .section-question { font-size: 22px; }
             .copy p { font-size: 16px; }
+            .smart-content { gap: 8px; }
+            .smart-content strong { min-width: unset; }
             .actions {
                 flex-direction: column;
                 align-items: stretch;
@@ -209,12 +270,52 @@
 
         <section class="intro-section" aria-labelledby="intro-title">
             <span class="section-letter">CARRY IT</span>
-            <h1 class="section-question" id="intro-title">Commence par rendre ton objectif clair.</h1>
+            <h1 class="section-question" id="intro-title">Pose ton objectif. Pour de vrai.</h1>
 
             <div class="copy">
-                <p>Tu vas agir chaque semaine sur cet objectif. Chaque semaine, tu vas effectuer des tâches. Tu vas avancer. Si cet objectif n’a pas de clarté, alors commence par le rendre clair.</p>
-                <p>Chez Carry It, une grande ambition est un système. La clarté d’une vision long terme couplée avec l’exécution quotidienne.</p>
-                <p>Tout est déjà clair ? Tu as déjà un SMART ?</p>
+                <p>Tu vas remplir cinq questions sur ton objectif. Ça prend dix minutes. Ensuite, tu poses des jalons : des points de contrôle dans le temps.</p>
+                <p>Si tu peux pas répondre à une question, l’objectif est pas encore prêt. C’est le filtre.</p>
+            </div>
+        </section>
+
+        <section class="smart-section" aria-label="Ce qu’est un objectif SMART">
+            <h2 class="smart-heading">Un objectif SMART, c’est quoi ?</h2>
+            <div class="smart-table">
+                <div class="smart-row">
+                    <span class="smart-letter">S</span>
+                    <div class="smart-content">
+                        <strong>Spécifique</strong>
+                        <span>Un résultat précis, pas une direction.</span>
+                    </div>
+                </div>
+                <div class="smart-row">
+                    <span class="smart-letter">M</span>
+                    <div class="smart-content">
+                        <strong>Mesurable</strong>
+                        <span>Un chiffre qui monte ou descend.</span>
+                    </div>
+                </div>
+                <div class="smart-row">
+                    <span class="smart-letter">A</span>
+                    <div class="smart-content">
+                        <strong>Atteignable</strong>
+                        <span>T’as le minimum pour démarrer.</span>
+                    </div>
+                </div>
+                <div class="smart-row">
+                    <span class="smart-letter">R</span>
+                    <div class="smart-content">
+                        <strong>Réaliste</strong>
+                        <span>Tes heures hebdo matchent l’ambition.</span>
+                    </div>
+                </div>
+                <div class="smart-row">
+                    <span class="smart-letter">T</span>
+                    <div class="smart-content">
+                        <strong>Temporel</strong>
+                        <span>Une date qui force la décision.</span>
+                    </div>
+                </div>
             </div>
         </section>
 

@@ -476,6 +476,47 @@
       margin-top: 8px;
     }
 
+    .hint-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border-strong);
+      background: transparent;
+      color: var(--muted-light);
+      font-size: 10px;
+      font-weight: 800;
+      cursor: pointer;
+      margin-left: 8px;
+      vertical-align: middle;
+      transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .hint-btn:hover,
+    .hint-btn[aria-expanded="true"] {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: var(--empty-bg);
+    }
+
+    .hint-panel {
+      margin: 4px 0 8px 56px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.875rem;
+      line-height: 1.65;
+    }
+
+    @media (max-width: 640px) {
+      .hint-panel { margin-left: 0; }
+    }
+
     .toast {
       position: fixed;
       right: 20px;
@@ -611,6 +652,7 @@
         letter: "S",
         title: "Spécifique",
         definition: "Un objectif spécifique dit exactement ce que tu veux réussir.",
+        hint: "Ton objectif doit décrire un résultat précis. \"Améliorer mes finances\" n'est pas spécifique. \"5 000 € nets mensuels de revenus locatifs\" l'est. Plus c'est précis, plus tu sais exactement quoi faire.",
         fields: [
           ["result", "Quel résultat concret veux-tu obtenir ?", "Ex : publier un livre, obtenir 3 biens locatifs, lancer une app payante, courir un marathon officiel"],
           ["level", "Quel niveau exact rendra cet objectif réussi ?", "Ex : 5 000 € nets mensuels, 3 biens signés, 1 000 utilisateurs actifs, marathon terminé en moins de 4h"]
@@ -621,6 +663,7 @@
         letter: "M",
         title: "Mesurable",
         definition: "Maintenant, par rapport à cet objectif précis, définis ce qui te permettra de voir ta progression.",
+        hint: "Un indicateur : un chiffre qui bouge. Il te dit si tu avances ou pas. Sans indicateur, tu travailles à l'aveugle. Le chiffre n'a pas besoin d'être parfait au départ, il doit juste exister.",
         fields: [
           ["indicator", "Comment tu vas suivre ta progression ?", "Ex : temps au km à chaque sortie, chiffre d'affaires mensuel, nombre de biens visités"]
         ]
@@ -629,7 +672,8 @@
         key: "achievable",
         letter: "A",
         title: "Atteignable",
-        definition: "Le sommet, c'est ton objectif. Pour l'atteindre, faut savoir ce que t'as dans ton sac — et ce qu'il te manque.",
+        definition: "Le sommet, c'est ton objectif. Pour l'atteindre, faut savoir ce que t'as dans ton sac et ce qu'il te manque.",
+        hint: "Pas \"est-ce que c'est possible en théorie\", mais \"est-ce que t'as le minimum pour démarrer ?\". Les ressources = ce qui t'aide déjà. Les contraintes = ce que tu dois résoudre en cours de route. Sois honnête sur les deux.",
         fields: [
           ["resources", "Qu'as-tu déjà dans ton sac pour atteindre cet objectif ?", "Ex : compétences techniques, réseau, expérience terrain, capital disponible"],
           ["constraints", "Qu'est-ce qu'il te manque pour avancer vers le sommet ?", "Ex : compétence à apprendre, outil à obtenir, blocage à lever"]
@@ -640,6 +684,7 @@
         letter: "R",
         title: "Réaliste",
         definition: "Un objectif réaliste rentre dans ton emploi du temps et tes contraintes.",
+        hint: "L'ambition ne correspond pas automatiquement aux heures disponibles. Si tu vises un marathon mais tu peux courir 30 min par semaine, ta date doit le refléter. Cette case force l'honnêteté sur ce que tu peux vraiment engager chaque semaine.",
         fields: [
           ["hours", "Combien d'heures par semaine peux-tu vraiment y consacrer ?", "Ex : 2h/semaine, 5h/semaine, 1h par jour, 2 soirs par semaine"]
         ]
@@ -649,6 +694,7 @@
         letter: "T",
         title: "Temporellement défini",
         definition: "À quelle date cet objectif sera atteint.",
+        hint: "Une intention sans date reste une intention. Avec une date, tu peux décider : atteint, pas atteint, à décaler. La date ne juge pas, elle te force à trancher.",
         fields: [
           ["deadline", "Date limite", "", "date"]
         ]
@@ -792,18 +838,26 @@
 
         const warningHtml = status.warning ? `<span class="warning"> ${escapeHtml(status.warning)}</span>` : "";
 
+        const hintHtml = section.hint
+          ? `<div class="hint-panel" id="hint-${escapeHtml(section.key)}" hidden>${escapeHtml(section.hint)}</div>`
+          : '';
+        const hintBtn = section.hint
+          ? ` <button class="hint-btn" onclick="toggleHint('${escapeHtml(section.key)}')" aria-expanded="false" aria-label="Aide pour ${escapeHtml(section.title)}">?</button>`
+          : '';
+
         return `
           <article class="section-card">
             <div class="section-header">
               <div class="section-title-row">
                 <div class="letter ${status.complete ? "complete" : ""}" data-letter="${escapeHtml(section.key)}">${escapeHtml(section.letter)}</div>
                 <div>
-                  <h2>${escapeHtml(section.title)}</h2>
+                  <h2>${escapeHtml(section.title)}${hintBtn}</h2>
                   <p class="section-definition">${escapeHtml(section.definition)}</p>
                 </div>
               </div>
               <span class="badge ${statusClass(status)}" data-badge="${escapeHtml(section.key)}">${statusLabel(status)}</span>
             </div>
+            ${hintHtml}
             <div class="field-group">${fieldHtml}</div>
             <div class="section-status" data-status="${escapeHtml(section.key)}">
               ${status.filled}/${status.total} élément${status.total > 1 ? "s" : ""} renseigné${status.filled > 1 ? "s" : ""}.${warningHtml}
@@ -845,6 +899,17 @@
       saveForm();
       updateDynamic();
     });
+
+    window.toggleHint = function(key) {
+      const panel = document.getElementById('hint-' + key);
+      if (!panel) return;
+      panel.hidden = !panel.hidden;
+      const article = panel.closest('article');
+      if (article) {
+        const btn = article.querySelector('.hint-btn');
+        if (btn) btn.setAttribute('aria-expanded', String(!panel.hidden));
+      }
+    };
 
     resetButton.addEventListener("click", () => {
       form = structuredClone(emptyForm);
