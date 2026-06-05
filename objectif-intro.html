@@ -5,11 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Carry It — Avant de commencer</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         @font-face {
             font-family: 'Rifton';
-            src: url('assets/fonts/rifton/rifton-regular.otf') format('opentype');
+            src: url('assets/rifton/rifton-regular.woff2') format('woff2'),
+                 url('assets/rifton/rifton-regular.otf') format('opentype');
         }
 
         :root {
@@ -26,7 +27,7 @@
         body {
             background: var(--bg);
             color: var(--text);
-            font-family: 'Inter', -apple-system, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             min-height: 100dvh;
         }
 
@@ -59,6 +60,10 @@
             transition: color 0.15s, border-color 0.15s;
         }
         .nav-back:hover { color: var(--text); border-color: rgba(255,255,255,0.15); }
+        .nav-back:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 3px;
+        }
 
         .nav-logo {
             font-family: 'Rifton', serif;
@@ -73,9 +78,9 @@
         }
 
         .page {
-            max-width: 820px;
+            width: min(1180px, calc(100% - 48px));
             margin: 0 auto;
-            padding: 64px 40px 112px;
+            padding: 64px 0 112px;
         }
 
         .page-title {
@@ -88,16 +93,23 @@
         }
 
         .intro-section {
-            padding: 0 0 40px;
-            border-bottom: 1px solid var(--border);
+            display: grid;
+            grid-template-columns: minmax(0, 0.82fr) minmax(420px, 1.18fr);
+            gap: clamp(42px, 7vw, 88px);
+            align-items: center;
+            padding: 0;
+        }
+
+        .intro-copy {
+            min-width: 0;
         }
 
         .section-question {
             font-size: clamp(34px, 6vw, 58px);
-            font-weight: 600;
+            font-weight: 850;
             color: var(--text);
             line-height: 0.98;
-            letter-spacing: -0.055em;
+            letter-spacing: -0.04em;
             margin-bottom: 24px;
             max-width: 14ch;
             text-wrap: balance;
@@ -120,13 +132,8 @@
         }
 
         .intro-contract {
-            margin-top: 28px;
+            margin-top: 22px;
             max-width: 620px;
-            border: 1px solid rgba(238,68,8,0.22);
-            border-left: 0;
-            border-right: 0;
-            border-radius: 16px;
-            background: transparent;
             color: rgba(255,253,246,0.82);
             font-size: 15px;
             line-height: 1.65;
@@ -138,57 +145,177 @@
             color: rgba(255,253,246,0.9);
             font-size: 17px;
             line-height: 1.6;
-            font-weight: 600;
-        }
-
-        .onboarding-path {
-            display: grid;
-            gap: 12px;
-            margin-top: 24px;
-        }
-
-        .path-step {
-            display: grid;
-            grid-template-columns: 32px minmax(0, 1fr);
-            gap: 14px;
-            align-items: start;
-            padding: 16px;
-            border: 1px solid rgba(255,253,246,0.08);
-            border-radius: 16px;
-            background: rgba(255,255,255,0.025);
-        }
-
-        .path-step-num {
-            display: grid;
-            place-items: center;
-            width: 32px;
-            height: 32px;
-            border-radius: 999px;
-            background: rgba(238,68,8,0.12);
-            color: var(--accent);
-            font-size: 12px;
-            font-weight: 800;
-        }
-
-        .path-step strong {
-            display: block;
-            color: var(--text);
-            font-size: 15px;
-            line-height: 1.35;
             font-weight: 750;
         }
 
-        .path-step p {
-            margin: 6px 0 0;
-            color: var(--muted);
-            font-size: 14px;
-            line-height: 1.55;
+        .system-preview {
+            position: relative;
+            min-width: 0;
+            border: 1px solid rgba(255,253,246,0.08);
+            border-radius: 22px;
+            background: #080809;
+            box-shadow: 0 32px 90px rgba(0,0,0,0.42);
+            overflow: hidden;
+        }
+
+        .system-preview::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(238,68,8,0.8), transparent);
+            opacity: 0.42;
+            pointer-events: none;
+        }
+
+        .preview-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 14px 18px;
+            border-bottom: 1px solid rgba(255,253,246,0.07);
+            background: #0c0c0e;
+        }
+
+        .preview-brand {
+            color: rgba(255,253,246,0.86);
+            font-size: 12px;
+            font-weight: 850;
+            letter-spacing: 0.1em;
+        }
+
+        .preview-context {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            color: rgba(255,253,246,0.42);
+            font-size: 12px;
+            font-weight: 650;
+        }
+
+        .preview-context::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            border-radius: 999px;
+            background: var(--accent);
+            box-shadow: 0 0 0 0 rgba(238,68,8,0.38);
+            animation: signalPulse 2.8s ease-out infinite;
+        }
+
+        .preview-body {
+            padding: 16px;
+            display: grid;
+            gap: 10px;
+        }
+
+        .preview-label {
+            display: block;
+            margin-bottom: 4px;
+            color: rgba(255,253,246,0.36);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .preview-label strong {
+            color: rgba(255,253,246,0.86);
+            font-weight: 900;
+        }
+
+        .preview-divider {
+            height: 1px;
+            background: rgba(255,253,246,0.08);
+        }
+
+        .smart-line-row {
+            display: grid;
+            grid-template-columns: 24px minmax(0, 1fr);
+            gap: 9px;
+            align-items: center;
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255,253,246,0.07);
+            color: rgba(255,253,246,0.74);
+            font-size: 11px;
+            line-height: 1.4;
+            font-weight: 600;
+        }
+
+        .smart-line-row:last-child {
+            border-bottom: 0;
+        }
+
+        .smart-letter {
+            display: grid;
+            place-items: center;
+            width: 24px;
+            height: 24px;
+            border: 1px solid rgba(255,253,246,0.13);
+            border-radius: 7px;
+            color: rgba(255,253,246,0.52);
+            font-size: 11px;
+            font-weight: 900;
+        }
+
+        .smart-line-row.is-active .smart-letter {
+            border-color: rgba(238,68,8,0.42);
+            background: rgba(238,68,8,0.12);
+            color: var(--accent);
+        }
+
+        .smart-line-row.is-active {
+            color: rgba(255,253,246,0.9);
+        }
+
+        .jalon-lines {
+            display: grid;
+        }
+
+        .jalon-line {
+            display: grid;
+            grid-template-columns: 64px 10px minmax(0, 1fr);
+            gap: 8px;
+            align-items: center;
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255,253,246,0.07);
+            color: rgba(255,253,246,0.76);
+            font-size: 11px;
+            line-height: 1.35;
+        }
+
+        .jalon-line:last-child {
+            border-bottom: 0;
+        }
+
+        .jalon-time {
+            color: rgba(255,253,246,0.36);
+            font-size: 10px;
+            font-weight: 800;
+            text-align: right;
+        }
+
+        .jalon-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 999px;
+            background: rgba(255,253,246,0.22);
+        }
+
+        .jalon-line.is-active {
+            color: rgba(255,253,246,0.94);
+        }
+
+        .jalon-line.is-active .jalon-dot {
+            background: var(--accent);
+            box-shadow: 0 0 0 4px rgba(238,68,8,0.14);
         }
 
         .actions {
             display: flex;
             align-items: center;
-            padding-top: 40px;
+            padding-top: 28px;
         }
 
         .btn-primary {
@@ -200,7 +327,7 @@
             border-radius: 14px;
             font-family: 'Inter', sans-serif;
             font-size: 15px;
-            font-weight: 600;
+            font-weight: 800;
             text-decoration: none;
             transition: background 0.15s, border-color 0.15s, transform 0.12s, color 0.15s;
             background: var(--accent);
@@ -208,17 +335,50 @@
             border: none;
         }
         .btn-primary:hover { background: #ff5d1a; transform: translateY(-1px); }
+        .btn-primary:focus-visible {
+            outline: 2px solid var(--text);
+            outline-offset: 4px;
+        }
+
+        @keyframes signalPulse {
+            0%, 72%, 100% {
+                box-shadow: 0 0 0 0 rgba(238,68,8,0.32);
+            }
+            38% {
+                box-shadow: 0 0 0 7px rgba(238,68,8,0);
+            }
+        }
 
         @media (max-width: 640px) {
             nav { padding: 0 20px; }
-            .page { padding: 44px 24px 80px; }
+            .page {
+                width: min(100% - 32px, 620px);
+                padding: 44px 0 80px;
+            }
             .page-title { margin-bottom: 32px; }
             .section-question { font-size: 36px; }
             .copy p { font-size: 16px; }
+            .value-line { font-size: 16px; }
+            .intro-section {
+                grid-template-columns: 1fr;
+                gap: 34px;
+            }
+            .jalon-line {
+                grid-template-columns: 66px 12px minmax(0, 1fr);
+            }
             .actions {
                 display: block;
             }
             .btn-primary { width: 100%; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+            }
         }
     </style>
 </head>
@@ -235,39 +395,49 @@
         <p class="page-title">Première étape</p>
 
         <section class="intro-section" aria-labelledby="intro-title">
-            <h1 class="section-question" id="intro-title">Transforme ton ambition en plan.</h1>
+            <div class="intro-copy">
+                <h1 class="section-question" id="intro-title">Pose ton ambition.</h1>
 
-            <div class="copy">
-                <p>Tu vas d'abord écrire ce que tu veux atteindre, comment le mesurer et à quelle date.</p>
-                <p>Ça prend quelques minutes. Si une réponse est imparfaite, garde-la : tu pourras l'ajuster ensuite.</p>
-                <p>Ensuite, tu découperas cet objectif en grandes étapes. Ce sont elles que ton dashboard suivra.</p>
-            </div>
-
-            <p class="value-line">La valeur : tu ne repars pas avec une idée motivante. Tu repars avec une cible, des paliers, et un dashboard capable de te dire où tu en es.</p>
-
-            <div class="onboarding-path" aria-label="Parcours de démarrage">
-                <div class="path-step">
-                    <span class="path-step-num">1</span>
-                    <div>
-                        <strong>Écrire l'objectif SMART</strong>
-                        <p>Le résultat attendu, la mesure à suivre, tes contraintes et la date limite.</p>
-                    </div>
+                <div class="copy">
+                    <p>C'est maintenant que tu poses une ambition qui compte.</p>
+                    <p>On la rend SMART : claire, mesurable, datée.</p>
+                    <p>Ensuite, on la découpe en paliers.</p>
                 </div>
-                <div class="path-step">
-                    <span class="path-step-num">2</span>
-                    <div>
-                        <strong>Ajouter les étapes majeures</strong>
-                        <p>Les jalons qui montrent où tu dois être entre aujourd'hui et l'objectif final.</p>
-                    </div>
+
+                <p class="value-line">Grand cap. Prochain palier. Le dashboard saura quoi suivre.</p>
+
+                <p class="intro-contract">Écris une première version. Tu pourras l'ajuster ensuite.</p>
+
+                <div class="actions">
+                    <a href="objectif.html" class="btn-primary">Écrire mon objectif SMART</a>
                 </div>
             </div>
 
-            <p class="intro-contract">À la fin, ton dashboard aura un objectif clair et les jalons à suivre.</p>
+            <div class="system-preview" aria-label="Aperçu du système créé pendant l'onboarding">
+                <div class="preview-top">
+                    <span class="preview-brand">CARRY IT</span>
+                    <span class="preview-context">Ce que tu vas remplir</span>
+                </div>
+                <div class="preview-body">
+                    <span class="preview-label"><strong>1.</strong> Objectif SMART</span>
+                    <div class="smart-line-row is-active"><span class="smart-letter">S</span> Atteindre 1 000 utilisateurs actifs mensuels.</div>
+                    <div class="smart-line-row"><span class="smart-letter">M</span> Mesurer les utilisateurs actifs.</div>
+                    <div class="smart-line-row"><span class="smart-letter">A</span> Clarifier les ressources disponibles.</div>
+                    <div class="smart-line-row"><span class="smart-letter">R</span> Vérifier la charge tenable.</div>
+                    <div class="smart-line-row"><span class="smart-letter">T</span> Fixer la date limite.</div>
+
+                    <div class="preview-divider" aria-hidden="true"></div>
+
+                    <span class="preview-label"><strong>2.</strong> Jalons</span>
+                    <div class="jalon-lines">
+                        <div class="jalon-line"><span class="jalon-time">Final</span><span class="jalon-dot"></span>Objectif SMART atteint</div>
+                        <div class="jalon-line"><span class="jalon-time">6 mois</span><span class="jalon-dot"></span>V1 publiée</div>
+                        <div class="jalon-line is-active"><span class="jalon-time">Maintenant</span><span class="jalon-dot"></span>MVP validé</div>
+                    </div>
+
+                </div>
+            </div>
         </section>
-
-        <div class="actions">
-            <a href="objectif.html" class="btn-primary">Écrire mon objectif SMART</a>
-        </div>
     </main>
 
     <script>
