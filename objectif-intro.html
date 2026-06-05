@@ -117,15 +117,15 @@
             color: var(--text);
             line-height: 1.02;
             letter-spacing: -0.035em;
-            margin-bottom: 28px;
+            margin-bottom: 34px;
             max-width: 12.5ch;
             text-wrap: balance;
         }
 
         .copy {
-            max-width: 54ch;
+            max-width: 48ch;
             display: grid;
-            gap: 12px;
+            gap: 0;
         }
 
         .copy p {
@@ -138,13 +138,13 @@
         }
 
         .copy-context {
-            max-width: 46ch;
+            max-width: 42ch;
             color: rgba(255,253,246,0.58);
             font-size: 0.9375rem;
-            line-height: 1.62;
+            line-height: 1.68;
             font-weight: 500;
             letter-spacing: 0.005em;
-            margin-top: 14px;
+            margin-top: 32px;
         }
 
         .brand-word {
@@ -156,10 +156,10 @@
         .copy-setup {
             max-width: 42ch;
             color: var(--text);
-            font-size: clamp(1.1875rem, 1.4vw, 1.375rem);
-            line-height: 1.42;
-            font-weight: 760;
-            letter-spacing: -0.012em;
+            font-size: clamp(1.25rem, 1.45vw, 1.4375rem);
+            line-height: 1.38;
+            font-weight: 740;
+            letter-spacing: -0.014em;
         }
 
         .strike-soft {
@@ -172,15 +172,15 @@
 
         .outcome-lines {
             display: grid;
-            gap: 8px;
-            max-width: 40ch;
-            margin-top: 8px;
+            gap: 10px;
+            max-width: 36ch;
+            margin-top: 24px;
         }
 
         .outcome-lines p {
             color: rgba(255,253,246,0.82);
-            font-size: 1.0625rem;
-            line-height: 1.5;
+            font-size: 1rem;
+            line-height: 1.56;
             font-weight: 620;
             letter-spacing: -0.002em;
             margin: 0;
@@ -318,7 +318,7 @@
 
         .jalon-line {
             display: grid;
-            grid-template-columns: 64px 10px minmax(0, 1fr);
+            grid-template-columns: 58px 10px minmax(0, 1fr);
             gap: 8px;
             align-items: center;
             padding: 5px 0;
@@ -358,7 +358,7 @@
         .actions {
             display: flex;
             align-items: center;
-            padding-top: 14px;
+            padding-top: 36px;
         }
 
         .btn-primary {
@@ -404,6 +404,7 @@
             .section-question {
                 font-size: 2.375rem;
                 max-width: 11.5ch;
+                margin-bottom: 28px;
             }
             .copy p {
                 font-size: 1rem;
@@ -411,18 +412,20 @@
             }
             .copy-context {
                 font-size: 0.9375rem;
-                line-height: 1.58;
+                line-height: 1.62;
+                margin-top: 26px;
             }
             .copy-setup {
-                font-size: 1.125rem;
-                line-height: 1.44;
+                font-size: 1.1875rem;
+                line-height: 1.4;
             }
             .outcome-lines {
-                gap: 7px;
+                gap: 8px;
+                margin-top: 20px;
             }
             .outcome-lines p {
                 font-size: 1rem;
-                line-height: 1.48;
+                line-height: 1.52;
             }
             .intro-section {
                 grid-template-columns: 1fr;
@@ -430,10 +433,11 @@
                 padding-left: 0;
             }
             .jalon-line {
-                grid-template-columns: 66px 12px minmax(0, 1fr);
+                grid-template-columns: 58px 12px minmax(0, 1fr);
             }
             .actions {
                 display: block;
+                padding-top: 30px;
             }
             .btn-primary { width: 100%; }
         }
@@ -468,7 +472,7 @@
                         <p>Tu le découpes en jalons clairs.</p>
                         <p>Pour exécuter les actions et avancer avec lucidité.</p>
                     </div>
-                    <p class="copy-context">Si tu as des objectifs très ambitieux, tu vas traverser des périodes difficiles.<br><span class="brand-word">CARRY IT</span> est fait pour ces périodes-là.</p>
+                    <p class="copy-context">Si tu as des objectifs très ambitieux, tu vas traverser des périodes difficiles.<br><span class="brand-word">CARRY IT</span> relie la vision long terme à l'exécution dans ces périodes-là.</p>
                 </div>
 
                 <div class="actions">
@@ -491,11 +495,11 @@
 
                     <div class="preview-divider" aria-hidden="true"></div>
 
-                    <span class="preview-label"><strong>2.</strong> Jalons</span>
+                    <span class="preview-label"><strong>2.</strong> Découpage</span>
                     <div class="jalon-lines">
-                        <div class="jalon-line"><span class="jalon-time">Final</span><span class="jalon-dot"></span>Objectif SMART atteint</div>
-                        <div class="jalon-line"><span class="jalon-time">6 mois</span><span class="jalon-dot"></span>V1 publiée</div>
-                        <div class="jalon-line is-active"><span class="jalon-time">Maintenant</span><span class="jalon-dot"></span>MVP validé</div>
+                        <div class="jalon-line"><span class="jalon-time">Cap</span><span class="jalon-dot"></span>Objectif long terme</div>
+                        <div class="jalon-line"><span class="jalon-time">Jalon</span><span class="jalon-dot"></span>Étape majeure à atteindre</div>
+                        <div class="jalon-line is-active"><span class="jalon-time">Action</span><span class="jalon-dot"></span>Premier mouvement concret</div>
                     </div>
 
                 </div>
