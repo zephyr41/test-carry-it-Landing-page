@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jalons | CarryIT Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;800&family=Roboto+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .milestones-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    
+    .milestone-card {
+      background: var(--surface-color);
+      border: 1px solid var(--border-color);
+      padding: 2rem;
+      border-radius: 8px;
+      position: relative;
+    }
+
+    .milestone-card.active {
+      border-color: var(--accent-color);
+    }
+
+    .milestone-card.active::before {
+      content: '';
+      position: absolute;
+      top: -1px;
+      left: -1px;
+      right: -1px;
+      height: 4px;
+      background: var(--accent-color);
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+    }
+
+    .milestone-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+    }
+
+    .status-badge {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      background: var(--surface-hover);
+      color: var(--text-secondary);
+    }
+
+    .status-badge.current {
+      background: rgba(255, 69, 0, 0.1); /* Accent with opacity */
+      color: var(--accent-color);
+    }
+
+    .status-badge.done {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-primary);
+    }
+
+    .milestone-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 1.5rem;
+    }
+
+    .milestone-kpi {
+      font-family: var(--font-mono);
+      font-size: 2rem;
+      font-weight: 300;
+      margin-bottom: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top-Rail Navigation -->
+  <nav class="top-rail">
+    <div class="brand">
+      <div class="brand-dot"></div>
+      CarryIT
+    </div>
+    
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">1. Vision & SMART</a>
+      <a href="jalons.html" class="nav-link active">2. Jalons</a>
+      <a href="taches.html" class="nav-link">3. Tâches</a>
+    </div>
+
+    <div class="user-actions">
+      <button class="btn">Paramètres</button>
+    </div>
+  </nav>
+
+  <main>
+    <header class="page-header">
+      <span class="label">Architecture Temporelle</span>
+      <h1 class="title">Work Packages & Jalons intermédiaires</h1>
+    </header>
+
+    <div class="milestones-grid">
+      <!-- Jalon Terminé -->
+      <div class="milestone-card">
+        <div class="milestone-header">
+          <span class="label">Q1 2026</span>
+          <span class="status-badge done">Terminé</span>
+        </div>
+        <h3 class="milestone-title">Lancement du produit MVP</h3>
+        <span class="label">KPI Jalon</span>
+        <div class="milestone-kpi">100%</div>
+        <div class="progress-track">
+          <div class="progress-fill" style="width: 100%; background: var(--text-secondary);"></div>
+        </div>
+      </div>
+
+      <!-- Jalon En Cours (Actif) -->
+      <div class="milestone-card active">
+        <div class="milestone-header">
+          <span class="label">Q2 2026</span>
+          <span class="status-badge current">En cours</span>
+        </div>
+        <h3 class="milestone-title">Acquisition des 50 premiers clients payants</h3>
+        <span class="label">KPI Jalon (Nbr de clients)</span>
+        <div class="milestone-kpi">22 <span class="kpi-target" style="font-size: 1rem;">/ 50</span></div>
+        <div class="progress-track">
+          <div class="progress-fill" style="width: 44%;"></div>
+        </div>
+      </div>
+
+      <!-- Jalon Futur -->
+      <div class="milestone-card">
+        <div class="milestone-header">
+          <span class="label">Q3 2026</span>
+          <span class="status-badge">À venir</span>
+        </div>
+        <h3 class="milestone-title">Mise à l'échelle Marketing & V2</h3>
+        <span class="label">KPI Jalon (Taux de conversion)</span>
+        <div class="milestone-kpi">0% <span class="kpi-target" style="font-size: 1rem;">/ 5%</span></div>
+        <div class="progress-track">
+          <div class="progress-fill" style="width: 0%;"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+</body>
+</html>

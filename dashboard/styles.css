@@ -1,0 +1,206 @@
+/* ── Spacing scale ── */
+:root {
+  --sp-2:  2px;
+  --sp-4:  4px;
+  --sp-8:  8px;
+  --sp-12: 12px;
+  --sp-16: 16px;
+  --sp-24: 24px;
+  --sp-32: 32px;
+  --sp-48: 48px;
+}
+
+/* ── Reset ── */
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  color: #000;
+  background: #FFF;
+  display: flex;
+  height: 100vh;
+}
+
+/* ── Base wireframe element ── */
+.wf-box {
+  border: 2px solid #000;
+  background: #FFF;
+}
+
+/* ── Sidebar ── */
+.wf-sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  border-right: 2px solid #000;
+  padding: var(--sp-16);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-8);
+}
+
+.wf-logo {
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  background: #EEE;
+  border: 2px solid #000;
+  margin-bottom: var(--sp-24);
+}
+
+.wf-nav-item {
+  padding: var(--sp-12) var(--sp-16);
+  border: 2px solid #000;
+  font-weight: bold;
+  font-size: 0.85rem;
+}
+
+.wf-nav-item.active { background: #CCC; }
+
+/* ── Main layout — Grid, primary col heavier ── */
+.wf-main {
+  flex: 1;
+  padding: var(--sp-32);
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: var(--sp-32);
+  overflow: auto;
+}
+
+/* ── Column ── */
+.wf-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-16);
+}
+
+/* ── Section label (replaces all inline font-weight bold) ── */
+.wf-section-label {
+  font-size: 0.65rem;
+  font-weight: bold;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #888;
+}
+
+/* ── Typography placeholders ── */
+.wf-title {
+  height: 32px;
+  background: #DDD;
+  border: 1px solid #999;
+  margin-bottom: var(--sp-16);
+}
+
+.wf-text-line {
+  height: 16px;
+  background: #EEE;
+  border: 1px solid #CCC;
+  margin-bottom: var(--sp-8);
+}
+
+/* ── KPI block ── */
+.wf-kpi-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: var(--sp-24);
+  gap: var(--sp-12);
+}
+
+.wf-kpi-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #777;
+}
+
+.wf-kpi-huge {
+  font-size: 2.5rem;
+  font-weight: bold;
+  line-height: 1;
+}
+
+/* ── Sparkline graph ── */
+.wf-kpi-graph {
+  width: 100%;
+  border-top: 1px dashed #BBB;
+  padding-top: var(--sp-12);
+}
+
+.wf-kpi-graph-legend {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.6rem;
+  color: #999;
+  margin-top: var(--sp-4);
+}
+
+/* ── CTA button ── */
+.wf-btn {
+  padding: var(--sp-8) var(--sp-24);
+  border: 2px solid #000;
+  background: #FFF;
+  font-weight: bold;
+  font-size: 0.8rem;
+  cursor: pointer;
+  align-self: flex-start;
+}
+
+/* ── Contexte court terme ── */
+.wf-context-block {
+  display: flex;
+  flex-direction: column;
+  padding: var(--sp-16) var(--sp-24);
+}
+
+.wf-context-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-12);
+  padding: var(--sp-12) 0;
+}
+
+.wf-context-row + .wf-context-row {
+  border-top: 1px solid #DDD;
+}
+
+.wf-tag {
+  font-size: 0.6rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #888;
+  border: 1px solid #BBB;
+  padding: var(--sp-2) var(--sp-8);
+  white-space: nowrap;
+}
+
+.wf-context-name {
+  flex: 1;
+  font-size: 0.85rem;
+  color: #333;
+}
+
+.wf-context-value {
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: #000;
+}
+
+.wf-context-link {
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-decoration: underline;
+  color: #555;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* ── SMART block ── */
+.wf-smart-block {
+  padding: var(--sp-24);
+  flex: 1;
+}

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tâches | CarryIT Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;800&family=Roboto+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .kanban-board {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 2rem;
+      height: 60vh;
+      overflow-x: auto;
+      padding-bottom: 1rem;
+    }
+
+    .kanban-column {
+      flex: 1;
+      min-width: 300px;
+      background: var(--surface-color);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .kanban-header {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .kanban-title {
+      font-weight: 500;
+      font-size: 1rem;
+    }
+
+    .task-count {
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      background: var(--surface-hover);
+      padding: 0.125rem 0.5rem;
+      border-radius: 12px;
+    }
+
+    .kanban-cards {
+      padding: 1rem;
+      overflow-y: auto;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .task-card {
+      background: var(--bg-color);
+      border: 1px solid var(--border-color);
+      padding: 1.25rem;
+      border-radius: 6px;
+      cursor: grab;
+      border-left: 3px solid var(--text-secondary);
+    }
+
+    .task-card:hover {
+      border-color: var(--text-secondary);
+    }
+
+    .task-card.high-priority {
+      border-left-color: var(--accent-color);
+    }
+
+    .task-title {
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+    }
+
+    .task-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1rem;
+    }
+
+    .task-tag {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    .add-task-btn {
+      margin: 1rem;
+      background: transparent;
+      border: 1px dashed var(--border-color);
+      color: var(--text-secondary);
+      padding: 0.75rem;
+      border-radius: 4px;
+      text-align: center;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      transition: all 0.2s;
+    }
+
+    .add-task-btn:hover {
+      border-color: var(--text-primary);
+      color: var(--text-primary);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top-Rail Navigation -->
+  <nav class="top-rail">
+    <div class="brand">
+      <div class="brand-dot"></div>
+      CarryIT
+    </div>
+    
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">1. Vision & SMART</a>
+      <a href="jalons.html" class="nav-link">2. Jalons</a>
+      <a href="taches.html" class="nav-link active">3. Tâches</a>
+    </div>
+
+    <div class="user-actions">
+      <button class="btn">Paramètres</button>
+    </div>
+  </nav>
+
+  <main>
+    <header class="page-header">
+      <span class="label">Exécution (Jalon Actif : Q2 2026)</span>
+      <h1 class="title">To-do & Tâches Quotidiennes</h1>
+    </header>
+
+    <div class="kanban-board">
+      
+      <!-- Backlog -->
+      <div class="kanban-column">
+        <div class="kanban-header">
+          <span class="kanban-title">À faire (Backlog)</span>
+          <span class="task-count">3</span>
+        </div>
+        <div class="kanban-cards">
+          <div class="task-card">
+            <div class="task-title">Rédiger les emails d'onboarding</div>
+            <div class="task-meta">
+              <span class="task-tag">#Marketing</span>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-title">Optimiser la vitesse de la LP</div>
+            <div class="task-meta">
+              <span class="task-tag">#Tech</span>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-title">Revoir le pricing model</div>
+            <div class="task-meta">
+              <span class="task-tag">#Business</span>
+            </div>
+          </div>
+        </div>
+        <button class="add-task-btn">+ Nouvelle tâche</button>
+      </div>
+
+      <!-- In Progress -->
+      <div class="kanban-column">
+        <div class="kanban-header">
+          <span class="kanban-title">En cours (Aujourd'hui)</span>
+          <span class="task-count">2</span>
+        </div>
+        <div class="kanban-cards">
+          <div class="task-card high-priority">
+            <div class="task-title">Corriger le bug de paiement Stripe</div>
+            <div class="task-meta">
+              <span class="task-tag" style="color: var(--accent-color);">#Critique</span>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-title">Publier le post LinkedIn (ICP2)</div>
+            <div class="task-meta">
+              <span class="task-tag">#Marketing</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Done -->
+      <div class="kanban-column">
+        <div class="kanban-header">
+          <span class="kanban-title">Terminé</span>
+          <span class="task-count">1</span>
+        </div>
+        <div class="kanban-cards">
+          <div class="task-card" style="border-left-color: #2e8b57; opacity: 0.7;">
+            <div class="task-title" style="text-decoration: line-through;">Interview utilisateur (Nils)</div>
+            <div class="task-meta">
+              <span class="task-tag">#Recherche</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+</body>
+</html>

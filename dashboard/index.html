@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Wireframe - Vision</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <nav class="wf-sidebar">
+    <div class="wf-logo">[ LOGO ]</div>
+    <div class="wf-nav-item active">Vision</div>
+    <div class="wf-nav-item">Jalons</div>
+    <div class="wf-nav-item">Tâches</div>
+  </nav>
+
+  <!-- Main Workspace — grid 3fr 2fr -->
+  <main class="wf-main">
+
+    <!-- Colonne Gauche : KPI (données primaires) -->
+    <div class="wf-col">
+
+      <div class="wf-section-label">État actuel</div>
+
+      <div class="wf-box wf-kpi-block">
+        <div class="wf-kpi-label">Label KPI</div>
+        <div class="wf-kpi-huge">XXX / YYY</div>
+        <div class="wf-kpi-graph">
+          <svg width="100%" height="88" viewBox="0 0 300 88" preserveAspectRatio="none">
+            <line x1="0" y1="86" x2="300" y2="86" stroke="#CCC" stroke-width="1"/>
+            <line x1="0" y1="0"  x2="0"   y2="86" stroke="#CCC" stroke-width="1"/>
+            <polyline
+              points="0,78 40,72 80,60 120,66 160,44 200,50 240,28 300,14"
+              fill="none" stroke="#000" stroke-width="2"/>
+            <circle cx="0"   cy="78" r="3" fill="#000"/>
+            <circle cx="40"  cy="72" r="3" fill="#000"/>
+            <circle cx="80"  cy="60" r="3" fill="#000"/>
+            <circle cx="120" cy="66" r="3" fill="#000"/>
+            <circle cx="160" cy="44" r="3" fill="#000"/>
+            <circle cx="200" cy="50" r="3" fill="#000"/>
+            <circle cx="240" cy="28" r="3" fill="#000"/>
+            <circle cx="300" cy="14" r="4" fill="#000" stroke="#FFF" stroke-width="2"/>
+          </svg>
+          <div class="wf-kpi-graph-legend">
+            <span>J-7</span><span>Aujourd'hui</span>
+          </div>
+        </div>
+        <div class="wf-btn">[ Mettre à jour ]</div>
+      </div>
+
+      <!-- Contexte court terme : pont vers Jalons + Tâches -->
+      <div class="wf-section-label">Contexte court terme</div>
+
+      <div class="wf-box wf-context-block">
+        <div class="wf-context-row">
+          <span class="wf-tag">Jalon actuel</span>
+          <span class="wf-context-name">Nom du jalon · X / Y</span>
+          <span class="wf-context-link">→ Voir jalons</span>
+        </div>
+        <div class="wf-context-row">
+          <span class="wf-tag">Tâches</span>
+          <span class="wf-context-name">X tâches en attente</span>
+          <span class="wf-context-link">→ Voir tâches</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Colonne Droite : Objectif SMART (rappel/contexte) -->
+    <div class="wf-col">
+
+      <div class="wf-section-label">Objectif SMART</div>
+
+      <div class="wf-box wf-smart-block">
+        <div class="wf-title" style="width: 55%;"></div>
+        <div class="wf-text-line"></div>
+        <div class="wf-text-line"></div>
+        <div class="wf-text-line" style="width: 70%;"></div>
+        <div class="wf-text-line" style="width: 40%;"></div>
+      </div>
+
+    </div>
+
+  </main>
+
+</body>
+</html>
