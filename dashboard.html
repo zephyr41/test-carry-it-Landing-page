@@ -772,10 +772,6 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                         data-view="pilotage"
                         ${currentDashboardView === 'pilotage' ? '' : 'hidden'}>
                         <div class="db-section">
-                            <div class="db-section-header">
-                                <span class="db-section-label">Vision · Long terme</span>
-                            </div>
-
                             <!-- Row 1 : KPI + SMART côte à côte -->
                             <div class="db-row-kpi-smart">
                                 <div class="kpi-panel db-card db-card-vision-main" id="kpiPanel-${i}">
@@ -2481,23 +2477,23 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             const title = escHtml(getJalonLabel(jalon));
             const date = formatDateJalonCourt(jalon.date);
             return `
-            <div class="db-section" style="margin-top:12px">
+            <div class="db-section db-active-jalon-section">
                 <div class="db-section-header">
                     <span class="db-section-label">Exécution · Jalon en cours</span>
                 </div>
-                <div class="db-card" style="padding:18px 22px;display:flex;align-items:center;gap:20px;cursor:pointer" onclick="switchDashboardView('jalons')">
-                    <div style="flex:1;min-width:0">
-                        <div style="font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:#929292;margin-bottom:4px">${escHtml(monthLabel)} · Jalon en cours</div>
-                        <div style="font-size:16px;font-weight:600;color:#FFFDF6;letter-spacing:-0.01em">${title}</div>
-                        ${date ? `<div style="font-size:12.5px;color:#929292;margin-top:2px">${escHtml(date)}</div>` : ''}
+                <div class="db-card db-active-jalon-card" onclick="switchDashboardView('jalons')">
+                    <div class="db-aj-body">
+                        <div class="db-aj-meta">${escHtml(monthLabel)} · Jalon en cours</div>
+                        <div class="db-aj-title">${title}</div>
+                        ${date ? `<div class="db-aj-date">${escHtml(date)}</div>` : ''}
                     </div>
-                    <div style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:9999px;background:rgba(238,68,8,0.1);color:#EE4408;font-size:11.5px;font-weight:500;white-space:nowrap;flex-shrink:0">
-                        <span style="width:5px;height:5px;border-radius:50%;background:#EE4408;display:inline-block"></span>
+                    <div class="db-aj-status-pill">
+                        <span class="db-aj-dot" aria-hidden="true"></span>
                         En cours
                     </div>
-                    <div style="margin-left:auto;color:#929292;display:inline-flex;align-items:center;gap:6px;font-size:12.5px;white-space:nowrap;flex-shrink:0">
+                    <div class="db-aj-cta">
                         Voir le jalon
-                        <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"/></svg>
                     </div>
                 </div>
             </div>`;
@@ -3936,12 +3932,34 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             // Empty state
             if (measures.length === 0) {
                 container.innerHTML = `
-                    <button class="kpi-empty-cta" onclick="openAddMeasureModal(${i})">
-                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                        </svg>
-                        Aucune mesure enregistrée · Ajouter une mesure
-                    </button>`;
+                    <div class="kpi-empty-state">
+                        <div class="kpi-empty-bg-chart" aria-hidden="true">
+                            <svg width="100%" height="100%" viewBox="0 0 280 140" preserveAspectRatio="xMidYMid meet" fill="none">
+                                <line x1="0" y1="115" x2="280" y2="115" stroke="white" stroke-width="0.5" stroke-dasharray="5 5"/>
+                                <line x1="0" y1="82"  x2="280" y2="82"  stroke="white" stroke-width="0.5" stroke-dasharray="5 5"/>
+                                <line x1="0" y1="49"  x2="280" y2="49"  stroke="white" stroke-width="0.5" stroke-dasharray="5 5"/>
+                                <line x1="0" y1="16"  x2="280" y2="16"  stroke="white" stroke-width="0.5" stroke-dasharray="5 5"/>
+                                <path d="M0 115 C 50 108, 90 95, 130 78 C 165 63, 200 46, 240 32 C 262 24, 275 19, 280 16"
+                                      stroke="rgba(238,68,8,0.65)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                                <path d="M0 115 C 50 108, 90 95, 130 78 C 165 63, 200 46, 240 32 C 262 24, 275 19, 280 16 L 280 140 L 0 140 Z"
+                                      fill="rgba(238,68,8,0.07)"/>
+                                <circle cx="0"   cy="115" r="3" fill="rgba(238,68,8,0.45)"/>
+                                <circle cx="130" cy="78"  r="3" fill="rgba(238,68,8,0.45)"/>
+                                <circle cx="240" cy="32"  r="3" fill="rgba(238,68,8,0.45)"/>
+                                <circle cx="280" cy="16"  r="3" fill="rgba(238,68,8,0.45)"/>
+                            </svg>
+                        </div>
+                        <div class="kpi-empty-content">
+                            <p class="kpi-empty-title">Aucune mesure enregistrée</p>
+                            <p class="kpi-empty-hint">Ajoutez des données pour visualiser votre progression.</p>
+                            <button class="kpi-empty-add-btn" onclick="openAddMeasureModal(${i})">
+                                <svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
+                                </svg>
+                                Ajouter une mesure
+                            </button>
+                        </div>
+                    </div>`;
                 return;
             }
 

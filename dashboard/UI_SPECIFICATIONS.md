@@ -19,18 +19,55 @@ Le dashboard suit le principe de **Divulgation Progressive** et la **Pyramide In
     *   *Champs obligatoires* : Nouvelle valeur.
     *   *Champs optionnels* : Horaires (pour compenser l'absence de time-tracker natif) et Notes.
 
-## 4. Contenu des Vues (Wireframes structurels)
+## 4. Structure Fonctionnelle des Vues
 
-### Onglet 1 : Vision
-Lecture de haut en bas (Règle des 5 secondes) :
-1.  **Objectif SMART** : Rappel constant de la cible finale.
-2.  **État Actuel (KPI Principal)** : La donnée prioritaire absolue de l'écran. Affichage brut de la valeur actuelle vs la valeur cible.
-3.  **Tendance (Historique)** : Graphique "Sparkline" minimaliste pour indiquer si la courbe progresse, stagne ou régresse, sans surcharger l'écran de métriques complexes.
+### 1. Où est-ce que j’en suis ?
+Cette section affiche la position actuelle de l’utilisateur.
+Elle doit permettre de comprendre immédiatement :
+* quel est l’objectif long terme ; (SMART)
+* quel est le KPI principal de l’objectif ; (Mesurable du smart)
+* quelle est la valeur actuelle ; (Ou j’en suis moi)
+* quelle est la valeur cible ; (le seuil a atteindre)
+* Ou j’en suis dans les jalons (jalons passé, jalon actif, jalon futur)
+* quel est le critère de validation du jalon actif ;
+* quel est le résultat actuel du jalon actif.
 
-### Onglet 2 : Jalons
-*   Série de "Cartes" (Work Packages) alignées sur le temps.
-*   Chaque jalon expose ses propres métriques (KPI d'effort vs KPI de résultat).
+### 2. Est-ce que j’avance réellement ?
+Cette section affiche la dynamique de progression.
+Elle ne montre pas seulement la valeur actuelle.
+Elle montre si cette valeur évolue dans le temps.
+Elle doit croiser quatre données :
+* le résultat ; (est ce que le résultat augmente)
+* l’effort réel ; (ce que je fais)
+* le temps réel investi ; (combien de temps j’ai réellement investit)
+* le temps calendaire écoulé. (depuis combien de temps je suis sur cette tache en jours)
 
-### Onglet 3 : Exécution
-*   Prise en charge d'un modèle d'état des tâches (À faire / En cours / Terminé).
-*   L'utilisateur peut basculer l'affichage entre une simple liste "To-Do" (binaire) et un tableau "Kanban" (flux).
+Le dashboard doit permettre de comparer l’effort, le temps et le résultat.
+
+Exemple 1 :
+Le résultat stagne depuis 30 jours.
+Le temps réel investi est faible.
+Le problème peut venir d’un manque d’exécution réelle.
+
+Exemple 2 :
+Le résultat stagne depuis 30 jours.
+Le temps réel investi est élevé.
+Il faut analyser la méthode, le type d’effort, le KPI ou la difficulté du jalon.
+*(L'interface doit permettre de montrer ce diagnostic visuellement, sans avoir à l'écrire noir sur blanc).*
+
+### Règles de conception
+
+Le dashboard doit distinguer deux notions :
+* Position = où j’en suis maintenant.
+* Dynamique = est-ce que ma position évolue dans le temps.
+
+Le KPI actuel donne une position.
+L’évolution du KPI donne une dynamique.
+
+Le critère de validation du jalon actif sert à savoir ce qu’il faut atteindre.
+Le résultat actuel du jalon actif sert à savoir où l’utilisateur se situe par rapport à ce critère.
+L’évolution du résultat du jalon actif sert à savoir si l’utilisateur avance réellement.
+
+### 3. Exécution
+* Prise en charge d'un modèle d'état des tâches (À faire / En cours / Terminé).
+* L'utilisateur peut basculer l'affichage entre une simple liste "To-Do" (binaire) et un tableau "Kanban" (flux).

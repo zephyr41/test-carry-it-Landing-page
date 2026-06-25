@@ -349,6 +349,20 @@
     .output-help {
       color: var(--text-58); font-size: 0.8rem; line-height: 1.55; margin: 3px 0 0;
     }
+    .objective-phrase {
+      padding: 16px 0 18px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-52);
+      font-size: 0.8125rem;
+      font-style: italic;
+      line-height: 1.78;
+      letter-spacing: 0.003em;
+    }
+    .badge.optional {
+      color: var(--text-42);
+      border-color: var(--border);
+      background: transparent;
+    }
 
     .smart-preview {
       display: grid;
@@ -473,7 +487,7 @@
       <div class="form-col">
         <div class="titre-field">
           <span class="titre-label">Nom du projet</span>
-          <textarea id="titreInput" rows="1" placeholder="Ex : Liberté financière immo, Marathon sub-3h, Lancer mon SaaS…"></textarea>
+          <textarea id="titreInput" rows="1" placeholder="Ex : Immo, Marathon, SaaS…"></textarea>
         </div>
         <div class="stack" id="sectionsContainer"></div>
       </div>
@@ -487,6 +501,7 @@
             </div>
             <button class="btn" type="button" id="copyButton">Copier</button>
           </div>
+          <div class="objective-phrase" id="objectivePhrase"></div>
           <div class="smart-preview" id="objectiveText"></div>
         </div>
 
@@ -509,7 +524,7 @@
         letter: "S",
         title: "Spécifique",
         definition: "Un objectif spécifique dit exactement ce que tu veux réussir.",
-        hint: "Ton objectif doit décrire un résultat précis. \"Améliorer mes finances\" n'est pas spécifique. \"5 000 € nets mensuels de revenus locatifs\" l'est. Plus c'est précis, plus tu sais quoi viser.",
+        hint: "Ton objectif doit décrire un résultat précis. \"Améliorer mes finances\" n'est pas spécifique. \"5 000 € nets mensuels de revenus locatifs\" l'est. Plus c'est précis, plus tu sais quoi viser. C'est plus simple quand tu définis un seuil précis (un chiffre) ou un état précis (fait / pas fait).",
         fields: [
           ["result", "Quel résultat concret veux-tu obtenir ?", "Ex : publier un livre, obtenir 3 biens locatifs, lancer une app payante, courir un marathon officiel"],
           ["level", "Quel niveau exact rendra cet objectif réussi ?", "Ex : 5 000 € nets mensuels, 3 biens signés, 1 000 utilisateurs actifs, marathon terminé en moins de 4h"]
@@ -519,10 +534,10 @@
         key: "measurable",
         letter: "M",
         title: "Mesurable",
-        definition: "Définis ce qui te permettra de voir ta progression.",
+        definition: "Ce que tu vas suivre chaque mois pour voir ton avancée.",
         hint: "Un indicateur : un chiffre ou une preuve qui bouge. Il te dit si tu avances ou pas. Sans indicateur, tu travailles à l'aveugle. Le chiffre n'a pas besoin d'être parfait au départ, il doit juste exister.",
         fields: [
-          ["indicator", "Comment tu vas suivre ta progression ?", "Ex : temps au km, chiffre d'affaires mensuel, utilisateurs actifs, biens visités"]
+          ["indicator", "Quel indicateur tu vas suivre chaque mois ?", "Ex : temps au km, chiffre d'affaires mensuel, utilisateurs actifs, biens visités"]
         ]
       },
       {
@@ -530,10 +545,10 @@
         letter: "A",
         title: "Atteignable",
         definition: "Le sommet, c'est ton objectif. Pour l'atteindre, il faut savoir ce que t'as dans ton sac et ce qu'il te manque.",
-        hint: "Pas \"est-ce que c'est possible en théorie\", mais \"est-ce que t'as le minimum pour démarrer ?\" Les ressources = ce qui t'aide déjà. Les contraintes = ce que tu dois résoudre en cours de route.",
+        hint: "Pas \"est-ce que c'est possible en théorie\", mais \"est-ce que t'as le minimum pour démarrer ?\" Les ressources = ce que t'as maintenant pour t'y mettre. Ce dont tu as besoin = ce qu'il faut pour démarrer. Tu le résous, tu ne le suis pas. Ça c'est le M.",
         fields: [
-          ["resources", "Qu'as-tu déjà dans ton sac pour atteindre cet objectif ?", "Ex : compétences techniques, réseau, expérience terrain, capital disponible"],
-          ["constraints", "Qu'est-ce qu'il te manque pour avancer vers le sommet ?", "Ex : compétence à apprendre, outil à obtenir, blocage à lever"]
+          ["resources", "Quelles ressources tu as maintenant pour t'y mettre concrètement ?", "Ex : compétences techniques, réseau, expérience terrain, capital disponible"],
+          ["constraints", "De quoi tu as besoin pour démarrer ?", "Ex : compétence à apprendre, outil à obtenir, blocage à lever"]
         ]
       },
       {
@@ -555,6 +570,17 @@
         fields: [
           ["deadline", "Date limite", "", "date"]
         ]
+      },
+      {
+        key: "animated",
+        letter: "V",
+        title: "Vision",
+        optional: true,
+        definition: "Ce que cette réussite change concrètement dans ta vie.",
+        hint: "Pas besoin d'un paragraphe. Une phrase honnête suffit. Ce n'est pas de la motivation — c'est une ancre.",
+        fields: [
+          ["vision", "Si tu l'atteins — à quoi ressemble ta vie ?", "Ex : je quitte mon job, j'ai une liberté financière réelle, je cours mon premier ultra..."]
+        ]
       }
     ];
 
@@ -567,7 +593,8 @@
       measurable: { indicator: "" },
       achievable: { resources: "", constraints: "" },
       relevant: { hours: "" },
-      timebound: { deadline: "" }
+      timebound: { deadline: "" },
+      animated: { vision: "" }
     };
 
     const STORAGE_KEY = "carryit_smart_form";
@@ -575,7 +602,11 @@
     function loadForm() {
       try {
         const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) return JSON.parse(saved);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (!parsed.animated) parsed.animated = { vision: "" };
+          return parsed;
+        }
       } catch {}
       return structuredClone(emptyForm);
     }
@@ -588,6 +619,7 @@
 
     const sectionsContainer = document.getElementById("sectionsContainer");
     const objectiveText = document.getElementById("objectiveText");
+    const objectivePhrase = document.getElementById("objectivePhrase");
     const resetButton = document.getElementById("resetButton");
     const copyButton = document.getElementById("copyButton");
     const validateButton = document.getElementById("validateButton");
@@ -644,16 +676,16 @@
       };
     }
 
-    function statusClass(status) {
+    function statusClass(status, optional) {
       if (status.complete) return "complete";
       if (status.filled > 0) return "partial";
-      return "empty";
+      return optional ? "optional" : "empty";
     }
 
-    function statusLabel(status) {
+    function statusLabel(status, optional) {
       if (status.complete) return "Complet";
       if (status.filled > 0) return "À compléter";
-      return "Vide";
+      return optional ? "Optionnel" : "Vide";
     }
 
     function buildObjective() {
@@ -667,8 +699,35 @@
       const resources = form.achievable.resources || "[ce que j'ai déjà]";
       const constraints = form.achievable.constraints || "[ce qu'il me manque]";
       const hours = form.relevant.hours || "[heures/semaine]";
+      const vision = form.animated?.vision;
 
-      return `D'ici ${deadline}, je veux ${result} jusqu'à atteindre ${level}.\nJe mesurerai mes progrès avec ${indicator}.\nJe peux déjà m'appuyer sur ${resources}.\nIl me manque encore ${constraints}.\nJe peux y consacrer ${hours}.`;
+      let text = `D'ici ${deadline}, je veux ${result} jusqu'à atteindre ${level}.\nJe mesurerai mes progrès avec ${indicator}.\nJe peux déjà m'appuyer sur ${resources}.\nCe qu'il me faut pour démarrer : ${constraints}.\nJe peux y consacrer ${hours}.`;
+      if (vision) text += `\nSi j'y arrive : ${vision}.`;
+      return text;
+    }
+
+    function buildObjectiveHtml() {
+      const rawDeadline = form.timebound.deadline;
+      const deadline = rawDeadline
+        ? new Date(rawDeadline).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })
+        : "[échéance]";
+      const result = form.specific.result || "[résultat concret]";
+      const level = form.specific.level || "[niveau de réussite]";
+      const indicator = form.measurable.indicator || "[indicateur]";
+      const resources = form.achievable.resources || "[ce que j'ai déjà]";
+      const constraints = form.achievable.constraints || "[ce qu'il me manque]";
+      const hours = form.relevant.hours || "[heures/semaine]";
+      const vision = form.animated?.vision;
+
+      const lines = [
+        `D'ici ${escapeHtml(deadline)}, je veux ${escapeHtml(result)} jusqu'à atteindre ${escapeHtml(level)}.`,
+        `Je mesurerai mes progrès avec ${escapeHtml(indicator)}.`,
+        `Je peux déjà m'appuyer sur ${escapeHtml(resources)}.`,
+        `Ce qu'il me faut pour démarrer : ${escapeHtml(constraints)}.`,
+        `Je peux y consacrer ${escapeHtml(hours)}.`
+      ];
+      if (vision) lines.push(`Si j'y arrive : ${escapeHtml(vision)}.`);
+      return lines.join("<br>");
     }
 
     function smartPreviewRow(letter, label, value, emptyText) {
@@ -692,13 +751,15 @@
       const ambition = [form.specific.result, form.specific.level].filter(isFilled).join(" · ");
       const attainable = [form.achievable.resources, form.achievable.constraints].filter(isFilled).join(" · ");
 
-      return [
+      const rows = [
         smartPreviewRow("S", "L'ambition", ambition, "Résultat précis à atteindre"),
         smartPreviewRow("M", "La mesure", form.measurable.indicator, "Chiffre ou preuve observable"),
         smartPreviewRow("A", "Atteignable", attainable, "Ressources et manques à regarder en face"),
         smartPreviewRow("R", "Réaliste", form.relevant.hours, "Temps réel que tu peux engager"),
         smartPreviewRow("T", "L'échéance", deadline, "Date limite")
-      ].join("");
+      ];
+      if (form.animated?.vision) rows.push(smartPreviewRow("V", "La vision", form.animated.vision, ""));
+      return rows.join("");
     }
 
     function renderSections() {
@@ -737,7 +798,7 @@
                 <div class="letter ${status.complete ? "complete" : ""}" data-letter="${escapeHtml(section.key)}">${escapeHtml(section.letter)}</div>
                 <h2>${escapeHtml(section.title)}${hintBtn}</h2>
               </div>
-              <span class="badge ${statusClass(status)}" data-badge="${escapeHtml(section.key)}">${statusLabel(status)}</span>
+              <span class="badge ${statusClass(status, section.optional)}" data-badge="${escapeHtml(section.key)}">${statusLabel(status, section.optional)}</span>
             </div>
             ${hintHtml}
             <div class="field-group">${fieldHtml}</div>
@@ -751,7 +812,7 @@
         const status = getSectionStatus(section);
         const badge = sectionsContainer.querySelector(`[data-badge="${section.key}"]`);
         const letter = sectionsContainer.querySelector(`[data-letter="${section.key}"]`);
-        if (badge) { badge.className = `badge ${statusClass(status)}`; badge.textContent = statusLabel(status); }
+        if (badge) { badge.className = `badge ${statusClass(status, section.optional)}`; badge.textContent = statusLabel(status, section.optional); }
         if (letter) { letter.className = `letter${status.complete ? " complete" : ""}`; }
       });
     }
@@ -759,6 +820,7 @@
     function updateDynamic() {
       updateSectionStatuses();
       objectiveText.innerHTML = buildObjectivePreview();
+      objectivePhrase.innerHTML = buildObjectiveHtml();
       validateButton.disabled = !form.specific.result.trim();
     }
 

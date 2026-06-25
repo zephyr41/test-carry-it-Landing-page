@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<!-- @dsCard group="Brand" name="Présentation Produit" subtitle="Réaligné sur le design system CarryIT" -->
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mockup — Présentation Produit</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: "Rifton";
+            src: url("fonts/rifton-regular.woff2") format("woff2"),
+                 url("fonts/rifton-regular.otf") format("opentype");
+            font-weight: 400; font-style: normal; font-display: swap;
+        }
+        @font-face {
+            font-family: "Rifton";
+            src: url("fonts/rifton-italic.woff2") format("woff2"),
+                 url("fonts/rifton-italic.otf") format("opentype");
+            font-weight: 400; font-style: italic; font-display: swap;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: #080809;
+            color: #FFFDF6;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ═══ PRODUCT FLOW SECTION ═══ */
+        .product-flow-section {
+            --bg-main:          #0d0d0f;
+            --bg-secondary:     #141416;
+            --text-dark:        #FFFDF6;
+            --text-muted:       rgba(255,253,246,0.84);
+            --text-light-muted: rgba(255,253,246,0.64);
+            --white:            #141416;
+            --black:            #080808;
+            --accent:           #ee4408;
+            --border-light:     rgba(255,253,246,0.06);
+            --border-medium:    rgba(255,253,246,0.1);
+            --radius-sm:   0.85rem;
+            --radius-md:   1.25rem;
+            --radius-lg:   1.75rem;
+            --radius-xl:   2.25rem;
+            --font-stack: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --font-brand: "Rifton", Georgia, "Times New Roman", serif;
+            font-family: var(--font-stack);
+            background-color: var(--bg-main);
+            color: var(--text-dark);
+            overflow-x: hidden;
+            line-height: 1.5;
+        }
+
+        .product-flow-section h2,
+        .product-flow-section h3,
+        .product-flow-section h4,
+        .product-flow-section p,
+        .product-flow-section span,
+        .product-flow-section div { font-family: var(--font-stack); }
+
+        .product-flow-section * { box-sizing: border-box; }
+
+        .product-flow-section .container {
+            max-width: 1140px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 0 1.25rem;
+        }
+
+        .product-flow-section .product-flow-panel { padding: 5rem 0; }
+
+        .product-flow-section .product-flow-header {
+            padding-top: 5.5rem;
+            text-align: center;
+        }
+
+        .product-flow-section .product-value-header { max-width: 960px; }
+        .product-flow-section .product-value-header .tag-upper { margin-bottom: 1.1rem; }
+
+        .product-flow-section .product-flow-header h2 {
+            margin: 0;
+            color: var(--text-dark);
+            font-family: var(--font-brand);
+            font-size: clamp(2.4rem, 4.6vw, 4.2rem);
+            font-weight: 400;
+            letter-spacing: -0.02em;
+            line-height: 1.08;
+        }
+
+        .product-flow-section .product-flow-header + .product-flow-panel { padding-top: 4rem; }
+
+        @media (min-width: 768px) {
+            .product-flow-section .product-flow-panel { padding: 6.5rem 0; }
+        }
+
+        .product-flow-section .grid-duo {
+            display: grid;
+            gap: 3rem;
+            grid-template-columns: 1fr;
+            align-items: center;
+        }
+
+        @media (min-width: 1024px) {
+            .product-flow-section .grid-duo { grid-template-columns: 1fr 1fr; }
+        }
+
+        @media (max-width: 1023px) {
+            .product-flow-section .grid-duo > .section-text { order: 1; }
+            .product-flow-section .grid-duo > :not(.section-text) { order: 2; }
+        }
+
+        .product-flow-section .tag-upper {
+            font-size: 0.72rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--text-light-muted);
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .product-flow-section .section-text .tag-upper {
+            color: var(--text-light-muted);
+            letter-spacing: 0.14em;
+        }
+
+        .product-flow-section .section-text h2 {
+            max-width: 620px;
+            font-size: 2.2rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            line-height: 1.12;
+            margin: 0;
+        }
+
+        @media (min-width: 768px) {
+            .product-flow-section .section-text h2 { font-size: 2.65rem; }
+        }
+
+        .product-flow-section .section-text p {
+            max-width: 600px;
+            margin-top: 1rem;
+            font-size: 1.05rem;
+            line-height: 1.6;
+            font-weight: 400;
+            color: rgba(255,253,246,0.6);
+        }
+
+        /* ── TEXT-COLUMN HIERARCHY SYSTEM ──────────────────────
+           Problem statements recede (low contrast, regular weight).
+           Feature statements come forward (high contrast, semibold).
+           Exactly ONE orange-bordered callout per section names what CarryIT does. */
+
+        /* default subtitle = problem framing → recedes */
+        .product-flow-section .section-subtitle {
+            max-width: 620px;
+            margin-top: 1.15rem;
+            color: rgba(255,253,246,0.55);
+            font-size: 1.05rem;
+            font-weight: 400;
+            line-height: 1.55;
+        }
+
+        /* feature support line — high contrast, not the callout */
+        .product-flow-section .feature-line {
+            max-width: 620px;
+            color: #FFFDF6;
+            font-weight: 600;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+
+        /* lead-in label ("Avec CarryIT, on suit :" / "Ils permettent de :") */
+        .product-flow-section .lead-line {
+            max-width: 620px;
+            margin-top: 1.5rem;
+            margin-bottom: 0.1rem;
+            color: rgba(255,253,246,0.6);
+            font-weight: 600;
+            font-size: 1rem;
+            line-height: 1.45;
+        }
+
+        /* THE single accented callout per section = "what CarryIT does" */
+        #smart .smart-cta-line,
+        #jalons .jalons-critere-highlight,
+        #kpi .kpi-insight,
+        #todo .todo-feature-line,
+        #ajustement .voila-feature-line {
+            max-width: 620px;
+            margin-top: 1.75rem;
+            padding: 0.1rem 0 0.1rem 1.1rem;
+            border-left: 2.5px solid var(--accent);
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            color: #FFFDF6;
+            line-height: 1.4;
+        }
+        #smart .smart-cta-line strong,
+        #jalons .jalons-critere-highlight strong,
+        #kpi .kpi-insight strong { color: #FFFDF6; font-weight: 700; }
+
+        .product-flow-section .section-list {
+            margin-top: 1rem;
+            padding-left: 0;
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            border-top: 1px solid var(--border-medium);
+        }
+
+        .product-flow-section .section-list li {
+            position: relative;
+            padding: 0.75rem 0 0.75rem 1.5rem;
+            font-size: 1.0625rem;
+            font-weight: 500;
+            line-height: 1.4;
+            color: var(--text-dark);
+            border-bottom: 1px solid var(--border-medium);
+        }
+
+        .product-flow-section .section-list li::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 1.15em;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--text-dark);
+        }
+
+        .product-flow-section .section-desc {
+            margin-top: 1.4rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #FFFDF6;
+            line-height: 1.5;
+            max-width: 560px;
+        }
+
+        .product-flow-section .section-closing {
+            margin-top: 1.4rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: rgba(255,253,246,0.88);
+            line-height: 1.5;
+            max-width: 560px;
+        }
+
+        .product-flow-section .mockup-box {
+            background: var(--white);
+            padding: 2.5rem;
+            border-radius: var(--radius-xl);
+            box-shadow: 0 28px 80px rgba(0,0,0,0.5);
+            border: 1px solid var(--border-medium);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-flow-section .mock-smart-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            background: var(--bg-main);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-right: 12px;
+            color: var(--text-dark);
+            border: 1px solid var(--border-medium);
+        }
+
+        .product-flow-section .smart-builder { display: grid; gap: 1.25rem; }
+
+        .product-flow-section .smart-input-preview,
+        .product-flow-section .smart-output-preview {
+            border: 1px solid var(--border-medium);
+            border-radius: var(--radius-md);
+            padding: 1.15rem 1.25rem;
+            background: var(--bg-main);
+        }
+
+        .product-flow-section .smart-input-preview span,
+        .product-flow-section .smart-output-preview span {
+            display: block;
+            margin-bottom: 0.45rem;
+            color: var(--text-light-muted);
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+
+        .product-flow-section .smart-input-preview p,
+        .product-flow-section .smart-output-preview p {
+            color: var(--text-dark);
+            font-size: 1rem;
+            font-weight: 600;
+            line-height: 1.45;
+            margin: 0;
+        }
+
+        .product-flow-section .smart-questions { display: grid; gap: 0.8rem; }
+
+        .product-flow-section .smart-question {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 0.75rem;
+            align-items: center;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid var(--border-medium);
+        }
+
+        .product-flow-section .smart-question:last-child { border-bottom: none; }
+        .product-flow-section .smart-question .mock-smart-badge { margin-right: 0; }
+
+        .product-flow-section .smart-question p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            font-weight: 500;
+            line-height: 1.4;
+            margin: 0;
+        }
+
+        .product-flow-section .smart-output-preview {
+            background: rgba(238,68,8,0.08);
+            border-color: rgba(238,68,8,0.25);
+        }
+
+        .product-flow-section .smart-output-preview p { color: var(--text-dark); }
+
+        /* #smart overrides */
+        #smart .section-text h2 { font-size: 2.2rem; }
+        @media (min-width: 768px) { #smart .section-text h2 { font-size: 3rem; } }
+        #smart .smart-intro-muted { color: rgba(255,253,246,0.5); font-weight: 400; font-size: 1.0625rem; hyphens: none; margin-top: 2rem; line-height: 1.6; }
+        #smart .smart-pivot { font-size: 1.0625rem; font-weight: 500; color: rgba(255,253,246,0.72); line-height: 1.55; margin-top: 1.75rem; margin-bottom: 0; }
+        #smart .smart-cible { font-size: 1.2rem; font-weight: 600; color: rgba(255,253,246,0.82); margin-top: 0.4rem; line-height: 1.25; }
+        @media (min-width: 1024px) { #smart .grid-duo { grid-template-columns: 1.2fr 0.8fr; } }
+        #smart .mockup-box { padding: 1.5rem; }
+        #smart .smart-question { padding: 0.55rem 0; }
+        #smart .smart-question p { font-size: 0.9rem; }
+        #smart .mock-smart-badge { padding: 4px 10px; font-size: 0.78rem; }
+        #smart .smart-input-preview, #smart .smart-output-preview { padding: 0.85rem 1rem; }
+
+        /* Ladder (Jalons) */
+        .product-flow-section .ladder-container { display: flex; flex-direction: column; }
+        .product-flow-section .ladder-step { display: flex; position: relative; }
+        .product-flow-section .ladder-left-meta {
+            width: 90px; flex-shrink: 0; text-align: right;
+            padding-right: 1.5rem; font-size: 0.85rem; font-weight: 600;
+            color: var(--text-light-muted); padding-top: 1.25rem;
+        }
+        @media (min-width: 640px) { .product-flow-section .ladder-left-meta { width: 120px; padding-right: 2rem; } }
+        .product-flow-section .ladder-right-content {
+            flex-grow: 1; border-left: 2px solid rgba(255,253,246,0.1);
+            padding-left: 1.75rem; padding-bottom: 1.75rem; position: relative;
+        }
+        .product-flow-section .ladder-step:last-child .ladder-right-content { padding-bottom: 0; border-left-color: transparent; }
+        .product-flow-section .ladder-dot {
+            position: absolute; left: -7px; top: 1.45rem;
+            height: 12px; width: 12px; border-radius: 50%;
+            background-color: rgba(255,253,246,0.2); z-index: 2;
+        }
+        .product-flow-section .ladder-step.active .ladder-dot { background-color: var(--accent); box-shadow: 0 0 14px rgba(238,68,8,0.55); }
+        .product-flow-section .ladder-card {
+            border-radius: var(--radius-md); padding: 1.25rem 1.5rem;
+            background-color: var(--bg-main); transition: transform 0.2s ease;
+            border: 1px solid var(--border-medium);
+        }
+        .product-flow-section .ladder-step.active .ladder-card {
+            background-color: rgba(255,253,246,0.045);
+            border-color: rgba(255,253,246,0.16);
+            border-left: 3px solid rgba(238,68,8,0.6);
+        }
+        .product-flow-section .ladder-card h3 { font-size: 1.2rem; font-weight: 600; letter-spacing: -0.01em; margin: 0; }
+        .product-flow-section .ladder-card p { margin-top: 0.5rem; font-size: 0.95rem; line-height: 1.5; color: var(--text-muted); }
+        .product-flow-section .ladder-field-label {
+            display: block; margin-bottom: 0.25rem; color: var(--text-light-muted);
+            font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+        }
+        .product-flow-section .critere-tag {
+            display: inline-block; margin-top: 0.75rem; margin-bottom: 0.3rem;
+            font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+            color: rgba(255,253,246,0.58); border: 1px solid var(--border-medium);
+            border-radius: 4px; padding: 0.15rem 0.45rem;
+        }
+        .product-flow-section .critere-text { font-size: 0.9rem; font-weight: 500; line-height: 1.5; color: var(--text-dark); margin: 0; }
+
+        /* #jalons overrides */
+        #jalons .critere-tag { color: var(--accent); border-color: rgba(238,68,8,0.4); font-size: 0.7rem; }
+        #jalons .critere-text { font-size: 0.95rem; font-weight: 600; color: var(--text-dark); }
+        /* jalons-critere-highlight styled by shared orange-callout rule */
+
+        /* KPI */
+        .product-flow-section .kpi-panel { display: grid; gap: 1.25rem; }
+        .product-flow-section .kpi-context-line {
+            display: flex; align-items: baseline; gap: 0.4rem; flex-wrap: wrap;
+            font-size: 0.8rem; color: var(--text-light-muted); line-height: 1.4;
+        }
+        .product-flow-section .kpi-context-line .kpi-context-label {
+            font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;
+            font-size: 0.7rem; color: var(--text-light-muted);
+        }
+        .product-flow-section .kpi-context-line .kpi-context-name { font-weight: 600; color: var(--text-dark); font-size: 0.85rem; }
+        .product-flow-section .kpi-context-line .kpi-context-sep { color: var(--border-medium); }
+        .product-flow-section .kpi-context-line .kpi-context-sub { color: var(--text-light-muted); }
+        .product-flow-section .kpi-cards-wrapper { display: flex; gap: 1rem; flex-direction: column; }
+        @media (min-width: 640px) { .product-flow-section .kpi-cards-wrapper { flex-direction: row; } }
+        .product-flow-section .kpi-card {
+            flex: 1; padding: 1.75rem; border-radius: var(--radius-xl);
+            display: flex; flex-direction: column; justify-content: space-between; min-height: 215px;
+        }
+        .product-flow-section .kpi-black { background-color: #080809; color: #fff; border: 1px solid rgba(255,255,255,0.06); }
+        .product-flow-section .kpi-white { background-color: #ffffff; color: #0d0d0f; border: none; }
+        .product-flow-section .kpi-type {
+            font-size: 0.75rem; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.1em; color: rgba(255,255,255,0.55); margin-bottom: 0.5rem; display: block;
+        }
+        .product-flow-section .kpi-white .kpi-type { color: rgba(0,0,0,0.45); }
+        .product-flow-section .kpi-card h4 { font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; line-height: 1.2; }
+        .product-flow-section .kpi-white h4 { color: #0d0d0f; }
+        .product-flow-section .kpi-val {
+            font-size: 2.8rem; font-weight: 700; letter-spacing: -0.04em; line-height: 1;
+            display: flex; flex-direction: row; align-items: baseline; gap: 0.4rem;
+        }
+        .product-flow-section .kpi-unit {
+            font-size: 0.85rem; font-weight: 500; color: rgba(255,255,255,0.45);
+            letter-spacing: 0; line-height: 1; white-space: nowrap;
+        }
+        .product-flow-section .kpi-white .kpi-unit { color: rgba(0,0,0,0.4); }
+        .product-flow-section .kpi-vision-card {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0.9rem 1.25rem; border-radius: var(--radius-xl);
+            background-color: var(--bg-secondary); border: 1px solid var(--border-medium); gap: 1rem;
+        }
+        .product-flow-section .kpi-vision-card .kpi-vision-left { display: flex; flex-direction: column; gap: 0.2rem; }
+        .product-flow-section .kpi-vision-card .kpi-vision-title { font-size: 0.95rem; font-weight: 700; color: var(--text-dark); }
+        .product-flow-section .kpi-vision-card .kpi-vision-badge { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-light-muted); }
+        .product-flow-section .kpi-vision-card .kpi-vision-val {
+            font-size: 1.75rem; font-weight: 700; letter-spacing: -0.03em; line-height: 1;
+            color: var(--text-dark); text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 0.2rem;
+        }
+        .product-flow-section .kpi-vision-card .kpi-vision-unit { font-size: 0.75rem; font-weight: 500; color: var(--text-light-muted); letter-spacing: 0; }
+
+        /* #kpi overrides */
+        #kpi .kpi-truth-line { font-size: 0.95rem; color: var(--text-muted); }
+        #kpi .kpi-truth-line strong { color: var(--text-muted); font-weight: 500; }
+        #kpi .kpi-feature-label { color: var(--text-dark); font-weight: 600; font-size: 1.02rem; }
+        #kpi .kpi-feature-list li { color: var(--text-dark); font-size: 1.02rem; font-weight: 500; }
+        #kpi .kpi-conclusion { font-size: 1rem; font-weight: 500; color: rgba(255,253,246,0.82); margin-top: 1.5rem; }
+        /* todo: the headline subtitle is itself a feature statement → comes forward */
+        #todo .section-subtitle { color: #FFFDF6; font-weight: 600; font-size: 1.15rem; line-height: 1.45; }
+
+        /* Todo */
+        .product-flow-section .todo-list { display: flex; flex-direction: column; }
+        .product-flow-section .todo-item {
+            display: flex; align-items: center; padding: 1.25rem 0;
+            border-bottom: 1px solid var(--border-medium);
+        }
+        .product-flow-section .todo-item:last-child { border-bottom: none; }
+        .product-flow-section .todo-check {
+            width: 22px; height: 22px; border: 1.5px solid rgba(255,253,246,0.25);
+            border-radius: 50%; margin-right: 15px;
+        }
+        .product-flow-section .todo-item.checked .todo-check { background-color: var(--accent); border-color: var(--accent); }
+        .product-flow-section .todo-item.checked .todo-text { text-decoration: line-through; color: var(--text-light-muted); }
+
+        /* #ajustement override */
+        #ajustement .section-subtitle { font-size: 1rem; color: rgba(255,253,246,0.72); margin: 1rem 0 1.5rem; line-height: 1.55; }
+
+        /* ═══ DEMO DASHBOARD — Section 5 ═══ */
+        /* premium depth: warm ambient glow top-right (cf. Cryptly), floating panels, soft shadow */
+        .demo-db { position: relative; background:
+              radial-gradient(135% 115% at 88% -18%, rgba(238,68,8,0.14), transparent 55%),
+              linear-gradient(180deg, #121013 0%, #0a090b 60%);
+            border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); overflow: hidden;
+            font-family: var(--font-stack); -webkit-font-smoothing: antialiased; min-width: 0;
+            box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset, 0 30px 70px -28px rgba(0,0,0,0.85), 0 0 70px -24px rgba(238,68,8,0.18); }
+        .demo-nav { background: linear-gradient(180deg, rgba(255,255,255,0.03), transparent); border-bottom: 1px solid rgba(255,255,255,0.07); }
+        .demo-nav-top { display: flex; align-items: center; gap: 9px; padding: 13px 18px 0; }
+        .demo-nav-brand { font-size: 11px; font-weight: 800; letter-spacing: 0.18em; color: rgba(255,253,246,0.92); }
+        .demo-nav-sep { font-size: 12px; color: rgba(255,253,246,0.18); }
+        .demo-nav-project { font-size: 12px; font-weight: 500; color: rgba(255,253,246,0.5); }
+        .demo-nav-tabs { display: flex; gap: 2px; padding: 6px 14px 0; }
+        .demo-nav-tab { display: flex; align-items: center; gap: 6px; padding: 9px 13px; font-size: 12px; font-weight: 600; color: rgba(255,253,246,0.32); border-bottom: 2px solid transparent; font-family: inherit; cursor: pointer; transition: color 0.3s, border-color 0.3s, box-shadow 0.3s; }
+        .demo-nav-tab svg { width: 13px; height: 13px; opacity: 0.5; transition: opacity 0.3s; }
+        .demo-nav-tab--active { color: #fff; border-bottom-color: #EE4408; box-shadow: 0 2px 14px -3px rgba(238,68,8,0.55); }
+        .demo-nav-tab--active svg { opacity: 1; }
+        .demo-panel { display: none; padding: 20px 18px; }
+        .demo-panel.is-active { display: block; animation: demofade 0.4s ease; }
+        @keyframes demofade { from { transform: translateY(8px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .demo-vision-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .demo-vision-card { border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 16px; background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.012)), rgba(18,16,19,0.6); box-shadow: 0 1px 0 rgba(255,255,255,0.05) inset, 0 8px 24px -16px rgba(0,0,0,0.7); }
+        .demo-section-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.14em; color: rgba(255,253,246,0.32); margin-bottom: 12px; display: block; }
+        .demo-kpi-global-title { font-size: 11px; font-weight: 600; color: rgba(255,253,246,0.55); margin-bottom: 11px; }
+        .demo-kpi-global-val { font-size: 38px; font-weight: 800; color: #fff; letter-spacing: -0.045em; line-height: 1; margin-bottom: 14px; }
+        .demo-sparkline { width: 100%; height: 52px; display: block; }
+        .demo-vision-hero { border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; padding: 16px 18px 12px; background: linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.012)), rgba(18,16,19,0.55); margin-bottom: 12px; }
+        .demo-vision-hero .demo-kpi-global-val { margin-bottom: 12px; }
+        .demo-kpi-target { font-size: 18px; font-weight: 500; color: rgba(255,253,246,0.32); letter-spacing: -0.02em; }
+        .demo-chart { width: 100%; }
+        .demo-chart svg { width: 100%; height: 152px; display: block; }
+        .demo-smart-row--cols { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+        .demo-smart-row--cols .demo-smart-field { border-bottom: none; border-left: 1px solid rgba(255,253,246,0.08); padding: 2px 0 2px 14px; }
+        .demo-smart-row--cols .demo-smart-field:first-child { border-left: none; padding-left: 0; }
+        .demo-smart-row { display: flex; flex-direction: column; gap: 9px; }
+        .demo-smart-field { border-bottom: 1px solid rgba(255,253,246,0.06); padding-bottom: 8px; }
+        .demo-smart-key { font-size: 8.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.13em; color: rgba(238,68,8,0.7); margin-bottom: 4px; }
+        .demo-smart-val { font-size: 11px; color: rgba(255,253,246,0.62); line-height: 1.45; }
+        .demo-jalons-body { display: grid; grid-template-columns: 110px 1fr; gap: 16px; align-items: start; }
+        .demo-rail-timeline-label { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: rgba(255,253,246,0.3); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,253,246,0.06); font-family: inherit; }
+        .demo-todo-ctx { font-size: 11px; color: rgba(255,253,246,0.38); margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,253,246,0.07); }
+        .demo-todo-ctx strong { color: rgba(255,253,246,0.65); font-weight: 600; }
+        .demo-todo-item { display: flex; align-items: flex-start; gap: 9px; padding: 9px 0; border-bottom: 1px solid rgba(255,253,246,0.05); }
+        .demo-todo-item:last-child { border-bottom: none; }
+        .demo-todo-check { width: 15px; height: 15px; border-radius: 4px; flex-shrink: 0; margin-top: 1px; border: 1.5px solid rgba(255,253,246,0.2); display: flex; align-items: center; justify-content: center; }
+        .demo-todo-check--done { background: #EE4408; border-color: #EE4408; box-shadow: 0 0 12px -2px rgba(238,68,8,0.6); }
+        .demo-todo-text { font-size: 12px; color: rgba(255,253,246,0.64); line-height: 1.45; }
+        .demo-todo-text--done { text-decoration: line-through; color: rgba(255,253,246,0.25); }
+
+        /* jl-* scoped to .demo-db */
+        .demo-db .jl-pilot-card { margin: 0; padding: 13px; border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.016)), rgba(17,19,21,0.9); display: flex; flex-direction: column; gap: 9px; }
+        .demo-db .jl-pilot-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+        .demo-db .jl-detail-meta { display: flex; align-items: center; gap: 6px; }
+        .demo-db .jl-detail-num { font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.28); font-family: monospace; }
+        .demo-db .jl-detail-status { font-size: 8px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; font-family: monospace; }
+        .demo-db .jl-detail-status.in-progress { color: #EE4408; background: rgba(238,68,8,0.08); }
+        .demo-db .jl-detail-date { font-size: 9px; font-weight: 600; color: rgba(255,255,255,0.32); font-family: monospace; }
+        .demo-db .jl-pilot-title { font-size: 14px; font-weight: 700; color: rgba(255,253,246,0.9); line-height: 1.3; }
+        .demo-db .jl-pilot-section { display: flex; flex-direction: column; gap: 3px; }
+        .demo-db .jl-pilot-label { font-size: 8px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.25); font-family: monospace; }
+        .demo-db .jl-pilot-text { font-size: 11px; color: rgba(255,255,255,0.5); line-height: 1.5; margin: 0; }
+        .demo-db .jl-kpi-block { padding: 10px 11px; border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; background: rgba(255,255,255,0.025); display: flex; flex-direction: column; gap: 8px; }
+        .demo-db .jl-kpi-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+        .demo-db .jl-kpi-type { display: block; margin-bottom: 3px; font-size: 8px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.25); font-family: monospace; }
+        .demo-db .jl-kpi-name { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.48); }
+        .demo-db .jl-kpi-values { display: flex; align-items: baseline; gap: 5px; margin-top: 3px; }
+        .demo-db .jl-kpi-current { font-size: 20px; font-weight: 700; color: rgba(255,253,246,0.9); font-family: monospace; letter-spacing: -0.02em; }
+        .demo-db .jl-kpi-sep { font-size: 12px; color: rgba(255,255,255,0.18); font-family: monospace; }
+        .demo-db .jl-kpi-target { font-size: 11px; font-weight: 500; color: rgba(255,255,255,0.3); font-family: monospace; }
+        .demo-db .jl-pilot-footer { display: flex; justify-content: flex-end; padding-top: 5px; border-top: 1px solid rgba(255,255,255,0.05); }
+        .demo-db .jl-validate-btn { padding: 6px 13px; background: rgba(238,68,8,0.06); border: 1px solid rgba(238,68,8,0.32); border-radius: 7px; color: rgba(238,68,8,0.9); font-size: 11px; font-weight: 600; cursor: pointer; font-family: inherit; box-shadow: 0 0 18px -6px rgba(238,68,8,0.5); transition: background 0.25s; }
+        .demo-db .jl-validate-btn:hover { background: rgba(238,68,8,0.12); }
+    </style>
+</head>
+<body>
+
+    <div class="product-flow-section" id="productFlow">
+        <div class="container product-flow-header product-value-header" id="presentationSection">
+            <h2>Voici Carry It</h2>
+        </div>
+
+        <section id="smart" class="product-flow-panel">
+            <div class="container grid-duo">
+                <div class="section-text">
+                    <span class="tag-upper">1. Objectif SMART</span>
+                    <h2>Avant d'avancer, il faut savoir ce que "réussir" veut dire.</h2>
+                    <p class="smart-intro-muted" spellcheck="false">Une grande ambition paraît souvent irréaliste parce qu'elle est encore floue. On sous-estime le temps nécessaire, ses aléas.</p>
+                    <p class="smart-pivot">Quand elle devient précise, datée, mesurable, observable, elle cesse d'être une idée.</p>
+                    <p class="smart-cible">Elle devient une cible.</p>
+                    <p class="smart-cta-line"><strong>Carry It te fait définir cet objectif.</strong></p>
+                </div>
+                <div class="mockup-box smart-builder">
+                    <div class="smart-input-preview">
+                        <span>Projet</span>
+                        <p>Lancer mon application iOS.</p>
+                    </div>
+                    <div class="smart-questions">
+                        <div class="smart-question">
+                            <span class="mock-smart-badge">S</span>
+                            <p>Quel résultat exact tu veux atteindre ?</p>
+                        </div>
+                        <div class="smart-question">
+                            <span class="mock-smart-badge">M</span>
+                            <p>Quelle mesure vas-tu suivre pour ta progression ?</p>
+                        </div>
+                        <div class="smart-question">
+                            <span class="mock-smart-badge">A</span>
+                            <p>Quelles ressources tu as déjà ?</p>
+                        </div>
+                        <div class="smart-question">
+                            <span class="mock-smart-badge">R</span>
+                            <p>Quelle charge tu peux tenir chaque semaine ?</p>
+                        </div>
+                        <div class="smart-question">
+                            <span class="mock-smart-badge">T</span>
+                            <p>Quelle est la date limite ?</p>
+                        </div>
+                    </div>
+                    <div class="smart-output-preview">
+                        <span>Objectif structuré</span>
+                        <p>Lancer une application iOS et atteindre 1 000 utilisateurs actifs mensuels avant le 31 décembre.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="jalons" class="product-flow-panel" style="background-color: var(--white);">
+            <div class="container grid-duo">
+                <div class="mockup-box" style="padding: 1.5rem; background: var(--bg-main); border: none;">
+                    <div class="ladder-container">
+                        <div class="ladder-step">
+                            <div class="ladder-left-meta">Final</div>
+                            <div class="ladder-right-content">
+                                <div class="ladder-dot"></div>
+                                <div class="ladder-card" style="background: var(--white);">
+                                    <span class="ladder-field-label">Objectif final</span>
+                                    <h3>Objectif S.M.A.R.T. atteint</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ladder-step">
+                            <div class="ladder-left-meta">6 mois</div>
+                            <div class="ladder-right-content">
+                                <div class="ladder-dot"></div>
+                                <div class="ladder-card">
+                                    <span class="ladder-field-label">Jalon suivant</span>
+                                    <h3>V1 publiée</h3>
+                                    <span class="critere-tag">Critère de validation</span>
+                                    <p class="critere-text">L'application est disponible sur TestFlight et testée par 50 utilisateurs.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ladder-step active">
+                            <div class="ladder-left-meta">Maintenant</div>
+                            <div class="ladder-right-content">
+                                <div class="ladder-dot"></div>
+                                <div class="ladder-card">
+                                    <span class="ladder-field-label">Jalon actif</span>
+                                    <h3>MVP validé</h3>
+                                    <span class="critere-tag">Critère de validation</span>
+                                    <p class="critere-text">15 bêta-testeurs ont terminé l'onboarding sans erreur.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-text">
+                    <span class="tag-upper">2. Jalons</span>
+                    <h2>Une ambition ne se pilote pas à l'aveugle.</h2>
+                    <p>Les grandes ambitions ne se gagnent pas d'un coup. Elles se construisent par paliers, par étapes.</p>
+                    <p class="feature-line">Dans CarryIT, ces paliers deviennent des jalons : des étapes majeures dans la progression vers l'objectif.</p>
+                    <p class="lead-line">Ils permettent de :</p>
+                    <ul class="section-list">
+                        <li>voir les grandes étapes ;</li>
+                        <li>savoir quel palier viser ;</li>
+                        <li>rester concentré sur ce qui compte à court terme.</li>
+                    </ul>
+                    <p class="jalons-critere-highlight">Chaque jalon possède un <strong>critère de validation précis</strong> : on sait ce qui doit être atteint et sur quoi se concentrer précisément.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="kpi" class="product-flow-panel">
+            <div class="container grid-duo">
+                <div class="section-text">
+                    <span class="tag-upper">3. KPI</span>
+                    <h2>Être occupé ne veut pas dire avancer.</h2>
+                    <p class="section-subtitle">Une fois l'objectif à court terme défini, il faut une lucidité sur la progression. On peut être très occupé, cocher des tâches, accumuler des heures, mais se diriger dans la mauvaise direction, avec la mauvaise méthode.</p>
+                    <p class="lead-line">Avec CarryIT, on suit :</p>
+                    <ul class="section-list">
+                        <li>ce qu'on investit : temps, énergie, actions ;</li>
+                        <li>ce que ça produit : résultats, progrès, preuves observables.</li>
+                    </ul>
+                    <p class="kpi-insight">CarryIT montre l'écart entre le temps investi et les résultats attendus.</p>
+                    <p class="kpi-conclusion">On ne mesure pas seulement l'effort. On voit si cet effort nous rapproche réellement de l'objectif.</p>
+                </div>
+                <div class="kpi-panel">
+                    <div class="kpi-context-line">
+                        <span class="kpi-context-label">Jalon actif</span>
+                        <span class="kpi-context-sep">·</span>
+                        <span class="kpi-context-name">MVP validé</span>
+                        <span class="kpi-context-sep">—</span>
+                        <span class="kpi-context-sub">Critère de validation : V0 utilisable de bout en bout et testée par 15 utilisateurs.</span>
+                    </div>
+                    <div class="kpi-cards-wrapper">
+                        <div class="kpi-card kpi-black">
+                            <div>
+                                <span class="kpi-type">Effort fourni</span>
+                                <h4>Temps consacré cette semaine</h4>
+                            </div>
+                            <div class="kpi-val">5/15h<span class="kpi-unit">par semaine</span></div>
+                        </div>
+                        <div class="kpi-card kpi-white">
+                            <div>
+                                <span class="kpi-type">Résultat obtenu</span>
+                                <h4>V0 testée par les utilisateurs</h4>
+                            </div>
+                            <div class="kpi-val">3/15<span class="kpi-unit">utilisateurs</span></div>
+                        </div>
+                    </div>
+                    <div class="kpi-vision-card">
+                        <div class="kpi-vision-left">
+                            <span class="kpi-vision-title">Vision long terme</span>
+                            <span class="kpi-vision-badge">· objectif S.M.A.R.T.</span>
+                        </div>
+                        <div class="kpi-vision-val">
+                            0 / 1 000
+                            <span class="kpi-vision-unit">utilisateurs actifs mensuels</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="todo" class="product-flow-panel" style="background-color: var(--white);">
+            <div class="container grid-duo">
+                <div class="mockup-box">
+                    <span class="tag-upper" style="margin-bottom: 0.5rem;">Jalon Actif : MVP Validé</span>
+                    <h3 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 2rem;">Actions du jalon</h3>
+                    <div class="todo-list">
+                        <div class="todo-item checked">
+                            <div class="todo-check"></div>
+                            <div class="todo-text">Finaliser le flow d'onboarding complet</div>
+                        </div>
+                        <div class="todo-item">
+                            <div class="todo-check"></div>
+                            <div class="todo-text" style="font-weight: 500;">Inviter 15 bêta-testeurs à tester l'application</div>
+                        </div>
+                        <div class="todo-item">
+                            <div class="todo-check"></div>
+                            <div class="todo-text" style="font-weight: 500;">Appliquer les retours du bêta-testeur #3</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-text">
+                    <span class="tag-upper">4. Tâches</span>
+                    <h2>Relier l'exécution à la vision.</h2>
+                    <p class="section-subtitle">Vos tâches quotidiennes sont reliées aux étapes majeures de vos ambitions.</p>
+                    <p>Le plus important, c'est l'exécution.</p>
+                    <p class="todo-feature-line">Dans CarryIT, chaque tâche est reliée au prochain palier.</p>
+                    <p>Ce lien te pousse à une question simple : est-ce que cette action me rapproche vraiment du prochain palier ?</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="ajustement" class="product-flow-panel">
+            <div class="container grid-duo">
+                <div class="section-text">
+                    <span class="tag-upper">5. Tout Visible Au Même Endroit</span>
+                    <h2>Voila Carry it</h2>
+                    <p class="section-subtitle">Pour ne plus avoir : de vieux KPI sur Excel, des tâches sur une autre application et tes objectifs dans une to-do list...</p>
+                    <p class="section-desc">Carry It rassemble tout dans une seule vue :</p>
+                    <ul class="section-list">
+                        <li>ton objectif, précis, daté et mesurable</li>
+                        <li>tes grandes étapes et leur critère de validation</li>
+                        <li>l'écart entre tes efforts et tes résultats, par rapport à tes objectifs court et moyen terme</li>
+                        <li>tes tâches, directement connectées aux étapes majeures</li>
+                    </ul>
+                    <p class="section-closing voila-feature-line">Ce n'est pas une app pour cocher des tâches au hasard. C'est une application pour relier ce que tu veux construire dans 5 ans à ce que tu fais aujourd'hui.</p>
+                </div>
+                <div class="demo-db" id="demoDashboard">
+                    <div class="demo-nav">
+                        <div class="demo-nav-top">
+                            <span class="demo-nav-brand">CARRY IT</span>
+                            <span class="demo-nav-sep">/</span>
+                            <span class="demo-nav-project">CarryIT App</span>
+                        </div>
+                        <div class="demo-nav-tabs" id="demoTabs">
+                            <span class="demo-nav-tab" data-demo-tab="vision">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 19V5M4 19h16M9 16V9M14 16V7M19 16v-4"/></svg>
+                                Vision
+                            </span>
+                            <span class="demo-nav-tab" data-demo-tab="jalons">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 21V5m0 0l14 5L4 15"/></svg>
+                                Jalons
+                            </span>
+                            <span class="demo-nav-tab" data-demo-tab="todo">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 11l3 3L22 4"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                                To-do list
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="demo-panel" id="demo-panel-vision">
+                        <span class="demo-section-label">Vision · Long terme</span>
+                        <div class="demo-vision-hero">
+                            <div class="demo-kpi-global-title">Utilisateurs actifs mensuels</div>
+                            <div class="demo-kpi-global-val">9 <span class="demo-kpi-target">/ 1 000</span></div>
+                            <div class="demo-chart">
+                                <svg viewBox="0 0 600 168" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <defs>
+                                        <linearGradient id="chartgrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#EE4408" stop-opacity="0.34"/><stop offset="100%" stop-color="#EE4408" stop-opacity="0"/></linearGradient>
+                                        <filter id="chartglow" x="-10%" y="-40%" width="120%" height="200%"><feGaussianBlur stdDeviation="3.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                                    </defs>
+                                    <line x1="0" y1="34" x2="600" y2="34" stroke="rgba(255,253,246,0.05)" stroke-width="1"/>
+                                    <line x1="0" y1="78" x2="600" y2="78" stroke="rgba(255,253,246,0.05)" stroke-width="1"/>
+                                    <line x1="0" y1="122" x2="600" y2="122" stroke="rgba(255,253,246,0.05)" stroke-width="1"/>
+                                    <path d="M0,150 C70,148 110,146 180,138 C250,130 270,120 330,104 C390,88 410,72 470,52 C515,37 545,30 580,24 L580,168 L0,168 Z" fill="url(#chartgrad)"/>
+                                    <path d="M0,150 C70,148 110,146 180,138 C250,130 270,120 330,104 C390,88 410,72 470,52 C515,37 545,30 580,24" stroke="#EE4408" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none" filter="url(#chartglow)" vector-effect="non-scaling-stroke"/>
+                                    <circle cx="580" cy="24" r="5" fill="#EE4408" filter="url(#chartglow)"/>
+                                    <circle cx="580" cy="24" r="2" fill="#fff"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="demo-vision-card">
+                            <div class="demo-section-label">Objectif SMART</div>
+                            <div class="demo-smart-row demo-smart-row--cols">
+                                <div class="demo-smart-field">
+                                    <div class="demo-smart-key">S — Ambition</div>
+                                    <div class="demo-smart-val">Atteindre 1 000 utilisateurs actifs mensuels</div>
+                                </div>
+                                <div class="demo-smart-field">
+                                    <div class="demo-smart-key">M — Mesure</div>
+                                    <div class="demo-smart-val">Utilisateurs actifs / mois</div>
+                                </div>
+                                <div class="demo-smart-field">
+                                    <div class="demo-smart-key">T — Échéance</div>
+                                    <div class="demo-smart-val">31 décembre 2026</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="demo-panel" id="demo-panel-jalons">
+                        <div class="demo-jalons-body">
+                            <div>
+                                <div class="demo-rail-timeline-label">Timeline</div>
+                                <div style="display:grid;grid-template-columns:18px 1fr;gap:8px;padding-bottom:18px;position:relative;align-items:start">
+                                    <div style="position:relative;display:flex;justify-content:center">
+                                        <div style="position:absolute;top:20px;bottom:-3px;left:50%;width:1.5px;background:rgba(10,42,83,0.55);transform:translateX(-50%)"></div>
+                                        <div style="width:18px;height:18px;border-radius:50%;background:#0A2A53;display:flex;align-items:center;justify-content:center;position:relative;z-index:1;flex-shrink:0">
+                                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#FFFDF6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                        </div>
+                                    </div>
+                                    <div style="font-size:11px;font-weight:500;color:#929292;padding-top:1px">Cadrage</div>
+                                </div>
+                                <div style="display:grid;grid-template-columns:18px 1fr;gap:8px;padding-bottom:18px;position:relative;align-items:start">
+                                    <div style="position:relative;display:flex;justify-content:center">
+                                        <div style="position:absolute;top:20px;bottom:-3px;left:50%;width:1.5px;background:rgba(238,68,8,0.45);transform:translateX(-50%)"></div>
+                                        <div style="width:18px;height:18px;border-radius:50%;background:#EE4408;display:flex;align-items:center;justify-content:center;position:relative;z-index:1;flex-shrink:0;box-shadow:0 0 0 4px rgba(238,68,8,0.15)"></div>
+                                    </div>
+                                    <div style="font-size:11px;font-weight:600;color:rgba(255,253,246,0.9);background:rgba(255,253,246,0.04);border-radius:5px;padding:2px 6px;margin-left:-6px">Onboarding Bêta</div>
+                                </div>
+                                <div style="display:grid;grid-template-columns:18px 1fr;gap:8px;padding-bottom:18px;position:relative;align-items:start">
+                                    <div style="position:relative;display:flex;justify-content:center">
+                                        <div style="position:absolute;top:20px;bottom:-3px;left:50%;width:1.5px;background:rgba(255,253,246,0.08);transform:translateX(-50%)"></div>
+                                        <div style="width:18px;height:18px;border-radius:50%;background:transparent;border:1.5px solid rgba(255,253,246,0.2);position:relative;z-index:1;flex-shrink:0"></div>
+                                    </div>
+                                    <div style="font-size:11px;font-weight:500;color:#929292;padding-top:1px">MVP</div>
+                                </div>
+                                <div style="display:grid;grid-template-columns:18px 1fr;gap:8px;align-items:start">
+                                    <div style="width:18px;height:18px;border-radius:50%;background:transparent;border:1.5px solid rgba(255,253,246,0.2);flex-shrink:0"></div>
+                                    <div style="font-size:11px;font-weight:500;color:#929292;padding-top:1px">Scale</div>
+                                </div>
+                            </div>
+                            <div class="jl-pilot-card">
+                                <div class="jl-pilot-header">
+                                    <div class="jl-detail-meta">
+                                        <span class="jl-detail-num">Jalon 2/4</span>
+                                        <span class="jl-detail-status in-progress">En cours</span>
+                                    </div>
+                                    <span class="jl-detail-date">juin 2026</span>
+                                </div>
+                                <div class="jl-pilot-title">Onboarding Bêta</div>
+                                <div class="jl-pilot-section">
+                                    <span class="jl-pilot-label">Validation</span>
+                                    <p class="jl-pilot-text">15 retours reçus. Flux complet sans bug critique.</p>
+                                </div>
+                                <div class="jl-kpi-block">
+                                    <div class="jl-kpi-grid">
+                                        <div>
+                                            <span class="jl-kpi-type">Effort</span>
+                                            <div class="jl-kpi-name">Heures investies</div>
+                                            <div class="jl-kpi-values"><span class="jl-kpi-current">12</span><span class="jl-kpi-sep">/</span><span class="jl-kpi-target">15h</span></div>
+                                        </div>
+                                        <div>
+                                            <span class="jl-kpi-type">Résultat</span>
+                                            <div class="jl-kpi-name">Testeurs bêta</div>
+                                            <div class="jl-kpi-values"><span class="jl-kpi-current">9</span><span class="jl-kpi-sep">/</span><span class="jl-kpi-target">15</span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="jl-pilot-footer">
+                                    <button class="jl-validate-btn">Valider ce jalon</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="demo-panel" id="demo-panel-todo">
+                        <div class="demo-todo-ctx">Jalon actif · <strong>Onboarding Bêta</strong> — Exécution quotidienne</div>
+                        <div class="demo-todo-item">
+                            <div class="demo-todo-check demo-todo-check--done">
+                                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                            </div>
+                            <div class="demo-todo-text demo-todo-text--done">Définir les critères de validation de l'onboarding</div>
+                        </div>
+                        <div class="demo-todo-item">
+                            <div class="demo-todo-check demo-todo-check--done">
+                                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                            </div>
+                            <div class="demo-todo-text demo-todo-text--done">Identifier et contacter 15 testeurs bêta</div>
+                        </div>
+                        <div class="demo-todo-item">
+                            <div class="demo-todo-check"></div>
+                            <div class="demo-todo-text">Collecter les retours via formulaire structuré</div>
+                        </div>
+                        <div class="demo-todo-item">
+                            <div class="demo-todo-check"></div>
+                            <div class="demo-todo-text">Corriger les bugs identifiés pendant les tests</div>
+                        </div>
+                        <div class="demo-todo-item">
+                            <div class="demo-todo-check"></div>
+                            <div class="demo-todo-text">Valider le jalon si critère atteint</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+    (function() {
+        var tabs = ['vision', 'jalons', 'todo'];
+        var current = 0;
+        var tabEls = document.querySelectorAll('[data-demo-tab]');
+        var panelEls = {
+            vision: document.getElementById('demo-panel-vision'),
+            jalons: document.getElementById('demo-panel-jalons'),
+            todo: document.getElementById('demo-panel-todo')
+        };
+
+        function showTab(idx) {
+            current = idx;
+            tabEls.forEach(function(t) { t.classList.remove('demo-nav-tab--active'); });
+            Object.values(panelEls).forEach(function(p) { if (p) p.classList.remove('is-active'); });
+            var key = tabs[idx];
+            var activeTab = document.querySelector('[data-demo-tab="' + key + '"]');
+            if (activeTab) activeTab.classList.add('demo-nav-tab--active');
+            if (panelEls[key]) panelEls[key].classList.add('is-active');
+        }
+
+        tabEls.forEach(function(t, i) {
+            t.addEventListener('click', function() { showTab(i); clearInterval(timer); timer = setInterval(autoNext, 3800); });
+        });
+
+        function autoNext() { showTab((current + 1) % tabs.length); }
+
+        showTab(1);
+        var timer = setInterval(autoNext, 3800);
+    })();
+    </script>
+</body>
+</html>

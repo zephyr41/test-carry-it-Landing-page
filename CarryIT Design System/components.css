@@ -1,0 +1,302 @@
+/* ============================================================
+   CarryIT Design System — components.css
+   Composants atomiques partagés — importer après colors_and_type.css
+   Version 1.0 — Mai 2026
+   ============================================================ */
+
+/* ── RESET DE BASE ───────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #080809;
+  color: #FFFDF6;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── UTILITAIRES DE MISE EN PAGE ─────────────────────────── */
+.ds-label {
+  font-size: 9px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: #929292; margin-bottom: 12px;
+}
+.ds-divider {
+  height: 1px; background: rgba(255,253,246,0.07);
+  margin: 20px 0;
+}
+.ds-row {
+  display: flex; gap: 12px;
+  flex-wrap: wrap; align-items: flex-start;
+}
+
+/* ── SÉPARATEUR INTERNE ──────────────────────────────────── */
+.sep {
+  height: 1px;
+  background: rgba(255,253,246,0.07);
+  margin: 10px 0;
+}
+
+/* ══════════════════════════════════════════════════════════
+   CARD — conteneur de base
+   ══════════════════════════════════════════════════════════ */
+.card {
+  background: #111112;
+  border: 1px solid rgba(255,253,246,0.08);
+  border-radius: 8px;
+  padding: 20px 22px;
+}
+
+/* Variante — état en retard (seule variante de bordure) */
+.card--alert {
+  border-color: rgba(163,21,13,0.35);
+}
+
+/* Densités de padding */
+.card--compact { padding: 12px 14px; }
+.card--standard { padding: 16px 18px; }
+.card--spacious { padding: 20px 22px; }
+
+/* En-tête de carte */
+.card__header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 14px;
+}
+.card__title {
+  font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.09em;
+  color: #929292;
+}
+.card__action {
+  font-size: 12px; color: #929292;
+  background: none; border: none;
+  font-family: inherit; cursor: pointer;
+  transition: color 140ms ease;
+}
+.card__action:hover { color: #FFFDF6; }
+
+
+/* ══════════════════════════════════════════════════════════
+   BUTTONS
+   ══════════════════════════════════════════════════════════ */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  padding: 0 20px; height: 40px;
+  font-family: 'DM Sans', sans-serif; font-size: 13.5px; font-weight: 600;
+  border-radius: 8px; border: none; cursor: pointer;
+  letter-spacing: 0.01em; white-space: nowrap;
+  transition: all 140ms ease;
+}
+
+/* Tailles */
+.btn--sm  { height: 32px; padding: 0 14px; font-size: 12px;   border-radius: 6px; }
+.btn--lg  { height: 48px; padding: 0 26px; font-size: 15px;   border-radius: 9px; }
+
+/* Variantes */
+.btn--primary {
+  background: #EE4408; color: #FFFDF6;
+}
+.btn--primary:hover { background: #C63806; }
+
+.btn--secondary {
+  background: rgba(255,253,246,0.07); color: #FFFDF6;
+  border: 1px solid rgba(255,253,246,0.1);
+}
+.btn--secondary:hover { background: rgba(255,253,246,0.12); }
+
+.btn--ghost {
+  background: transparent; color: #929292;
+  border: 1px solid rgba(255,253,246,0.08);
+}
+.btn--ghost:hover { color: #FFFDF6; border-color: rgba(255,253,246,0.18); }
+
+.btn--delete {
+  background: rgba(163,21,13,0.12); color: #e05545;
+  border: 1px solid rgba(163,21,13,0.35); font-weight: 600;
+}
+.btn--delete:hover {
+  background: rgba(163,21,13,0.22); color: #ff6b5b;
+  border-color: rgba(163,21,13,0.55);
+}
+
+.btn--validate {
+  background: rgba(255,253,246,0.05); color: #FFFDF6;
+  border: 1px solid rgba(255,253,246,0.2); font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.btn--validate:hover {
+  background: rgba(255,253,246,0.1);
+  border-color: rgba(255,253,246,0.35);
+}
+
+.btn--disabled {
+  background: rgba(255,253,246,0.03); color: rgba(255,253,246,0.2);
+  border: 1px solid rgba(255,253,246,0.05); cursor: not-allowed;
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   BADGES & CHIPS
+   ══════════════════════════════════════════════════════════ */
+
+/* Badge SMART — lettre carrée */
+.badge-smart {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px; border-radius: 4px;
+  font-size: 11px; font-weight: 700; flex-shrink: 0;
+}
+.badge-smart--active  { background: #EE4408; color: #FFFDF6; }
+.badge-smart--default { background: #1A1A1C; color: #FFFDF6; border: 1px solid rgba(255,253,246,0.1); }
+
+/* Chip de statut — pill avec dot */
+.chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 9px; border-radius: 9999px;
+  font-size: 11px; font-weight: 500;
+}
+.chip__dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+
+.chip--active   { background: rgba(238,68,8,0.1);  color: #EE4408; }
+.chip--active   .chip__dot { background: #EE4408; }
+
+.chip--done     { background: rgba(10,42,83,0.25); color: #7aa8d8; }
+.chip--done     .chip__dot { background: #0A2A53; }
+
+.chip--upcoming { background: rgba(255,253,246,0.05); color: #929292; border: 1px solid rgba(255,253,246,0.08); }
+.chip--upcoming .chip__dot { background: #404025; }
+
+.chip--late     { background: rgba(163,21,13,0.12); color: #e05545; }
+.chip--late     .chip__dot { background: #A3150D; }
+
+/* Tag inline (priorité, type KPI) */
+.tag {
+  display: inline-flex; align-items: center;
+  padding: 2px 7px; border-radius: 9999px;
+  font-size: 10px; font-weight: 600;
+}
+.tag--priority { background: rgba(238,68,8,0.1); color: #EE4408; }
+.tag--neutral  { background: rgba(255,253,246,0.06); color: #929292; }
+
+/* Badge de position dans la timeline */
+.badge-position {
+  display: inline-flex; align-items: center;
+  padding: 3px 9px; border-radius: 4px;
+  font-size: 10px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
+  background: rgba(255,253,246,0.06); color: #929292;
+  border: 1px solid rgba(255,253,246,0.1);
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   FORM — inputs, labels, erreurs
+   ══════════════════════════════════════════════════════════ */
+.form-group {
+  display: flex; flex-direction: column; gap: 5px;
+  margin-bottom: 14px;
+}
+.form-label {
+  font-size: 12px; font-weight: 500; color: #929292;
+}
+.form-hint {
+  font-size: 11px; color: #929292; margin-top: 2px;
+}
+.form-error {
+  font-size: 11px; color: #ff6b6b; margin-top: 2px;
+}
+
+.input {
+  background: #1A1A1C;
+  border: 1px solid rgba(255,253,246,0.12);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px; color: #FFFDF6;
+  outline: none; width: 100%;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+.input::placeholder { color: rgba(146,146,146,0.6); }
+
+.input:focus,
+.input--focus {
+  border-color: #EE4408;
+  box-shadow: 0 0 0 3px rgba(238,68,8,0.15);
+}
+.input--error {
+  border-color: #A3150D;
+  box-shadow: 0 0 0 3px rgba(163,21,13,0.12);
+}
+.input--disabled {
+  opacity: 0.4; cursor: not-allowed;
+}
+
+/* Checkbox */
+.checkbox {
+  width: 18px; height: 18px; border-radius: 4px; flex-shrink: 0;
+  border: 1.5px solid rgba(255,253,246,0.2);
+  background: #111112;
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: background 150ms ease;
+}
+.checkbox--checked {
+  background: #0A2A53; border-color: #0A2A53;
+}
+.checkbox__mark { color: #FFFDF6; font-size: 10px; font-weight: 700; }
+
+/* Ligne de tâche */
+.task-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255,253,246,0.05);
+}
+.task-row:last-child { border-bottom: none; }
+.task-label { font-size: 13.5px; color: #FFFDF6; flex: 1; line-height: 1.4; }
+.task-label--done { color: #929292; text-decoration: line-through; }
+
+
+/* ══════════════════════════════════════════════════════════
+   PROGRESS BAR
+   ══════════════════════════════════════════════════════════ */
+.progress {
+  height: 4px; background: rgba(255,253,246,0.07); border-radius: 2px;
+}
+.progress__fill {
+  height: 100%; border-radius: 2px;
+  background: #404025;
+  transition: width 400ms ease;
+}
+.progress--thin  { height: 3px; }
+.progress--thick { height: 6px; }
+
+.progress-labels {
+  display: flex; justify-content: space-between;
+  margin-bottom: 5px;
+  font-size: 10px; color: #929292;
+}
+.progress-labels strong { color: #FFFDF6; font-weight: 600; }
+
+
+/* ══════════════════════════════════════════════════════════
+   SECTION LABEL (interne aux cartes)
+   ══════════════════════════════════════════════════════════ */
+.section-key {
+  font-size: 9px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: #929292; margin-bottom: 4px;
+}
+
+/* Valeur KPI large */
+.kpi-value {
+  font-size: 40px; font-weight: 700; color: #FFFDF6;
+  letter-spacing: -0.04em; line-height: 1;
+}
+.kpi-value__unit {
+  font-size: 15px; color: #929292; font-weight: 400; margin-left: 5px;
+}
+.kpi-value--mid {
+  font-size: 26px; font-weight: 700; color: #FFFDF6;
+  letter-spacing: -0.03em; line-height: 1;
+}
+.kpi-name {
+  font-size: 12px; color: #929292; margin-top: 4px;
+}

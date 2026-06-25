@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<!-- @dsCard group="Components" name="Components — Form Inputs" subtitle="Unifié avec components.css" viewport="700x380" -->
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../components.css">
+<style>
+  body { padding: 28px 32px; }
+  .row { display: flex; gap: 12px; }
+  .row .form-group { flex: 1; }
+</style>
+</head>
+<body>
+  <div class="ds-label">Champs de saisie</div>
+  <div class="row">
+    <div class="form-group">
+      <label class="form-label">Date</label>
+      <input class="input" type="text" value="14/05/2026">
+      <div class="form-hint">Format JJ/MM/AAAA</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Valeur</label>
+      <input class="input input--focus" type="text" placeholder="ex : 247">
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="form-label">Titre du KPI</label>
+    <input class="input" type="text" value="Clients actifs payants">
+  </div>
+  <div class="form-group">
+    <label class="form-label">Valeur (erreur)</label>
+    <input class="input input--error" type="text" value="-12">
+    <div class="form-error">La valeur doit être positive</div>
+  </div>
+  <div class="form-group">
+    <label class="form-label">Désactivé</label>
+    <input class="input input--disabled" type="text" disabled value="Non modifiable">
+  </div>
+
+  <div class="ds-divider"></div>
+  <div class="ds-label">Tâches — cases à cocher</div>
+  <div class="task-row">
+    <div class="checkbox checkbox--checked"><span class="checkbox__mark">✓</span></div>
+    <span class="task-label task-label--done">Cahier des charges finalisé</span>
+  </div>
+  <div class="task-row">
+    <div class="checkbox"></div>
+    <span class="task-label">Définir l'ICP du produit</span>
+  </div>
+  <div class="task-row">
+    <div class="checkbox"></div>
+    <span class="task-label">Rédiger la USP principale</span>
+  </div>
+</body>
+</html>

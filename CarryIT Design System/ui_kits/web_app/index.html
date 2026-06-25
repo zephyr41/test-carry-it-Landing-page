@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CarryIT — Dashboard v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  @font-face {
+    font-family: "Rifton";
+    src: url("../../fonts/rifton-regular.woff2") format("woff2");
+    font-weight: 400; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: "Rifton";
+    src: url("../../fonts/rifton-italic.woff2") format("woff2");
+    font-weight: 400; font-style: italic; font-display: swap;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body, #root { height: 100%; }
+  body {
+    background: #0A0A0A;
+    color: #FFFDF6;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,253,246,0.1); border-radius: 3px; }
+
+  button:focus-visible, a:focus-visible {
+    outline: 2px solid #EE4408;
+    outline-offset: 2px;
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script>/* CommonJS globals shim: lets Babel's `export`->`exports.X` output run as classic scripts */ var exports = {}; var module = { exports: exports };</script>
+<script type="text/babel" src="BlocVision.jsx"></script>
+<script type="text/babel" src="EspaceExecution.jsx"></script>
+<script type="text/babel" src="Modals.jsx"></script>
+<script type="text/babel" src="TopNav.jsx"></script>
+<script type="text/babel" src="VisionView.jsx"></script>
+<script type="text/babel" src="JalonKPICard.jsx"></script>
+<script type="text/babel" src="JalonsView.jsx"></script>
+<script type="text/babel" src="TodoView.jsx"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+
+<script type="text/babel">
+// ── INITIAL DATA ──────────────────────────────────────────
+const INITIAL_STATE = {
+  smart: {
+    S: "Atteindre 1 000 clients mensuels sur CarryIT à 8€/mois",
+    M: "Nombre de clients payants",
+    A: "50 clients en 2025, 300 en mars 2026, 1 000 en sept 2026 via marketing organique, partenariats et automatisation du funnel.",
+    R: "22 mois : bêta (3-4 mois), lancement T2 2026, montée progressive. Marché dev perso + SaaS productivité, coûts d'acquisition faibles.",
+    T: "30 septembre 2026",
+  },
+  kpi: {
+    label: "Clients payants à 8€/mois",
+    unit: "clients",
+    target: 1000,
+    measures: [
+      { date: "01/12/2025", value: 50 },
+      { date: "01/01/2026", value: 110 },
+      { date: "01/02/2026", value: 190 },
+      { date: "01/03/2026", value: 300 },
+      { date: "01/04/2026", value: 410 },
+    ],
+  },
+  jalons: [
+    {
+      id: "j1", title: "Cadrage produit", date: "Avr 2026", month: "MOIS 1",
+      done: true,
+      validation: "Cahier des charges, ICP et USP finalisés et exploitables.",
+      kpis: [{
+        label: "Documents produits finalisés",
+        value: 3, unit: "docs",
+        target: 3, type: "lagging",
+        frequency: "Mensuel",
+        measures: [
+          { date: "05/04/2026", value: 1 },
+          { date: "15/04/2026", value: 2 },
+          { date: "28/04/2026", value: 3 },
+        ],
+      }],
+      tasks: [
+        { id: "t1", title: "Rédiger le cahier des charges", done: true, priority: "high" },
+        { id: "t2", title: "Définir l'ICP principal", done: true, priority: "high" },
+        { id: "t3", title: "Formuler la USP", done: true },
+      ],
+    },
+    {
+      id: "j2", title: "POC (V0)", date: "Mai 2026", month: "ÉTAPE",
+      done: false,
+      validation: "V0 utilisable de bout en bout et testée par 15 utilisateurs",
+      execution: {
+        daysElapsed: 17,
+        effortHours: 18,
+        effort: { value: 18, label: "Heures entre chaque Test", unit: "h" },
+        week: "Juin 2026",
+        days: [
+          { d: "L", active: true },
+          { d: "M", active: true },
+          { d: "M", active: false },
+          { d: "J", active: true },
+          { d: "V", active: true },
+          { d: "S", active: false },
+          { d: "D", active: false },
+        ],
+        result: { value: 5, target: 15, label: "Beta testeur" },
+      },
+      kpis: [
+        {
+          titre: "Heures entre chaque Test",
+          valeur: 18,
+          cible: 15,
+          unite: "H/entre chaque test",
+          type: "leading",
+          measures: [
+            { date: "2026-05-11", value: 1 },
+            { date: "2026-05-12", value: 1 },
+            { date: "2026-05-18", value: 2 },
+            { date: "2026-05-20", value: 2 },
+            { date: "2026-05-23", value: 6 },
+            { date: "2026-05-25", value: 3 },
+            { date: "2026-05-27", value: 5 },
+            { date: "2026-05-30", value: 7 },
+            { date: "2026-06-02", value: 12 },
+            { date: "2026-06-03", value: 13 },
+            { date: "2026-06-04", value: 23 },
+            { date: "2026-06-08", value: 25 },
+            { date: "2026-06-24", value: 14 },
+            { date: "2026-06-25", value: 18 }
+          ]
+        },
+        {
+          titre: "V0 utilisable de bout en bout et testée par 15 utilisateurs",
+          valeur: 5,
+          cible: 15,
+          unite: "Beta testeur",
+          type: "lagging",
+          measures: [
+            { date: "2026-05-27", value: 4 },
+            { date: "2026-06-08", value: 5 }
+          ]
+        }
+      ],
+      tasks: [
+        { id: "t4", title: "Développer l'onboarding SMART", done: true, priority: "high" },
+        { id: "t5", title: "Intégrer le dashboard KPI", done: false, priority: "high" },
+        { id: "t6", title: "Recruter 10 beta-testeurs", done: false },
+        { id: "t7", title: "Préparer le guide utilisateur V1", done: false },
+        { id: "t8", title: "Configurer le suivi analytique", done: false },
+      ],
+    },
+    {
+      id: "j3", title: "Lancement public", date: "Oct 2026", month: "MOIS 7",
+      done: false,
+      validation: "Produit en production, landing page live, 50 premiers clients payants.",
+      kpis: [{
+        label: "Clients payants",
+        value: 0, unit: "clients",
+        target: 50, type: "lagging",
+        frequency: "Hebdomadaire",
+        measures: [],
+      }],
+      tasks: [
+        { id: "t9", title: "Préparer la landing page", done: false },
+        { id: "t10", title: "Configurer le paiement Stripe", done: false, priority: "high" },
+      ],
+    },
+    {
+      id: "j4", title: "400 clients actifs", date: "Déc 2026", month: "MOIS 12",
+      done: false,
+      validation: "400 clients actifs payants avec NPS supérieur à 40.",
+      kpis: [{
+        label: "Clients actifs",
+        value: 0, unit: "clients",
+        target: 400, type: "lagging",
+        frequency: "Mensuel",
+        measures: [],
+      }],
+      tasks: [
+        { id: "t11", title: "Optimiser le funnel d'acquisition", done: false },
+        { id: "t12", title: "Lancer campagne de croissance", done: false },
+      ],
+    },
+  ],
+};
+
+// ── TWEAK DEFAULTS ────────────────────────────────────────
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "density": "comfort",
+  "railSide": "left",
+  "startView": "vision"
+}/*EDITMODE-END*/;
+
+// ── TOAST ─────────────────────────────────────────────────
+const Toast = ({ message, onDismiss }) => {
+  React.useEffect(() => {
+    const t = setTimeout(onDismiss, 4500);
+    return () => clearTimeout(t);
+  }, [onDismiss]);
+
+  const toastStyles = {
+    wrap: {
+      position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)',
+      background: '#16161A',
+      border: '1px solid rgba(255,255,255,0.10)',
+      boxShadow: '0 16px 48px rgba(0,0,0,0.5)',
+      borderRadius: 8, padding: '12px 18px',
+      display: 'flex', alignItems: 'center', gap: 14,
+      boxShadow: '0 8px 32px rgba(0,0,0,0.6)', zIndex: 200,
+      fontSize: 13.5, color: '#FFFDF6',
+    },
+    dismiss: {
+      background: 'none', border: 'none', color: 'rgba(255,253,246,0.72)',
+      cursor: 'pointer', display: 'flex', alignItems: 'center',
+    },
+  };
+
+  return (
+    <div style={toastStyles.wrap}>
+      <span>{message}</span>
+      <button style={toastStyles.dismiss} onClick={onDismiss}>
+        <i data-lucide="x" style={{width:14,height:14}}></i>
+      </button>
+    </div>
+  );
+};
+
+// ── MAIN APP ──────────────────────────────────────────────
+const App = () => {
+  const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
+
+  const [activeView, setActiveView] = React.useState(tweaks.startView || 'jalons');
+  const [smart, setSmart] = React.useState(INITIAL_STATE.smart);
+  const [kpi, setKpi] = React.useState(INITIAL_STATE.kpi);
+  const [jalons, setJalons] = React.useState(INITIAL_STATE.jalons);
+  const [activeJalonId, setActiveJalonId] = React.useState('j2');
+  const [showAddMeasure, setShowAddMeasure] = React.useState(false);
+  const [showEditSmart, setShowEditSmart] = React.useState(false);
+  // KPI-specific measure modal — knows which KPI to push into
+  const [kpiMeasureTarget, setKpiMeasureTarget] = React.useState(null); // {jalonId, kpiIndex, kpi}
+  // KPI edit modal
+  const [kpiEditTarget, setKpiEditTarget] = React.useState(null); // {jalonId, kpiIndex, kpi}
+  // Jalon edit modal
+  const [jalonEditTarget, setJalonEditTarget] = React.useState(null);
+  const [toast, setToast] = React.useState(null);
+  const [viewKey, setViewKey] = React.useState(0);
+
+  // Re-render Lucide icons whenever DOM changes
+  React.useEffect(() => {
+    if (window.lucide) window.lucide.createIcons();
+  });
+
+  const switchView = (v) => {
+    setActiveView(v);
+    setViewKey(k => k + 1);
+  };
+
+  const handleAddMeasure = (measure) => {
+    setKpi(prev => ({ ...prev, measures: [...prev.measures, measure] }));
+    setToast({ message: 'Mesure ajoutée' });
+  };
+
+  const handleEditSmart = (newSmart) => {
+    setSmart(newSmart);
+    setToast({ message: 'Objectif mis à jour' });
+  };
+
+  const handleValidateJalon = (jalonId) => {
+    setJalons(prev => prev.map(j => j.id === jalonId ? { ...j, done: true } : j));
+    setToast({ message: 'Jalon validé' });
+  };
+
+  const handleUpdateKPI = (jalonId, kpiIndex, nextKpi) => {
+    setJalons(prev => prev.map(j => {
+      if (j.id !== jalonId) return j;
+      const kpis = [...(j.kpis || [])];
+      if (nextKpi._deleted) {
+        kpis.splice(kpiIndex, 1);
+        setToast({ message: 'KPI supprimé' });
+      } else {
+        kpis[kpiIndex] = nextKpi;
+      }
+      return { ...j, kpis };
+    }));
+  };
+
+  const handleAddKPI = (jalonId, type) => {
+    setJalons(prev => prev.map(j => {
+      if (j.id !== jalonId) return j;
+      if ((j.kpis || []).length >= 2) return j;
+      const newKpi = {
+        label: type === 'leading' ? "Nouvel indicateur d'avancée" : "Nouvel indicateur de résultat",
+        value: 0, unit: '',
+        target: null, type,
+        frequency: 'Hebdomadaire',
+        measures: [],
+      };
+      return { ...j, kpis: [...(j.kpis || []), newKpi] };
+    }));
+    setToast({ message: 'KPI ajouté' });
+  };
+
+  const handleAddMeasureToKPI = (kpi) => {
+    // Locate jalon + index for this KPI by identity
+    let found = null;
+    jalons.forEach(j => {
+      (j.kpis || []).forEach((k, i) => {
+        if (k === kpi) found = { jalonId: j.id, kpiIndex: i, kpi: k };
+      });
+    });
+    if (found) setKpiMeasureTarget(found);
+  };
+
+  const handleSaveKpiMeasure = ({ date, value }) => {
+    if (!kpiMeasureTarget) return;
+    const { jalonId, kpiIndex } = kpiMeasureTarget;
+    setJalons(prev => prev.map(j => {
+      if (j.id !== jalonId) return j;
+      const kpis = [...(j.kpis || [])];
+      const k = { ...kpis[kpiIndex] };
+      // Each measure is a snapshot of the value at a given date.
+      // The KPI's current value is simply the latest measurement.
+      k.measures = [...(k.measures || []), { date, value }]
+        .sort((a, b) => {
+          // Sort by date (DD/MM/YYYY) ascending
+          const ad = a.date.split('/');
+          const bd = b.date.split('/');
+          return new Date(`${ad[2]}-${ad[1]}-${ad[0]}`) - new Date(`${bd[2]}-${bd[1]}-${bd[0]}`);
+        });
+      k.value = k.measures[k.measures.length - 1].value;
+      kpis[kpiIndex] = k;
+      return { ...j, kpis };
+    }));
+    setToast({ message: 'Mesure enregistrée' });
+  };
+
+  const handleEditKPI = (jalonId, kpiIndex, kpiObj) => {
+    setKpiEditTarget({ jalonId, kpiIndex, kpi: kpiObj });
+  };
+
+  const handleSaveKpiEdit = (nextKpi) => {
+    if (!kpiEditTarget) return;
+    const { jalonId, kpiIndex } = kpiEditTarget;
+    setJalons(prev => prev.map(j => {
+      if (j.id !== jalonId) return j;
+      const kpis = [...(j.kpis || [])];
+      kpis[kpiIndex] = { ...kpis[kpiIndex], ...nextKpi };
+      return { ...j, kpis };
+    }));
+    setToast({ message: 'KPI mis à jour' });
+  };
+
+  const handleDeleteKpiFromEdit = () => {
+    if (!kpiEditTarget) return;
+    const { jalonId, kpiIndex } = kpiEditTarget;
+    setJalons(prev => prev.map(j => {
+      if (j.id !== jalonId) return j;
+      const kpis = [...(j.kpis || [])];
+      kpis.splice(kpiIndex, 1);
+      return { ...j, kpis };
+    }));
+    setToast({ message: 'KPI supprimé' });
+  };
+
+  const handleEditJalon = (jalon) => {
+    setJalonEditTarget(jalon);
+  };
+
+  const handleCreateJalon = () => {
+    const newId = 'j' + Date.now();
+    setJalonEditTarget({
+      id: newId,
+      title: '',
+      date: '',
+      month: '',
+      validation: '',
+      done: false,
+      kpis: [],
+      tasks: [],
+      _isNew: true,
+    });
+  };
+
+  const handleSaveJalonEdit = (nextJalon) => {
+    if (nextJalon._isNew) {
+      const clean = { ...nextJalon };
+      delete clean._isNew;
+      setJalons(prev => [...prev, clean]);
+      setActiveJalonId(clean.id);
+      setToast({ message: 'Jalon créé' });
+    } else {
+      setJalons(prev => prev.map(j => j.id === nextJalon.id ? { ...j, ...nextJalon } : j));
+      setToast({ message: 'Jalon mis à jour' });
+    }
+  };
+
+  const handleDeleteMeasure = (jalonId, kpiIndex, measureIdx) => {
+    setJalons(prev => prev.map(j => {
+      if (j.id !== jalonId) return j;
+      const kpis = [...(j.kpis || [])];
+      const k = { ...kpis[kpiIndex] };
+      const m = [...(k.measures || [])];
+      m.splice(measureIdx, 1);
+      k.measures = m;
+      k.value = m.length ? m[m.length - 1].value : 0;
+      kpis[kpiIndex] = k;
+      return { ...j, kpis };
+    }));
+    setToast({ message: 'Mesure supprimée' });
+  };
+
+  const handleDeleteJalon = () => {
+    if (!jalonEditTarget) return;
+    const id = jalonEditTarget.id;
+    setJalons(prev => prev.filter(j => j.id !== id));
+    setToast({ message: 'Jalon supprimé' });
+    if (activeJalonId === id) {
+      const remaining = jalons.filter(j => j.id !== id);
+      if (remaining.length > 0) setActiveJalonId(remaining[0].id);
+    }
+  };
+
+  return (
+    <div>
+      <TopNav activeView={activeView} onChange={switchView} />
+
+      <main key={viewKey}>
+        {activeView === 'vision' && (
+          <VisionView
+            kpiData={kpi}
+            smart={smart}
+            jalons={jalons}
+            onAddMeasure={() => setShowAddMeasure(true)}
+            onEditSmart={() => setShowEditSmart(true)}
+            density={tweaks.density}
+          />
+        )}
+        {activeView === 'jalons' && (
+          <JalonsView
+            jalons={jalons}
+            activeJalonId={activeJalonId}
+            onSelectJalon={setActiveJalonId}
+            onValidate={handleValidateJalon}
+            onUpdateKPI={handleUpdateKPI}
+            onAddKPI={handleAddKPI}
+            onAddMeasure={handleAddMeasureToKPI}
+            onEditKPI={handleEditKPI}
+            onEditJalon={handleEditJalon}
+            onCreateJalon={handleCreateJalon}
+            onDeleteMeasure={handleDeleteMeasure}
+            railSide={tweaks.railSide}
+            density={tweaks.density}
+          />
+        )}
+        {activeView === 'todo' && (
+          <TodoView
+            jalons={jalons}
+            activeJalonId={activeJalonId}
+            onSelectJalon={setActiveJalonId}
+            onValidate={handleValidateJalon}
+            density={tweaks.density}
+          />
+        )}
+      </main>
+
+      <AddMeasureModal
+        open={showAddMeasure}
+        onClose={() => setShowAddMeasure(false)}
+        kpiLabel={kpi.label}
+        onSave={handleAddMeasure}
+      />
+
+      <AddMeasureModal
+        open={!!kpiMeasureTarget}
+        onClose={() => setKpiMeasureTarget(null)}
+        kpiLabel={kpiMeasureTarget ? kpiMeasureTarget.kpi.label : ''}
+        onSave={handleSaveKpiMeasure}
+      />
+
+      <EditKPIModal
+        open={!!kpiEditTarget}
+        onClose={() => setKpiEditTarget(null)}
+        kpi={kpiEditTarget ? kpiEditTarget.kpi : null}
+        onSave={handleSaveKpiEdit}
+        onDelete={handleDeleteKpiFromEdit}
+      />
+
+      <EditJalonModal
+        open={!!jalonEditTarget}
+        onClose={() => setJalonEditTarget(null)}
+        jalon={jalonEditTarget}
+        onSave={handleSaveJalonEdit}
+        onDelete={handleDeleteJalon}
+      />
+
+      <EditSmartModal
+        open={showEditSmart}
+        onClose={() => setShowEditSmart(false)}
+        smart={smart}
+        onSave={handleEditSmart}
+      />
+
+      {toast && (
+        <Toast message={toast.message} onDismiss={() => setToast(null)} />
+      )}
+
+      <TweaksPanel title="Tweaks">
+        <TweakSection label="Navigation" />
+        <TweakRadio
+          label="Vue par défaut"
+          value={tweaks.startView}
+          options={['vision', 'jalons', 'todo']}
+          onChange={(v) => setTweak('startView', v)}
+        />
+        <TweakSection label="Mise en page" />
+        <TweakRadio
+          label="Densité"
+          value={tweaks.density}
+          options={['comfort', 'compact']}
+          onChange={(v) => setTweak('density', v)}
+        />
+        <TweakRadio
+          label="Timeline"
+          value={tweaks.railSide}
+          options={['left', 'right']}
+          onChange={(v) => setTweak('railSide', v)}
+        />
+      </TweaksPanel>
+    </div>
+  );
+};
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+</script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+/* ============================================================
+   CarryIT Design System — styles.css (root entry)
+   Single stylesheet for consumers: links everything below.
+   ============================================================ */
+
+@import "colors_and_type.css";
+@import "components.css";

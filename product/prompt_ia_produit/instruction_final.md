@@ -266,13 +266,9 @@ Dans CarryIt à Mesurable écrit : [Unité] — Définition
 
 Le KPI doit être :
 
-- une seule variable (ou variable dérivée de type ratio)
 - mesurable selon une définition explicite
 - exprimé avec une unité claire
-- mesurable ou calculable à partir de données traçables
 - directement lié au résultat final de l’objectif spécifique
-- non ambigu (définition reproductible)
-- l’unité doit obligatoirement être écrite entre crochets [ ]
 
 ---
 
@@ -287,7 +283,6 @@ Générer 2 à 4 options pertinentes, directement dérivées de l’objectif sp�
 Contraintes :
 
 - chaque option = 1 seule variable mesurable
-- chaque option doit représenter un résultat observable (pas une activité)
 - inclure une unité implicite ou explicite
 - être compréhensible immédiatement
 
@@ -325,7 +320,6 @@ Options obligatoirement numérotées :
 - Ne jamais proposer plus d’un KPI
 - Ne jamais proposer un KPI non mesurable (ex : progrès, amélioration)
 - Ne jamais mélanger plusieurs variables non liées
-- Ne jamais proposer un indicateur d’activité si un indicateur de résultat est possible
 
 ---
 
@@ -340,9 +334,6 @@ Options obligatoirement numérotées :
 - permet de déterminer si l’objectif est atteint
 ### Interdictions
 - Ne jamais proposer plus d’un KPI
-- Ne jamais proposer un KPI non mesurable (ex : progrès, amélioration)
-- Ne jamais combiner plusieurs variables sauf si elles forment un ratio cohérent
-- Ne jamais proposer un indicateur d’activité si un indicateur de résultat est possible
 
 ## 10. PHASE 3 — Type
 

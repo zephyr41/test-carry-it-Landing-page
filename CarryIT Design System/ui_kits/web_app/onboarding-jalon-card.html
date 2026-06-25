@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<!-- @dsCard group="UI Kit — Web App" name="Onboarding · Carte jalon" subtitle="4 variantes pour clarifier Titre vs Critère de validation" -->
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Onboarding · Carte jalon — Exploration</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  @font-face {
+    font-family: "Rifton";
+    src: url("../../fonts/rifton-regular.woff2") format("woff2");
+    font-weight: 400; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: "Rifton";
+    src: url("../../fonts/rifton-italic.woff2") format("woff2");
+    font-weight: 400; font-style: italic; font-display: swap;
+  }
+  :root {
+    --c-noir: #080809;
+    --c-surface: #111112;
+    --c-surface-2: #1A1A1C;
+    --c-text: #FFFDF6;
+    --c-text-2: #929292;
+    --c-text-3: #5C5C5C;
+    --c-orange: #EE4408;
+    --c-marine: #0A2A53;
+    --c-border: rgba(255,253,246,0.08);
+    --c-border-med: rgba(255,253,246,0.14);
+    --c-input-bg: #0C0C0D;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--c-noir);
+    color: var(--c-text);
+    font-family: 'DM Sans', system-ui, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    padding: 56px 40px 120px;
+  }
+
+  /* ─── PAGE LAYOUT ─── */
+  .page-header {
+    max-width: 980px;
+    margin: 0 auto 56px;
+  }
+  .page-header .eyebrow {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.14em; color: var(--c-text-2);
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 18px;
+  }
+  .page-header .eyebrow::before {
+    content: ""; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--c-orange);
+  }
+  .page-header h1 {
+    font-family: 'Rifton', Georgia, serif;
+    font-size: 44px; font-weight: 400;
+    letter-spacing: -0.03em; line-height: 1.1;
+    margin-bottom: 16px;
+  }
+  .page-header p {
+    color: var(--c-text-2); font-size: 15px; max-width: 720px;
+  }
+
+  /* ─── VARIANT BLOCK ─── */
+  .variant {
+    max-width: 980px;
+    margin: 0 auto 80px;
+  }
+  .variant-head {
+    display: flex; align-items: baseline; gap: 16px;
+    margin-bottom: 8px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--c-border);
+  }
+  .variant-tag {
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--c-orange);
+    padding: 4px 8px;
+    background: rgba(238,68,8,0.08);
+    border-radius: 4px;
+  }
+  .variant-head h2 {
+    font-size: 22px; font-weight: 600; letter-spacing: -0.01em;
+  }
+  .variant-head .meta {
+    margin-left: auto;
+    font-size: 12px; color: var(--c-text-2);
+  }
+  .variant-note {
+    color: var(--c-text-2); font-size: 14px;
+    margin-bottom: 32px;
+    max-width: 820px;
+  }
+  .variant-note strong { color: var(--c-text); font-weight: 500; }
+  .variant-note code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    background: var(--c-surface-2);
+    padding: 1px 6px; border-radius: 3px;
+    color: var(--c-text);
+  }
+
+  /* ─── TIMELINE + CARD WRAP ─── */
+  .jalon-wrap {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 24px;
+    align-items: stretch;
+  }
+  .timeline-rail {
+    position: relative;
+    padding-top: 32px;
+  }
+  .timeline-rail::before {
+    content: "";
+    position: absolute;
+    left: 50%; top: 0; bottom: -40px;
+    width: 2px; background: var(--c-orange);
+    transform: translateX(-50%);
+  }
+  .timeline-label {
+    position: relative;
+    text-align: right;
+    padding-right: 24px;
+  }
+  .timeline-label .year {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--c-orange); font-weight: 700;
+    font-size: 16px; letter-spacing: 0.04em;
+    line-height: 1;
+  }
+  .timeline-label .month {
+    font-size: 11px; color: var(--c-text-2); font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.14em;
+    margin-top: 6px;
+  }
+  .timeline-label::after {
+    content: "";
+    position: absolute;
+    right: -12px; top: 4px;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--c-noir);
+    border: 2px solid var(--c-orange);
+    box-shadow: 0 0 0 4px var(--c-noir);
+  }
+  .timeline-label.active::after {
+    background: var(--c-orange);
+  }
+
+  /* ─── CARD ─── */
+  .card {
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: 12px;
+    padding: 28px 32px 32px;
+  }
+  .card-head {
+    display: flex; align-items: center; gap: 12px;
+    padding-bottom: 24px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--c-border);
+  }
+  .jalon-rank {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 600;
+    color: var(--c-text-2);
+    letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .jalon-tag {
+    font-size: 11px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    padding: 4px 10px;
+    background: rgba(238,68,8,0.12);
+    color: var(--c-orange);
+    border-radius: 999px;
+  }
+  .jalon-date {
+    margin-left: auto;
+    display: flex; align-items: center; gap: 6px;
+    font-size: 13px; color: var(--c-text-2);
+    padding: 6px 10px;
+    background: var(--c-surface-2);
+    border-radius: 6px;
+    border: 1px solid var(--c-border);
+  }
+  .jalon-date svg { width: 13px; height: 13px; }
+
+  /* ─── BASE FIELD STYLES ─── */
+  .field { margin-bottom: 20px; }
+  .field:last-child { margin-bottom: 0; }
+  .field-label {
+    display: block;
+    font-size: 12.5px; font-weight: 500;
+    color: var(--c-text-2);
+    margin-bottom: 8px;
+    letter-spacing: 0.01em;
+  }
+  .field-helper {
+    font-size: 12.5px;
+    color: var(--c-text-3);
+    margin-top: 6px;
+    line-height: 1.5;
+  }
+  .field-helper em {
+    color: var(--c-text-2);
+    font-style: normal;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+  }
+  .input, .textarea {
+    width: 100%;
+    background: var(--c-input-bg);
+    border: 1px solid var(--c-border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    color: var(--c-text);
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.5;
+    resize: vertical;
+    transition: border-color 150ms ease;
+  }
+  .input:focus, .textarea:focus {
+    outline: none;
+    border-color: rgba(238,68,8,0.5);
+  }
+  .input::placeholder, .textarea::placeholder {
+    color: var(--c-text-3);
+  }
+
+  /* ─── VARIANT A : Current ─── */
+  .v-current .field-label { text-transform: none; letter-spacing: 0; font-weight: 400; color: var(--c-text); }
+
+  /* ─── VARIANT B : Better labels + helpers ─── */
+  .v-better .field-label-wrap {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: 6px;
+  }
+  .v-better .field-label-wrap .label-main {
+    font-size: 13px; font-weight: 600; color: var(--c-text);
+  }
+  .v-better .field-label-wrap .label-type {
+    font-size: 10.5px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.14em;
+    color: var(--c-text-2);
+  }
+  .v-better .field-question {
+    font-size: 12.5px;
+    color: var(--c-text-2);
+    margin-bottom: 8px;
+  }
+
+  /* ─── VARIANT C : Conversational ─── */
+  .v-conv .convo-block {
+    margin-bottom: 24px;
+  }
+  .v-conv .convo-block:last-child { margin-bottom: 0; }
+  .v-conv .convo-prompt {
+    font-family: 'Rifton', Georgia, serif;
+    font-style: italic;
+    font-size: 18px;
+    color: var(--c-text-2);
+    margin-bottom: 12px;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+  }
+  .v-conv .convo-prompt strong {
+    font-style: normal;
+    font-weight: 400;
+    color: var(--c-text);
+  }
+  .v-conv .input, .v-conv .textarea { font-size: 15px; }
+  .v-conv .convo-example {
+    font-size: 12px; color: var(--c-text-3);
+    margin-top: 8px;
+    padding-left: 12px;
+    border-left: 2px solid var(--c-border);
+    font-style: italic;
+  }
+
+  /* ─── VARIANT D : Hierarchy ─── */
+  .v-hier .title-block { margin-bottom: 28px; }
+  .v-hier .micro-label {
+    font-size: 10.5px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.14em;
+    color: var(--c-text-3);
+    margin-bottom: 10px;
+  }
+  .v-hier .title-input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--c-border-med);
+    color: var(--c-text);
+    font-family: inherit;
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    padding: 6px 0 12px;
+    transition: border-color 150ms ease;
+  }
+  .v-hier .title-input:focus {
+    outline: none;
+    border-bottom-color: var(--c-orange);
+  }
+  .v-hier .title-input::placeholder {
+    color: var(--c-text-3); font-weight: 400;
+  }
+  .v-hier .title-helper {
+    font-size: 12px; color: var(--c-text-3);
+    margin-top: 8px;
+  }
+  .v-hier .criterion-block {
+    background: var(--c-surface-2);
+    border: 1px solid var(--c-border);
+    border-radius: 8px;
+    padding: 16px 18px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .v-hier .check-pill {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    border: 1.5px dashed var(--c-text-3);
+    display: flex; align-items: center; justify-content: center;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+  .v-hier .check-pill svg { width: 12px; height: 12px; color: var(--c-text-3); }
+  .v-hier .criterion-text {
+    flex: 1;
+  }
+  .v-hier .criterion-label {
+    font-size: 11px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--c-text-2);
+    margin-bottom: 6px;
+  }
+  .v-hier .criterion-input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: var(--c-text);
+    font-family: inherit;
+    font-size: 14.5px;
+    line-height: 1.5;
+    resize: none;
+    min-height: 22px;
+  }
+  .v-hier .criterion-input:focus { outline: none; }
+  .v-hier .criterion-input::placeholder { color: var(--c-text-3); }
+  .v-hier .criterion-helper {
+    font-size: 12px; color: var(--c-text-3);
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--c-border);
+  }
+
+  /* ─── ANNOTATIONS ─── */
+  .annotations {
+    margin-top: 24px;
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 24px;
+  }
+  .annot-list {
+    list-style: none;
+    padding: 0;
+  }
+  .annot-list li {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 13px; color: var(--c-text-2);
+    line-height: 1.55;
+    margin-bottom: 8px;
+  }
+  .annot-list li::before {
+    content: "→";
+    color: var(--c-orange);
+    font-weight: 600;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .annot-list li strong { color: var(--c-text); font-weight: 500; }
+
+  /* ─── SUMMARY TABLE ─── */
+  .summary {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 28px 32px;
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: 12px;
+  }
+  .summary h3 {
+    font-size: 18px; font-weight: 600; margin-bottom: 16px;
+  }
+  .summary table {
+    width: 100%; border-collapse: collapse;
+    font-size: 13px;
+  }
+  .summary th {
+    text-align: left; padding: 10px 12px;
+    background: var(--c-surface-2);
+    color: var(--c-text-2); font-weight: 500;
+    border: 1px solid var(--c-border);
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;
+  }
+  .summary td {
+    padding: 12px;
+    border: 1px solid var(--c-border);
+    color: var(--c-text);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  .summary td .pro { color: #7dc28b; font-size: 12px; }
+  .summary td .con { color: #d97171; font-size: 12px; }
+</style>
+</head>
+<body>
+
+<header class="page-header">
+  <div class="eyebrow">Onboarding · Carte jalon</div>
+  <h1>Clarifier <em style="font-style:italic">titre</em> vs <em style="font-style:italic">critère de validation</em></h1>
+  <p>Diagnostic : aujourd'hui l'utilisateur remplit 3 champs textareas identiques sans guidage et finit par y mettre la même chose. Ci-dessous 4 directions de redesign — de la correction minimale au repensé complet. Compare et dis-moi laquelle parle.</p>
+</header>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- VARIANT A — CURRENT (REFERENCE)                            -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<section class="variant">
+  <div class="variant-head">
+    <span class="variant-tag">A · ACTUEL</span>
+    <h2>Version actuelle (référence)</h2>
+    <span class="meta">le problème</span>
+  </div>
+  <p class="variant-note">
+    3 champs textareas identiques, sans placeholder, sans helper text, et un champ <code>Description</code> qui n'est pas dans la spec.
+    Aucun signal qui dit ce que chaque champ <strong>doit contenir</strong>.
+  </p>
+
+  <div class="jalon-wrap">
+    <div class="timeline-rail">
+      <div class="timeline-label active">
+        <div class="year">2031</div>
+        <div class="month">SEPT</div>
+      </div>
+    </div>
+    <div class="card v-current">
+      <div class="card-head">
+        <span class="jalon-rank">JALON 5/5</span>
+        <span class="jalon-tag">Jalon final</span>
+        <span class="jalon-date">
+          <i data-lucide="calendar"></i>
+          18/09/2031
+        </span>
+      </div>
+      <div class="field">
+        <label class="field-label">Titre</label>
+        <input class="input" value="700k de patrimoine à 10%" />
+      </div>
+      <div class="field">
+        <label class="field-label">Description</label>
+        <textarea class="textarea" rows="2">Atteindre 70k de revenue net en immobilier par ans — 700k de patrimoine à 10%</textarea>
+      </div>
+      <div class="field">
+        <label class="field-label">Critère de validation</label>
+        <input class="input" value="700k de patrimoine à 10%" />
+      </div>
+    </div>
+  </div>
+
+  <div class="annotations">
+    <div></div>
+    <ul class="annot-list">
+      <li><strong>Champ Description hors-spec</strong> — la doc <code>jalons.md</code> ne le mentionne pas, il crée de la confusion</li>
+      <li><strong>3 inputs visuellement identiques</strong> — rien ne suggère que leur contenu doit être différent</li>
+      <li><strong>Aucun placeholder, aucun helper text</strong> — l'utilisateur n'a aucun indice</li>
+      <li><strong>"Critère de validation" est du jargon</strong> — pas traduit en langage utilisateur</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- VARIANT B — BETTER LABELS + HELPERS (MINIMAL CHANGE)       -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<section class="variant">
+  <div class="variant-head">
+    <span class="variant-tag">B · CORRECTION MINIMALE</span>
+    <h2>Mêmes champs, vrais labels + helpers + exemples</h2>
+    <span class="meta">effort : faible · clarté : ++</span>
+  </div>
+  <p class="variant-note">
+    Suppression du champ <code>Description</code> (hors-spec). Ajout d'une <strong>question explicite</strong> sous chaque label, et d'un <strong>placeholder qui montre un vrai exemple</strong>. Garde la structure que l'utilisateur connaît déjà.
+  </p>
+
+  <div class="jalon-wrap">
+    <div class="timeline-rail">
+      <div class="timeline-label active">
+        <div class="year">2031</div>
+        <div class="month">SEPT</div>
+      </div>
+    </div>
+    <div class="card v-better">
+      <div class="card-head">
+        <span class="jalon-rank">JALON 5/5</span>
+        <span class="jalon-tag">Jalon final</span>
+        <span class="jalon-date">
+          <i data-lucide="calendar"></i>
+          18/09/2031
+        </span>
+      </div>
+
+      <div class="field">
+        <div class="field-label-wrap">
+          <span class="label-main">Nom du jalon</span>
+          <span class="label-type">Court · 1 ligne</span>
+        </div>
+        <div class="field-question">Comment tu nommes cette étape en une phrase ?</div>
+        <input class="input" placeholder="Ex. « Patrimoine immobilier net à 700k »" />
+        <div class="field-helper">Une formule courte pour reconnaître ce jalon dans la timeline.</div>
+      </div>
+
+      <div class="field">
+        <div class="field-label-wrap">
+          <span class="label-main">Comment tu sauras que c'est atteint ?</span>
+          <span class="label-type">Mesurable · vérifiable</span>
+        </div>
+        <div class="field-question">Le fait précis qui prouve que le jalon est validé.</div>
+        <textarea class="textarea" rows="2" placeholder="Ex. « Mes biens locatifs génèrent 70k€ de revenu net annuel constaté sur 12 mois »"></textarea>
+        <div class="field-helper">
+          <em>Bon :</em> un fait observable, daté, chiffré.<br/>
+          <em>À éviter :</em> répéter le titre du jalon.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="annotations">
+    <div></div>
+    <ul class="annot-list">
+      <li><strong>Question explicite</strong> sous chaque label → l'utilisateur sait ce qu'on lui demande</li>
+      <li><strong>Tag à droite</strong> (Court / Mesurable) → indique le format attendu</li>
+      <li><strong>Placeholder réel</strong> qui montre la forme de la réponse</li>
+      <li><strong>Helper "Bon / À éviter"</strong> sur le critère → enseigne directement dans le formulaire</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- VARIANT C — CONVERSATIONAL                                 -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<section class="variant">
+  <div class="variant-head">
+    <span class="variant-tag">C · CONVERSATIONNEL</span>
+    <h2>Phrases à compléter — fill-in-the-blank</h2>
+    <span class="meta">effort : moyen · clarté : +++</span>
+  </div>
+  <p class="variant-note">
+    Plus de labels génériques. On remplace par des <strong>amorces de phrase</strong> que l'utilisateur complète. Le mental model change : il ne "remplit pas un champ", il <strong>termine une phrase</strong>. Impossible d'y mettre la même chose deux fois.
+  </p>
+
+  <div class="jalon-wrap">
+    <div class="timeline-rail">
+      <div class="timeline-label active">
+        <div class="year">2031</div>
+        <div class="month">SEPT</div>
+      </div>
+    </div>
+    <div class="card v-conv">
+      <div class="card-head">
+        <span class="jalon-rank">JALON 5/5</span>
+        <span class="jalon-tag">Jalon final</span>
+        <span class="jalon-date">
+          <i data-lucide="calendar"></i>
+          18/09/2031
+        </span>
+      </div>
+
+      <div class="convo-block">
+        <div class="convo-prompt">À ce jalon, <strong>j'aurai accompli</strong> :</div>
+        <input class="input" placeholder="constituer un patrimoine immobilier net de 700k€" />
+        <div class="convo-example">Commence par un verbe ou un état. Court, parlant.</div>
+      </div>
+
+      <div class="convo-block">
+        <div class="convo-prompt"><strong>Je saurai que c'est validé quand</strong> :</div>
+        <textarea class="textarea" rows="2" placeholder="mes biens locatifs génèrent 70k€ de revenu net annuel constaté sur 12 mois consécutifs"></textarea>
+        <div class="convo-example">Un fait vérifiable, mesurable, sans ambiguïté. Si tu hésites entre "oui" et "non" en le relisant — c'est pas assez précis.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="annotations">
+    <div></div>
+    <ul class="annot-list">
+      <li><strong>Amorce de phrase Rifton italique</strong> → personnalité de marque, change le rythme de lecture</li>
+      <li><strong>2 questions distinctes par nature</strong> ("j'aurai" vs "je saurai") → impossible de mettre la même chose</li>
+      <li>L'utilisateur <strong>parle dans sa tête</strong>, ne remplit pas un formulaire</li>
+      <li><strong>Example coaching</strong> en-dessous (italique) — pédagogie inline</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- VARIANT D — VISUAL HIERARCHY                               -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<section class="variant">
+  <div class="variant-head">
+    <span class="variant-tag">D · HIÉRARCHIE VISUELLE</span>
+    <h2>Le titre EST une headline. Le critère EST une condition.</h2>
+    <span class="meta">effort : moyen · clarté : +++</span>
+  </div>
+  <p class="variant-note">
+    Les deux champs ne sont <strong>plus traités pareil visuellement</strong>. Titre = grosse typo headline (comme tu écrirais un cap). Critère = petit bloc encadré façon checklist avec une pastille à cocher — il <em>ressemble</em> à une condition vérifiable.
+  </p>
+
+  <div class="jalon-wrap">
+    <div class="timeline-rail">
+      <div class="timeline-label active">
+        <div class="year">2031</div>
+        <div class="month">SEPT</div>
+      </div>
+    </div>
+    <div class="card v-hier">
+      <div class="card-head">
+        <span class="jalon-rank">JALON 5/5</span>
+        <span class="jalon-tag">Jalon final</span>
+        <span class="jalon-date">
+          <i data-lucide="calendar"></i>
+          18/09/2031
+        </span>
+      </div>
+
+      <div class="title-block">
+        <div class="micro-label">Le cap</div>
+        <input class="title-input" placeholder="Nomme cette étape…" value="Patrimoine immobilier net à 700k" />
+        <div class="title-helper">Une formule courte qui décrit où tu seras à cette étape.</div>
+      </div>
+
+      <div class="criterion-block">
+        <div class="check-pill">
+          <i data-lucide="check"></i>
+        </div>
+        <div class="criterion-text">
+          <div class="criterion-label">Validé quand</div>
+          <textarea class="criterion-input" rows="2" placeholder="Décris le fait précis qui prouve que c'est atteint…">Mes biens locatifs génèrent 70k€ de revenu net annuel constaté sur 12 mois consécutifs</textarea>
+          <div class="criterion-helper">Ce qui sera vrai, mesurable et observable le jour où tu coches ce jalon.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="annotations">
+    <div></div>
+    <ul class="annot-list">
+      <li><strong>Le titre est une headline</strong> (26px semibold, underline) — l'utilisateur sent qu'il écrit un cap, pas une description</li>
+      <li><strong>Le critère est encadré comme une checklist</strong> — pastille ronde dashed, devient pleine quand validé</li>
+      <li><strong>Aucune confusion visuelle possible</strong> entre les deux : ils ne se ressemblent pas du tout</li>
+      <li>Évolutif : au statut "validé", la pastille se remplit en bleu marine (couleur confirm)</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- SUMMARY                                                    -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<section class="summary">
+  <h3>Récap — quand utiliser quoi</h3>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:14%">Variante</th>
+        <th style="width:30%">Idée centrale</th>
+        <th style="width:28%">Force</th>
+        <th style="width:28%">Faiblesse</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>B</strong> · Correction minimale</td>
+        <td>Mêmes champs, mais guidés par questions + placeholders + helpers</td>
+        <td class="pro">✓ Faible effort, ne casse rien<br/>✓ Reste familier</td>
+        <td class="con">↯ Toujours basé sur des labels — moins immersif</td>
+      </tr>
+      <tr>
+        <td><strong>C</strong> · Conversationnel</td>
+        <td>Phrases à compléter ("j'aurai…" / "je saurai…")</td>
+        <td class="pro">✓ Force des réponses de nature différente<br/>✓ Marque CarryIT renforcée (Rifton italique)</td>
+        <td class="con">↯ Plus de copy à écrire et à maintenir<br/>↯ Peut sembler "trop coaché" pour certains</td>
+      </tr>
+      <tr>
+        <td><strong>D</strong> · Hiérarchie visuelle</td>
+        <td>Titre = headline. Critère = bloc checklist à cocher.</td>
+        <td class="pro">✓ Différence visuelle <em>impossible</em> à confondre<br/>✓ Évolutif : la pastille se valide</td>
+        <td class="con">↯ Demande de réviser le composant Card<br/>↯ Critère doit rester court pour bien tenir</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="margin-top:20px; color:var(--c-text-2); font-size:13.5px; line-height:1.6;">
+    <strong style="color:var(--c-text); font-weight:500;">Ma recommandation perso :</strong> on combine <strong>C + D</strong>.
+    On garde la <em>structure visuelle de D</em> (titre headline / critère bloc-condition) et on ajoute les <em>amorces conversationnelles de C</em> en placeholder pour enseigner.
+    Comme ça : impossible à confondre <em>et</em> pédagogique dès la 1ʳᵉ saisie.
+  </p>
+</section>
+
+<script>
+  if (window.lucide) window.lucide.createIcons();
+</script>
+</body>
+</html>

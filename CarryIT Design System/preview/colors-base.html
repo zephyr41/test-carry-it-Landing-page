@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<!-- @dsCard group="Colors" name="Colors — Base Palette" subtitle="10 core colors: noir, blanc cassé, gris, orange, marine, olive, rouge" viewport="700x320" -->
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #080809; font-family: 'DM Sans', sans-serif; padding: 28px 32px; }
+  .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+  .swatch-wrap { display: flex; flex-direction: column; gap: 8px; }
+  .swatch {
+    height: 72px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,253,246,0.08);
+  }
+  .swatch-name { font-size: 11px; font-weight: 600; color: #FFFDF6; letter-spacing: 0.02em; }
+  .swatch-hex { font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 10.5px; color: #929292; margin-top: 2px; }
+  .swatch-token { font-size: 9.5px; color: rgba(146,146,146,0.6); margin-top: 1px; letter-spacing: 0.01em; }
+  .section-label { font-size: 9.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #929292; margin-bottom: 12px; }
+  .divider { height: 1px; background: rgba(255,253,246,0.08); margin: 20px 0; }
+  .row { display: flex; gap: 12px; }
+  .row .swatch-wrap { flex: 1; }
+</style>
+</head>
+<body>
+  <div class="section-label">Palette de base</div>
+  <div class="grid">
+    <div class="swatch-wrap">
+      <div class="swatch" style="background:#080809;"></div>
+      <div class="swatch-name">Noir profond</div>
+      <div class="swatch-hex">#080809</div>
+      <div class="swatch-token">color-bg</div>
+    </div>
+    <div class="swatch-wrap">
+      <div class="swatch" style="background:#111112;"></div>
+      <div class="swatch-name">Surface</div>
+      <div class="swatch-hex">#111112</div>
+      <div class="swatch-token">color-surface</div>
+    </div>
+    <div class="swatch-wrap">
+      <div class="swatch" style="background:#1A1A1C;"></div>
+      <div class="swatch-name">Surface élevée</div>
+      <div class="swatch-hex">#1A1A1C</div>
+      <div class="swatch-token">color-surface-raised</div>
+    </div>
+    <div class="swatch-wrap">
+      <div class="swatch" style="background:#929292;"></div>
+      <div class="swatch-name">Gris acier</div>
+      <div class="swatch-hex">#929292</div>
+      <div class="swatch-token">color-text-secondary</div>
+    </div>
+    <div class="swatch-wrap">
+      <div class="swatch" style="background:#FFFDF6; border-color: rgba(255,253,246,0.2);"></div>
+      <div class="swatch-name">Blanc cassé</div>
+      <div class="swatch-hex">#FFFDF6</div>
+      <div class="swatch-token">color-text-primary</div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="section-label">Couleurs fonctionnelles</div>
+  <div class="grid">
+    <div class="swatch-wrap">
+      <div class="swatch" style="background:#EE4408;"></div>
+      <div class="swatch-name">Orange vif</div>
+      <div class="swatch-hex">#EE4408</div>
+      <div class="swatch-token">color-accent</div>
+    </div>
+    <div class="swatch-wrap">
+      <div class="swatch" style="background:#F34C0A;"></div>
+      <div class="swatch-name">Orange brûlé</div>
+      <div class="swatch-hex">#F34C0A</div>
+      <div class="swatch-token">color-accent-text</div>
+    </div>
+    <div class="swatch-wrap">
+      <div class="swatch" style="background:#0A2A53;"></div>
+      <div class="swatch-name">Bleu marine</div>
+      <div class="swatch-hex">#0A2A53</div>
+      <div class="swatch-token">color-confirm</div>
+    </div>
+    <div class="swatch-wrap">
+      <div class="swatch" style="background:#404025;"></div>
+      <div class="swatch-name">Vert olive</div>
+      <div class="swatch-hex">#404025</div>
+      <div class="swatch-token">color-tracker</div>
+    </div>
+    <div class="swatch-wrap">
+      <div class="swatch" style="background:#A3150D;"></div>
+      <div class="swatch-name">Rouge alerte</div>
+      <div class="swatch-hex">#A3150D</div>
+      <div class="swatch-token">color-alert</div>
+    </div>
+  </div>
+</body>
+</html>

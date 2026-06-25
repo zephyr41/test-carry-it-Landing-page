@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<!-- @dsCard group="UI Kit — Web App" name="KPI Block — Apple directions" subtitle="Actuel vs anneaux vs registre" -->
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KPI Block — Directions Apple</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --noir: #080809;
+    --surface: #111112;
+    --blanc: #FFFDF6;
+    --gris: #929292;
+    --orange: #EE4408;
+    --border: rgba(255,253,246,0.08);
+    --border-med: rgba(255,253,246,0.14);
+    --font: "DM Sans", system-ui, sans-serif;
+    --mono: "JetBrains Mono", monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: #0d0d0e; }
+  body { font-family: var(--font); -webkit-font-smoothing: antialiased; }
+
+  /* Each artboard frame represents the right-hand block of a scrollytelling section */
+  .block-frame {
+    width: 100%; height: 100%;
+    background: var(--noir);
+    padding: 40px 38px;
+    display: flex; flex-direction: column;
+    color: var(--blanc);
+  }
+
+  /* ── shared small bits ── */
+  .eyebrow-row { display: flex; align-items: center; gap: 8px; }
+  .eyebrow {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--gris);
+  }
+  .eyebrow-strong { color: var(--blanc); font-weight: 600; letter-spacing: 0; text-transform: none; font-size: 14px; }
+  .criterion { font-size: 13px; color: rgba(255,253,246,0.5); line-height: 1.5; }
+  .hairline { height: 1px; background: var(--border); border: 0; width: 100%; }
+  .mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+  /* ============ ACTUEL (recreation) ============ */
+  .cur-head { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gris); display: flex; align-items: center; gap: 8px; }
+  .cur-head b { color: var(--blanc); font-weight: 600; letter-spacing: 0; text-transform: none; font-size: 15px; }
+  .cur-head .dash { flex: 1; height: 1px; background: var(--border); }
+  .cur-crit { font-size: 13px; color: rgba(255,253,246,0.5); line-height: 1.45; margin-top: 12px; }
+  .cur-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 22px; }
+  .cur-card { border-radius: 22px; padding: 22px 22px 24px; min-height: 200px; display: flex; flex-direction: column; }
+  .cur-card.dark { background: var(--surface); border: 1px solid var(--border); }
+  .cur-card.white { background: var(--blanc); color: var(--noir); }
+  .cur-card .lab { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
+  .cur-card.dark .lab { color: var(--gris); }
+  .cur-card.white .lab { color: rgba(8,8,9,0.5); }
+  .cur-card .desc { font-size: 17px; font-weight: 600; line-height: 1.3; margin-top: 14px; }
+  .cur-card .big { font-size: 52px; font-weight: 700; letter-spacing: -0.04em; margin-top: auto; display: flex; align-items: baseline; gap: 6px; }
+  .cur-card .big span { font-size: 15px; font-weight: 500; }
+  .cur-card.dark .big span { color: var(--gris); }
+  .cur-card.white .big span { color: rgba(8,8,9,0.5); }
+  .cur-pill { margin-top: 16px; border: 1px solid var(--border); border-radius: 9999px; padding: 16px 26px; display: flex; align-items: center; justify-content: space-between; }
+  .cur-pill .pl b { font-size: 15px; font-weight: 600; }
+  .cur-pill .pl div { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gris); margin-top: 4px; }
+  .cur-pill .pr { text-align: right; }
+  .cur-pill .pr b { font-size: 28px; font-weight: 700; letter-spacing: -0.03em; }
+  .cur-pill .pr div { font-size: 12px; color: var(--gris); margin-top: 2px; }
+
+  /* ============ DIRECTION A — Anneaux ============ */
+  .a-rings { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 26px; }
+  .a-tile { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 8px 4px; }
+  .ring-wrap { position: relative; width: 132px; height: 132px; }
+  .ring-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .ring-num { font-size: 36px; font-weight: 700; letter-spacing: -0.04em; line-height: 1; }
+  .ring-sub { font-size: 12px; color: var(--gris); margin-top: 3px; }
+  .a-lab { margin-top: 16px; font-size: 14px; font-weight: 600; }
+  .a-cap { font-size: 12.5px; color: var(--gris); margin-top: 2px; line-height: 1.4; }
+  .a-vision { margin-top: 4px; display: flex; flex-direction: column; gap: 12px; }
+  .a-vision-top { display: flex; align-items: baseline; justify-content: space-between; }
+  .a-vision-top .lab { font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gris); }
+  .a-vision-top .val { font-size: 22px; font-weight: 700; letter-spacing: -0.03em; }
+  .a-vision-top .val em { font-style: normal; font-size: 13px; font-weight: 500; color: var(--gris); margin-left: 6px; }
+  .bar { height: 4px; border-radius: 4px; background: rgba(255,253,246,0.1); overflow: hidden; }
+  .bar > i { display: block; height: 100%; border-radius: 4px; }
+
+  /* ============ DIRECTION B — Registre ============ */
+  .b-group-lab { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gris); }
+  .b-row { padding: 20px 0; }
+  .b-row-top { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; }
+  .b-row .name { font-size: 16px; font-weight: 600; }
+  .b-row .cap { font-size: 13px; color: var(--gris); margin-top: 3px; }
+  .b-row .num { font-size: 38px; font-weight: 700; letter-spacing: -0.04em; line-height: 0.9; white-space: nowrap; }
+  .b-row .num em { font-style: normal; font-size: 14px; font-weight: 500; color: var(--gris); margin-left: 4px; }
+  .b-bar { margin-top: 16px; }
+  .b-vision .num { font-size: 30px; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel">
+const { useMemo } = React;
+
+// ── progress ring ──
+function Ring({ pct, size = 132, stroke = 9, color }) {
+  const r = (size - stroke) / 2;
+  const circ = 2 * Math.PI * r;
+  const off = circ * (1 - pct);
+  return (
+    <svg width={size} height={size} style={{ display: 'block' }}>
+      <circle cx={size/2} cy={size/2} r={r} fill="none"
+        stroke="rgba(255,253,246,0.10)" strokeWidth={stroke} />
+      <circle cx={size/2} cy={size/2} r={r} fill="none"
+        stroke={color} strokeWidth={stroke} strokeLinecap="round"
+        strokeDasharray={circ} strokeDashoffset={off}
+        transform={`rotate(-90 ${size/2} ${size/2})`} />
+    </svg>
+  );
+}
+
+// ════════════════ ACTUEL ════════════════
+function Actuel() {
+  return (
+    <div className="block-frame">
+      <div className="cur-head">
+        <span>Jalon actif</span><span className="dash"></span><b>MVP validé</b>
+      </div>
+      <div className="cur-crit">Critère de validation : V0 utilisable de bout en bout et testée par 15 utilisateurs.</div>
+      <div className="cur-cards">
+        <div className="cur-card dark">
+          <div className="lab">Effort fourni</div>
+          <div className="desc">Temps consacré cette semaine</div>
+          <div className="big mono">5/15h <span>par sem.</span></div>
+        </div>
+        <div className="cur-card white">
+          <div className="lab">Résultat obtenu</div>
+          <div className="desc">V0 testée par les utilisateurs</div>
+          <div className="big mono">3/15 <span>users</span></div>
+        </div>
+      </div>
+      <div className="cur-pill">
+        <div className="pl"><b>Vision long terme</b><div>· Objectif S.M.A.R.T.</div></div>
+        <div className="pr mono"><b>0 / 1000</b><div>utilisateurs actifs</div></div>
+      </div>
+    </div>
+  );
+}
+
+// ════════════════ DIRECTION A — Anneaux ════════════════
+function DirectionA() {
+  return (
+    <div className="block-frame">
+      <div className="eyebrow-row" style={{ marginBottom: 10 }}>
+        <span className="eyebrow">Jalon actif</span>
+        <span className="eyebrow-strong">MVP validé</span>
+      </div>
+      <div className="criterion">V0 utilisable de bout en bout, testée par 15 utilisateurs.</div>
+
+      <div className="a-rings">
+        <div className="a-tile">
+          <div className="ring-wrap">
+            <Ring pct={5/15} color="var(--orange)" />
+            <div className="ring-center">
+              <div className="ring-num mono">5h</div>
+              <div className="ring-sub mono">/ 15h</div>
+            </div>
+          </div>
+          <div className="a-lab">Effort</div>
+          <div className="a-cap">Temps investi cette semaine</div>
+        </div>
+        <div className="a-tile">
+          <div className="ring-wrap">
+            <Ring pct={3/15} color="rgba(255,253,246,0.55)" />
+            <div className="ring-center">
+              <div className="ring-num mono">3</div>
+              <div className="ring-sub mono">/ 15</div>
+            </div>
+          </div>
+          <div className="a-lab">Résultat</div>
+          <div className="a-cap">Utilisateurs ayant testé la V0</div>
+        </div>
+      </div>
+
+      <hr className="hairline" style={{ marginTop: 30, marginBottom: 22 }} />
+
+      <div className="a-vision">
+        <div className="a-vision-top">
+          <span className="lab">Long terme · objectif</span>
+          <span className="val mono">0<em>/ 1 000 utilisateurs</em></span>
+        </div>
+        <div className="bar"><i style={{ width: '0.6%', background: 'var(--orange)' }}></i></div>
+      </div>
+    </div>
+  );
+}
+
+// ════════════════ DIRECTION B — Registre ════════════════
+function MetricRow({ name, cap, num, unit, pct, color, big }) {
+  return (
+    <div className={"b-row" + (big ? " b-vision" : "")}>
+      <div className="b-row-top">
+        <div>
+          <div className="name">{name}</div>
+          <div className="cap">{cap}</div>
+        </div>
+        <div className="num mono">{num}<em>{unit}</em></div>
+      </div>
+      <div className="bar b-bar"><i style={{ width: (pct*100)+'%', background: color }}></i></div>
+    </div>
+  );
+}
+function DirectionB() {
+  return (
+    <div className="block-frame">
+      <div className="eyebrow-row" style={{ marginBottom: 10 }}>
+        <span className="eyebrow">Jalon actif</span>
+        <span className="eyebrow-strong">MVP validé</span>
+      </div>
+      <div className="criterion" style={{ marginBottom: 28 }}>V0 utilisable de bout en bout, testée par 15 utilisateurs.</div>
+
+      <div className="b-group-lab">Ce jalon</div>
+      <MetricRow name="Effort" cap="Temps investi cette semaine"
+        num="5" unit="/ 15h" pct={5/15} color="var(--orange)" />
+      <hr className="hairline" />
+      <MetricRow name="Résultat" cap="Utilisateurs ayant testé la V0"
+        num="3" unit="/ 15" pct={3/15} color="rgba(255,253,246,0.55)" />
+
+      <hr className="hairline" style={{ marginTop: 8, marginBottom: 22 }} />
+
+      <div className="b-group-lab">Long terme · objectif S.M.A.R.T.</div>
+      <MetricRow name="Utilisateurs actifs mensuels" cap="Cible avant le 31 décembre"
+        num="0" unit="/ 1 000" pct={0.006} color="var(--orange)" big />
+    </div>
+  );
+}
+
+function Frame({ label, children }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <div style={{ fontSize: 12, fontWeight: 600, letterSpacing: '0.04em', color: 'rgba(255,253,246,0.5)', paddingLeft: 2 }}>{label}</div>
+      <div style={{ width: 620, height: 620, borderRadius: 16, overflow: 'hidden', boxShadow: '0 24px 60px -24px rgba(0,0,0,0.7)' }}>{children}</div>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <div style={{ padding: '48px 40px 64px', minHeight: '100vh' }}>
+      <div style={{ maxWidth: 1980, margin: '0 auto' }}>
+        <h1 style={{ margin: 0, fontSize: 22, fontWeight: 700, letterSpacing: '-0.02em', color: 'var(--blanc)' }}>Section 3 · KPI — le bloc de droite</h1>
+        <p style={{ margin: '8px 0 0', fontSize: 14, color: 'var(--gris)' }}>Bloc actuel vs. deux directions « à la Apple » — mêmes tokens CarryIT</p>
+        <div style={{ display: 'flex', gap: 36, flexWrap: 'wrap', alignItems: 'flex-start', marginTop: 32 }}>
+          <Frame label="Actuel"><Actuel /></Frame>
+          <Frame label="A · Anneaux (Activity rings)"><DirectionA /></Frame>
+          <Frame label="B · Registre (lignes + barres)"><DirectionB /></Frame>
+        </div>
+      </div>
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+
+<template id="__bundler_thumbnail">
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100" height="100" fill="#080809"/>
+  <circle cx="50" cy="42" r="22" fill="none" stroke="#EE4408" stroke-width="7" stroke-linecap="round" stroke-dasharray="138" stroke-dashoffset="60" transform="rotate(-90 50 42)"/>
+  <rect x="32" y="72" width="36" height="5" rx="2.5" fill="#EE4408"/>
+</svg>
+</template>
+</body>
+</html>

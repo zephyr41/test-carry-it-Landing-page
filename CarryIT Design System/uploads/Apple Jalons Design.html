@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CarryIt — Création des jalons</title>
+  <style>
+    :root {
+      --page: #FFFDF6;
+      --text: #080809;
+      --muted: #5F5F5F;
+      --border: #D8D3C7;
+      --surface: #FFFFFF;
+      --surface-alt: #F6F1E7;
+      --action: #EE4408;
+      --action-hover: #A82B06;
+      --valid: #0A2A53;
+      --focus-ring: rgba(10, 42, 83, 0.22);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--page);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      line-height: 1.5;
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    .page {
+      min-height: 100vh;
+      padding: 24px 20px 56px;
+    }
+
+    .topbar {
+      width: min(1120px, 100%);
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+    }
+
+    .brand {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .context {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .layout {
+      width: min(1120px, 100%);
+      margin: 0 auto;
+      padding-top: 48px;
+      display: grid;
+      grid-template-columns: 0.78fr 1.22fr;
+      gap: 32px;
+      align-items: start;
+    }
+
+    .eyebrow {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+    }
+
+    h1 {
+      margin-top: 16px;
+      max-width: 620px;
+      font-size: clamp(48px, 7vw, 84px);
+      line-height: 0.92;
+      font-weight: 760;
+      letter-spacing: -0.06em;
+    }
+
+    .lead {
+      margin-top: 24px;
+      max-width: 560px;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.7;
+    }
+
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      background: var(--surface);
+      padding: 24px;
+    }
+
+    .definition-card {
+      margin-top: 32px;
+    }
+
+    .card-title {
+      color: var(--text);
+      font-size: 20px;
+      line-height: 1.2;
+      font-weight: 720;
+      letter-spacing: -0.02em;
+    }
+
+    .card-text {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.75;
+    }
+
+    .timeline-card {
+      margin-top: 20px;
+      background: var(--surface-alt);
+    }
+
+    .timeline {
+      margin-top: 22px;
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 88px 1fr;
+      gap: 18px;
+    }
+
+    .timeline-label {
+      padding-top: 2px;
+      text-align: right;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 650;
+    }
+
+    .timeline-content {
+      position: relative;
+      padding: 0 0 22px 24px;
+      border-left: 1px solid var(--border);
+    }
+
+    .timeline-item:last-child .timeline-content {
+      padding-bottom: 0;
+    }
+
+    .timeline-dot {
+      position: absolute;
+      top: 2px;
+      left: -8px;
+      width: 15px;
+      height: 15px;
+      border-radius: 999px;
+      background: var(--border);
+      border: 3px solid var(--surface-alt);
+    }
+
+    .timeline-item.active .timeline-dot {
+      background: var(--action);
+    }
+
+    .timeline-box {
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: var(--surface);
+      padding: 16px;
+    }
+
+    .timeline-item.active .timeline-box {
+      border-color: rgba(238, 68, 8, 0.35);
+      background: #FFF7F1;
+    }
+
+    .timeline-box h3 {
+      color: var(--text);
+      font-size: 17px;
+      line-height: 1.25;
+      font-weight: 720;
+      letter-spacing: -0.01em;
+    }
+
+    .timeline-box p {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .form-card {
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      background: var(--surface);
+      padding: 28px;
+      box-shadow: 0 12px 44px rgba(8, 8, 9, 0.06);
+    }
+
+    .form-header {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    @media (min-width: 620px) {
+      .form-header {
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: space-between;
+      }
+    }
+
+    .milestone-position {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+    }
+
+    .form-title {
+      margin-top: 8px;
+      color: var(--text);
+      font-size: 32px;
+      line-height: 1.12;
+      font-weight: 760;
+      letter-spacing: -0.035em;
+    }
+
+    .progress {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .progress strong {
+      color: var(--valid);
+      font-weight: 760;
+    }
+
+    .date-group {
+      width: 100%;
+    }
+
+    @media (min-width: 620px) {
+      .date-group {
+        width: 180px;
+      }
+    }
+
+    .field-list {
+      margin-top: 24px;
+      display: grid;
+      gap: 24px;
+    }
+
+    .field label,
+    .date-group label {
+      display: block;
+      color: var(--text);
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .date-group label {
+      font-size: 14px;
+    }
+
+    .required {
+      color: var(--action);
+    }
+
+    .help {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      margin-top: 8px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: var(--surface);
+      color: var(--text);
+      padding: 13px 16px;
+      font-size: 16px;
+      line-height: 1.5;
+      outline: none;
+      transition: border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    textarea {
+      min-height: 116px;
+      resize: vertical;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: #8A867D;
+    }
+
+    input:focus,
+    textarea:focus,
+    button:focus-visible {
+      border-color: var(--valid);
+      box-shadow: 0 0 0 4px var(--focus-ring);
+    }
+
+    .form-footer {
+      margin-top: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    @media (min-width: 620px) {
+      .form-footer {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+
+    .required-note {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .primary-button {
+      border: 0;
+      border-radius: 999px;
+      background: var(--action);
+      color: #FFFFFF;
+      padding: 13px 24px;
+      font-size: 16px;
+      font-weight: 720;
+      cursor: pointer;
+      transition: background 160ms ease, transform 160ms ease;
+    }
+
+    .primary-button:hover {
+      background: var(--action-hover);
+    }
+
+    .primary-button:active {
+      transform: translateY(1px);
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: 1fr;
+        padding-top: 36px;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .page {
+        padding-inline: 16px;
+      }
+
+      .context {
+        display: none;
+      }
+
+      .card,
+      .form-card {
+        border-radius: 22px;
+        padding: 20px;
+      }
+
+      .timeline-item {
+        grid-template-columns: 72px 1fr;
+        gap: 14px;
+      }
+
+      .timeline-label {
+        font-size: 13px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="topbar" aria-label="En-tête">
+      <p class="brand">CarryIt</p>
+      <p class="context">Création des jalons</p>
+    </header>
+
+    <div class="layout">
+      <section aria-labelledby="page-title">
+        <p class="eyebrow">Étape suivante</p>
+        <h1 id="page-title">Placez les barreaux.</h1>
+        <p class="lead">
+          Vous avez défini la hauteur de l’échelle. Ajoutez maintenant les paliers qui rendent la progression vérifiable.
+        </p>
+
+        <section class="card definition-card" aria-labelledby="definition-title">
+          <h2 id="definition-title" class="card-title">Rappel</h2>
+          <p class="card-text">
+            Un jalon est une étape de résultat significative vers l'objectif final, suffisamment concrète, tangible et précise pour pouvoir être validée explicitement. Il marque un changement de niveau dans la progression.
+          </p>
+        </section>
+
+        <section class="card timeline-card" aria-labelledby="planning-title">
+          <h2 id="planning-title" class="card-title">Reculez depuis la date finale</h2>
+          <p class="card-text">
+            Partez du résultat final, puis placez les paliers qui doivent être franchis avant cette date.
+          </p>
+
+          <div class="timeline" aria-label="Rétroplanning des jalons">
+            <article class="timeline-item">
+              <div class="timeline-label">Final</div>
+              <div class="timeline-content">
+                <span class="timeline-dot" aria-hidden="true"></span>
+                <div class="timeline-box">
+                  <h3>Objectif atteint</h3>
+                  <p>La hauteur de l’échelle correspond à votre objectif SMART atteint : vous savez précisément ce qui doit être construit, obtenu ou validé.</p>
+                </div>
+              </div>
+            </article>
+
+            <article class="timeline-item">
+              <div class="timeline-label">2 ans</div>
+              <div class="timeline-content">
+                <span class="timeline-dot" aria-hidden="true"></span>
+                <div class="timeline-box">
+                  <h3>Palier stratégique</h3>
+                  <p>Quel niveau doit déjà être atteint pour que l’objectif final reste réaliste ?</p>
+                </div>
+              </div>
+            </article>
+
+            <article class="timeline-item">
+              <div class="timeline-label">6 mois</div>
+              <div class="timeline-content">
+                <span class="timeline-dot" aria-hidden="true"></span>
+                <div class="timeline-box">
+                  <h3>Palier intermédiaire</h3>
+                  <p>Quel résultat concret doit prouver que la trajectoire est correcte ?</p>
+                </div>
+              </div>
+            </article>
+
+            <article class="timeline-item">
+              <div class="timeline-label">3 mois</div>
+              <div class="timeline-content">
+                <span class="timeline-dot" aria-hidden="true"></span>
+                <div class="timeline-box">
+                  <h3>Palier proche</h3>
+                  <p>Quel changement observable doit être validé avant de passer à la suite ?</p>
+                </div>
+              </div>
+            </article>
+
+            <article class="timeline-item active">
+              <div class="timeline-label">Maintenant</div>
+              <div class="timeline-content">
+                <span class="timeline-dot" aria-hidden="true"></span>
+                <div class="timeline-box">
+                  <h3>Premier jalon actif</h3>
+                  <p>Celui-ci doit être clair, précis et actionnable, car c’est sur lui que vous allez travailler maintenant.</p>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+      </section>
+
+      <form class="form-card" aria-labelledby="form-title">
+        <div class="form-header">
+          <div>
+            <p class="milestone-position">Jalon 10 sur 10</p>
+            <h2 id="form-title" class="form-title">Remplir le jalon final</h2>
+            <p class="progress">Progression cible : <strong>100 %</strong></p>
+          </div>
+
+          <div class="date-group">
+            <label for="target-date">Date cible <span class="required" aria-hidden="true">*</span></label>
+            <input id="target-date" name="target-date" type="date" value="2031-09-18" required />
+          </div>
+        </div>
+
+        <div class="field-list">
+          <div class="field">
+            <label for="title">Titre du jalon <span class="required" aria-hidden="true">*</span></label>
+            <p id="title-help" class="help">Un nom court, compréhensible en lecture rapide.</p>
+            <input id="title" name="title" type="text" placeholder="Premier achat en nom propre" aria-describedby="title-help" required />
+          </div>
+
+          <div class="field">
+            <label for="description">Description du jalon <span class="required" aria-hidden="true">*</span></label>
+            <p id="description-help" class="help">Le résultat attendu, en une phrase.</p>
+            <textarea id="description" name="description" placeholder="Acheter un premier bien en nom propre avec un objectif de 10 % de rentabilité nette." aria-describedby="description-help" required></textarea>
+          </div>
+
+          <div class="field">
+            <label for="validation">Critère de validation <span class="required" aria-hidden="true">*</span></label>
+            <p id="validation-help" class="help">La preuve concrète qui permet de dire : ce jalon est atteint.</p>
+            <textarea id="validation" name="validation" placeholder="Acte signé + calcul de rentabilité nette ≥ 10 % documenté." aria-describedby="validation-help" required></textarea>
+          </div>
+        </div>
+
+        <div class="form-footer">
+          <p class="required-note">Les champs marqués d’un astérisque sont requis.</p>
+          <button class="primary-button" type="submit">Enregistrer ce jalon</button>
+        </div>
+      </form>
+    </div>
+  </main>
+</body>
+</html>

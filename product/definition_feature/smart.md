@@ -22,7 +22,7 @@ L'objectif dit spécifiquement quoi, pas juste un objectif. cela doit être ultr
 
 donc un spécifique est composé de phase : 
 Spécifique
-Résultat (Seuil, ou autre précision)
+Résultat (un Seuil, ou autre précision binaire sans interprétation)
 
 Voici 3 idée qui se transforme en smart
 Exemple 1 : Réussir dans la tec
@@ -34,8 +34,8 @@ Exemple 3 : Générer de l'argent
 | ❌ Flou | ✅ Spécifique |
 |--------|--------------|
 | "Réussir dans la tech" | " (Spécifique) Lancer une app iOS sur l'App Store (résultat précis) en open source " |
-| "Progresser en sport" | " '(Spécifique) Courir un semi-marathon (résultat précis) en 8 min 32 s/km sois 3H" |
-| "Générer de l'argent" | "(Spécifique)Atteindre 2 000€/mois de revenu freelance (Résultat précis) Net, Avant Impots ect.." |
+| "Progresser en sport" | " '(Spécifique) Courir un semi-marathon (résultat précis ou seuil : ) en 8 min 32 s/km sois 3H" |
+| "Générer de l'argent" | "(Spécifique)Atteindre 2 000€/mois de revenu freelance (Résultat précis / seuil) Net, Avant Impots ect.." |
 
 **Règle :** Si quelqu'un d'autre peut comprendre exactement ce que tu veux accomplir, c'est spécifique.
 
@@ -52,18 +52,17 @@ Cette métrique doit être quantifiable et suivable dans le temps.
 
 - mesurable selon une définition explicite
 - exprimé avec une unité claire
-- mesurable ou calculable à partir de données traçables
 - directement lié au résultat final de l’objectif spécifique
 - non ambigu (définition reproductible)
 
 
 ça doit indiquer un résultat. pas un KPI de lagging
   - **lagging** : suivi d'un résultat SURTOUT PAS LE SUIVI D'une avancé
-avec les 3 exemples
+  avec les 3 exemples
 | ❌ Non mesurable | ✅ Mesurable |
 |----------------|------------|
-|Nombre d'heure de code | Nombre d'utilisateur actif|
-|Nombre d'heure d'entrainnement||
+|Nombre d'heure de code (Parceque c'est une effort, et que ça ne permet pas de savoir si ça s'approche ou non de lancer une app en opensource) | Nombre d'utilisateur actif|
+|Nombre d'heure d'entrainnement| |
 
 **Règle :** Si tu ne peux pas mettre un nombre, c'est encore du flou.
 

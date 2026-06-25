@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<!-- @dsCard group="Components" name="Components — Buttons" subtitle="Unifié avec components.css" viewport="700x380" -->
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../components.css">
+<style>
+  body { padding: 28px 32px; }
+</style>
+</head>
+<body>
+  <div class="ds-label">Actions principales</div>
+  <div class="ds-row" style="margin-bottom:14px;">
+    <button class="btn btn--primary">Ajouter une mesure</button>
+    <span style="font-size:10.5px;color:#929292;align-self:center;">Primary — orange, l'action qui engage. Rare.</span>
+  </div>
+  <div class="ds-row" style="margin-bottom:14px;">
+    <button class="btn btn--secondary">Modifier</button>
+    <span style="font-size:10.5px;color:#929292;align-self:center;">Secondary — actions courantes sans enjeu fort.</span>
+  </div>
+  <div class="ds-row" style="margin-bottom:14px;">
+    <button class="btn btn--ghost">Annuler</button>
+    <span style="font-size:10.5px;color:#929292;align-self:center;">Ghost — recul, annulation, actions secondaires.</span>
+  </div>
+
+  <div class="ds-divider"></div>
+  <div class="ds-label">Suppression & Validation</div>
+  <div class="ds-row" style="margin-bottom:14px;">
+    <button class="btn btn--delete">Supprimer</button>
+    <span style="font-size:10.5px;color:#929292;align-self:center;">Delete — rouge visible, signal destructif clair.</span>
+  </div>
+  <div class="ds-row" style="margin-bottom:14px;">
+    <button class="btn btn--validate">Valider ce jalon</button>
+    <span style="font-size:10.5px;color:#929292;align-self:center;">Validate — sobre, le geste parle de lui-même.</span>
+  </div>
+
+  <div class="ds-divider"></div>
+  <div class="ds-label">Désactivé</div>
+  <div class="ds-row" style="margin-bottom:14px;">
+    <button class="btn btn--disabled" disabled>Enregistrer</button>
+  </div>
+
+  <div class="ds-divider"></div>
+  <div class="ds-label">Tailles</div>
+  <div class="ds-row">
+    <button class="btn btn--sm btn--primary">Petit</button>
+    <button class="btn btn--primary">Standard</button>
+    <button class="btn btn--lg btn--primary">Grand</button>
+  </div>
+</body>
+</html>

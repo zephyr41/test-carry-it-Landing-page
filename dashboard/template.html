@@ -17,8 +17,8 @@
       --ink-2:     #8892a4;
       --ink-3:     #69738a;
 
-      --amber:     #f59e0b;
-      --amber-bg:  rgba(245,158,11,0.10);
+      --amber:     #EE4408;
+      --amber-bg:  rgba(238,68,8,0.10);
       --green:     #4ade80;
       --green-bg:  rgba(74,222,128,0.10);
 
@@ -116,7 +116,7 @@
     .main {
       flex: 1; min-height: 0; overflow-y: auto;
       padding: 16px 20px 20px;
-      display: flex; flex-direction: column; gap: 12px;
+      display: flex; flex-direction: column; gap: 8px;
     }
 
     /* ─── VIEW HEADER ─────────────────────────────── */
@@ -130,7 +130,7 @@
     }
 
     .view-title {
-      font-size: var(--t-data);
+      font-size: 1.375rem;
       font-weight: 600; color: var(--ink); line-height: 1.2;
     }
 
@@ -190,32 +190,201 @@
 
     .btn-smart:hover { color: var(--ink-2); border-color: rgba(255,255,255,0.14); }
 
-    /* ─── STAT CARDS ──────────────────────────────── */
-    .stats-row {
+    /* ─── CHART MAIN ROW ─────────────────────────── */
+    .chart-main-row {
+      display: flex;
+      gap: 10px;
+      min-height: 220px;
+      flex-shrink: 0;
+    }
+
+    /* ─── SMART PANEL ────────────────────────────── */
+    .smart-panel {
+      width: 200px;
+      flex-shrink: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .smart-panel-title {
+      font-size: var(--t-label);
+      font-weight: 700;
+      color: var(--ink);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 12px;
+      flex-shrink: 0;
+    }
+
+    .smart-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .smart-row:last-child { border-bottom: none; padding-bottom: 0; }
+
+    .smart-letter {
+      width: 16px;
+      height: 16px;
+      border-radius: 3px;
+      background: var(--surface-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--ink-3);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .smart-val {
+      font-size: 11.5px;
+      color: var(--ink-2);
+      line-height: 1.45;
+    }
+
+    /* ─── DYNAMIQUE ROW ───────────────────────────── */
+    .dynamique-row {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px; flex-shrink: 0;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      flex-shrink: 0;
     }
 
-    .stat-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 10px; padding: 12px 14px;
-      display: flex; flex-direction: column; gap: 6px;
+    .dyn-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
     }
 
-    .stat-label {
-      font-size: var(--t-label); font-weight: 500; color: var(--ink-3);
-      text-transform: uppercase; letter-spacing: 0.07em;
+    .dyn-metric-label {
+      font-size: var(--t-label);
+      font-weight: 500;
+      color: var(--ink-3);
+      margin-bottom: 6px;
     }
 
-    .stat-value {
-      font-size: var(--t-data); font-weight: 700; color: var(--ink);
-      line-height: 1.1; font-variant-numeric: tabular-nums;
+    .dyn-metric-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
     }
 
-    .stat-unit { font-size: var(--t-body); font-weight: 500; color: var(--ink-2); }
+    .dyn-metric-sub {
+      font-size: var(--t-label);
+      color: var(--ink-3);
+      line-height: 1.4;
+      margin-top: 4px;
+    }
 
-    .progress-bar-wrap { display: flex; align-items: center; gap: 8px; }
+    /* ─── CALENDAR SECTION ────────────────────────── */
+    .cal-section { flex-shrink: 0; }
+
+    .cal-month {
+      font-size: var(--t-label);
+      font-weight: 700;
+      color: var(--ink-3);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+    }
+
+    .cal-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .cal-bar {
+      width: 100%;
+      height: 40px;
+      border-radius: 7px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+    }
+
+    .cal-bar.effort {
+      background: var(--amber);
+      border-color: transparent;
+    }
+
+    .cal-bar.today {
+      background: var(--amber);
+      border-color: transparent;
+      box-shadow: 0 0 0 2px rgba(238,68,8,0.25);
+    }
+
+    .cal-bar.future {
+      background: var(--surface);
+      border: 1px solid rgba(255,255,255,0.04);
+      opacity: 0.5;
+    }
+
+    .cal-day {
+      font-size: var(--t-label);
+      color: var(--ink-3);
+    }
+
+    /* ─── VALIDATION STRIP ────────────────────────── */
+    .validation-strip {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      flex-shrink: 0;
+    }
+
+    .vs-label {
+      font-size: var(--t-label);
+      font-weight: 500;
+      color: var(--ink-3);
+      white-space: nowrap;
+    }
+
+    .vs-metric strong {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--ink);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .vs-target {
+      font-size: var(--t-body);
+      color: var(--ink-2);
+    }
+
+    .vs-progress {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 120px;
+    }
 
     .progress-bar {
       flex: 1; height: 4px; background: var(--surface-2);
@@ -223,35 +392,22 @@
     }
 
     .progress-bar-fill {
-      height: 100%; background: var(--ink); border-radius: 2px;
+      height: 100%; background: var(--amber); border-radius: 2px;
     }
 
     .progress-pct {
-      font-size: var(--t-label); font-weight: 600; color: var(--ink-2);
+      font-size: var(--t-label); font-weight: 600; color: var(--amber);
       white-space: nowrap; font-variant-numeric: tabular-nums;
       min-width: 28px; text-align: right;
     }
 
-    .stat-meta { font-size: var(--t-label); color: var(--ink-3); }
-
-    /* Highlight: validation card (current milestone criterion) */
-    .stat-card.validation {
-      border-color: rgba(245,158,11,0.2);
-    }
-
-    .stat-card.validation .progress-bar-fill {
-      background: var(--amber);
-    }
-
-    .stat-card.validation .progress-pct {
-      color: var(--amber);
-    }
+    .vs-meta { font-size: var(--t-label); color: var(--ink-3); white-space: nowrap; }
 
     /* ─── CHART CARD ──────────────────────────────── */
     .chart-card {
       flex: 1; min-height: 0;
       background: var(--surface); border: 1px solid var(--border);
-      border-radius: 10px; padding: 14px 16px;
+      border-radius: 10px; padding: 12px 14px;
       display: flex; flex-direction: column;
     }
 
@@ -320,6 +476,24 @@
       width: 8px; height: 2px; border-radius: 1px; flex-shrink: 0;
     }
 
+    /* ─── JALON SECTION HEADER ───────────────────── */
+    .jalon-section-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .jalon-section-label {
+      font-size: var(--t-label);
+      font-weight: 600;
+      color: var(--ink-2);
+      letter-spacing: 0.01em;
+    }
+
     /* ─── BUTTONS ─────────────────────────────────── */
     .btn-primary {
       font-size: var(--t-label); font-weight: 600;
@@ -341,6 +515,13 @@
       .stats-row { grid-template-columns: 1fr 1fr; }
     }
 
+    @media (max-width: 767px) {
+      .chart-main-row { flex-direction: column; min-height: auto; }
+      .smart-panel { width: auto; }
+      .dynamique-row { grid-template-columns: 1fr 1fr; }
+      .dynamique-row .dyn-card:first-child { grid-column: 1 / -1; }
+    }
+
     @media (max-width: 639px) {
       body { flex-direction: column; height: 100dvh; }
       .sidebar { display: none; }
@@ -350,6 +531,8 @@
       .topbar-user-name { display: none; }
       .view-meta-sep ~ span { display: none; }
       .bottom-nav { display: flex; }
+      .dynamique-row { grid-template-columns: 1fr; }
+      .dynamique-row .dyn-card:first-child { grid-column: auto; }
     }
 
     .bottom-nav {
@@ -422,99 +605,122 @@
       <div class="view-header">
         <div>
           <div class="view-title-row">
-            <h1 class="view-title">Acquérir 50 clients</h1>
-            <span class="status-badge status-behind">EN RETARD</span>
+            <h1 class="view-title">1 000 clients à 8€/mois</h1>
           </div>
           <div class="view-meta">
-            <!-- Milestone position track -->
-            <div class="ms-track" aria-label="Jalon 2 sur 5">
-              <span class="ms-dot done"></span>
-              <span class="ms-line done"></span>
-              <span class="ms-dot active"></span>
-              <span class="ms-line"></span>
-              <span class="ms-dot"></span>
-              <span class="ms-line"></span>
-              <span class="ms-dot"></span>
-              <span class="ms-line"></span>
-              <span class="ms-dot"></span>
-              <span class="ms-label">Jalon 2/5</span>
-            </div>
-            <span class="view-meta-sep">·</span>
-            <span>Sept 2026 · 97 jours · 44% réalisé vs 67% du temps</span>
+            <span>Échéance : 30 sept 2026</span>
           </div>
         </div>
-        <button class="btn-smart">Objectif SMART</button>
       </div>
 
-      <!-- NIVEAU 3 (court terme) + stats secondaires -->
-      <div class="stats-row">
+      <!-- MACRO — KPI chart + SMART panel -->
+      <div class="chart-main-row">
 
-        <!-- Validation card — critère de validation du jalon actif -->
-        <div class="stat-card validation">
-          <div class="stat-label">Validation · Jalon 2</div>
-          <div class="stat-value">22 <span class="stat-unit">/ 50 clients</span></div>
-          <div class="progress-bar-wrap">
-            <div class="progress-bar"><div class="progress-bar-fill" style="width:44%;"></div></div>
-            <span class="progress-pct">44%</span>
+        <div class="chart-card">
+          <div class="chart-header">
+            <span class="chart-title">Progression KPI</span>
+            <div class="chart-legend">
+              <span class="legend-item"><span class="legend-line"></span>Réel</span>
+              <span class="legend-item"><span class="legend-line target"></span>Cible</span>
+            </div>
+            <div class="chart-spacer"></div>
+            <button class="btn-primary">+ Mesure</button>
           </div>
-          <div class="stat-meta">+3 en juin · dernier : 22 juin</div>
+          <div class="chart-wrap" id="chartContainer">
+            <div class="lw-tooltip" id="lwTooltip">
+              <div class="lw-tooltip-title" id="lwTooltipTitle"></div>
+              <div class="lw-tooltip-row" id="lwTooltipReal" style="display:none">
+                <span class="lw-tooltip-dot" style="background:#e8eaf0"></span>
+                <span id="lwRealVal"></span>
+              </div>
+              <div class="lw-tooltip-row" id="lwTooltipTarget" style="display:none">
+                <span class="lw-tooltip-dot" style="background:rgba(105,115,138,0.55)"></span>
+                <span id="lwTargetVal" style="color:var(--ink-3)"></span>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <!-- KPI Global — progression SMART M -->
-        <div class="stat-card">
-          <div class="stat-label">KPI Global</div>
-          <div class="stat-value">4 500 <span class="stat-unit">/ 10k €</span></div>
-          <div class="progress-bar-wrap">
-            <div class="progress-bar"><div class="progress-bar-fill" style="width:45%;"></div></div>
-            <span class="progress-pct">45%</span>
+        <!-- SMART panel -->
+        <div class="smart-panel">
+          <div class="smart-row">
+            <div class="smart-letter">S</div>
+            <div class="smart-val">Atteindre 1 000 clients mensuels sur CarryIT à 8€/mois</div>
           </div>
-          <div class="stat-meta">+1 400 € en juin · cible : 4 982 €</div>
-        </div>
-
-        <!-- Effort — leading indicator -->
-        <div class="stat-card">
-          <div class="stat-label">Effort · juin</div>
-          <div class="stat-value">47 <span class="stat-unit">h</span></div>
-          <div class="stat-meta">+8h vs mai (39h)</div>
-          <div class="stat-meta">Dernière session : 22 juin</div>
-        </div>
-
-        <!-- Tâches -->
-        <div class="stat-card">
-          <div class="stat-label">Tâches</div>
-          <div class="stat-value">5 <span class="stat-unit">/ 17</span></div>
-          <div class="progress-bar-wrap">
-            <div class="progress-bar"><div class="progress-bar-fill" style="width:29%;"></div></div>
-            <span class="progress-pct">29%</span>
+          <div class="smart-row">
+            <div class="smart-letter">M</div>
+            <div class="smart-val">Nombre de clients payants</div>
           </div>
-          <div class="stat-meta">en cours ce mois</div>
+          <div class="smart-row">
+            <div class="smart-letter">A</div>
+            <div class="smart-val">50 clients en 2025, 300 en mars 2026, 1 000 en sept 2026 via marketing organique, partenariats et automatisation du funnel.</div>
+          </div>
+          <div class="smart-row">
+            <div class="smart-letter">R</div>
+            <div class="smart-val">22 mois : bêta (3-4 mois), lancement T2 2026, montée progressive. Marché dev perso + SaaS productivité, coûts d'acquisition faibles.</div>
+          </div>
+          <div class="smart-row">
+            <div class="smart-letter">T</div>
+            <div class="smart-val">30 septembre 2026</div>
+          </div>
         </div>
 
       </div>
 
-      <!-- NIVEAU 1 (macro) — KPI réel vs trajectoire cible -->
-      <div class="chart-card">
-        <div class="chart-header">
-          <span class="chart-title">Progression KPI</span>
-          <div class="chart-legend">
-            <span class="legend-item"><span class="legend-line"></span>Réel</span>
-            <span class="legend-item"><span class="legend-line target"></span>Cible</span>
-          </div>
-          <div class="chart-spacer"></div>
-          <button class="btn-primary">+ Mesure</button>
+      <!-- JALON ACTIF — séparateur de section -->
+      <div class="jalon-section-header">
+        <span class="jalon-section-label">Jalon 2 · Acquérir 50 clients</span>
+      </div>
+
+      <!-- Validation jalon actif -->
+      <div class="validation-strip">
+        <span class="vs-label">Validation</span>
+        <div class="vs-metric">
+          <strong>22</strong><span class="vs-target"> / 50 clients</span>
         </div>
-        <div class="chart-wrap" id="chartContainer">
-          <div class="lw-tooltip" id="lwTooltip">
-            <div class="lw-tooltip-title" id="lwTooltipTitle"></div>
-            <div class="lw-tooltip-row" id="lwTooltipReal" style="display:none">
-              <span class="lw-tooltip-dot" style="background:#e8eaf0"></span>
-              <span id="lwRealVal"></span>
-            </div>
-            <div class="lw-tooltip-row" id="lwTooltipTarget" style="display:none">
-              <span class="lw-tooltip-dot" style="background:rgba(105,115,138,0.55)"></span>
-              <span id="lwTargetVal" style="color:var(--ink-3)"></span>
-            </div>
-          </div>
+        <div class="vs-progress">
+          <div class="progress-bar"><div class="progress-bar-fill" style="width:44%"></div></div>
+          <span class="progress-pct">44%</span>
+        </div>
+      </div>
+
+      <!-- DYNAMIQUE — 3 métriques -->
+      <div class="dynamique-row">
+        <div class="dyn-card">
+          <div class="dyn-metric-label">Temps écoulé</div>
+          <div class="dyn-metric-value">5j</div>
+          <div class="dyn-metric-sub">depuis la dernière mise à jour du résultat</div>
+        </div>
+        <div class="dyn-card">
+          <div class="dyn-metric-label">Effort Réel</div>
+          <div class="dyn-metric-value">13h</div>
+          <div class="dyn-metric-sub">investies sur cette tentative</div>
+        </div>
+        <div class="dyn-card">
+          <div class="dyn-metric-label">Résultat</div>
+          <div class="dyn-metric-value">22/50</div>
+          <div class="dyn-metric-sub">clients acquis · jalon 2</div>
+        </div>
+      </div>
+
+      <!-- CALENDRIER — semaine en cours (Jun 22–28) -->
+      <div class="cal-section">
+        <div class="cal-month">Juin 2026</div>
+        <div class="cal-grid">
+          <!-- Lun Jun 22 → effort -->
+          <div class="cal-col"><div class="cal-bar effort"></div><div class="cal-day">L</div></div>
+          <!-- Mar Jun 23 → effort -->
+          <div class="cal-col"><div class="cal-bar effort"></div><div class="cal-day">M</div></div>
+          <!-- Mer Jun 24 → effort -->
+          <div class="cal-col"><div class="cal-bar effort"></div><div class="cal-day">M</div></div>
+          <!-- Jeu Jun 25 → aujourd'hui + effort -->
+          <div class="cal-col"><div class="cal-bar today"></div><div class="cal-day">J</div></div>
+          <!-- Ven Jun 26 → futur -->
+          <div class="cal-col"><div class="cal-bar future"></div><div class="cal-day">V</div></div>
+          <!-- Sam Jun 27 → futur -->
+          <div class="cal-col"><div class="cal-bar future"></div><div class="cal-day">S</div></div>
+          <!-- Dim Jun 28 → futur -->
+          <div class="cal-col"><div class="cal-bar future"></div><div class="cal-day">D</div></div>
         </div>
       </div>
 
@@ -598,7 +804,7 @@
 
       /* ── Réel series ───────────────────────────── */
       const realSeries = chart.addLineSeries({
-        color: '#e8eaf0',
+        color: '#EE4408',
         lineWidth: 2,
         lastValueVisible: false,
         priceLineVisible: false,

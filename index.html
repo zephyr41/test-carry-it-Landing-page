@@ -1401,6 +1401,7 @@
 
         <!-- Scroll Indicator -->
         <div class="scroll-indicator">
+            <p style="font-size:12px;color:rgba(255,255,255,0.38);margin-bottom:14px;text-align:center;">CarryIT relie tes objectifs long terme, tes étapes majeures, ta progression réelle et l'exécution, dans un seul endroit.</p>
             <p class="hero-scroll-transition">Découvrir</p>
             <svg width="24" height="14" viewBox="0 0 24 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M2 2L12 12L22 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -2487,13 +2488,9 @@
             if (isDesktop && isFastConn) {
                 const video = document.getElementById('heroVideo');
                 if (video) {
-                    const srcWebm = document.createElement('source');
-                    srcWebm.src = 'assets/images/site/heropage/heropage.webm';
-                    srcWebm.type = 'video/webm';
                     const srcMp4 = document.createElement('source');
-                    srcMp4.src = 'assets/images/site/heropage/heropage-compressed.mp4';
+                    srcMp4.src = 'assets/images/site/heropage/intro-carryit.mp4';
                     srcMp4.type = 'video/mp4';
-                    video.appendChild(srcWebm);
                     video.appendChild(srcMp4);
                     video.setAttribute('autoplay', '');
                     video.load();

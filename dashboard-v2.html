@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CarryIT — Dashboard v2 (Impeccable Revision)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;750&display=swap" rel="stylesheet">
+  <style>
+    /* ── TOKENS ── */
+    :root {
+      --bg:        #08090b;
+      --surface:   #121217;
+      --surface-2: #18181f;
+      --surface-hover: rgba(255,255,255,0.03);
+      --line:      rgba(255,255,255,0.05);
+      --text:      #f3f1fa;
+      --muted:     #8f8c9d;
+      --muted-2:   #696676;
+      --accent:    #ee4408;
+      --green:     #36d66d;
+      --panel-bg:  rgba(18, 18, 23, 0.95);
+      --panel-sh:  inset 0 1px 0 rgba(255,255,255,0.03), 0 12px 30px rgba(0,0,0,0.25);
+      --radius:    14px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; background: var(--bg); }
+    body {
+      font-family: Inter, system-ui, sans-serif;
+      color: var(--text);
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    button { cursor: pointer; font: inherit; color: inherit; background: transparent; border: none; }
+    a { text-decoration: none; color: inherit; }
+
+    /* ── APP SHELL ── */
+    .app-shell {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      height: 100vh;
+      min-width: 1100px;
+    }
+
+    /* ── SIDEBAR ── */
+    .db-sidebar {
+      background: #0b0b0e;
+      border-right: 1px solid var(--line);
+      padding: 24px 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .db-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 32px; }
+    .db-logo-mark { width: 28px; height: 28px; background: var(--accent); border-radius: 7px; display: grid; place-items: center; }
+    .db-logo-name { font-size: 13px; font-weight: 750; color: #fff; letter-spacing: 0.05em; }
+
+    /* Profile/Objective Card - Darker, rounder, inset */
+    .db-objective {
+      background: #111115;
+      border-radius: 12px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 32px;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.02);
+    }
+    .db-obj-avatar { width: 32px; height: 32px; border-radius: 8px; background: rgba(255,255,255,0.04); display: grid; place-items: center; font-size: 11px; font-weight: 700; color: #aaa; }
+    .db-obj-info { flex: 1; min-width: 0; }
+    .db-obj-name { display: block; font-size: 12px; font-weight: 600; color: #e8e6f0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .db-obj-sub { display: block; font-size: 10px; color: #696676; margin-top: 2px; }
+
+    .db-nav-label { font-size: 10px; font-weight: 600; color: #555; text-transform: uppercase; margin-bottom: 8px; padding-left: 6px; letter-spacing: 0.04em; }
+    .db-nav { display: flex; flex-direction: column; gap: 4px; }
+    .db-nav-btn { height: 36px; border-radius: 8px; display: flex; align-items: center; gap: 10px; padding: 0 10px; color: #8f8c9d; font-size: 13px; font-weight: 500; transition: 0.15s; }
+    .db-nav-btn:hover { color: #d0cedd; background: var(--surface-hover); }
+    .db-nav-btn.active { color: #fff; background: rgba(238,68,8,0.08); }
+    .db-nav-ico { width: 16px; height: 16px; opacity: 0.6; }
+    .db-nav-btn.active .db-nav-ico { color: var(--accent); opacity: 1; }
+
+    .db-sidebar-spacer { flex: 1; }
+
+    /* ── MAIN CONTENT ── */
+    .db-content {
+      padding: 32px 40px;
+      overflow-y: auto;
+      background: radial-gradient(circle at 40% 0%, rgba(238,68,8,0.03) 0%, transparent 40%), var(--bg);
+    }
+
+    .db-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; }
+    .db-header-title { font-size: 28px; font-weight: 750; letter-spacing: -0.5px; color: #fff; line-height: 1; }
+    .db-header-sub { font-size: 12px; color: var(--muted); margin-top: 8px; font-weight: 500; }
+
+    .db-btn { height: 32px; border-radius: 6px; background: rgba(255,255,255,0.04); border: 1px solid var(--line); color: #bbb; font-size: 12px; font-weight: 500; padding: 0 12px; display: inline-flex; align-items: center; gap: 6px; transition: 0.15s; }
+    .db-btn:hover { background: rgba(255,255,255,0.08); color: #fff; border-color: rgba(255,255,255,0.1); }
+    .db-btn-accent { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .db-btn-accent:hover { background: #d13d07; border-color: #d13d07; }
+
+    /* ── LAYOUT 2 COLUMNS ── */
+    .db-main-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 340px;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .db-panel {
+      background: var(--panel-bg);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--panel-sh);
+      padding: 20px;
+    }
+    
+    .db-panel-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .db-panel-head h2 { font-size: 15px; font-weight: 600; color: #e8e5ef; }
+
+    /* ── KPI CARD (Left) ── */
+    .db-kpi-panel { min-height: 380px; display: flex; flex-direction: column; }
+    .db-kpi-metrics { display: flex; align-items: baseline; gap: 12px; margin-bottom: 30px; }
+    .db-kpi-val { font-size: 40px; font-weight: 750; color: #fff; letter-spacing: -1px; line-height: 1; }
+    .db-kpi-target { font-size: 13px; color: var(--muted-2); font-weight: 500; }
+    .db-kpi-delta { font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: 4px; background: rgba(54,214,109,0.1); color: var(--green); }
+
+    .db-chart-wrap { flex: 1; min-height: 250px; position: relative; }
+    .db-chart-wrap svg { width: 100%; height: 100%; display: block; overflow: visible; }
+
+    /* ── JALON ACTIF (Right 1) ── */
+    .db-jalon-actif { margin-bottom: 16px; }
+    .db-badge { font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 4px; background: rgba(255,255,255,0.06); color: #ccc; }
+    .db-badge.current { background: rgba(238,68,8,0.12); color: var(--accent); }
+    .db-jalon-title { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 6px; }
+    .db-jalon-desc { font-size: 12px; color: var(--muted); line-height: 1.5; margin-bottom: 16px; }
+    .db-progress-bar { height: 4px; background: rgba(255,255,255,0.05); border-radius: 2px; overflow: hidden; margin-bottom: 8px; }
+    .db-progress-fill { height: 100%; background: var(--accent); width: 45%; border-radius: 2px; }
+    .db-progress-text { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted-2); font-weight: 500; }
+
+    /* ── TODO (Right 2) ── */
+    .db-todo-panel { margin-bottom: 16px; padding: 16px 20px; }
+    .db-todo-list { display: flex; flex-direction: column; }
+    .db-task { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.03); }
+    .db-task:last-child { border-bottom: none; padding-bottom: 0; }
+    .db-task-check { width: 14px; height: 14px; border-radius: 4px; border: 1.5px solid rgba(255,255,255,0.2); flex-shrink: 0; margin-top: 2px; cursor: pointer; }
+    .db-task-check.done { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.1); }
+    .db-task-text { font-size: 12.5px; color: #d0cedd; font-weight: 400; line-height: 1.4; }
+    .db-task.done .db-task-text { color: var(--muted-2); text-decoration: line-through; }
+
+    /* ── SMART COMPACT (Right 3) ── */
+    .db-smart-panel { padding: 16px 20px; }
+    .db-smart-grid { display: grid; gap: 10px; }
+    .db-smart-row { display: flex; gap: 12px; align-items: baseline; }
+    .db-smart-letter { font-size: 10px; font-weight: 700; color: var(--muted-2); width: 12px; }
+    .db-smart-text { font-size: 12px; color: #bbb; line-height: 1.4; }
+
+  </style>
+</head>
+<body>
+<div class="app-shell">
+
+  <!-- SIDEBAR -->
+  <aside class="db-sidebar">
+    <a class="db-logo" href="#">
+      <div class="db-logo-mark">
+        <svg width="12" height="12" fill="none" viewBox="0 0 14 14">
+          <path fill="#fff" d="M2 2h3v10H2V2ZM6 2h6L9 7l3 5H6L3 7l3-5Z"/>
+        </svg>
+      </div>
+      <span class="db-logo-name">CARRY IT</span>
+    </a>
+
+    <div class="db-objective">
+      <div class="db-obj-avatar">🎯</div>
+      <div class="db-obj-info">
+        <span class="db-obj-name">500 clients actifs</span>
+        <span class="db-obj-sub">Mois 7 · 29%</span>
+      </div>
+    </div>
+
+    <div class="db-nav-section">
+      <p class="db-nav-label">Navigation</p>
+      <div class="db-nav">
+        <button class="db-nav-btn active" type="button">
+          <svg class="db-nav-ico" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 19V5M4 19h16M9 16V9M14 16V7M19 16v-4"/>
+          </svg>
+          Dashboard
+        </button>
+        <button class="db-nav-btn" type="button" style="color:#696676;">
+          <svg class="db-nav-ico" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 11l3 3L22 4"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+          </svg>
+          To-do
+        </button>
+        <button class="db-nav-btn" type="button" style="color:#696676;">
+          <svg class="db-nav-ico" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 21V5m0 0l14 5L4 15"/>
+          </svg>
+          Jalons
+        </button>
+      </div>
+    </div>
+    
+    <div class="db-sidebar-spacer"></div>
+    <div class="db-nav">
+      <button class="db-nav-btn" type="button" style="color:#696676;">
+        <svg class="db-nav-ico" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="3" stroke-width="2"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/>
+        </svg>
+        Paramètres
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="db-content">
+    <header class="db-header">
+      <div>
+        <h1 class="db-header-title">Vision</h1>
+        <p class="db-header-sub">Suivi global · Mois 7 sur 24</p>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="db-btn">Historique</button>
+      </div>
+    </header>
+
+    <div class="db-main-layout">
+      
+      <!-- LEFT: KPI CARD -->
+      <div class="db-left-col">
+        <article class="db-panel db-kpi-panel">
+          <div class="db-panel-head">
+            <h2>Clients actifs</h2>
+            <button class="db-btn db-btn-accent">+ Mesure</button>
+          </div>
+          
+          <div class="db-kpi-metrics">
+            <span class="db-kpi-val">147</span>
+            <span class="db-kpi-target">/ 500 cible</span>
+            <span class="db-kpi-delta pos">↗ +18 ce mois</span>
+          </div>
+          
+          <div class="db-chart-wrap">
+            <svg viewBox="0 0 680 250" preserveAspectRatio="none">
+              <!-- Grid lines -->
+              <path fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1" d="M30 40 H660 M30 100 H660 M30 160 H660 M30 220 H660"/>
+              <!-- X-axis text -->
+              <text x="30" y="240" font-size="10" fill="#696676">Jan</text>
+              <text x="156" y="240" font-size="10" fill="#696676">Fév</text>
+              <text x="282" y="240" font-size="10" fill="#696676">Mar</text>
+              <text x="408" y="240" font-size="10" fill="#696676">Avr</text>
+              <text x="534" y="240" font-size="10" fill="#696676">Mai</text>
+              <text x="660" y="240" text-anchor="end" font-size="10" fill="#696676">Jun</text>
+              
+              <!-- Data area -->
+              <path fill="url(#gradientChart)" d="M30,220 C100,210 150,180 282,140 C400,100 500,80 660,40 L660,220 L30,220 Z"/>
+              <!-- Data line -->
+              <path fill="none" stroke="var(--accent)" stroke-width="2" d="M30,220 C100,210 150,180 282,140 C400,100 500,80 660,40"/>
+              
+              <!-- Target line (discreet) -->
+              <path fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1" stroke-dasharray="4,4" d="M30,10 H660"/>
+              <text x="660" y="22" text-anchor="end" font-size="9" fill="#8f8c9d">Objectif 500</text>
+              
+              <!-- Current point -->
+              <circle cx="660" cy="40" r="4" fill="var(--bg)" stroke="var(--accent)" stroke-width="2"/>
+              
+              <defs>
+                <linearGradient id="gradientChart" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stop-color="var(--accent)" stop-opacity="0.1"/>
+                  <stop offset="1" stop-color="var(--accent)" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+        </article>
+      </div>
+
+      <!-- RIGHT: COMPACT STACK -->
+      <div class="db-right-col">
+        
+        <!-- Jalon Actif -->
+        <article class="db-panel db-jalon-actif">
+          <div class="db-panel-head" style="margin-bottom: 12px;">
+            <h2 style="font-size:13px; font-weight:600; color:#bbb;">Jalon Actif · 4/7</h2>
+            <span class="db-badge current">Mois 11</span>
+          </div>
+          <h3 class="db-jalon-title">200 clients — MRR stable</h3>
+          <p class="db-jalon-desc">Atteindre un revenu mensuel récurrent stable justifiant l'acquisition. Churn &lt; 5%.</p>
+          <div class="db-progress-bar">
+            <div class="db-progress-fill"></div>
+          </div>
+          <div class="db-progress-text">
+            <span>Avancement tâches</span>
+            <span>45%</span>
+          </div>
+        </article>
+
+        <!-- To-do -->
+        <article class="db-panel db-todo-panel">
+          <div class="db-panel-head" style="margin-bottom: 10px;">
+            <h2 style="font-size:13px; font-weight:600; color:#bbb;">Exécution</h2>
+            <span style="font-size:10px; color:var(--muted-2);">Lié au jalon</span>
+          </div>
+          <div class="db-todo-list">
+            <div class="db-task">
+              <div class="db-task-check"></div>
+              <span class="db-task-text">Campagne LinkedIn — 3 posts</span>
+            </div>
+            <div class="db-task">
+              <div class="db-task-check"></div>
+              <span class="db-task-text">5 entretiens utilisateurs</span>
+            </div>
+            <div class="db-task done">
+              <div class="db-task-check done"><svg width="8" height="8" style="margin:2px 0 0 2px" fill="none" stroke="#fff" stroke-width="2" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg></div>
+              <span class="db-task-text">Refonte pricing page</span>
+            </div>
+            <div class="db-task done">
+              <div class="db-task-check done"><svg width="8" height="8" style="margin:2px 0 0 2px" fill="none" stroke="#fff" stroke-width="2" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg></div>
+              <span class="db-task-text">Emails d'onboarding</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- SMART Compact -->
+        <article class="db-panel db-smart-panel">
+          <div class="db-panel-head" style="margin-bottom: 12px;">
+            <h2 style="font-size:13px; font-weight:600; color:#bbb;">Cadre SMART</h2>
+          </div>
+          <div class="db-smart-grid">
+            <div class="db-smart-row">
+              <span class="db-smart-letter">S</span>
+              <span class="db-smart-text">Prouver l'attractivité via 500 clients payants.</span>
+            </div>
+            <div class="db-smart-row">
+              <span class="db-smart-letter">M</span>
+              <span class="db-smart-text">Nombre de clients actifs (au moins 1 login/30j).</span>
+            </div>
+            <div class="db-smart-row">
+              <span class="db-smart-letter">A</span>
+              <span class="db-smart-text">Croissance visée : +21/mois. Churn &lt; 5%.</span>
+            </div>
+            <div class="db-smart-row">
+              <span class="db-smart-letter">R</span>
+              <span class="db-smart-text">Budget d'acquisition maîtrisé.</span>
+            </div>
+            <div class="db-smart-row">
+              <span class="db-smart-letter">T</span>
+              <span class="db-smart-text">Décembre 2027 (24 mois).</span>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </main>
+
+</div>
+</body>
+</html>

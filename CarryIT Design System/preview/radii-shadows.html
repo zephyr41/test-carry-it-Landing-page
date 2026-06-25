@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<!-- @dsCard group="Spacing" name="Spacing — Radii & Shadows" subtitle="6 border radii + 5 elevation shadows including accent glow" viewport="700x280" -->
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #080809; font-family: 'DM Sans', sans-serif; padding: 28px 32px; }
+  .label { font-size: 9.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #929292; margin-bottom: 16px; }
+  .divider { height: 1px; background: rgba(255,253,246,0.07); margin: 20px 0; }
+  /* Radii */
+  .radii-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-end; }
+  .radius-item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .radius-box { width: 52px; height: 52px; background: #1A1A1C; border: 1px solid rgba(255,253,246,0.15); }
+  .radius-meta { font-size: 9.5px; color: #929292; text-align: center; font-family: 'Courier New', monospace; }
+  /* Shadows */
+  .shadow-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-end; padding-top: 4px; }
+  .shadow-item { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .shadow-box { width: 64px; height: 40px; background: #111112; border-radius: 8px; border: 1px solid rgba(255,253,246,0.08); }
+  .shadow-meta { font-size: 9.5px; color: #929292; text-align: center; font-family: 'Courier New', monospace; }
+</style>
+</head>
+<body>
+  <div class="label">Rayons de bordure</div>
+  <div class="radii-row">
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius:4px;"></div>
+      <div class="radius-meta">--radius-sm<br>4px</div>
+    </div>
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius:8px;"></div>
+      <div class="radius-meta">--radius-md<br>8px</div>
+    </div>
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius:12px;"></div>
+      <div class="radius-meta">--radius-lg<br>12px</div>
+    </div>
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius:16px;"></div>
+      <div class="radius-meta">--radius-xl<br>16px</div>
+    </div>
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius:24px;"></div>
+      <div class="radius-meta">--radius-2xl<br>24px</div>
+    </div>
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius:9999px;width:80px;height:34px;"></div>
+      <div class="radius-meta">--radius-full<br>pill</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="label">Ombres — élévation</div>
+  <div class="shadow-row">
+    <div class="shadow-item">
+      <div class="shadow-box" style="box-shadow:0 1px 3px rgba(0,0,0,0.4);"></div>
+      <div class="shadow-meta">--shadow-sm</div>
+    </div>
+    <div class="shadow-item">
+      <div class="shadow-box" style="box-shadow:0 4px 16px rgba(0,0,0,0.5);"></div>
+      <div class="shadow-meta">--shadow-md</div>
+    </div>
+    <div class="shadow-item">
+      <div class="shadow-box" style="box-shadow:0 8px 32px rgba(0,0,0,0.6);"></div>
+      <div class="shadow-meta">--shadow-lg</div>
+    </div>
+    <div class="shadow-item">
+      <div class="shadow-box" style="box-shadow:0 16px 64px rgba(0,0,0,0.7);"></div>
+      <div class="shadow-meta">--shadow-xl</div>
+    </div>
+    <div class="shadow-item">
+      <div class="shadow-box" style="box-shadow:0 0 24px rgba(238,68,8,0.25);border-color:rgba(238,68,8,0.3);"></div>
+      <div class="shadow-meta">--shadow-accent</div>
+    </div>
+  </div>
+</body>
+</html>

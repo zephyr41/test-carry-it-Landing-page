@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<!-- @dsCard group="UI Kit — Web App" name="Onboarding · Création des jalons" subtitle="Adapté aux couleurs et fontes CarryIT" -->
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CarryIT — Création des jalons</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: "Rifton";
+      src: url("../../fonts/rifton-regular.woff2") format("woff2");
+      font-weight: 400; font-style: normal; font-display: swap;
+    }
+    @font-face {
+      font-family: "Rifton";
+      src: url("../../fonts/rifton-italic.woff2") format("woff2");
+      font-weight: 400; font-style: italic; font-display: swap;
+    }
+
+    :root {
+      /* ── CarryIT tokens ── */
+      --c-noir:       #080809;
+      --c-bg:         #080809;
+      --c-surface:    #111112;
+      --c-surface-2:  #1A1A1C;
+      --c-surface-3:  #1F1F22;
+      --c-text:       #FFFDF6;
+      --c-text-2:     #929292;
+      --c-text-3:     #5C5C5C;
+      --c-orange:     #EE4408;
+      --c-orange-b:   #F34C0A;
+      --c-orange-press: #C03806;
+      --c-marine:     #0A2A53;
+      --c-marine-glow: rgba(10, 42, 83, 0.45);
+      --c-border:     rgba(255, 253, 246, 0.08);
+      --c-border-med: rgba(255, 253, 246, 0.14);
+      --c-border-strong: rgba(255, 253, 246, 0.22);
+      --c-orange-soft: rgba(238, 68, 8, 0.10);
+      --c-orange-ring: rgba(238, 68, 8, 0.22);
+
+      --font-brand: "Rifton", Georgia, serif;
+      --font-body:  "Inter", "DM Sans", system-ui, sans-serif;
+      --font-mono:  "JetBrains Mono", "Fira Mono", monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      min-height: 100vh;
+      background: var(--c-bg);
+      color: var(--c-text);
+      font-family: var(--font-body);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    button, input, textarea { font: inherit; color: inherit; }
+
+    .page {
+      min-height: 100vh;
+      padding: 24px 24px 80px;
+    }
+
+    /* ── TOPBAR ────────────────────────────────────────── */
+    .topbar {
+      width: min(1120px, 100%);
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0 12px;
+      border-bottom: 1px solid var(--c-border);
+    }
+
+    /* Logo wordmark — UNIQUE usage de Rifton dans toute la page */
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-brand);
+      font-size: 22px;
+      font-weight: 400;
+      letter-spacing: -0.03em;
+      color: var(--c-text);
+    }
+    .brand-mark {
+      width: 22px; height: 22px;
+      object-fit: contain;
+    }
+
+    .context {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--c-text-2);
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+    }
+
+    /* ── LAYOUT ────────────────────────────────────────── */
+    .layout {
+      width: min(1120px, 100%);
+      margin: 0 auto;
+      padding-top: 56px;
+      display: grid;
+      grid-template-columns: 0.78fr 1.22fr;
+      gap: 40px;
+      align-items: start;
+    }
+
+    /* ── LEFT COLUMN ──────────────────────────────────── */
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--c-text-2);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+    }
+    .eyebrow::before {
+      content: "";
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--c-orange);
+    }
+
+    h1 {
+      margin-top: 20px;
+      max-width: 620px;
+      font-size: clamp(44px, 6.4vw, 72px);
+      line-height: 1.0;
+      font-weight: 800;
+      letter-spacing: -0.045em;
+      color: var(--c-text);
+    }
+    h1 em {
+      font-style: italic;
+      font-weight: 800;
+      color: var(--c-orange-b);
+    }
+
+    .lead {
+      margin-top: 24px;
+      max-width: 560px;
+      color: var(--c-text-2);
+      font-size: 17px;
+      line-height: 1.65;
+    }
+
+    /* ── CARDS (left column) ──────────────────────────── */
+    .card {
+      border: 1px solid var(--c-border);
+      border-radius: 12px;
+      background: var(--c-surface);
+      padding: 22px 24px;
+    }
+
+    /* ── DEFINITION QUOTE (Rappel) ──────────────────── */
+    .definition {
+      margin-top: 40px;
+      padding: 0 0 0 20px;
+      border-left: 1px solid var(--c-border-med);
+    }
+    .definition-text {
+      font-size: 16px;
+      line-height: 1.65;
+      letter-spacing: -0.005em;
+      font-weight: 400;
+      color: var(--c-text);
+    }
+    .definition-text em {
+      font-style: normal;
+      font-weight: 600;
+      color: var(--c-text);
+    }
+    .definition-attr {
+      margin-top: 14px;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--c-text-2);
+    }
+
+    /* ── SECTION HEADING (in left column) ───────────── */
+    .section-heading {
+      margin-top: 48px;
+    }
+    .section-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--c-text-2);
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      margin-bottom: 12px;
+    }
+    .section-eyebrow::before {
+      content: "";
+      width: 18px; height: 1px;
+      background: var(--c-text-2);
+    }
+    .section-title {
+      font-size: 28px;
+      line-height: 1.1;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--c-text);
+      max-width: 460px;
+    }
+    .section-subtitle {
+      margin-top: 14px;
+      color: var(--c-text-2);
+      font-size: 14.5px;
+      line-height: 1.6;
+      max-width: 460px;
+    }
+
+    .timeline {
+      margin-top: 28px;
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 88px 1fr;
+      gap: 18px;
+    }
+
+    .timeline-label {
+      padding-top: 4px;
+      text-align: right;
+      color: var(--c-text-2);
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-family: var(--font-mono);
+    }
+
+    .timeline-content {
+      position: relative;
+      padding: 0 0 20px 24px;
+      border-left: 1px solid var(--c-border);
+    }
+    .timeline-item:last-child .timeline-content {
+      border-left-color: transparent;
+      padding-bottom: 0;
+    }
+
+    .timeline-dot {
+      position: absolute;
+      top: 4px;
+      left: -7px;
+      width: 13px;
+      height: 13px;
+      border-radius: 999px;
+      background: var(--c-surface-3);
+      border: 2px solid var(--c-bg);
+      box-shadow: 0 0 0 1px var(--c-border-med);
+    }
+    .timeline-item.active .timeline-dot {
+      background: var(--c-orange);
+      box-shadow: 0 0 0 1px var(--c-orange), 0 0 0 5px rgba(238, 68, 8, 0.18);
+    }
+
+    .timeline-box {
+      border: 1px solid var(--c-border);
+      border-radius: 10px;
+      background: var(--c-surface-2);
+      padding: 14px 16px;
+      transition: border-color 160ms ease, background 160ms ease;
+    }
+    .timeline-item.active .timeline-box {
+      border-color: rgba(238, 68, 8, 0.35);
+      background: rgba(238, 68, 8, 0.06);
+    }
+
+    .timeline-box h3 {
+      color: var(--c-text);
+      font-size: 16px;
+      line-height: 1.25;
+      font-weight: 700;
+      letter-spacing: -0.015em;
+    }
+    .timeline-box p {
+      margin-top: 6px;
+      color: var(--c-text-2);
+      font-size: 13.5px;
+      line-height: 1.55;
+    }
+
+    /* ── FORM CARD ────────────────────────────────────── */
+    .form-card {
+      border: 1px solid var(--c-border);
+      border-radius: 16px;
+      background: var(--c-surface);
+      padding: 32px;
+      box-shadow: 0 16px 64px rgba(0, 0, 0, 0.45);
+    }
+
+    .form-header {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--c-border);
+    }
+    @media (min-width: 620px) {
+      .form-header {
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: space-between;
+      }
+    }
+
+    .milestone-position {
+      color: var(--c-orange);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+    }
+
+    .form-title {
+      margin-top: 10px;
+      color: var(--c-text);
+      font-size: 30px;
+      line-height: 1.1;
+      font-weight: 700;
+      letter-spacing: -0.035em;
+    }
+
+    .progress {
+      margin-top: 10px;
+      color: var(--c-text-2);
+      font-size: 13.5px;
+    }
+    .progress strong {
+      color: var(--c-text);
+      font-weight: 600;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      padding: 2px 7px;
+      background: var(--c-marine);
+      border-radius: 4px;
+      letter-spacing: 0;
+    }
+
+    /* ── DATE GROUP ───────────────────────────────────── */
+    .date-group {
+      width: 100%;
+    }
+    @media (min-width: 620px) {
+      .date-group { width: 180px; }
+    }
+    .date-group label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--c-text-2);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    /* ── FIELDS ───────────────────────────────────────── */
+    .field-list {
+      margin-top: 28px;
+      display: grid;
+      gap: 24px;
+    }
+
+    .field-label-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .field label {
+      display: block;
+      color: var(--c-text);
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: -0.005em;
+    }
+
+    .field-format {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 500;
+      color: var(--c-text-2);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      white-space: nowrap;
+    }
+
+    .required {
+      color: var(--c-orange);
+      margin-left: 2px;
+    }
+
+    .help {
+      margin-top: 4px;
+      color: var(--c-text-2);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .help-examples {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 10px 12px;
+      background: var(--c-surface-2);
+      border-radius: 8px;
+      border: 1px solid var(--c-border);
+      font-size: 12.5px;
+      line-height: 1.5;
+    }
+    .help-examples .ex {
+      display: grid;
+      grid-template-columns: 18px 1fr;
+      gap: 8px;
+      align-items: start;
+      color: var(--c-text-2);
+    }
+    .help-examples .ex .mark {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      padding-top: 1px;
+    }
+    .help-examples .ex.good .mark { color: #7DC28B; }
+    .help-examples .ex.bad  .mark { color: #D97171; }
+    .help-examples .ex em {
+      font-style: italic;
+      color: var(--c-text);
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      margin-top: 10px;
+      border: 1px solid var(--c-border-med);
+      border-radius: 10px;
+      background: var(--c-surface-2);
+      color: var(--c-text);
+      padding: 12px 14px;
+      font-size: 15px;
+      line-height: 1.5;
+      outline: none;
+      transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+    }
+
+    textarea {
+      min-height: 108px;
+      resize: vertical;
+      font-family: inherit;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: var(--c-text-3);
+    }
+
+    input:hover,
+    textarea:hover {
+      border-color: var(--c-border-strong);
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: var(--c-orange);
+      box-shadow: 0 0 0 4px var(--c-orange-ring);
+      background: var(--c-surface);
+    }
+
+    /* date input styling */
+    input[type="date"] {
+      color-scheme: dark;
+      font-family: var(--font-mono);
+      font-size: 14px;
+    }
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      filter: invert(0.7);
+      cursor: pointer;
+    }
+
+    /* ── FORM FOOTER ──────────────────────────────────── */
+    .form-footer {
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid var(--c-border);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    @media (min-width: 620px) {
+      .form-footer {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+
+    .required-note {
+      color: var(--c-text-2);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .required-note .required {
+      font-size: 13px;
+    }
+
+    .ghost-button {
+      background: transparent;
+      border: 1px solid var(--c-border-med);
+      border-radius: 999px;
+      color: var(--c-text);
+      padding: 12px 20px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 160ms ease, border-color 160ms ease;
+    }
+    .ghost-button:hover {
+      background: rgba(255, 253, 246, 0.05);
+      border-color: var(--c-border-strong);
+    }
+
+    .primary-button {
+      border: 0;
+      border-radius: 999px;
+      background: var(--c-orange);
+      color: #FFFFFF;
+      padding: 12px 22px;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: -0.005em;
+      cursor: pointer;
+      transition: background 160ms ease, transform 120ms ease, box-shadow 160ms ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .primary-button:hover {
+      background: var(--c-orange-b);
+      box-shadow: 0 0 0 4px var(--c-orange-ring);
+    }
+    .primary-button:active {
+      transform: translateY(1px);
+      background: var(--c-orange-press);
+    }
+
+    .footer-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    /* ── focus visible (a11y) ─────────────────────────── */
+    button:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 4px var(--c-orange-ring);
+    }
+
+    /* ── RESPONSIVE ───────────────────────────────────── */
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: 1fr;
+        padding-top: 40px;
+        gap: 28px;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .page { padding-inline: 16px; }
+      .context { display: none; }
+      .card, .form-card {
+        border-radius: 12px;
+        padding: 20px;
+      }
+      .form-card { padding: 22px; }
+      .timeline-item {
+        grid-template-columns: 72px 1fr;
+        gap: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="topbar" aria-label="En-tête">
+      <p class="brand">
+        <img class="brand-mark" src="../../assets/logo.png" alt="" />
+        CarryIT
+      </p>
+      <p class="context">Onboarding · Création des jalons</p>
+    </header>
+
+    <div class="layout">
+      <!-- ─── LEFT COLUMN ────────────────────────────── -->
+      <section aria-labelledby="page-title">
+        <p class="eyebrow">Étape 2 sur 3</p>
+        <h1 id="page-title">Placez <em>les barreaux.</em></h1>
+        <p class="lead">
+          Vous avez défini la hauteur de l'échelle. Ajoutez maintenant les paliers qui rendent la progression vérifiable.
+        </p>
+
+        <aside class="definition" aria-label="Définition d'un jalon">
+          <p class="definition-text">
+            Un jalon est une étape de résultat <em>significative</em>, suffisamment concrète, tangible et précise pour pouvoir être validée explicitement. Il marque un changement de niveau dans la progression.
+          </p>
+          <p class="definition-attr">Définition · Carry it</p>
+        </aside>
+
+        <div class="section-heading">
+          <p class="section-eyebrow">Méthode</p>
+          <h2 class="section-title">Reculez depuis la date finale.</h2>
+          <p class="section-subtitle">
+            Partez du résultat final, puis placez les paliers qui doivent être franchis avant cette date.
+          </p>
+        </div>
+
+        <section aria-labelledby="planning-title">
+          <div class="timeline" aria-label="Rétroplanning des jalons">
+            <article class="timeline-item">
+              <div class="timeline-label">Final</div>
+              <div class="timeline-content">
+                <span class="timeline-dot" aria-hidden="true"></span>
+                <div class="timeline-box">
+                  <h3>Objectif atteint</h3>
+                  <p>La hauteur de l'échelle correspond à votre objectif SMART atteint : vous savez précisément ce qui doit être construit, obtenu ou validé.</p>
+                </div>
+              </div>
+            </article>
+
+            <article class="timeline-item">
+              <div class="timeline-label">2 ans</div>
+              <div class="timeline-content">
+                <span class="timeline-dot" aria-hidden="true"></span>
+                <div class="timeline-box">
+                  <h3>Palier stratégique</h3>
+                  <p>Quel niveau doit déjà être atteint pour que l'objectif final reste réaliste&nbsp;?</p>
+                </div>
+              </div>
+            </article>
+
+            <article class="timeline-item">
+              <div class="timeline-label">6 mois</div>
+              <div class="timeline-content">
+                <span class="timeline-dot" aria-hidden="true"></span>
+                <div class="timeline-box">
+                  <h3>Palier intermédiaire</h3>
+                  <p>Quel résultat concret doit prouver que la trajectoire est correcte&nbsp;?</p>
+                </div>
+              </div>
+            </article>
+
+            <article class="timeline-item">
+              <div class="timeline-label">3 mois</div>
+              <div class="timeline-content">
+                <span class="timeline-dot" aria-hidden="true"></span>
+                <div class="timeline-box">
+                  <h3>Palier proche</h3>
+                  <p>Quel changement observable doit être validé avant de passer à la suite&nbsp;?</p>
+                </div>
+              </div>
+            </article>
+
+            <article class="timeline-item active">
+              <div class="timeline-label">Maintenant</div>
+              <div class="timeline-content">
+                <span class="timeline-dot" aria-hidden="true"></span>
+                <div class="timeline-box">
+                  <h3>Premier jalon actif</h3>
+                  <p>Celui-ci doit être clair, précis et actionnable, car c'est sur lui que vous allez travailler maintenant.</p>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+      </section>
+
+      <!-- ─── RIGHT COLUMN : FORM ────────────────────── -->
+      <form class="form-card" aria-labelledby="form-title">
+        <div class="form-header">
+          <div>
+            <p class="milestone-position">Jalon 10 / 10</p>
+            <h2 id="form-title" class="form-title">Remplir le jalon final</h2>
+            <p class="progress">Progression cible <strong>100 %</strong></p>
+          </div>
+
+          <div class="date-group">
+            <label for="target-date">Date cible <span class="required" aria-hidden="true">*</span></label>
+            <input id="target-date" name="target-date" type="date" value="2031-09-18" required />
+          </div>
+        </div>
+
+        <div class="field-list">
+          <div class="field">
+            <div class="field-label-row">
+              <label for="title">Titre du jalon <span class="required" aria-hidden="true">*</span></label>
+              <span class="field-format">Court · 1 ligne</span>
+            </div>
+            <p id="title-help" class="help">Une étiquette courte pour reconnaître ce jalon dans la timeline. Pas de verbe.</p>
+            <input id="title" name="title" type="text" placeholder="Premier achat en nom propre" aria-describedby="title-help" required />
+            <div class="help-examples" aria-hidden="true">
+              <div class="ex good"><span class="mark">OK</span><span><em>« Premier achat en nom propre »</em></span></div>
+              <div class="ex bad"><span class="mark">NON</span><span><em>« Acheter mon premier bien immobilier avec une rentabilité nette de 10 % »</em> — c'est une description, pas un titre</span></div>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="field-label-row">
+              <label for="description">Description du jalon <span class="required" aria-hidden="true">*</span></label>
+              <span class="field-format">1 phrase · verbe d'action</span>
+            </div>
+            <p id="description-help" class="help">L'intention derrière le jalon, le résultat visé. Une phrase qui commence par un verbe.</p>
+            <textarea id="description" name="description" placeholder="Acheter un premier bien en nom propre avec un objectif de 10 % de rentabilité nette." aria-describedby="description-help" required></textarea>
+            <div class="help-examples" aria-hidden="true">
+              <div class="ex good"><span class="mark">OK</span><span><em>« Acheter un premier bien en nom propre avec 10 % de rentabilité nette »</em></span></div>
+              <div class="ex bad"><span class="mark">NON</span><span><em>« Acte signé + 10 % de rentabilité documentés »</em> — c'est un critère de validation, pas une description</span></div>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="field-label-row">
+              <label for="validation">Critère de validation <span class="required" aria-hidden="true">*</span></label>
+              <span class="field-format">Fait observable · vérifiable</span>
+            </div>
+            <p id="validation-help" class="help">La preuve concrète qui permet de répondre <em style="color:var(--c-text);font-style:normal">oui</em> ou <em style="color:var(--c-text);font-style:normal">non</em> sans hésiter. Daté, chiffré, ou documenté.</p>
+            <textarea id="validation" name="validation" placeholder="Acte signé + calcul de rentabilité nette ≥ 10 % documenté." aria-describedby="validation-help" required></textarea>
+            <div class="help-examples" aria-hidden="true">
+              <div class="ex good"><span class="mark">OK</span><span><em>« Acte signé + calcul de rentabilité nette ≥ 10 % documenté »</em></span></div>
+              <div class="ex bad"><span class="mark">NON</span><span><em>« Avoir acheté un bien rentable »</em> — pas de preuve vérifiable</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-footer">
+          <p class="required-note">Les champs marqués d'un <span class="required" aria-hidden="true">*</span> sont requis.</p>
+          <div class="footer-actions">
+            <button class="ghost-button" type="button">Précédent</button>
+            <button class="primary-button" type="submit">Enregistrer ce jalon</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </main>
+</body>
+</html>
