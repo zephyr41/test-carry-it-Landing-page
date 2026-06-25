@@ -53,14 +53,58 @@ const VisionView = ({ kpiData, smart, jalons, onAddMeasure, onEditSmart, density
   const effortMeasures = leadingKpi.measures || [];
   const effortDates = new Set();
   const effortValues = {};
+  const effortNotes = {};
+  const effortTimes = {};
+  // sorted ISO dates array to compute deltas
+  const effortSorted = effortMeasures.map(m => {
+    let dStr = m.date;
+    if (dStr && dStr.includes('/')) {
+      const parts = dStr.split('/');
+      if (parts[2] && parts[2].length === 4) dStr = `${parts[2]}-${parts[1]}-${parts[0]}`;
+    }
+    return { dateISO: dStr, value: m.value };
+  }).sort((a, b) => a.dateISO.localeCompare(b.dateISO));
+  const effortPrev = {}; // dateISO → previous value
+  effortSorted.forEach((m, i) => {
+    effortDates.add(m.dateISO);
+    effortValues[m.dateISO] = m.value;
+    if (i > 0) effortPrev[m.dateISO] = effortSorted[i - 1].value;
+  });
   effortMeasures.forEach(m => {
     let dStr = m.date;
     if (dStr && dStr.includes('/')) {
       const parts = dStr.split('/');
       if (parts[2] && parts[2].length === 4) dStr = `${parts[2]}-${parts[1]}-${parts[0]}`;
     }
-    effortDates.add(dStr);
-    effortValues[dStr] = m.value;
+    if (m.note) effortNotes[dStr] = m.note;
+    if (m.time) effortTimes[dStr] = m.time;
+  });
+
+  const resultMeasures = laggingKpi.measures || [];
+  const resultDates = new Set();
+  const resultValues = {};
+  const resultNotes = {};
+  const resultSorted = resultMeasures.map(m => {
+    let dStr = m.date;
+    if (dStr && dStr.includes('/')) {
+      const parts = dStr.split('/');
+      if (parts[2] && parts[2].length === 4) dStr = `${parts[2]}-${parts[1]}-${parts[0]}`;
+    }
+    return { dateISO: dStr, value: m.value };
+  }).sort((a, b) => a.dateISO.localeCompare(b.dateISO));
+  const resultPrev = {};
+  resultSorted.forEach((m, i) => {
+    resultDates.add(m.dateISO);
+    resultValues[m.dateISO] = m.value;
+    if (i > 0) resultPrev[m.dateISO] = resultSorted[i - 1].value;
+  });
+  resultMeasures.forEach(m => {
+    let dStr = m.date;
+    if (dStr && dStr.includes('/')) {
+      const parts = dStr.split('/');
+      if (parts[2] && parts[2].length === 4) dStr = `${parts[2]}-${parts[1]}-${parts[0]}`;
+    }
+    if (m.note) resultNotes[dStr] = m.note;
   });
 
   let lastEffortDateStr = '';
@@ -91,11 +135,17 @@ const VisionView = ({ kpiData, smart, jalons, onAddMeasure, onEditSmart, density
     cellDate.setDate(lastGridDate.getDate() - dayFromNow);
     const cellDateStr = cellDate.toISOString().split('T')[0];
     
-    const active = effortDates.has(cellDateStr);
-    
+    const isEffortDay = effortDates.has(cellDateStr);
+    const isResultDay2 = resultDates.has(cellDateStr);
+    const active = isEffortDay || isResultDay2;
+
     const diffFromToday = Math.floor((todayDate - cellDate) / (1000 * 60 * 60 * 24));
     const inCurrentPeriod = diffFromToday >= 0 && diffFromToday < Math.max(1, execution.daysElapsed);
-    
+    const formattedDate = cellDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+
+    const type = isResultDay2 ? 'Résultat' : isEffortDay ? 'Effort' : null;
+    const userNote = isResultDay2 ? (resultNotes[cellDateStr] || '') : isEffortDay ? (effortNotes[cellDateStr] || '') : '';
+
     return {
       label: ['L', 'M', 'M', 'J', 'V', 'S', 'D'][dayInWeek],
       weekLabel: `S-${3 - weekIndex}`,
@@ -103,10 +153,21 @@ const VisionView = ({ kpiData, smart, jalons, onAddMeasure, onEditSmart, density
       isResultDay: diffFromToday === execution.daysElapsed,
       inCurrentPeriod,
       today: diffFromToday === 0,
-      title: active ? 'Mise à jour KPI' : 'Aucun effort enregistré',
-      time: active ? `${effortValues[cellDateStr]} ${execution.effort.unit || 'enregistré'}` : null,
-      duration: active ? `${effortValues[cellDateStr]}` : null,
-      note: active ? `Effort enregistré le ${cellDateStr}` : 'Pas de session enregistrée sur cette journée.'
+      date: formattedDate,
+      type,
+      title: active ? 'Mise à jour KPI' : 'Aucun enregistrement',
+      time: isEffortDay ? `${effortValues[cellDateStr]} ${execution.effort.unit || ''}` : null,
+      effortValue: isEffortDay ? effortValues[cellDateStr] : null,
+      effortPrev: isEffortDay && effortPrev[cellDateStr] !== undefined ? effortPrev[cellDateStr] : null,
+      effortUnit: isEffortDay ? (execution.effort.unit || '') : null,
+      effortLabel: isEffortDay ? (execution.effort.label || '') : null,
+      resultValue: isResultDay2 ? (resultValues[cellDateStr] ?? null) : null,
+      resultPrevValue: isResultDay2 && resultPrev[cellDateStr] !== undefined ? resultPrev[cellDateStr] : null,
+      resultUnit: isResultDay2 ? (execution.result.label || '') : null,
+      timeOfDay: isEffortDay ? (effortTimes[cellDateStr] || null) : null,
+      duration: isEffortDay ? `${effortValues[cellDateStr]}` : null,
+      userNote,
+      note: active ? '' : 'Aucun enregistrement sur cette journée.'
     };
   });
 
@@ -421,9 +482,10 @@ const VisionView = ({ kpiData, smart, jalons, onAddMeasure, onEditSmart, density
     },
     popoverTop: {
       display: 'grid',
-      gridTemplateColumns: '64px 1fr',
-      gap: 10,
+      gridTemplateColumns: '46px 1fr',
+      gap: 6,
       alignItems: 'start',
+      marginBottom: 2,
     },
     popoverHours: {
       display: 'grid',
@@ -435,6 +497,7 @@ const VisionView = ({ kpiData, smart, jalons, onAddMeasure, onEditSmart, density
     popoverSchedule: {
       position: 'relative',
       minHeight: 92,
+      paddingBottom: 12,
       borderLeft: '1px solid rgba(255,253,246,0.08)',
       background: 'repeating-linear-gradient(to bottom, transparent 0, transparent 22px, rgba(255,253,246,0.07) 23px)',
     },
@@ -458,6 +521,27 @@ const VisionView = ({ kpiData, smart, jalons, onAddMeasure, onEditSmart, density
       marginTop: 2,
       fontSize: 11,
       color: 'rgba(255,253,246,0.58)',
+    },
+    popoverHeader: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 8,
+      marginBottom: 10,
+    },
+    popoverTypeBadge: {
+      fontSize: 10,
+      fontWeight: 700,
+      letterSpacing: '0.08em',
+      textTransform: 'uppercase',
+      color: '#EE4408',
+      background: 'rgba(238,68,8,0.12)',
+      borderRadius: 4,
+      padding: '2px 7px',
+    },
+    popoverDate: {
+      fontSize: 11,
+      color: 'rgba(255,253,246,0.52)',
+      fontWeight: 500,
     },
     popoverNote: {
       marginTop: 10,
@@ -652,35 +736,80 @@ const VisionView = ({ kpiData, smart, jalons, onAddMeasure, onEditSmart, density
               </div>
               {hoveredEffortDay && (
                 <div style={{...visionStyles.calendarPopover, pointerEvents: 'none'}}>
-                  {hoveredEffortDay.active && (
-                    <div style={{
-                      fontSize: 11.5, fontWeight: 600, color: '#FFFDF6',
-                      background: 'rgba(255,253,246,0.08)',
-                      borderRadius: 6, padding: '5px 9px',
-                      marginBottom: 10,
-                      overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                    }}>
-                      {hoveredEffortDay.title}{hoveredEffortDay.time ? ` · ${hoveredEffortDay.time}` : ''}
-                    </div>
-                  )}
-                  {hoveredEffortDay.active ? (
-                    <div style={visionStyles.popoverTop}>
-                      <div style={visionStyles.popoverHours}>
-                        {['08:00', '10:00', '12:00', '14:00'].map(h => (
-                          <span key={h}>{h}</span>
-                        ))}
-                      </div>
-                      <div style={visionStyles.popoverSchedule}>
-                        <div style={visionStyles.popoverBlock}>
-                          <div style={visionStyles.popoverBlockTitle}>{hoveredEffortDay.title}</div>
-                          {hoveredEffortDay.time && (
-                            <div style={visionStyles.popoverBlockMeta}>{hoveredEffortDay.time}</div>
+                  <div style={visionStyles.popoverHeader}>
+                    {hoveredEffortDay.type && (
+                      <span style={{
+                        ...visionStyles.popoverTypeBadge,
+                        color: hoveredEffortDay.type === 'Résultat' ? '#EE4408' : '#FFFDF6',
+                        background: hoveredEffortDay.type === 'Résultat' ? 'rgba(238,68,8,0.12)' : 'rgba(255,253,246,0.10)',
+                      }}>{hoveredEffortDay.type}</span>
+                    )}
+                    <span style={visionStyles.popoverDate}>{hoveredEffortDay.date}</span>
+                  </div>
+                  {hoveredEffortDay.active ? (() => {
+                    const tod = hoveredEffortDay.timeOfDay;
+                    let displayHours = [8, 10, 12, 14];
+                    let blockTopPx = 34;
+                    if (tod) {
+                      const [hh, mm] = tod.split(':').map(Number);
+                      const h = hh + mm / 60;
+                      const startH = Math.max(6, Math.floor(h) - 1);
+                      displayHours = [startH, startH+1, startH+2, startH+3];
+                      blockTopPx = Math.round((h - startH) * 23);
+                    }
+                    return (
+                      <div style={visionStyles.popoverTop}>
+                        <div style={visionStyles.popoverHours}>
+                          {displayHours.map(h => <span key={h}>{String(h).padStart(2,'0')}:00</span>)}
+                        </div>
+                        <div style={visionStyles.popoverSchedule}>
+                          {hoveredEffortDay.type === 'Résultat' ? (
+                            <div style={{ ...visionStyles.popoverBlock, top: blockTopPx, borderLeft: '3px solid #EE4408' }}>
+                              <div style={{ fontSize: 9.5, fontWeight: 600, color: 'rgba(238,68,8,0.8)', marginBottom: 3 }}>{hoveredEffortDay.resultUnit || 'Résultat'}{tod ? ` · ${tod}` : ''}</div>
+                              {hoveredEffortDay.resultValue !== null && (
+                                <div style={visionStyles.popoverBlockTitle}>
+                                  {hoveredEffortDay.resultPrevValue !== null
+                                    ? <>{hoveredEffortDay.resultPrevValue} <span style={{ color: 'rgba(255,253,246,0.4)', fontWeight: 400 }}>→</span> {hoveredEffortDay.resultValue}</>
+                                    : hoveredEffortDay.resultValue
+                                  }
+                                </div>
+                              )}
+                              <div style={{ marginTop: 5, display: 'flex', alignItems: 'center', gap: 4 }}>
+                                <span style={{ fontSize: 10, color: '#EE4408', fontWeight: 600 }}>↺</span>
+                                <span style={{ fontSize: 10, color: 'rgba(255,253,246,0.45)', fontWeight: 500 }}>Effort repart à 0</span>
+                              </div>
+                            </div>
+                          ) : (
+                            <div style={{ ...visionStyles.popoverBlock, top: blockTopPx }}>
+                              <div style={{ fontSize: 9.5, fontWeight: 600, color: 'rgba(255,253,246,0.48)', marginBottom: 3, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{hoveredEffortDay.effortLabel || hoveredEffortDay.type}{tod ? ` · ${tod}` : ''}</div>
+                              {hoveredEffortDay.effortValue !== null && (
+                                <div style={visionStyles.popoverBlockTitle}>
+                                  {hoveredEffortDay.effortPrev !== null
+                                    ? <>{hoveredEffortDay.effortPrev} <span style={{ color: 'rgba(255,253,246,0.4)', fontWeight: 400 }}>→</span> {hoveredEffortDay.effortValue}</>
+                                    : hoveredEffortDay.effortValue
+                                  }
+                                </div>
+                              )}
+                              {hoveredEffortDay.effortUnit && (
+                                <div style={visionStyles.popoverBlockMeta}>{hoveredEffortDay.effortUnit}</div>
+                              )}
+                            </div>
                           )}
                         </div>
                       </div>
+                    );
+                  })() : (
+                    <div style={{ fontSize: 11.5, color: 'rgba(255,253,246,0.40)', lineHeight: 1.45 }}>{hoveredEffortDay.note}</div>
+                  )}
+                  {hoveredEffortDay.active && (
+                    <div style={visionStyles.popoverNote}>
+                      <span style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'rgba(255,253,246,0.30)', display: 'block', marginBottom: 4 }}>Note</span>
+                      {hoveredEffortDay.userNote
+                        ? <span style={{ fontSize: 12, lineHeight: 1.45 }}>{hoveredEffortDay.userNote}</span>
+                        : <span style={{ color: 'rgba(255,253,246,0.28)', fontStyle: 'italic', fontSize: 12 }}>Aucune note enregistrée</span>
+                      }
                     </div>
-                  ) : null}
-                  <div style={visionStyles.popoverNote}>{hoveredEffortDay.note}</div>
+                  )}
                 </div>
               )}
             </div>

@@ -277,9 +277,16 @@ const App = () => {
   const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
 
   const [activeView, setActiveView] = React.useState(tweaks.startView || 'jalons');
-  const [smart, setSmart] = React.useState(INITIAL_STATE.smart);
-  const [kpi, setKpi] = React.useState(INITIAL_STATE.kpi);
-  const [jalons, setJalons] = React.useState(INITIAL_STATE.jalons);
+  const LS = 'carryit_v1';
+  const load = (key, fallback) => { try { const v = localStorage.getItem(LS + '_' + key); return v ? JSON.parse(v) : fallback; } catch(e) { return fallback; } };
+
+  const [smart, setSmart] = React.useState(() => load('smart', INITIAL_STATE.smart));
+  const [kpi, setKpi] = React.useState(() => load('kpi', INITIAL_STATE.kpi));
+  const [jalons, setJalons] = React.useState(() => load('jalons', INITIAL_STATE.jalons));
+
+  React.useEffect(() => { try { localStorage.setItem(LS + '_smart', JSON.stringify(smart)); } catch(e) {} }, [smart]);
+  React.useEffect(() => { try { localStorage.setItem(LS + '_kpi', JSON.stringify(kpi)); } catch(e) {} }, [kpi]);
+  React.useEffect(() => { try { localStorage.setItem(LS + '_jalons', JSON.stringify(jalons)); } catch(e) {} }, [jalons]);
   const [activeJalonId, setActiveJalonId] = React.useState('m1774284014187');
   const [showAddMeasure, setShowAddMeasure] = React.useState(false);
   const [showEditSmart, setShowEditSmart] = React.useState(false);
@@ -358,16 +365,17 @@ const App = () => {
     if (found) setKpiMeasureTarget(found);
   };
 
-  const handleSaveKpiMeasure = ({ date, value }) => {
+  const handleSaveKpiMeasure = ({ date, value, note, time }) => {
     if (!kpiMeasureTarget) return;
     const { jalonId, kpiIndex } = kpiMeasureTarget;
     setJalons(prev => prev.map(j => {
       if (j.id !== jalonId) return j;
       const kpis = [...(j.kpis || [])];
       const k = { ...kpis[kpiIndex] };
-      // Each measure is a snapshot of the value at a given date.
-      // The KPI's current value is simply the latest measurement.
-      k.measures = [...(k.measures || []), { date, value }]
+      const measure = { date, value };
+      if (note) measure.note = note;
+      if (time) measure.time = time;
+      k.measures = [...(k.measures || []), measure]
         .sort((a, b) => {
           // Sort by date (DD/MM/YYYY) ascending
           const ad = a.date.split('/');
@@ -510,7 +518,7 @@ const App = () => {
         )}
       </main>
 
-      <AddMeasureModal
+      <SimpleMeasureModal
         open={showAddMeasure}
         onClose={() => setShowAddMeasure(false)}
         kpiLabel={kpi.label}
@@ -520,7 +528,10 @@ const App = () => {
       <AddMeasureModal
         open={!!kpiMeasureTarget}
         onClose={() => setKpiMeasureTarget(null)}
-        kpiLabel={kpiMeasureTarget ? kpiMeasureTarget.kpi.label : ''}
+        kpiLabel={kpiMeasureTarget ? (kpiMeasureTarget.kpi.titre || '') : ''}
+        kpiUnite={kpiMeasureTarget ? (kpiMeasureTarget.kpi.unite || '') : ''}
+        kpiCible={kpiMeasureTarget ? (kpiMeasureTarget.kpi.cible ?? '') : ''}
+        kpiValeur={kpiMeasureTarget ? (kpiMeasureTarget.kpi.valeur ?? '') : ''}
         onSave={handleSaveKpiMeasure}
       />
 
