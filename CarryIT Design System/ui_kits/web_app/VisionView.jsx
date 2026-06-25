@@ -48,6 +48,8 @@ const VisionView = ({ kpiData, smart, jalons, onAddMeasure, onEditSmart, density
   const totalJalons = jalons.length || 1;
   const activeJalonProgress = totalJalons > 1 ? activeJalonIndex / (totalJalons - 1) : 0;
   const daysElapsed = Math.max(0, execution.daysElapsed);
+  const lastDoneIndex = activeJalonIndex - 1;
+  const lastDoneProgress = totalJalons > 1 && lastDoneIndex >= 0 ? lastDoneIndex / (totalJalons - 1) : 0;
   const effortMeasures = leadingKpi.measures || [];
   const effortDates = new Set();
   const effortValues = {};
@@ -284,22 +286,22 @@ const VisionView = ({ kpiData, smart, jalons, onAddMeasure, onEditSmart, density
       pointerEvents: 'none',
     },
     jalonStep: {
-      position: 'relative',
-      zIndex: 1,
-      width: 9,
-      height: 9,
-      borderRadius: '50%',
+      position: 'relative', zIndex: 1, flexShrink: 0,
+      width: 16, height: 16, borderRadius: '50%',
       background: '#111111',
-      border: '1px solid rgba(255,253,246,0.28)',
+      border: '1.5px solid rgba(255,255,255,0.12)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      color: 'transparent',
     },
     jalonStepDone: {
-      background: 'rgba(255,253,246,0.46)',
-      borderColor: 'rgba(255,253,246,0.46)',
+      background: '#111111',
+      border: '1.5px solid rgba(255,255,255,0.22)',
+      color: 'rgba(255,255,255,0.6)',
     },
     jalonStepActive: {
-      background: '#FFFDF6',
-      borderColor: '#FFFDF6',
-      boxShadow: '0 0 0 4px rgba(255,253,246,0.08)',
+      background: '#EE4408',
+      border: 'none',
+      boxShadow: '0 0 0 3px rgba(238,68,8,0.18)',
     },
     calendarMeta: {
       display: 'flex',
@@ -535,22 +537,42 @@ const VisionView = ({ kpiData, smart, jalons, onAddMeasure, onEditSmart, density
             <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
               <div>
                 <div style={visionStyles.jalonTitle}>{activeJalon.title}</div>
-                <div style={visionStyles.jalonMeta}>{activeJalon.month} · échéance {activeJalon.date}</div>
-                <div style={visionStyles.jalonTimelineRow}>
-                  <span style={visionStyles.jalonCounter}>Jalons</span>
-                  <div style={visionStyles.jalonTimeline} aria-hidden="true">
-                    <span style={visionStyles.jalonConnector}></span>
-                    <span style={visionStyles.jalonConnectorDone}></span>
-                    {jalons.map((j, i) => (
-                      <span
-                        key={j.id}
-                        style={{
-                          ...visionStyles.jalonStep,
-                          ...(i < activeJalonIndex ? visionStyles.jalonStepDone : {}),
-                          ...(i === activeJalonIndex ? visionStyles.jalonStepActive : {}),
-                        }}
-                      ></span>
-                    ))}
+                <div style={{ ...visionStyles.jalonMeta, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={activeJalon.validation}>{activeJalon.validation}</div>
+                <div style={{ marginTop: 14 }} aria-hidden="true">
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: `repeat(${jalons.length}, 1fr)`,
+                    gridTemplateRows: 'auto auto',
+                    rowGap: 5,
+                    position: 'relative',
+                  }}>
+                    <span style={{ position: 'absolute', left: `${50/jalons.length}%`, right: `${50/jalons.length}%`, top: 8, borderTop: '1px solid rgba(255,253,246,0.10)', pointerEvents: 'none', zIndex: 0 }}></span>
+                    <span style={{ position: 'absolute', left: `${50/jalons.length}%`, top: 8, width: `${activeJalonIndex / jalons.length * 100}%`, borderTop: '1px solid rgba(255,253,246,0.20)', pointerEvents: 'none', zIndex: 0 }}></span>
+                    {jalons.map((j, i) => {
+                      const isDone = i < activeJalonIndex;
+                      const isActive = i === activeJalonIndex;
+                      return (
+                        <React.Fragment key={j.id}>
+                          <div style={{ gridColumn: i+1, gridRow: 1, display: 'flex', justifyContent: 'center', position: 'relative', zIndex: 1 }}>
+                            <span style={{
+                              ...visionStyles.jalonStep,
+                              ...(isDone ? visionStyles.jalonStepDone : {}),
+                              ...(isActive ? visionStyles.jalonStepActive : {}),
+                            }}>
+                              {isDone && <i data-lucide="check" style={{width:10,height:10,strokeWidth:3}}></i>}
+                            </span>
+                          </div>
+                          <div style={{ gridColumn: i+1, gridRow: 2, display: 'flex', justifyContent: 'center' }}>
+                            <span style={{
+                              fontSize: 9, fontWeight: 600, whiteSpace: 'nowrap', letterSpacing: '0.03em',
+                              color: isDone ? 'rgba(255,253,246,0.50)' : isActive ? '#FFFDF6' : 'rgba(255,253,246,0.20)',
+                            }}>
+                              {j.title.split(' ')[0]}
+                            </span>
+                          </div>
+                        </React.Fragment>
+                      );
+                    })}
                   </div>
                 </div>
               </div>
