@@ -580,13 +580,10 @@ const VisionView = ({ kpiData, smart, jalons, onAddMeasure, onEditSmart, density
                       </span>
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                      <span style={{ color: 'rgba(255,253,246,0.42)', fontWeight: 500, fontSize: 10.5, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Sessions</span>
-                      <span style={{ display: 'flex', alignItems: 'center', gap: 5, color: '#FFFDF6', fontWeight: 650 }}>
-                        <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'rgba(255,253,246,0.72)', display: 'inline-block', flexShrink: 0 }}></span>
-                        {effortMeasures.length}<span style={{ fontSize: 10, fontWeight: 500, color: 'rgba(255,253,246,0.52)', marginLeft: 3 }}>enregistrées</span>
-                      </span>
-                      <span style={{ fontSize: 10.5, color: 'rgba(255,253,246,0.38)', fontWeight: 500, marginTop: 1 }} title={execution.effort ? execution.effort.label : ''}>
-                        Dernier : {execution.effort ? execution.effort.value : '—'}<span style={{ marginLeft: 2 }}>{execution.effort ? execution.effort.unit : ''}</span>
+                      <span style={{ color: 'rgba(255,253,246,0.42)', fontWeight: 500, fontSize: 10.5, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Effort</span>
+                      <span style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
+                        <span style={{ fontSize: 22, fontWeight: 700, color: '#FFFDF6', letterSpacing: '-0.02em', lineHeight: 1 }}>{execution.effort ? execution.effort.value : '—'}</span>
+                        <span style={{ fontSize: 13, color: 'rgba(255,253,246,0.52)', fontWeight: 500 }}>/ {leadingKpi.cible ?? '—'} {leadingKpi.unite || ''}</span>
                       </span>
                     </div>
                   </div>
@@ -594,7 +591,7 @@ const VisionView = ({ kpiData, smart, jalons, onAddMeasure, onEditSmart, density
               </div>
             </div>
             <div style={{...visionStyles.calendarPanel, position: 'relative'}}>
-              <div style={visionStyles.calendarGrid} aria-label="Calendrier d'effort sur 28 jours" onMouseLeave={() => setHoveredEffortDay(null)}>
+<div style={visionStyles.calendarGrid} aria-label="Calendrier d'effort sur 28 jours" onMouseLeave={() => setHoveredEffortDay(null)}>
                 {periodBands.map((band, idx) => (
                   <span key={`band-${idx}`} style={{
                     ...visionStyles.calendarPeriodBand,
