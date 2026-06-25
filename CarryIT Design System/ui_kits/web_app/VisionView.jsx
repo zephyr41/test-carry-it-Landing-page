@@ -29,10 +29,14 @@ const VisionView = ({ kpiData, smart, jalons, onAddMeasure, onEditSmart, density
     dynamicDaysElapsed = activeJalon.execution.daysElapsed || 0;
   }
 
+  const lastLeadingMeasureValue = leadingKpi.measures?.length > 0
+    ? leadingKpi.measures[leadingKpi.measures.length - 1].value
+    : undefined;
+
   const execution = {
     daysElapsed: dynamicDaysElapsed,
     effort: {
-      value: leadingKpi.valeur !== undefined ? leadingKpi.valeur : (activeJalon.execution?.effort?.value || activeJalon.execution?.effortHours || 0),
+      value: lastLeadingMeasureValue ?? leadingKpi.valeur ?? activeJalon.execution?.effort?.value ?? 0,
       label: leadingKpi.titre || activeJalon.execution?.effort?.label || 'Effort depuis',
       unit: leadingKpi.unite || activeJalon.execution?.effort?.unit || 'h'
     },
@@ -150,7 +154,7 @@ const VisionView = ({ kpiData, smart, jalons, onAddMeasure, onEditSmart, density
       label: ['L', 'M', 'M', 'J', 'V', 'S', 'D'][dayInWeek],
       weekLabel: `S-${3 - weekIndex}`,
       active,
-      isResultDay: diffFromToday === execution.daysElapsed,
+      isResultDay: isResultDay2,
       inCurrentPeriod,
       today: diffFromToday === 0,
       date: formattedDate,
@@ -171,33 +175,36 @@ const VisionView = ({ kpiData, smart, jalons, onAddMeasure, onEditSmart, density
     };
   });
 
-  const periodBands = [];
-  for (let week = 0; week < 4; week++) {
-    const startCell = week * 7;
-    let activeStartCol = -1;
-    let activeEndCol = -1;
-    for (let col = 0; col < 7; col++) {
-      const cellIndex = startCell + col;
-      const dayFromNow = 27 - cellIndex;
-      
-      const cellDate = new Date(lastGridDate);
-      cellDate.setDate(lastGridDate.getDate() - dayFromNow);
-      const diffFromToday = Math.floor((todayDate - cellDate) / (1000 * 60 * 60 * 24));
-      
-      if (diffFromToday >= 0 && diffFromToday <= execution.daysElapsed) {
-        if (activeStartCol === -1) activeStartCol = col;
-        activeEndCol = col;
-      }
-    }
-    if (activeStartCol !== -1) {
-      const numCells = activeEndCol - activeStartCol + 1;
-      const left = activeStartCol * (15 + 3);
-      const width = numCells * 15 + (numCells - 1) * 3;
-      const bottom = (3 - week) * 20;
-      periodBands.push({ left, width, bottom });
+  const calendarCellSize = 22;
+  const calendarGap = 4;
+  const calendarLabelHeight = 14;
+  const calendarRowHeight = calendarCellSize + 10;
+  const elapsedTone = '#B87820';
+  const elapsedToneFill = 'rgba(184,120,32,0.07)';
+  const elapsedToneBorder = 'rgba(184,120,32,0.38)';
+  const elapsedStartIndex = calendarCells.reduce((lastIndex, cell, index) => (
+    cell.isResultDay ? index : lastIndex
+  ), -1);
+  const elapsedEndIndex = calendarCells.findIndex((cell) => cell.today);
+  const elapsedStart = elapsedStartIndex >= 0 ? elapsedStartIndex + 1 : Math.max(0, calendarCells.findIndex((cell) => cell.inCurrentPeriod));
+  const elapsedEnd = elapsedEndIndex >= 0 ? elapsedEndIndex : elapsedStart;
+  const elapsedBands = [];
+  if (elapsedStart >= 0 && elapsedEnd >= elapsedStart) {
+    const startWeek = Math.floor(elapsedStart / 7);
+    const endWeek = Math.floor(elapsedEnd / 7);
+    for (let week = startWeek; week <= endWeek; week++) {
+      const startCol = week === startWeek ? elapsedStart % 7 : 0;
+      const endCol = week === endWeek ? elapsedEnd % 7 : 6;
+      const cells = endCol - startCol + 1;
+      elapsedBands.push({
+        left: `calc(${startCol} * (((100% - ${calendarGap * 6}px) / 7) + ${calendarGap}px) - 1px)`,
+        width: `calc(${cells} * ((100% - ${calendarGap * 6}px) / 7) + ${(cells - 1) * calendarGap}px + 2px)`,
+        top: calendarLabelHeight + calendarGap + week * (calendarRowHeight + calendarGap) + Math.round((calendarRowHeight - calendarCellSize) / 2),
+        isFirst: week === startWeek,
+        isLast: week === endWeek,
+      });
     }
   }
-
   const visionStyles = {
     page: {
       maxWidth: 1280, margin: '0 auto',
@@ -205,10 +212,13 @@ const VisionView = ({ kpiData, smart, jalons, onAddMeasure, onEditSmart, density
     },
     quickGrid: {
       display: 'grid',
-      gridTemplateColumns: '1fr 1.5fr',
+      gridTemplateColumns: 'minmax(0, 1fr) minmax(560px, 620px)',
       gap: 16,
       marginBottom: 18,
       alignItems: 'stretch',
+      position: 'relative',
+      zIndex: 30,
+      overflow: 'visible',
     },
     quickCard: {
       background: '#111111',
@@ -402,70 +412,76 @@ const VisionView = ({ kpiData, smart, jalons, onAddMeasure, onEditSmart, density
     calendarPanel: {
       display: 'flex',
       flexDirection: 'column',
-      alignItems: 'flex-end',
+      alignItems: 'center',
       gridColumn: '2',
       gridRow: '1 / span 2',
       marginTop: 0,
+      width: '100%',
+      flexShrink: 0,
     },
     calendarGrid: {
       display: 'grid',
-      gridTemplateColumns: 'repeat(7, 15px)',
-      rowGap: 3,
-      columnGap: 3,
+      gridTemplateColumns: 'repeat(7, minmax(0, 1fr))',
+      gridTemplateRows: `${calendarLabelHeight}px repeat(4, ${calendarRowHeight}px)`,
+      rowGap: calendarGap,
+      columnGap: calendarGap,
       alignItems: 'center',
       position: 'relative',
-      justifyContent: 'start',
+      justifyContent: 'center',
+      width: 'min(100%, 390px)',
+      minWidth: 240,
+      marginLeft: 'auto',
+      marginRight: 'auto',
     },
     calendarDayLabel: {
-      fontSize: 9.5,
+      fontSize: 10.5,
+      lineHeight: `${calendarLabelHeight}px`,
+      height: calendarLabelHeight,
       fontWeight: 650,
-      color: 'rgba(255,253,246,0.42)',
+      color: 'rgba(255,253,246,0.30)',
       textAlign: 'center',
     },
-    calendarPeriodBand: {
+    calendarElapsedBand: {
       position: 'absolute',
-      left: 0,
-      width: 123,
-      bottom: 0,
-      height: 16,
+      height: calendarCellSize,
       borderRadius: 999,
-      background: 'rgba(255,253,246,0.08)',
-      border: '1px solid rgba(255,253,246,0.11)',
+      background: elapsedToneFill,
+      border: `1px solid ${elapsedToneBorder}`,
       pointerEvents: 'none',
+      zIndex: 0,
     },
     calendarCell: {
       position: 'relative',
       zIndex: 1,
-      width: 15,
-      height: 15,
-      borderRadius: 8,
+      width: '100%',
+      height: calendarCellSize + 10,
+      borderRadius: calendarCellSize / 2,
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
       justifySelf: 'center',
+      flexDirection: 'column',
+      gap: 2,
     },
     calendarCellPeriod: {
       background: 'transparent',
     },
-    calendarCellMarker: {
-      boxShadow: '0 0 0 1px rgba(255,253,246,0.35) inset',
-      background: 'rgba(255,253,246,0.06)',
-    },
+    calendarCellMarker: {},
     calendarDot: {
       width: 8,
       height: 8,
       borderRadius: '50%',
-      background: 'rgba(255,253,246,0.12)',
+      background: 'rgba(255,253,246,0.08)',
     },
     calendarDotActive: {
-      background: '#FFFDF6',
+      background: 'rgba(255,253,246,0.58)',
     },
     calendarDotResult: {
       width: 10,
       height: 10,
       borderRadius: '50%',
-      background: '#EE4408',
-      boxShadow: '0 0 0 2px rgba(238,68,8,0.3)',
+      background: 'rgba(238,68,8,0.86)',
+      boxShadow: '0 0 0 2px rgba(238,68,8,0.10)',
       zIndex: 2,
     },
     calendarPopover: {
@@ -473,7 +489,7 @@ const VisionView = ({ kpiData, smart, jalons, onAddMeasure, onEditSmart, density
       right: -8,
       width: 260,
       top: 'calc(100% + 10px)',
-      zIndex: 10,
+      zIndex: 120,
       background: '#171717',
       border: '1px solid rgba(255,253,246,0.12)',
       borderRadius: 10,
@@ -489,17 +505,18 @@ const VisionView = ({ kpiData, smart, jalons, onAddMeasure, onEditSmart, density
     },
     popoverHours: {
       display: 'grid',
-      gap: 7,
+      gridTemplateRows: 'repeat(4, 23px)',
       color: 'rgba(255,253,246,0.42)',
       fontSize: 10.5,
       fontFamily: '"JetBrains Mono", ui-monospace, monospace',
+      alignItems: 'start',
     },
     popoverSchedule: {
       position: 'relative',
-      minHeight: 92,
-      paddingBottom: 12,
+      height: 92,
       borderLeft: '1px solid rgba(255,253,246,0.08)',
       background: 'repeating-linear-gradient(to bottom, transparent 0, transparent 22px, rgba(255,253,246,0.07) 23px)',
+      overflow: 'hidden',
     },
     popoverBlock: {
       position: 'absolute',
@@ -556,6 +573,8 @@ const VisionView = ({ kpiData, smart, jalons, onAddMeasure, onEditSmart, density
       gridTemplateColumns: 'minmax(0, 1.15fr) minmax(0, 1fr)',
       gap: 18,
       alignItems: 'start',
+      position: 'relative',
+      zIndex: 1,
     },
   };
 
@@ -573,6 +592,11 @@ const VisionView = ({ kpiData, smart, jalons, onAddMeasure, onEditSmart, density
           .vision-grid {
             grid-template-columns: 1fr !important;
           }
+          .vision-calendar-card {
+            justify-self: stretch !important;
+            width: 100% !important;
+            max-width: 100% !important;
+          }
         }
         @media (max-width: 720px) {
           .vision-view {
@@ -587,6 +611,19 @@ const VisionView = ({ kpiData, smart, jalons, onAddMeasure, onEditSmart, density
           }
           .vision-quick-grid {
             gap: 10px !important;
+          }
+          .vision-calendar-card {
+            grid-template-columns: 1fr !important;
+            justify-items: start !important;
+            justify-self: stretch !important;
+            gap: 16px !important;
+            padding-left: 14px !important;
+            padding-right: 14px !important;
+            width: 100% !important;
+          }
+          .vision-calendar-card > div:first-child {
+            max-width: none !important;
+            width: 100% !important;
           }
           .vision-card-header {
             flex-direction: column !important;
@@ -663,47 +700,49 @@ const VisionView = ({ kpiData, smart, jalons, onAddMeasure, onEditSmart, density
 
             </div>
           </section>
-          <section className="vision-quick-card" style={{...visionStyles.quickCard, display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start'}} aria-label="Lecture effort / résultat">
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              <div style={{...visionStyles.calendarTitleBlock, marginBottom: 0, gridColumn: 'unset'}}>
-                <span style={visionStyles.calendarTitle}>Lecture effort / résultat</span>
+          <section className="vision-quick-card vision-calendar-card" style={{
+            ...visionStyles.quickCard,
+            display: 'grid',
+            gridTemplateColumns: 'minmax(220px, 0.46fr) minmax(250px, 0.8fr)',
+            columnGap: 18,
+            alignItems: 'center',
+            justifyContent: 'stretch',
+            padding: '16px 18px 16px 28px',
+            overflow: 'visible',
+            width: '100%',
+            maxWidth: 'none',
+            justifySelf: 'stretch',
+            position: 'relative',
+            zIndex: 2,
+          }} aria-label="Lecture effort / résultat">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 7, minWidth: 0 }}>
+              <span style={{ color: 'rgba(255,253,246,0.40)', fontWeight: 650, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.08em' }}>Résultat</span>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, minWidth: 0, flexWrap: 'nowrap', whiteSpace: 'nowrap' }}>
+                <span style={{ fontSize: 31, fontWeight: 720, color: '#FFFDF6', letterSpacing: '-0.02em', lineHeight: 1 }}>{execution.result.value}</span>
+                <span style={{ fontSize: 13.5, color: 'rgba(255,253,246,0.54)', fontWeight: 500 }}>/ {execution.result.target} {execution.result.label.replace(' acquis', '')}</span>
               </div>
-              <div style={{...visionStyles.calendarBody, gridColumn: 'unset', gridRow: 'unset', alignSelf: 'flex-start', justifySelf: 'flex-start'}}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                  <div>
-                    <div style={{ fontSize: 10.5, fontWeight: 650, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'rgba(255,253,246,0.42)', marginBottom: 4 }}>Résultat actuel</div>
-                    <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
-                      <span style={{ fontSize: 28, fontWeight: 700, color: '#FFFDF6', letterSpacing: '-0.02em', lineHeight: 1 }}>{execution.result.value}</span>
-                      <span style={{ fontSize: 13, color: 'rgba(255,253,246,0.52)', fontWeight: 500 }}>/ {execution.result.target} {execution.result.label.replace(' acquis', '')}</span>
-                    </div>
-                  </div>
-                  <div style={{ display: 'flex', gap: 20, fontSize: 12, paddingTop: 8, borderTop: '1px solid rgba(255,253,246,0.06)' }}>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                      <span style={{ color: 'rgba(255,253,246,0.42)', fontWeight: 500, fontSize: 10.5, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Progression</span>
-                      <span style={{ display: 'flex', alignItems: 'center', gap: 5, color: '#EE4408', fontWeight: 650 }}>
-                        <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#EE4408', display: 'inline-block', flexShrink: 0 }}></span>
-                        il y a {execution.daysElapsed}j
-                      </span>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                      <span style={{ color: 'rgba(255,253,246,0.42)', fontWeight: 500, fontSize: 10.5, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Effort</span>
-                      <span style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
-                        <span style={{ fontSize: 22, fontWeight: 700, color: '#FFFDF6', letterSpacing: '-0.02em', lineHeight: 1 }}>{execution.effort ? execution.effort.value : '—'}</span>
-                        <span style={{ fontSize: 13, color: 'rgba(255,253,246,0.52)', fontWeight: 500 }}>/ {leadingKpi.cible ?? '—'} {leadingKpi.unite || ''}</span>
-                      </span>
-                    </div>
-                  </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 5, flexWrap: 'nowrap' }}>
+                <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#EE4408', flexShrink: 0 }}></span>
+                <span style={{ fontFamily: '"JetBrains Mono", ui-monospace, monospace', fontSize: 10.5, color: elapsedTone, fontWeight: 600, letterSpacing: '0.02em' }}>{execution.daysElapsed}j sans mesure</span>
+              </div>
+              <div style={{ paddingTop: 12, borderTop: '1px solid rgba(255,253,246,0.10)' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 3, minWidth: 0 }}>
+                  <span style={{ color: 'rgba(255,253,246,0.40)', fontWeight: 650, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.08em' }}>Effort</span>
+                  <span style={{ display: 'flex', alignItems: 'baseline', gap: 6, minWidth: 0, flexWrap: 'nowrap', whiteSpace: 'nowrap' }}>
+                    <span style={{ fontSize: 25, fontWeight: 710, color: '#FFFDF6', letterSpacing: '-0.02em', lineHeight: 1 }}>{execution.effort ? execution.effort.value : '—'}</span>
+                    <span style={{ fontSize: 13, color: 'rgba(255,253,246,0.52)', fontWeight: 500 }}>/ {leadingKpi.cible ?? '—'} {leadingKpi.unite || ''}</span>
+                  </span>
                 </div>
               </div>
             </div>
-            <div style={{...visionStyles.calendarPanel, position: 'relative'}}>
-<div style={visionStyles.calendarGrid} aria-label="Calendrier d'effort sur 28 jours" onMouseLeave={() => setHoveredEffortDay(null)}>
-                {periodBands.map((band, idx) => (
-                  <span key={`band-${idx}`} style={{
-                    ...visionStyles.calendarPeriodBand,
+            <div style={{...visionStyles.calendarPanel, position: 'relative', justifySelf: 'center', alignSelf: 'center', zIndex: 3}}>
+              <div style={visionStyles.calendarGrid} aria-label="Calendrier d'effort sur 28 jours" onMouseLeave={() => setHoveredEffortDay(null)}>
+                {elapsedBands.map((band, idx) => (
+                  <span key={`elapsed-${idx}`} style={{
+                    ...visionStyles.calendarElapsedBand,
                     left: band.left,
                     width: band.width,
-                    bottom: band.bottom
+                    top: band.top,
                   }}></span>
                 ))}
                 {['L', 'M', 'M', 'J', 'V', 'S', 'D'].map((d, i) => (
@@ -727,6 +766,7 @@ const VisionView = ({ kpiData, smart, jalons, onAddMeasure, onEditSmart, density
                             ...visionStyles.calendarDot,
                             ...(d.active ? visionStyles.calendarDotActive : {}),
                             ...(d.isResultDay ? visionStyles.calendarDotResult : {}),
+                            ...(d.today ? { boxShadow: '0 0 0 2px #111111, 0 0 0 3.5px rgba(255,253,246,0.50)' } : {}),
                           }}
                         ></span>
                       </span>
@@ -748,8 +788,8 @@ const VisionView = ({ kpiData, smart, jalons, onAddMeasure, onEditSmart, density
                   </div>
                   {hoveredEffortDay.active ? (() => {
                     const tod = hoveredEffortDay.timeOfDay;
-                    let displayHours = [8, 10, 12, 14];
-                    let blockTopPx = 34;
+                    let displayHours = [10, 11, 12, 13];
+                    let blockTopPx = null;
                     if (tod) {
                       const [hh, mm] = tod.split(':').map(Number);
                       const h = hh + mm / 60;
@@ -757,14 +797,20 @@ const VisionView = ({ kpiData, smart, jalons, onAddMeasure, onEditSmart, density
                       displayHours = [startH, startH+1, startH+2, startH+3];
                       blockTopPx = Math.round((h - startH) * 23);
                     }
+                    const scheduleStyle = tod
+                      ? visionStyles.popoverSchedule
+                      : { ...visionStyles.popoverSchedule, overflow: 'visible', display: 'flex', alignItems: 'center' };
+                    const blockStyle = (extra) => tod
+                      ? { ...visionStyles.popoverBlock, top: blockTopPx, ...extra }
+                      : { ...visionStyles.popoverBlock, position: 'relative', top: 'auto', ...extra };
                     return (
                       <div style={visionStyles.popoverTop}>
                         <div style={visionStyles.popoverHours}>
                           {displayHours.map(h => <span key={h}>{String(h).padStart(2,'0')}:00</span>)}
                         </div>
-                        <div style={visionStyles.popoverSchedule}>
+                        <div style={scheduleStyle}>
                           {hoveredEffortDay.type === 'Résultat' ? (
-                            <div style={{ ...visionStyles.popoverBlock, top: blockTopPx, borderLeft: '3px solid #EE4408' }}>
+                            <div style={blockStyle({ borderLeft: '3px solid #EE4408' })}>
                               <div style={{ fontSize: 9.5, fontWeight: 600, color: 'rgba(238,68,8,0.8)', marginBottom: 3 }}>{hoveredEffortDay.resultUnit || 'Résultat'}{tod ? ` · ${tod}` : ''}</div>
                               {hoveredEffortDay.resultValue !== null && (
                                 <div style={visionStyles.popoverBlockTitle}>
@@ -780,7 +826,7 @@ const VisionView = ({ kpiData, smart, jalons, onAddMeasure, onEditSmart, density
                               </div>
                             </div>
                           ) : (
-                            <div style={{ ...visionStyles.popoverBlock, top: blockTopPx }}>
+                            <div style={blockStyle()}>
                               <div style={{ fontSize: 9.5, fontWeight: 600, color: 'rgba(255,253,246,0.48)', marginBottom: 3, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{hoveredEffortDay.effortLabel || hoveredEffortDay.type}{tod ? ` · ${tod}` : ''}</div>
                               {hoveredEffortDay.effortValue !== null && (
                                 <div style={visionStyles.popoverBlockTitle}>
