@@ -63,7 +63,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 19V5M4 19h16M9 16V9M14 16V7M19 16v-4"/>
                     </svg>
                 </span>
-                Vision
+                Vision · Long terme
             </button>
             <button class="db-main-tab"
                 type="button"
@@ -297,6 +297,26 @@
                     <input class="m-input" type="number" min="0" step="any" id="jalonKpiMeasureValue">
                     <div class="m-error" id="jalonKpiMeasureValueError"></div>
                 </div>
+                <div class="m-field">
+                    <label class="m-label" for="jalonKpiMeasureTime">Bloc de travail</label>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+                        <input class="m-input" type="time" id="jalonKpiMeasureTime" step="900">
+                        <select class="m-input" id="jalonKpiMeasureDuration">
+                            <option value="15min">15 min</option>
+                            <option value="30min">30 min</option>
+                            <option value="45min">45 min</option>
+                            <option value="1h" selected>1 h</option>
+                            <option value="1h30">1 h 30</option>
+                            <option value="2h">2 h</option>
+                            <option value="3h">3 h</option>
+                            <option value="4h">4 h</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="m-field">
+                    <label class="m-label" for="jalonKpiMeasureNote">Note</label>
+                    <textarea class="m-input" id="jalonKpiMeasureNote" rows="2" placeholder="Contexte, observations..." style="resize:vertical;min-height:60px;line-height:1.45"></textarea>
+                </div>
                 <div class="m-btns">
                     <button type="button" class="m-btn-cancel" onclick="closeJalonKpiMeasureModal()">Annuler</button>
                     <button type="submit" class="m-btn-ok" id="jalonKpiMeasureSubmitBtn">Enregistrer</button>
@@ -345,17 +365,202 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
         // ──────────────────────────────────────────────────────────
         // STORAGE
         // ──────────────────────────────────────────────────────────
+        function readLocalJson(key, fallback = null) {
+            try {
+                const raw = localStorage.getItem(key);
+                return raw ? JSON.parse(raw) : fallback;
+            } catch(e) {
+                return fallback;
+            }
+        }
+
+        function normalizeGlobalKpi(kpi = {}, smart = {}) {
+            const label = kpi.label || kpi.titre || smart.M || '';
+            const unit = kpi.unit || kpi.unite || '';
+            const target = kpi.target ?? kpi.cible ?? null;
+            const value = kpi.value ?? kpi.valeur ?? null;
+            const measures = Array.isArray(kpi.measures) ? kpi.measures : [];
+            return {
+                ...kpi,
+                label,
+                titre: kpi.titre || label,
+                unit,
+                unite: kpi.unite || unit,
+                target,
+                cible: kpi.cible ?? target,
+                value,
+                valeur: kpi.valeur ?? value,
+                measures,
+            };
+        }
+
+        function normalizeReactKpi(kpi = {}) {
+            const title = kpi.titre || kpi.label || kpi.name || '';
+            const unit = kpi.unite || kpi.unit || '';
+            const target = kpi.cible ?? kpi.target ?? null;
+            const value = kpi.valeur ?? kpi.value ?? null;
+            return {
+                ...kpi,
+                id: kpi.id || `kpi-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+                titre: title,
+                label: kpi.label || title,
+                valeur: value,
+                value,
+                cible: target,
+                target,
+                unite: unit,
+                unit,
+                type: kpi.type || 'lagging',
+                frequence: kpi.frequence || kpi.frequency || 'Hebdomadaire',
+                frequency: kpi.frequency || kpi.frequence || 'Hebdomadaire',
+                measures: Array.isArray(kpi.measures) ? kpi.measures : [],
+            };
+        }
+
+        function normalizeReactJalon(jalon = {}) {
+            const title = jalon.titre || jalon.title || '';
+            const description = jalon.desc || jalon.description || '';
+            const validation = jalon.validation || jalon.critere || jalon.kpi || '';
+            const done = jalon.done === true || jalon.statut === 'completed';
+            const statut = jalon.statut || (done ? 'completed' : 'pending');
+            const tasks = Array.isArray(jalon.tasks) ? jalon.tasks : (Array.isArray(jalon.taches) ? jalon.taches : []);
+            return {
+                ...jalon,
+                id: jalon.id || `j${Date.now()}-${Math.random().toString(16).slice(2)}`,
+                title,
+                titre: title,
+                desc: description,
+                description,
+                validation,
+                critere: validation,
+                kpi: validation,
+                done,
+                statut,
+                tasks: tasks.map(t => ({
+                    ...t,
+                    title: t.title || t.titre || '',
+                    titre: t.titre || t.title || '',
+                    done: t.done === true || t.statut === 'completed',
+                    statut: t.statut || (t.done ? 'completed' : 'pending'),
+                })),
+                taches: tasks.map(t => ({
+                    ...t,
+                    title: t.title || t.titre || '',
+                    titre: t.titre || t.title || '',
+                    done: t.done === true || t.statut === 'completed',
+                    statut: t.statut || (t.done ? 'completed' : 'pending'),
+                })),
+                kpis: Array.isArray(jalon.kpis) ? jalon.kpis.map(normalizeReactKpi) : [],
+            };
+        }
+
+        function buildObjectiveFromReactStorage(existing = {}) {
+            const smart = readLocalJson('carryit_v1_smart', null);
+            const kpi = readLocalJson('carryit_v1_kpi', null);
+            const jalons = readLocalJson('carryit_v1_jalons', null);
+            if (!smart && !kpi && !jalons) return null;
+
+            const globalKpi = normalizeGlobalKpi(kpi || existing.globalKpi || {}, smart || {});
+            return {
+                ...existing,
+                id: existing.id || 'carryit-react-import',
+                createdAt: existing.createdAt || Date.now(),
+                titre: existing.titre || smart?.S || 'Objectif CarryIT',
+                specifique: smart?.S ?? existing.specifique ?? '',
+                mesurable: smart?.M ?? existing.mesurable ?? globalKpi.label ?? '',
+                atteignable: smart?.A ?? existing.atteignable ?? '',
+                realiste: smart?.R ?? existing.realiste ?? '',
+                temporel: smart?.T ?? existing.temporel ?? '',
+                globalKpi,
+                kpiLabel: globalKpi.label || globalKpi.titre || existing.kpiLabel || '',
+                kpiUnit: globalKpi.unit || globalKpi.unite || existing.kpiUnit || '',
+                kpiTarget: globalKpi.target ?? globalKpi.cible ?? existing.kpiTarget ?? null,
+                kpiValue: globalKpi.value ?? globalKpi.valeur ?? existing.kpiValue ?? null,
+                measures: Array.isArray(globalKpi.measures) ? globalKpi.measures : (existing.measures || []),
+                jalons: Array.isArray(jalons) ? jalons.map(normalizeReactJalon) : (existing.jalons || []),
+                tasks: existing.tasks || [],
+                kpiType: existing.kpiType || 'cumulatif',
+            };
+        }
+
+        function syncObjectiveToReactStorage(obj) {
+            if (!obj) return;
+            const globalKpi = normalizeGlobalKpi(obj.globalKpi || {
+                label: obj.kpiLabel || obj.mesurable || '',
+                unit: obj.kpiUnit || extractKPIUnit(obj.mesurable) || '',
+                target: obj.kpiTarget ?? null,
+                value: obj.kpiValue ?? null,
+                measures: obj.measures || [],
+            }, { M: obj.mesurable || '' });
+            globalKpi.measures = Array.isArray(obj.measures) ? obj.measures : (globalKpi.measures || []);
+
+            localStorage.setItem('carryit_v1_smart', JSON.stringify({
+                S: obj.specifique || '',
+                M: obj.mesurable || globalKpi.label || '',
+                A: obj.atteignable || '',
+                R: obj.realiste || '',
+                T: obj.temporel || '',
+            }));
+            localStorage.setItem('carryit_v1_kpi', JSON.stringify({
+                label: globalKpi.label || globalKpi.titre || '',
+                unit: globalKpi.unit || globalKpi.unite || '',
+                target: globalKpi.target ?? globalKpi.cible ?? null,
+                value: globalKpi.value ?? globalKpi.valeur ?? null,
+                measures: globalKpi.measures || [],
+            }));
+            localStorage.setItem('carryit_v1_jalons', JSON.stringify((obj.jalons || []).map(j => ({
+                ...j,
+                title: j.title || j.titre || '',
+                done: (j.statut || '') === 'completed' || j.done === true,
+                tasks: Array.isArray(j.tasks) ? j.tasks : (j.taches || []),
+                kpis: (j.kpis || []).map(k => ({
+                    ...k,
+                    label: k.label || k.titre || '',
+                    value: k.value ?? k.valeur ?? null,
+                    unit: k.unit || k.unite || '',
+                    target: k.target ?? k.cible ?? null,
+                    frequency: k.frequency || k.frequence || 'Hebdomadaire',
+                })),
+            }))));
+        }
+
+        function normalizeDashboardObjectif(obj) {
+            if (!obj) return obj;
+            obj.globalKpi = normalizeGlobalKpi(obj.globalKpi || {
+                label: obj.kpiLabel || obj.mesurable || '',
+                unit: obj.kpiUnit || extractKPIUnit(obj.mesurable) || '',
+                target: obj.kpiTarget ?? null,
+                value: obj.kpiValue ?? null,
+                measures: obj.measures || [],
+            }, { M: obj.mesurable || '' });
+            obj.measures = Array.isArray(obj.globalKpi.measures) ? obj.globalKpi.measures : (obj.measures || []);
+            obj.kpiLabel = obj.globalKpi.label || obj.globalKpi.titre || obj.kpiLabel || '';
+            obj.kpiUnit = obj.globalKpi.unit || obj.globalKpi.unite || obj.kpiUnit || '';
+            obj.kpiTarget = obj.globalKpi.target ?? obj.globalKpi.cible ?? obj.kpiTarget ?? null;
+            obj.kpiValue = obj.globalKpi.value ?? obj.globalKpi.valeur ?? obj.kpiValue ?? null;
+            obj.jalons = Array.isArray(obj.jalons) ? obj.jalons.map(normalizeReactJalon) : [];
+            return obj;
+        }
+
         function loadAllObjectifs() {
+            const reactObjective = buildObjectiveFromReactStorage();
             const stored = localStorage.getItem('carryItAllObjectifs');
             if (stored) {
                 try {
                     allObjectifs = JSON.parse(stored);
+                    if (reactObjective) {
+                        const mergeIndex = allObjectifs.findIndex(o => o?.id === 'carryit-react-import');
+                        if (mergeIndex >= 0) allObjectifs[mergeIndex] = buildObjectiveFromReactStorage(allObjectifs[mergeIndex]);
+                        else if (allObjectifs.length > 0) allObjectifs[0] = buildObjectiveFromReactStorage(allObjectifs[0]);
+                        else allObjectifs = [reactObjective];
+                    }
                     let changed = false;
                     const sharedMilestones = loadSharedMilestones();
                     const editingProjectIndex = parseInt(localStorage.getItem('carryItEditingProjectIndex') ?? '-1', 10);
                     const mergeTargetIndex = editingProjectIndex >= 0 && editingProjectIndex < allObjectifs.length ? editingProjectIndex : allObjectifs.length - 1;
                     // backward compat: ensure tasks array exists
                     allObjectifs.forEach((obj, objIndex) => {
+                        normalizeDashboardObjectif(obj);
                         if (!obj.tasks) obj.tasks = [];
                         if (sharedMilestones.length > 0 && objIndex === mergeTargetIndex) {
                             const existing = Array.isArray(obj.jalons) ? obj.jalons : [];
@@ -452,7 +657,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                         const hasActive = jalonList.some(j => (j.statut || 'pending') === 'in_progress');
                         if (!hasActive) {
                             const sorted = [...jalonList].sort((a, b) =>
-                                new Date(a.date || 0).getTime() - new Date(b.date || 0).getTime()
+                                parseKpiMeasureTime(a.date || 0) - parseKpiMeasureTime(b.date || 0)
                             );
                             const lastDoneIdx = sorted.reduce((acc, j, idx) =>
                                 j.statut === 'completed' ? idx : acc, -1
@@ -468,17 +673,23 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                         if (!obj.createdAt) obj.createdAt = obj.id || Date.now();
                         if (!obj.kpiType) obj.kpiType = 'cumulatif';
                     });
-                    if (changed) saveAllObjectifs();
+                    if (changed || reactObjective) saveAllObjectifs();
                 } catch(e) {
                     allObjectifs = [];
                 }
             } else {
+                if (reactObjective) {
+                    allObjectifs = [reactObjective];
+                    saveAllObjectifs();
+                    return;
+                }
                 // migration from old single-objectif format
                 const old = localStorage.getItem('carryItObjectifSMART');
                 if (old) {
                     try {
                         const parsed = JSON.parse(old);
                         allObjectifs = [{ id: Date.now(), createdAt: Date.now(), kpiType: 'cumulatif', ...parsed, tasks: [] }];
+                        allObjectifs[0] = normalizeDashboardObjectif(allObjectifs[0]);
                         saveAllObjectifs();
                     } catch(e) { allObjectifs = []; }
                 }
@@ -487,6 +698,8 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
 
         function saveAllObjectifs() {
             localStorage.setItem('carryItAllObjectifs', JSON.stringify(allObjectifs));
+            const active = allObjectifs[currentCarouselIndex] || allObjectifs[0];
+            if (active) syncObjectiveToReactStorage(active);
         }
 
         function openJalonsForProject(i) {
@@ -552,6 +765,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             dropdown.style.display = 'flex';
 
             allObjectifs.forEach((obj, i) => {
+                normalizeDashboardObjectif(obj);
                 enforceKpiCadence(obj);
 
                 // Dropdown item
@@ -597,7 +811,10 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             updateProjectActions(currentCarouselIndex);
 
             if (currentDashboardView === 'pilotage') {
-                setTimeout(() => initKPIChart(currentCarouselIndex, allObjectifs[currentCarouselIndex]), 0);
+                setTimeout(() => {
+                    initKPIChart(currentCarouselIndex, allObjectifs[currentCarouselIndex]);
+                    initVisionCalendarInteractions(currentCarouselIndex);
+                }, 0);
             }
             setTimeout(initTabsDragScroll, 0);
         }
@@ -667,7 +884,10 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                 p.classList.toggle('active', idx === i));
 
             if (currentDashboardView === 'pilotage') {
-                setTimeout(() => initKPIChart(i, allObjectifs[i]), 0);
+                setTimeout(() => {
+                    initKPIChart(i, allObjectifs[i]);
+                    initVisionCalendarInteractions(i);
+                }, 0);
             }
 
             // Scroll to top of content
@@ -687,7 +907,10 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                 view.classList.toggle('active', isActive);
             });
             if (currentDashboardView === 'pilotage' && allObjectifs[currentCarouselIndex]) {
-                setTimeout(() => initKPIChart(currentCarouselIndex, allObjectifs[currentCarouselIndex]), 0);
+                setTimeout(() => {
+                    initKPIChart(currentCarouselIndex, allObjectifs[currentCarouselIndex]);
+                    initVisionCalendarInteractions(currentCarouselIndex);
+                }, 0);
             }
         }
 
@@ -750,7 +973,19 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
         }
 
         function buildProjectCard(obj, i) {
-            const kpiDesc  = extractKPIDesc(obj.mesurable);
+            const globalKpi = normalizeGlobalKpi(obj.globalKpi || {
+                label: obj.kpiLabel || obj.mesurable || '',
+                unit: obj.kpiUnit || extractKPIUnit(obj.mesurable) || '',
+                target: obj.kpiTarget ?? 400,
+                value: obj.kpiValue ?? null,
+                measures: obj.measures || [],
+            }, { M: obj.mesurable || '' });
+            const globalMeasures = Array.isArray(globalKpi.measures) ? globalKpi.measures : [];
+            const latestGlobalMeasure = globalMeasures.length ? getKpiCurrentValue(globalKpi) : null;
+            const kpiDesc = globalKpi.label || globalKpi.titre || obj.mesurable || '';
+            const kpiUnit = globalKpi.unit || globalKpi.unite || obj.kpiUnit || extractKPIUnit(obj.mesurable) || '';
+            const kpiTarget = getKpiTargetValue(globalKpi) ?? (typeof obj.kpiTarget === 'number' ? obj.kpiTarget : 400);
+            const kpiCurrent = latestGlobalMeasure ?? getKpiCurrentValue(globalKpi) ?? 0;
 
             return `
             <div class="proj-card">
@@ -772,36 +1007,49 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                         data-view="pilotage"
                         ${currentDashboardView === 'pilotage' ? '' : 'hidden'}>
                         <div class="db-section">
-                            <!-- Row 1 : KPI + SMART côte à côte -->
-                            <div class="db-row-kpi-smart">
-                                <div class="kpi-panel db-card db-card-vision-main" id="kpiPanel-${i}">
-                                    <div class="kpi-panel-top">
-                                        <div class="kpi-panel-top-left">
-                                            <span class="kpi-panel-label">KPI global</span>
-                                            ${kpiDesc ? `<span class="kpi-panel-desc">${escHtml(kpiDesc)}</span>` : ''}
+                            <!-- Row 1 : Vision long terme — Jalon actif + Résultat/Calendrier -->
+                            <div class="vision-quick-grid">
+                                ${buildVisionJalonActifCard(obj, i)}
+                                ${buildVisionCalendarCard(obj, i)}
+                            </div>
+                            <!-- Row 2 : BlocVision — section label + KPI + SMART (BlocVision.jsx exact) -->
+                            <div style="margin-bottom:32px">
+                            <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.16em;color:rgba(255,253,246,0.72);margin-bottom:18px">Vision · Long terme</div>
+                            <div style="display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:18px;align-items:start">
+                                <!-- KPI CARD — BlocVision.jsx KPICard exact -->
+                                <div id="kpiPanel-${i}" style="background:#111111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:24px;display:flex;flex-direction:column;min-width:0">
+                                    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;gap:16px">
+                                        <div style="display:flex;flex-direction:column;gap:5px;min-width:0">
+                                            <span style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,253,246,0.62);white-space:nowrap">KPI global</span>
+                                            <span id="kpiDesc-${i}" style="font-size:15px;color:#FFFDF6;font-weight:650;line-height:1.3;max-width:520px">${escHtml(kpiDesc)}</span>
+                                            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px">
+                                                <span id="kpiChipActuel-${i}" style="display:inline-flex;align-items:center;gap:5px;min-height:26px;padding:4px 8px;border-radius:6px;background:rgba(255,253,246,0.045);border:1px solid rgba(255,253,246,0.08);color:rgba(255,253,246,0.72);font-size:11.5px;font-weight:600;white-space:nowrap">Actuel ${kpiCurrent}${kpiUnit ? ' ' + escHtml(kpiUnit) : ''}</span>
+                                                <span style="display:inline-flex;align-items:center;gap:5px;min-height:26px;padding:4px 8px;border-radius:6px;background:rgba(255,253,246,0.045);border:1px solid rgba(255,253,246,0.08);color:rgba(255,253,246,0.72);font-size:11.5px;font-weight:600;white-space:nowrap">Cible ${kpiTarget}</span>
+                                            </div>
                                         </div>
-                                        <button class="kpi-add-btn" onclick="openAddMeasureModal(${i})">+ Ajouter une mesure</button>
+                                        <button onclick="openAddMeasureModal(${i})" style="display:inline-flex;align-items:center;gap:6px;padding:9px 14px;border-radius:8px;background:#FFFDF6;color:#080809;border:none;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0">
+                                            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                                            Ajouter une mesure
+                                        </button>
                                     </div>
-                                    <div class="kpi-chart-area" id="kpiWrap-${i}">
-                                    </div>
+                                    <div id="kpiWrap-${i}" style="flex:1;min-height:200px;border-top:1px solid rgba(255,253,246,0.06);padding-top:4px;margin-top:4px"></div>
                                 </div>
 
-                                <div class="smart-panel db-card db-card-vision-side">
-                                    <div class="smart-header">
-                                        <span class="smart-title">Objectif SMART</span>
-                                        <button class="smart-edit-btn" type="button" onclick="enterSmartEdit(${i})">
-                                            <svg width="10" height="10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                                            </svg>
+                                <!-- SMART CARD — BlocVision.jsx SmartCard exact -->
+                                <div style="background:#111111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:24px;display:flex;flex-direction:column;min-width:0">
+                                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+                                        <span style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,253,246,0.62);white-space:nowrap">Cadre SMART</span>
+                                        <button type="button" onclick="enterSmartEdit(${i})" style="display:inline-flex;align-items:center;gap:6px;min-height:32px;padding:6px 12px;border-radius:7px;background:transparent;color:#FFFDF6;border:1px solid rgba(255,253,246,0.14);font-size:12px;font-weight:500;cursor:pointer;font-family:inherit">
+                                            <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                             Modifier
                                         </button>
                                     </div>
-                                    <div class="smart-view" id="smartView-${i}">
-                                        ${buildSmartRow('S', "L'Ambition", obj.specifique, 'specifique')}
-                                        ${buildSmartRow('M', 'La Mesure', obj.mesurable, 'mesurable')}
-                                        ${buildSmartRow('A', 'Atteignable', obj.atteignable, 'atteignable')}
-                                        ${buildSmartRow('R', 'Réaliste', obj.realiste, 'realiste')}
-                                        ${buildSmartRow('T', "L'Échéance", obj.temporel, 'temporel')}
+                                    <div id="smartView-${i}">
+                                        ${buildSmartRowJSX('S', "L'AMBITION", obj.specifique, 'specifique', true)}
+                                        ${buildSmartRowJSX('M', 'LA MESURE', obj.mesurable, 'mesurable')}
+                                        ${buildSmartRowJSX('A', 'ATTEIGNABLE', obj.atteignable, 'atteignable')}
+                                        ${buildSmartRowJSX('R', 'RÉALISTE', obj.realiste, 'realiste')}
+                                        ${buildSmartRowJSX('T', "L'ÉCHÉANCE", obj.temporel, 'temporel')}
                                     </div>
                                     <form class="smart-edit" id="smartEdit-${i}" onsubmit="saveSmartEdit(event, ${i})">
                                         ${buildSmartEditRow('S', "L'Ambition", `smartSpec-${i}`, obj.specifique)}
@@ -817,9 +1065,8 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                                     </form>
                                 </div>
                             </div>
+                            </div>
                         </div>
-
-                        ${buildActiveJalonBlock(obj, i)}
 
                         <!-- Citation -->
                         <p class="db-citation" style="margin-top:16px">"C'est quand t'as envie d'abandonner que tout commence."</p>
@@ -850,6 +1097,19 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             `;
         }
 
+        // SmartCard row — styles inline JSX exact (BlocVision.jsx SmartCard)
+        function buildSmartRowJSX(letter, label, value, fieldKey, isFirst) {
+            const sep = isFirst ? '' : '<div style="height:1px;background:rgba(255,253,246,0.07)"></div>';
+            return `${sep}
+                <div style="display:grid;grid-template-columns:34px 1fr;gap:14px;align-items:flex-start;padding:14px 0">
+                    <span style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:4px;background:rgba(255,253,246,0.06);color:#FFFDF6;font-size:11px;font-weight:700;border:1px solid rgba(255,253,246,0.1);margin-top:2px;font-family:inherit;flex-shrink:0">${letter}</span>
+                    <div style="display:flex;flex-direction:column;gap:4px;min-width:0">
+                        <span style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,253,246,0.58)">${label}</span>
+                        <span style="font-size:13.5px;color:#FFFDF6;line-height:1.45;letter-spacing:-0.005em" data-field="${fieldKey || ''}">${escHtml(value || '—')}</span>
+                    </div>
+                </div>`;
+        }
+
         function buildSmartEditRow(letter, label, id, value) {
             return `
                 <div class="smart-edit-row">
@@ -860,6 +1120,388 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                     </div>
                 </div>
             `;
+        }
+
+        // ──────────────────────────────────────────────────────────
+        // VISION VIEW — Jalon actif card
+        // ──────────────────────────────────────────────────────────
+        function buildVisionJalonActifCard(obj, i) {
+            const { jalons, activeIdx } = getVisionJalonContext(obj, i);
+            const total = jalons.length;
+            const cardStyle = 'background:#111111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px 14px;min-height:86px;display:flex;flex-direction:column;justify-content:space-between;min-width:0;overflow:visible';
+            const headStyle = 'display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:7px';
+            const labelStyle = 'font-size:11px;font-weight:650;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,253,246,0.62)';
+            const metaStyle = 'font-family:"JetBrains Mono",ui-monospace,monospace;font-size:11.5px;font-weight:600;color:rgba(255,253,246,0.72);white-space:nowrap';
+            const titleStyle = 'font-size:15px;line-height:1.25;font-weight:700;color:#FFFDF6;letter-spacing:-0.005em';
+            const validationStyle = 'margin-top:3px;font-size:11.5px;color:rgba(255,253,246,0.52);overflow:hidden;text-overflow:ellipsis;white-space:nowrap';
+            if (!total) return `<section style="${cardStyle};justify-content:center"><span style="font-size:11px;color:rgba(255,253,246,0.4)">Aucun jalon défini</span></section>`;
+
+            const activeJalon = jalons[activeIdx];
+
+            const title = escHtml(activeJalon.titre || activeJalon.title || '—');
+            const validation = escHtml(activeJalon.validation || activeJalon.critere || activeJalon.kpi || activeJalon.description || '');
+            const halfCol = 50 / total;
+            const donePercent = total > 1 ? (activeIdx / total * 100) : 0;
+
+            const dots = jalons.map((j, idx) => {
+                const isDone = idx < activeIdx;
+                const isActive = idx === activeIdx;
+                const status = isDone ? 'done' : isActive ? 'active' : 'upcoming';
+                const firstWord = escHtml((j.titre || j.title || '').split(' ')[0]);
+                const check = isDone ? `<svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>` : '';
+                const dotStyle = isActive
+                    ? 'width:16px;height:16px;border-radius:50%;background:#EE4408;border:none;box-shadow:0 0 0 3px rgba(238,68,8,0.18);display:flex;align-items:center;justify-content:center;color:transparent;font-size:10px;line-height:1'
+                    : isDone
+                        ? 'width:16px;height:16px;border-radius:50%;background:#111111;border:1.5px solid rgba(255,255,255,0.22);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.6);font-size:10px;line-height:1'
+                        : 'width:16px;height:16px;border-radius:50%;background:#111111;border:1.5px solid rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;color:transparent;font-size:10px;line-height:1';
+                const labelColor = isDone ? 'rgba(255,253,246,0.50)' : isActive ? '#FFFDF6' : 'rgba(255,253,246,0.20)';
+                return `
+                    <div style="grid-column:${idx+1};grid-row:1;display:flex;justify-content:center;position:relative;z-index:1">
+                        <span class="vision-jalon-dot ${status}" style="${dotStyle}">${check}</span>
+                    </div>
+                    <div style="grid-column:${idx+1};grid-row:2;display:flex;justify-content:center">
+                        <span class="vision-jalon-dot-label ${status}" style="display:flex;justify-content:center;font-size:9px;font-weight:600;white-space:nowrap;letter-spacing:0.03em;color:${labelColor}">${firstWord}</span>
+                    </div>`;
+            }).join('');
+
+            return `
+                <section class="vision-quick-card" style="${cardStyle}" aria-label="Position dans les jalons">
+                    <div class="vision-quick-head" style="${headStyle}">
+                        <span class="vision-quick-label" style="${labelStyle}">Jalon actif</span>
+                        <span class="vision-quick-meta" style="${metaStyle}">${activeIdx + 1}/${total}</span>
+                    </div>
+                    <div style="display:flex;flex-direction:column;flex-grow:1">
+                        <div>
+                            <div class="vision-jalon-title" style="${titleStyle}">${title}</div>
+                            <div class="vision-jalon-meta" style="${validationStyle}" title="${validation}">${validation}</div>
+                            <div style="margin-top:14px" aria-hidden="true">
+                                <div style="display:grid;grid-template-columns:repeat(${total},1fr);grid-template-rows:auto auto;row-gap:5px;position:relative">
+                                    <span style="position:absolute;left:${halfCol}%;right:${halfCol}%;top:8px;border-top:1px dashed rgba(255,253,246,0.10);pointer-events:none;z-index:0"></span>
+                                    <span style="position:absolute;left:${halfCol}%;top:8px;width:${donePercent}%;border-top:1px solid rgba(255,253,246,0.20);pointer-events:none;z-index:0"></span>
+                                    ${dots}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>`;
+        }
+
+        // ──────────────────────────────────────────────────────────
+        // VISION VIEW — Calendar + Résultat/Effort card
+        // ──────────────────────────────────────────────────────────
+        function generateVisionCalCells(laggingKpi, leadingKpi, daysElapsed) {
+            const today = new Date(); today.setHours(0,0,0,0);
+            const dow = today.getDay() || 7;
+            const lastGrid = new Date(today);
+            lastGrid.setDate(today.getDate() + (7 - dow));
+            const pad = n => String(n).padStart(2, '0');
+            const localISO = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+
+            const normDate = d => {
+                if (!d) return '';
+                if (d.includes('/')) {
+                    const p = d.split('/');
+                    if (p[2]?.length === 4) return `${p[2]}-${String(p[1]).padStart(2,'0')}-${String(p[0]).padStart(2,'0')}`;
+                }
+                return d;
+            };
+            const measureISO = m => {
+                const direct = normDate(m?.date || '');
+                if (/^\d{4}-\d{2}-\d{2}$/.test(direct)) return direct;
+                const t = parseKpiMeasureTime(m);
+                return t ? localISO(new Date(t)) : direct;
+            };
+
+            const effortMeasures = (leadingKpi && Array.isArray(leadingKpi.measures)) ? leadingKpi.measures : [];
+            const effortDates = new Set();
+            const effortValues = {};
+            const effortNotes = {};
+            const effortTimes = {};
+            const effortDurations = {};
+            const effortSorted = effortMeasures
+                .map(m => ({ dateISO: measureISO(m), value: m.value ?? m.valeur }))
+                .sort((a,b) => a.dateISO.localeCompare(b.dateISO));
+            const effortPrevMap = {};
+            effortSorted.forEach((m, idx) => {
+                effortDates.add(m.dateISO);
+                effortValues[m.dateISO] = m.value;
+                if (idx > 0) effortPrevMap[m.dateISO] = effortSorted[idx-1].value;
+            });
+            effortMeasures.forEach(m => {
+                const d = measureISO(m);
+                if (m.note) effortNotes[d] = m.note;
+                if (m.time || m.timeOfDay) effortTimes[d] = m.time || m.timeOfDay;
+                if (m.duration || m.duree) effortDurations[d] = m.duration || m.duree;
+            });
+
+            const resultMeasures = (laggingKpi && Array.isArray(laggingKpi.measures)) ? laggingKpi.measures : [];
+            const resultDates = new Set();
+            const resultValues = {};
+            const resultNotes = {};
+            const resultTimes = {};
+            const resultDurations = {};
+            const resultSorted = resultMeasures
+                .map(m => ({ dateISO: measureISO(m), value: m.value ?? m.valeur }))
+                .sort((a,b) => a.dateISO.localeCompare(b.dateISO));
+            const resultPrevMap = {};
+            resultSorted.forEach((m, idx) => {
+                resultDates.add(m.dateISO);
+                resultValues[m.dateISO] = m.value;
+                if (idx > 0) resultPrevMap[m.dateISO] = resultSorted[idx-1].value;
+            });
+            resultMeasures.forEach(m => {
+                const d = measureISO(m);
+                if (m.note) resultNotes[d] = m.note;
+                if (m.time || m.timeOfDay) resultTimes[d] = m.time || m.timeOfDay;
+                if (m.duration || m.duree) resultDurations[d] = m.duration || m.duree;
+            });
+
+            const effortLabel = leadingKpi ? (leadingKpi.titre || leadingKpi.label || '') : '';
+            const effortUnit = leadingKpi ? (leadingKpi.unite || leadingKpi.unit || '') : '';
+            const resultUnit = laggingKpi ? (laggingKpi.titre || laggingKpi.label || laggingKpi.unite || '') : '';
+
+            return Array.from({ length: 28 }, (_, idx) => {
+                const cellDate = new Date(lastGrid);
+                cellDate.setDate(lastGrid.getDate() - (27 - idx));
+                const iso = localISO(cellDate);
+
+                const isEffort = effortDates.has(iso);
+                const isResult = resultDates.has(iso);
+                const active = isEffort || isResult;
+                const diffFromToday = Math.floor((today - cellDate) / 86400000);
+                const isToday = diffFromToday === 0;
+                const inCurrentPeriod = diffFromToday >= 0 && diffFromToday < Math.max(1, daysElapsed);
+                const formattedDate = cellDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+                const type = isResult ? 'Résultat' : isEffort ? 'Effort' : null;
+
+                return {
+                    active, isResultDay: isResult, isToday, inCurrentPeriod,
+                    date: formattedDate, type,
+                    userNote: isResult ? (resultNotes[iso] || '') : isEffort ? (effortNotes[iso] || '') : '',
+                    effortValue: isEffort ? effortValues[iso] : null,
+                    effortPrev: (isEffort && effortPrevMap[iso] !== undefined) ? effortPrevMap[iso] : null,
+                    effortUnit: isEffort ? effortUnit : null,
+                    effortLabel: isEffort ? effortLabel : null,
+                    resultValue: isResult ? (resultValues[iso] ?? null) : null,
+                    resultPrevValue: (isResult && resultPrevMap[iso] !== undefined) ? resultPrevMap[iso] : null,
+                    resultUnit: isResult ? resultUnit : null,
+                    timeOfDay: isResult ? (resultTimes[iso] || null) : isEffort ? (effortTimes[iso] || null) : null,
+                    duration: isResult ? (resultDurations[iso] || null) : isEffort ? (effortDurations[iso] || null) : null,
+                    note: active ? '' : 'Aucun enregistrement sur cette journée.',
+                };
+            });
+        }
+
+        function buildVisionCalendarCard(obj, i) {
+            const { jalons, activeIdx, activeJalon } = getVisionJalonContext(obj, i);
+
+            const laggingKpi = activeJalon ? getJalonKpiByType(activeJalon, 'lagging') : null;
+            const leadingKpi = activeJalon ? getJalonKpiByType(activeJalon, 'leading') : null;
+
+            const resultValue = laggingKpi ? (getKpiCurrentValue(laggingKpi) ?? 0) : 0;
+            const resultTarget = laggingKpi ? (getKpiTargetValue(laggingKpi) ?? 0) : 0;
+            const resultUnit = laggingKpi ? (laggingKpi.unite || laggingKpi.unit || '') : '';
+            const resultValueLabel = formatMetricValue(resultValue);
+            const resultTargetLabel = Number.isFinite(resultTarget) && resultTarget > 0 ? formatMetricValue(resultTarget) : '—';
+            const resultTargetText = `${resultTargetLabel}${resultUnit ? ' ' + resultUnit : ''}`;
+
+            const effortValue = leadingKpi ? (getKpiCurrentValue(leadingKpi) ?? 0) : 0;
+            const effortTarget = leadingKpi ? (getKpiTargetValue(leadingKpi) ?? 0) : 0;
+            const effortUnit = leadingKpi ? (leadingKpi.unite || leadingKpi.unit || '') : '';
+            const effortValueLabel = formatMetricValue(effortValue);
+            const effortTargetLabel = Number.isFinite(effortTarget) && effortTarget > 0 ? formatMetricValue(effortTarget) : '—';
+            const effortTargetText = `${effortTargetLabel}${effortUnit ? ' ' + effortUnit : ''}`;
+
+            let daysElapsed = 0;
+            if (laggingKpi && Array.isArray(laggingKpi.measures) && laggingKpi.measures.length > 0) {
+                const sorted = [...laggingKpi.measures].sort((a,b) => parseKpiMeasureTime(a) - parseKpiMeasureTime(b));
+                const last = sorted[sorted.length - 1];
+                const today = new Date(); today.setHours(0,0,0,0);
+                const lastD = new Date(parseKpiMeasureTime(last)); lastD.setHours(0,0,0,0);
+                if (!isNaN(lastD)) daysElapsed = Math.max(0, Math.floor((today - lastD) / 86400000));
+            }
+
+            const cells = generateVisionCalCells(laggingKpi, leadingKpi, daysElapsed);
+            const calRowH = 32, calGap = 4, calLabelH = 14;
+
+            const elapsedStartIdx = cells.reduce((last, c, idx) => c.isResultDay ? idx : last, -1);
+            const elapsedEndIdx = cells.findIndex(c => c.isToday);
+            const elapsedStart = elapsedStartIdx >= 0 ? elapsedStartIdx + 1 : Math.max(0, cells.findIndex(c => c.inCurrentPeriod));
+            const elapsedEnd = elapsedEndIdx >= 0 ? elapsedEndIdx : elapsedStart;
+
+            let bandsHtml = '';
+            if (elapsedStart >= 0 && elapsedEnd >= elapsedStart) {
+                const sw = Math.floor(elapsedStart / 7), ew = Math.floor(elapsedEnd / 7);
+                for (let w = sw; w <= ew; w++) {
+                    const sc = w === sw ? elapsedStart % 7 : 0;
+                    const ec = w === ew ? elapsedEnd % 7 : 6;
+                    const n = ec - sc + 1;
+                    const top = calLabelH + calGap + w * (calRowH + calGap) + Math.round((calRowH - 22) / 2);
+                    const cellW = `((100% - ${calGap*6}px) / 7)`;
+                    const left = sc > 0 ? `calc(${sc} * (${cellW} + ${calGap}px) - 1px)` : `calc(-1px)`;
+                    const width = `calc(${n} * ${cellW} + ${(n-1)*calGap}px + 2px)`;
+                    bandsHtml += `<span class="vision-cal-elapsed-band" style="position:absolute;height:22px;border-radius:999px;background:rgba(184,120,32,0.07);border:1px solid rgba(184,120,32,0.38);pointer-events:none;z-index:0;left:${left};width:${width};top:${top}px"></span>`;
+                }
+            }
+
+            const dayLabelStyle = 'font-size:10.5px;line-height:14px;height:14px;font-weight:650;color:rgba(255,253,246,0.30);text-align:center';
+            const dayLabels = ['L','M','M','J','V','S','D'].map(d => `<span class="vision-cal-day-label" style="${dayLabelStyle}">${d}</span>`).join('');
+
+            const cellsHtml = cells.map(cell => {
+                const dotCls = `vision-cal-dot${cell.isResultDay ? ' result' : cell.active ? ' active' : ''}${cell.isToday ? ' today' : ''}`;
+                const cellCls = `vision-cal-cell${cell.active ? ' has-data' : ''}`;
+                const cellStyle = 'position:relative;z-index:1;width:100%;height:32px;border-radius:11px;display:flex;align-items:center;justify-content:center;justify-self:center;flex-direction:column;gap:2px';
+                const dotStyle = cell.isResultDay
+                    ? `width:10px;height:10px;border-radius:50%;background:rgba(238,68,8,0.86);box-shadow:${cell.isToday ? '0 0 0 2px #111111, 0 0 0 3.5px rgba(255,253,246,0.50)' : '0 0 0 2px rgba(238,68,8,0.10)'};z-index:2`
+                    : cell.active
+                        ? `width:8px;height:8px;border-radius:50%;background:rgba(255,253,246,0.58);${cell.isToday ? 'box-shadow:0 0 0 2px #111111, 0 0 0 3.5px rgba(255,253,246,0.50)' : ''}`
+                        : `width:8px;height:8px;border-radius:50%;background:rgba(255,253,246,0.08);${cell.isToday ? 'box-shadow:0 0 0 2px #111111, 0 0 0 3.5px rgba(255,253,246,0.50)' : ''}`;
+                const data = cell.active ? [
+                    `data-type="${cell.type}"`,
+                    `data-date="${escHtml(cell.date)}"`,
+                    `data-effort-value="${cell.effortValue ?? ''}"`,
+                    `data-effort-prev="${cell.effortPrev ?? ''}"`,
+                    `data-effort-unit="${escHtml(cell.effortUnit || '')}"`,
+                    `data-effort-label="${escHtml(cell.effortLabel || '')}"`,
+                    `data-result-value="${cell.resultValue ?? ''}"`,
+                    `data-result-prev="${cell.resultPrevValue ?? ''}"`,
+                    `data-result-unit="${escHtml(cell.resultUnit || '')}"`,
+                    `data-note="${escHtml(cell.userNote || '')}"`,
+                    `data-time="${escHtml(cell.timeOfDay || '')}"`,
+                    `data-duration="${escHtml(cell.duration || '')}"`,
+                ].join(' ') : `data-date="${escHtml(cell.date)}" data-note="${escHtml(cell.note)}"`;
+                return `<span class="${cellCls}" style="${cellStyle}" ${data}><span class="${dotCls}" style="${dotStyle}"></span></span>`;
+            }).join('');
+
+            return `
+                <section class="vision-quick-card vision-calendar-card"
+                    style="background:#111111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;display:grid;grid-template-columns:minmax(220px,0.46fr) minmax(250px,0.8fr);column-gap:18px;align-items:center;justify-content:stretch;padding:16px 18px 16px 28px;overflow:visible;position:relative;z-index:2;width:100%;max-width:none;justify-self:stretch;min-height:86px;min-width:0"
+                    aria-label="Résultat et effort">
+                    <div class="vision-stats-col" style="display:flex;flex-direction:column;gap:7px;min-width:0">
+                        <span class="vision-stat-label" style="color:rgba(255,253,246,0.40);font-weight:650;font-size:10px;text-transform:uppercase;letter-spacing:0.08em">Résultat</span>
+                        <div class="vision-stat-value-row" style="display:flex;align-items:baseline;gap:6px;min-width:0;flex-wrap:nowrap;white-space:nowrap">
+                            <span class="vision-stat-big" style="font-size:31px;font-weight:720;color:#FFFDF6;letter-spacing:-0.02em;line-height:1">${escHtml(resultValueLabel)}</span>
+                            <span class="vision-stat-target" style="font-size:13.5px;color:rgba(255,253,246,0.54);font-weight:500">/ ${escHtml(resultTargetText)}</span>
+                        </div>
+                        <div class="vision-days-elapsed" style="display:flex;align-items:center;gap:5px;flex-wrap:nowrap">
+                            <span class="vision-days-dot" style="width:6px;height:6px;border-radius:50%;background:#EE4408;flex-shrink:0"></span>
+                            <span class="vision-days-label" style="font-family:&quot;JetBrains Mono&quot;,ui-monospace,monospace;font-size:10.5px;color:#B87820;font-weight:600;letter-spacing:0.02em">${daysElapsed}j sans mesure</span>
+                        </div>
+                        <div class="vision-effort-sep" style="padding-top:12px;border-top:1px solid rgba(255,253,246,0.10);display:flex;flex-direction:column;gap:3px;min-width:0">
+                            <span class="vision-stat-label" style="color:rgba(255,253,246,0.40);font-weight:650;font-size:10px;text-transform:uppercase;letter-spacing:0.08em">Effort</span>
+                            <div class="vision-stat-value-row" style="display:flex;align-items:baseline;gap:6px;min-width:0;flex-wrap:nowrap;white-space:nowrap">
+                                <span class="vision-stat-big effort" style="font-size:25px;font-weight:710;color:#FFFDF6;letter-spacing:-0.02em;line-height:1">${escHtml(effortValueLabel)}</span>
+                                <span class="vision-stat-target effort" style="font-size:13px;color:rgba(255,253,246,0.52);font-weight:500">/ ${escHtml(effortTargetText)}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="vision-cal-panel" id="vcal-panel-${i}" style="position:relative;display:flex;flex-direction:column;align-items:center;justify-self:center;align-self:center;z-index:3;width:100%;flex-shrink:0;overflow:visible">
+                        <div class="vision-cal-grid" id="vcal-grid-${i}" style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));grid-template-rows:14px repeat(4,32px);row-gap:4px;column-gap:4px;align-items:center;position:relative;justify-content:center;width:min(100%,390px);min-width:240px;margin-left:auto;margin-right:auto" aria-label="Calendrier d'effort sur 28 jours">
+                            ${bandsHtml}
+                            ${dayLabels}
+                            ${cellsHtml}
+                        </div>
+                        <div class="vision-cal-popover" id="vcal-popover-${i}"></div>
+                    </div>
+                </section>`;
+        }
+
+        function initVisionCalendarInteractions(i) {
+            const grid = document.getElementById(`vcal-grid-${i}`);
+            const popover = document.getElementById(`vcal-popover-${i}`);
+            if (!grid || !popover) return;
+
+            grid.addEventListener('mouseleave', () => {
+                popover.classList.remove('visible');
+                popover.innerHTML = '';
+            });
+
+            grid.querySelectorAll('.vision-cal-cell.has-data').forEach(cell => {
+                cell.addEventListener('mouseenter', () => {
+                    const type = cell.dataset.type;
+                    const isResult = type === 'Résultat';
+                    const timeOfDay = cell.dataset.time;
+                    const duration = cell.dataset.duration || '1h';
+                    let displayHours = [10, 11, 12, 13];
+                    let blockTop = null;
+                    let blockHeight = null;
+                    if (timeOfDay) {
+                        const [hh, mm] = timeOfDay.split(':').map(Number);
+                        const h = hh + mm / 60;
+                        const startH = Math.max(6, Math.floor(h) - 1);
+                        displayHours = [startH, startH+1, startH+2, startH+3];
+                        blockTop = Math.round((h - startH) * 23);
+                        blockHeight = Math.max(18, Math.min(76, Math.round((durationToMinutes(duration) / 60) * 23)));
+                    }
+                    const hoursHtml = displayHours.map(h => `<span>${String(h).padStart(2,'0')}:00</span>`).join('');
+                    const schedStyle = timeOfDay ? '' : 'overflow:visible;display:flex;align-items:center;';
+                    const blockPositionStyle = blockTop !== null ? `top:${blockTop}px;min-height:${blockHeight}px` : 'position:relative;top:auto';
+
+                    let blockInner = '';
+                    if (isResult) {
+                        const rv = cell.dataset.resultValue;
+                        const rp = cell.dataset.resultPrev;
+                        const ru = cell.dataset.resultUnit;
+                        const valDisplay = (rp && rp !== '' && rp !== 'null' && rp !== 'undefined')
+                            ? `${rp} <span style="color:rgba(255,253,246,0.4);font-weight:400">→</span> ${rv}`
+                            : rv;
+                        blockInner = `
+                            <div class="vision-cal-popover-block result-block" style="${blockPositionStyle}">
+                                <div class="vision-cal-popover-block-sub" style="color:rgba(238,68,8,0.8)">${escHtml(ru) || 'Résultat'}${timeOfDay ? ' · ' + timeOfDay : ''}</div>
+                                <div class="vision-cal-popover-block-title">${valDisplay}</div>
+                                <div style="margin-top:5px;display:flex;align-items:center;gap:4px">
+                                    <span style="font-size:10px;color:#EE4408;font-weight:600">↺</span>
+                                    <span style="font-size:10px;color:rgba(255,253,246,0.45);font-weight:500">Effort repart à 0</span>
+                                </div>
+                            </div>`;
+                    } else {
+                        const ev = cell.dataset.effortValue;
+                        const ep = cell.dataset.effortPrev;
+                        const eu = cell.dataset.effortUnit;
+                        const el = cell.dataset.effortLabel;
+                        const valDisplay = (ep && ep !== '' && ep !== 'null' && ep !== 'undefined')
+                            ? `${ep} <span style="color:rgba(255,253,246,0.4);font-weight:400">→</span> ${ev}`
+                            : ev;
+                        blockInner = `
+                            <div class="vision-cal-popover-block" style="${blockPositionStyle}">
+                                <div class="vision-cal-popover-block-sub" style="color:rgba(255,253,246,0.48)">${escHtml(el) || type}${timeOfDay ? ' · ' + timeOfDay : ''}</div>
+                                <div class="vision-cal-popover-block-title">${valDisplay}</div>
+                                ${eu ? `<div class="vision-cal-popover-block-meta">${escHtml(eu)}</div>` : ''}
+                            </div>`;
+                    }
+
+                    const note = cell.dataset.note || '';
+                    const typeBadgeCls = isResult ? 'result-badge' : 'effort-badge';
+                    popover.innerHTML = `
+                        <div class="vision-cal-popover-hd">
+                            <span class="vision-cal-type-badge ${typeBadgeCls}">${type}</span>
+                            <span class="vision-cal-popover-date">${cell.dataset.date}</span>
+                        </div>
+                        <div class="vision-cal-popover-top">
+                            <div class="vision-cal-popover-hours">${hoursHtml}</div>
+                            <div class="vision-cal-popover-schedule" style="${schedStyle}">${blockInner}</div>
+                        </div>
+                        <div class="vision-cal-popover-note">
+                            <span style="font-size:9.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,253,246,0.30);display:block;margin-bottom:4px">Note</span>
+                            ${note
+                                ? `<span style="font-size:12px;line-height:1.45">${escHtml(note)}</span>`
+                                : `<span style="color:rgba(255,253,246,0.28);font-style:italic;font-size:12px">Aucune note enregistrée</span>`}
+                        </div>`;
+                    popover.classList.add('visible');
+                });
+            });
+
+            grid.querySelectorAll('.vision-cal-cell:not(.has-data)').forEach(cell => {
+                cell.addEventListener('mouseenter', () => {
+                    const note = cell.dataset.note || 'Aucun enregistrement sur cette journée.';
+                    popover.innerHTML = `
+                        <div class="vision-cal-popover-hd">
+                            <span class="vision-cal-popover-date">${cell.dataset.date || ''}</span>
+                        </div>
+                        <div style="font-size:11.5px;color:rgba(255,253,246,0.40);line-height:1.45">${escHtml(note)}</div>`;
+                    popover.classList.add('visible');
+                });
+            });
         }
 
         // ──────────────────────────────────────────────────────────
@@ -880,17 +1522,17 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
 
         function getSortedProjectJalons(obj) {
             return [...(obj?.jalons || [])].sort((a, b) => {
-                const timeA = new Date(a?.date || '').getTime();
-                const timeB = new Date(b?.date || '').getTime();
-                if (Number.isNaN(timeA) && Number.isNaN(timeB)) return 0;
-                if (Number.isNaN(timeA)) return 1;
-                if (Number.isNaN(timeB)) return -1;
+                const timeA = parseKpiMeasureTime(a);
+                const timeB = parseKpiMeasureTime(b);
+                if (!timeA && !timeB) return 0;
+                if (!timeA) return 1;
+                if (!timeB) return -1;
                 return timeA - timeB;
             });
         }
 
         function getNextActiveJalon(obj) {
-            return getSortedProjectJalons(obj).find(j => (j.statut || 'pending') !== 'completed') || null;
+            return getSortedProjectJalons(obj).find(j => j?.done === false || (j?.statut || 'pending') !== 'completed') || null;
         }
 
         function findTaskLinkedJalon(obj, task) {
@@ -945,8 +1587,8 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                 .map(task => getTaskTargetJalon(obj, task))
                 .filter(Boolean)
                 .sort((a, b) => {
-                    const timeA = new Date(a.date || '').getTime();
-                    const timeB = new Date(b.date || '').getTime();
+                    const timeA = parseKpiMeasureTime(a);
+                    const timeB = parseKpiMeasureTime(b);
                     if (Number.isNaN(timeA) && Number.isNaN(timeB)) return 0;
                     if (Number.isNaN(timeA)) return 1;
                     if (Number.isNaN(timeB)) return -1;
@@ -2588,10 +3230,10 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             const selectedJalon = jalons.find(j => j.id === selectedJalonId) || jalons[0];
             const selectedIndex = Math.max(0, jalons.findIndex(j => j.id === selectedJalon?.id));
             const total = jalons.length;
-            const currentIndex = jalons.findIndex(j => (j.statut || 'pending') !== 'completed');
+            const currentIndex = Math.max(0, jalons.findIndex(j => j?.done === false || (j.statut || 'pending') !== 'completed'));
 
             function jalonStatus(jalon, ji) {
-                if ((jalon.statut || 'pending') === 'completed') return 'done';
+                if (jalon?.done === true || (jalon.statut || 'pending') === 'completed') return 'done';
                 if (ji === currentIndex) return 'active';
                 return 'upcoming';
             }
@@ -2667,6 +3309,10 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
 
         function selectJalon(i, jalonId) {
             jalonPopupState[i] = jalonId;
+            const selectedObj = allObjectifs[i];
+            const selectedSorted = getSortedProjectJalons(selectedObj);
+            const selectedIdx = selectedSorted.findIndex(j => String(j?.id || '') === String(jalonId || ''));
+            if (selectedIdx >= 0) activeJalonView[i] = selectedIdx;
             const section = document.getElementById(`jalons-section-${i}`);
             if (!section) { renderDashboard(); return; }
             const detailEl = document.getElementById(`jalons-detail-${i}`);
@@ -2742,11 +3388,43 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             return [];
         }
 
+        function getActiveJalonIndex(obj) {
+            const jalons = Array.isArray(obj?.jalons) ? obj.jalons : [];
+            if (!jalons.length) return -1;
+            const doneAwareIdx = jalons.findIndex(j => j && j.done === false);
+            if (doneAwareIdx >= 0) return doneAwareIdx;
+            const statusIdx = jalons.findIndex(j => (j?.statut || 'pending') !== 'completed');
+            return statusIdx >= 0 ? statusIdx : jalons.length - 1;
+        }
+
+        function getVisionJalonContext(obj, i) {
+            const jalons = getSortedProjectJalons(obj);
+            if (!jalons.length) return { jalons: [], activeIdx: -1, activeJalon: null };
+
+            const selectedId = jalonPopupState[i];
+            if (selectedId !== undefined && selectedId !== null) {
+                const selectedIdx = jalons.findIndex(j => String(j?.id || '') === String(selectedId || ''));
+                if (selectedIdx >= 0) {
+                    return { jalons, activeIdx: selectedIdx, activeJalon: jalons[selectedIdx] };
+                }
+            }
+
+            if (activeJalonView[i] !== undefined && activeJalonView[i] < jalons.length) {
+                const idx = Math.max(0, activeJalonView[i]);
+                return { jalons, activeIdx: idx, activeJalon: jalons[idx] };
+            }
+
+            const doneAwareIdx = jalons.findIndex(j => j && j.done === false);
+            const statusIdx = jalons.findIndex(j => (j?.statut || 'pending') !== 'completed');
+            const activeIdx = doneAwareIdx >= 0 ? doneAwareIdx : (statusIdx >= 0 ? statusIdx : jalons.length - 1);
+            return { jalons, activeIdx, activeJalon: jalons[activeIdx] };
+        }
+
         function getKpiCurrentValue(kpi) {
             if (!kpi) return null;
             const measures = Array.isArray(kpi.measures) ? kpi.measures : [];
             if (measures.length) {
-                const sorted = [...measures].sort((a, b) => new Date(a?.date || 0).getTime() - new Date(b?.date || 0).getTime());
+                const sorted = [...measures].sort((a, b) => parseKpiMeasureTime(a) - parseKpiMeasureTime(b));
                 const last = sorted[sorted.length - 1];
                 const totalRaw = last?.total !== undefined ? last.total : last?.cumulative;
                 const totalNum = totalRaw !== null && totalRaw !== undefined && totalRaw !== '' ? Number(totalRaw) : null;
@@ -2777,7 +3455,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             if (!kpi) return;
             if (!Array.isArray(kpi.measures)) kpi.measures = [];
             const mode = getKpiMeasureMode(kpi, fallbackType);
-            const sorted = [...kpi.measures].sort((a, b) => new Date(a?.date || 0).getTime() - new Date(b?.date || 0).getTime());
+            const sorted = [...kpi.measures].sort((a, b) => parseKpiMeasureTime(a) - parseKpiMeasureTime(b));
             let runningTotal = 0;
             sorted.forEach(m => {
                 const rawValue = m?.value !== undefined ? m.value : m?.valeur;
@@ -2796,6 +3474,10 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             });
             kpi.measures = sorted;
             kpi.valeur = sorted.length ? sorted[sorted.length - 1].total : (kpi.valeur ?? null);
+            kpi.value = kpi.valeur;
+            kpi.label = kpi.label || kpi.titre || '';
+            kpi.unit = kpi.unit || kpi.unite || '';
+            kpi.target = kpi.target ?? kpi.cible ?? null;
         }
 
         function formatKpiPercent(current, target) {
@@ -2809,23 +3491,43 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             return String(Math.round(value * 100) / 100);
         }
 
+        function getDefaultMeasureTime() {
+            const d = new Date();
+            d.setMinutes(Math.round(d.getMinutes() / 15) * 15, 0, 0);
+            if (d.getMinutes() === 60) {
+                d.setHours(d.getHours() + 1, 0, 0, 0);
+            }
+            return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+        }
+
+        function durationToMinutes(duration) {
+            const raw = String(duration || '').trim().toLowerCase();
+            if (!raw) return 60;
+            const minMatch = raw.match(/^(\d+)\s*(min|m)$/);
+            if (minMatch) return Number(minMatch[1]) || 60;
+            const hourMatch = raw.match(/^(\d+)\s*h(?:\s*(\d+))?$/);
+            if (hourMatch) return (Number(hourMatch[1]) || 0) * 60 + (Number(hourMatch[2]) || 0) || 60;
+            const numeric = Number(raw);
+            return Number.isFinite(numeric) && numeric > 0 ? numeric : 60;
+        }
+
         function getLatestKpiMeasure(kpi) {
             if (!kpi || !Array.isArray(kpi.measures) || !kpi.measures.length) return null;
-            const sorted = [...kpi.measures].sort((a, b) => new Date(a?.date || 0).getTime() - new Date(b?.date || 0).getTime());
+            const sorted = [...kpi.measures].sort((a, b) => parseKpiMeasureTime(a) - parseKpiMeasureTime(b));
             return sorted[sorted.length - 1] || null;
         }
 
         function getRecentKpiMeasures(kpi, limit = 3) {
             if (!kpi || !Array.isArray(kpi.measures) || !kpi.measures.length) return [];
             return [...kpi.measures]
-                .sort((a, b) => new Date(b?.date || 0).getTime() - new Date(a?.date || 0).getTime())
+                .sort((a, b) => parseKpiMeasureTime(b) - parseKpiMeasureTime(a))
                 .slice(0, limit);
         }
 
         function getRelativeDayLabel(dateString) {
             if (!dateString) return 'Aucune mesure';
-            const t = new Date(dateString).getTime();
-            if (Number.isNaN(t)) return 'Aucune mesure';
+            const t = parseKpiMeasureTime(dateString);
+            if (!t || Number.isNaN(t)) return 'Aucune mesure';
             const now = new Date();
             now.setHours(0, 0, 0, 0);
             const then = new Date(t);
@@ -2836,13 +3538,34 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             return `Mis à jour il y a ${days} jours`;
         }
 
+        function formatKpiFrequencyShort(kpi) {
+            const raw = (kpi?.frequency || kpi?.frequence || 'Hebdomadaire').toLowerCase();
+            if (raw.includes('hebdo') || raw === 'weekly') return 'Hebdo';
+            if (raw.includes('quoti') || raw === 'daily') return 'Quotidien';
+            if (raw.includes('mens') || raw.includes('mois') || raw === 'monthly') return 'Mensuel';
+            if (raw.includes('trimes')) return 'Trimestriel';
+            if (raw.includes('ann')) return 'Annuel';
+            return kpi?.frequency || kpi?.frequence || 'Hebdo';
+        }
+
+        function formatVisionKpiMeta(kpi) {
+            if (!kpi) return 'Aucun KPI défini';
+            const latest = getLatestKpiMeasure(kpi);
+            return `${getRelativeDayLabel(latest?.date || '')} · ${formatKpiFrequencyShort(kpi)}`;
+        }
+
         function getJalonKpiByType(jalon, type) {
             if (!jalon) return null;
             const kpis = getJalonKpis(jalon);
+            // Explicit type field wins
             const found = kpis.find(k => (k?.type || '') === type);
             if (found) return found;
-            // backward compat: if only one KPI exists and no type, assume lagging
-            if (type === 'lagging' && kpis.length === 1 && !kpis[0]?.type) return kpis[0];
+            // No type fields on any KPI → fallback by position (first=lagging, second=leading)
+            const noneHaveType = kpis.every(k => !k?.type);
+            if (noneHaveType) {
+                if (type === 'lagging') return kpis[0] || null;
+                if (type === 'leading') return kpis[1] || null;
+            }
             return null;
         }
 
@@ -3918,16 +4641,16 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
         function initKPIChart(i, obj) {
             const container = document.getElementById(`kpiWrap-${i}`);
             if (!container) return;
-
-            // destroy existing chart
-            if (kpiCharts[i]) {
-                try { kpiCharts[i].remove(); } catch(e) {}
-                delete kpiCharts[i];
-            }
             container.innerHTML = '';
 
-            const kpiUnit = extractKPIUnit(obj.mesurable) || extractKPI(obj.mesurable) || '';
-            const measures = obj.measures || [];
+            const globalKpi = normalizeGlobalKpi(obj.globalKpi || {
+                label: obj.kpiLabel || obj.mesurable || '',
+                unit: obj.kpiUnit || extractKPIUnit(obj.mesurable) || '',
+                target: obj.kpiTarget ?? 400,
+                value: obj.kpiValue ?? null,
+                measures: obj.measures || [],
+            }, { M: obj.mesurable || '' });
+            const measures = Array.isArray(globalKpi.measures) ? globalKpi.measures : (obj.measures || []);
 
             // Empty state
             if (measures.length === 0) {
@@ -3963,111 +4686,81 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                 return;
             }
 
-            // Group by ISO date, average same-day values
+            // Aggregate by date (keep display date for labels)
             const byDate = {};
             measures.forEach(m => {
                 const iso = ddmmyyyyToIso(m.date);
-                if (!byDate[iso]) byDate[iso] = { sum: 0, count: 0, ids: [] };
-                byDate[iso].sum += m.value;
+                if (!byDate[iso]) byDate[iso] = { sum: 0, count: 0, displayDate: m.date };
+                const v = m.total !== undefined ? Number(m.total) : (m.cumulative !== undefined ? Number(m.cumulative) : Number(m.value ?? m.valeur ?? 0));
+                byDate[iso].sum += Number.isFinite(v) ? v : 0;
                 byDate[iso].count++;
-                byDate[iso].ids.push(m.id);
             });
-
-            const data = Object.keys(byDate).sort().map(date => ({
-                time: date,
-                value: Math.round(byDate[date].sum / byDate[date].count),
-                ids: byDate[date].ids,
+            const data = Object.keys(byDate).sort().map(iso => ({
+                iso,
+                displayDate: byDate[iso].displayDate,
+                value: Math.round(byDate[iso].sum / byDate[iso].count),
             }));
 
-            const maxVal = Math.max(...data.map(d => d.value));
+            const target = getKpiTargetValue(globalKpi) ?? (typeof obj.kpiTarget === 'number' ? obj.kpiTarget : 400);
 
-            // Chart dimensions
-            const w = container.offsetWidth || 600;
-            const h = (container.offsetHeight || 380) - 28;
+            // SVG dimensions (JSX exact)
+            const W = 760, H = 200;
+            const padL = 38, padR = 24, padT = 12, padB = 26;
+            const plotW = W - padL - padR;
+            const plotH = H - padT - padB;
+            const maxV = Math.max(...data.map(d => d.value), target * 0.35, 10);
+            const yTicks = 5;
+            const tickStep = Math.ceil(maxV / yTicks / 5) * 5 || 1;
+            const projRatio = 0.62;
+            const xFor = (idx, n) => padL + (idx / Math.max(1, n - 1)) * (plotW * projRatio);
+            const yFor = v => padT + plotH - (v / (tickStep * yTicks)) * plotH;
 
-            const chart = LightweightCharts.createChart(container, {
-                width: w,
-                height: h,
-                layout: {
-                    background: { color: 'transparent' },
-                    textColor: 'rgba(255,255,255,0.35)',
-                    fontFamily: 'Inter, sans-serif',
-                    fontSize: 11,
-                },
-                grid: {
-                    vertLines: { color: 'rgba(255,255,255,0.04)' },
-                    horzLines: { color: 'rgba(255,255,255,0.04)' },
-                },
-                crosshair: {
-                    vertLine: { color: 'rgba(255,255,255,0.12)', width: 1 },
-                    horzLine: { color: 'rgba(255,255,255,0.12)', width: 1 },
-                },
-                leftPriceScale: {
-                    visible: true,
-                    borderColor: 'rgba(255,255,255,0.06)',
-                    scaleMargins: { top: 0.12, bottom: 0.08 },
-                },
-                rightPriceScale: { visible: false },
-                timeScale: {
-                    borderColor: 'rgba(255,255,255,0.06)',
-                    rightOffset: 5,
-                    tickMarkFormatter: (time) => {
-                        if (typeof time === 'string') {
-                            const parts = time.split('-');
-                            return `${parts[2]}/${parts[1]}`;
-                        }
-                        return time;
-                    },
-                },
-                handleScroll: false,
-                handleScale: false,
-                watermark: { visible: false },
-                attributionLogo: false,
-            });
+            const n = data.length;
+            const lastX = xFor(n - 1, n);
+            const lastY = yFor(data[n - 1].value);
+            const targetY = yFor(Math.min(target, tickStep * yTicks));
+            const linePoints = data.map((d, idx) => `${xFor(idx, n)},${yFor(d.value)}`).join(' ');
 
-            const lineSeries = chart.addSeries(LightweightCharts.LineSeries, {
-                color: '#EE4408',
-                lineWidth: 2,
-                pointMarkersVisible: true,
-                priceScaleId: 'left',
-                crosshairMarkerRadius: 5,
-                crosshairMarkerBorderColor: '#EE4408',
-                crosshairMarkerBackgroundColor: '#EE4408',
-                priceFormat: {
-                    type: 'custom',
-                    minMove: 1,
-                    formatter: (price) => String(Math.round(price)),
-                },
-                autoscaleInfoProvider: () => ({
-                    priceRange: {
-                        minValue: 0,
-                        maxValue: maxVal > 0 ? Math.ceil(maxVal * 1.15) : 10,
-                    },
-                }),
-            });
+            // Y-axis grid + labels
+            const yGrid = Array.from({ length: yTicks + 1 }, (_, k) => {
+                const v = tickStep * k;
+                const y = yFor(v);
+                return `<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="rgba(255,253,246,0.05)" stroke-width="1"/>
+                        <text x="${padL - 8}" y="${y + 3}" text-anchor="end" font-size="10" fill="rgba(255,253,246,0.42)" font-family="'Inter',system-ui,sans-serif">${v}</text>`;
+            }).join('');
 
-            lineSeries.setData(data.map(d => ({ time: d.time, value: d.value })));
-            chart.timeScale().fitContent();
+            // X-axis date labels
+            const xLabels = data.map((d, idx) => {
+                if (n > 6 && idx % 2 !== 0 && idx !== n - 1) return '';
+                const label = d.displayDate ? d.displayDate.slice(0, 5) : '';
+                return `<text x="${xFor(idx, n)}" y="${H - 10}" text-anchor="middle" font-size="10" fill="rgba(255,253,246,0.42)" font-family="'Inter',system-ui,sans-serif">${label}</text>`;
+            }).join('');
 
-            kpiCharts[i] = chart;
+            // Dots
+            const dots = data.map((d, idx) => {
+                const x = xFor(idx, n);
+                const y = yFor(d.value);
+                const isLast = idx === n - 1;
+                return `<circle cx="${x}" cy="${y}" r="${isLast ? 4.5 : 3}" fill="#FFFDF6" stroke="${isLast ? '#111111' : 'none'}" stroke-width="${isLast ? 2.5 : 0}"/>`;
+            }).join('');
 
-            // Click on point → edit modal for first measure on that date
-            chart.subscribeClick(param => {
-                if (!param.point) return;
-                const seriesPoint = param.seriesData && param.seriesData.get(lineSeries);
-                if (!seriesPoint) return;
-                const isoDate = seriesPoint.time;
-                const entry = byDate[isoDate];
-                if (entry && entry.ids.length) openEditMeasureModal(i, entry.ids[0]);
-            });
+            container.innerHTML = `<svg width="100%" height="200" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
+                ${yGrid}
+                ${xLabels}
+                ${n > 0 ? `<line x1="${lastX}" y1="${lastY}" x2="${W - padR}" y2="${targetY}" stroke="#FFFDF6" stroke-width="1.5" stroke-dasharray="2 4" opacity="0.36" stroke-linecap="round"/>` : ''}
+                <line x1="${W - padR}" y1="${targetY - 6}" x2="${W - padR}" y2="${targetY + 6}" stroke="#FFFDF6" stroke-width="2" opacity="0.45"/>
+                ${n > 1 ? `<polyline points="${linePoints}" fill="none" stroke="#FFFDF6" stroke-width="2.25" stroke-linejoin="round" stroke-linecap="round"/>` : ''}
+                ${dots}
+                ${n > 0 ? `<g transform="translate(${lastX + 10},${lastY - 14})"><rect x="0" y="0" width="42" height="22" rx="4" fill="#FFFDF6"/><text x="21" y="15" text-anchor="middle" font-size="12" font-weight="700" fill="#080809" font-family="'Inter',system-ui,sans-serif">${data[n - 1].value}</text></g>` : ''}
+                <g transform="translate(${W - padR - 56},${targetY - 28})"><rect x="0" y="0" width="52" height="20" rx="4" fill="none" stroke="rgba(255,253,246,0.42)" stroke-width="1"/><text x="26" y="13.5" text-anchor="middle" font-size="10" font-weight="600" fill="rgba(255,253,246,0.72)" font-family="'Inter',system-ui,sans-serif" letter-spacing="0.04em">${Math.round(target)}</text></g>
+            </svg>`;
 
-            // Responsive
-            const ro = new ResizeObserver(() => {
-                const nw = container.offsetWidth;
-                const nh = container.offsetHeight - 28;
-                if (nw > 0 && nh > 0) chart.resize(nw, nh);
-            });
-            ro.observe(container);
+            // Sync "Actuel" chip with latest measure value
+            const actualChip = document.getElementById(`kpiChipActuel-${i}`);
+            if (actualChip && n > 0) {
+                const unit = globalKpi.unit || globalKpi.unite || obj.kpiUnit || extractKPIUnit(obj.mesurable) || '';
+                actualChip.textContent = `Actuel ${data[n - 1].value}${unit ? ' ' + unit : ''}`;
+            }
         }
 
         // (navigation gérée par switchProject)
@@ -4167,11 +4860,19 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
 
         function addMeasure(i, date, value) {
             if (!allObjectifs[i]) return;
+            if (!allObjectifs[i].globalKpi) {
+                allObjectifs[i].globalKpi = normalizeGlobalKpi({}, { M: allObjectifs[i].mesurable || '' });
+            }
             if (!allObjectifs[i].measures) allObjectifs[i].measures = [];
             allObjectifs[i].measures.push({ id: Date.now(), date, value, timestamp: parseDateString(date) });
-            allObjectifs[i].measures.sort((a,b) => a.timestamp - b.timestamp);
+            allObjectifs[i].measures.sort((a,b) => parseKpiMeasureTime(a) - parseKpiMeasureTime(b));
+            const latestValue = allObjectifs[i].measures.length ? allObjectifs[i].measures[allObjectifs[i].measures.length - 1].value : value;
+            allObjectifs[i].globalKpi.measures = allObjectifs[i].measures;
+            allObjectifs[i].globalKpi.value = latestValue;
+            allObjectifs[i].globalKpi.valeur = latestValue;
+            allObjectifs[i].kpiValue = latestValue;
             saveAllObjectifs();
-            setTimeout(() => initKPIChart(i, allObjectifs[i]), 80);
+            renderDashboard();
         }
 
         function openEditMeasureModal(i, measureId) {
@@ -4237,14 +4938,19 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             if (!obj || !obj.measures) return;
             const m = obj.measures.find(x => x.id === measureId);
             if (!m) return;
-            const idx = currentMeasureIndex;
             m.date = formatted;
             m.value = numericValue;
             m.timestamp = parseDateString(formatted);
-            obj.measures.sort((a,b) => a.timestamp - b.timestamp);
+            obj.measures.sort((a,b) => parseKpiMeasureTime(a) - parseKpiMeasureTime(b));
+            obj.globalKpi = normalizeGlobalKpi(obj.globalKpi || {}, { M: obj.mesurable || '' });
+            obj.globalKpi.measures = obj.measures;
+            const latestValue = obj.measures.length ? obj.measures[obj.measures.length - 1].value : numericValue;
+            obj.globalKpi.value = latestValue;
+            obj.globalKpi.valeur = latestValue;
+            obj.kpiValue = latestValue;
             saveAllObjectifs();
             closeEditMeasureModal();
-            setTimeout(() => initKPIChart(idx, obj), 80);
+            renderDashboard();
         }
 
         function deleteMeasureDirect() {
@@ -4255,10 +4961,15 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             if (!obj || !obj.measures) return;
             const idx = obj.measures.findIndex(m => m.id === measureId);
             if (idx !== -1) obj.measures.splice(idx, 1);
-            const chartIndex = currentMeasureIndex;
+            obj.globalKpi = normalizeGlobalKpi(obj.globalKpi || {}, { M: obj.mesurable || '' });
+            obj.globalKpi.measures = obj.measures;
+            const latest = obj.measures.length ? obj.measures[obj.measures.length - 1].value : 0;
+            obj.globalKpi.value = latest;
+            obj.globalKpi.valeur = latest;
+            obj.kpiValue = latest;
             saveAllObjectifs();
             closeEditMeasureModal();
-            setTimeout(() => initKPIChart(chartIndex, obj), 80);
+            renderDashboard();
         }
 
         // ──────────────────────────────────────────────────────────
@@ -4330,7 +5041,41 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             if (!s) return Date.now();
             const p = s.split('/');
             if (p.length === 3) return new Date(+p[2], +p[1]-1, +p[0]).getTime();
-            return Date.now();
+            const t = new Date(s).getTime();
+            return Number.isNaN(t) ? Date.now() : t;
+        }
+
+        function parseKpiMeasureTime(measureOrDate) {
+            const raw = typeof measureOrDate === 'string'
+                ? measureOrDate
+                : (measureOrDate?.timestamp ?? measureOrDate?.date ?? measureOrDate?.createdAt ?? '');
+            if (typeof raw === 'number' && Number.isFinite(raw)) return raw;
+            if (!raw) return 0;
+            const str = String(raw).trim();
+            if (/^\d{2}\/\d{2}\/\d{4}$/.test(str)) {
+                const [d, m, y] = str.split('/').map(Number);
+                return new Date(y, m - 1, d).getTime();
+            }
+            const frenchMonth = str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').match(/\b(janv|janvier|fev|fevr|fevrier|mars|avr|avril|mai|juin|juil|juillet|aout|sept|septembre|oct|octobre|nov|novembre|dec|decembre)\.?\s+(\d{4})\b/);
+            if (frenchMonth) {
+                const monthMap = {
+                    janv:0, janvier:0,
+                    fev:1, fevr:1, fevrier:1,
+                    mars:2,
+                    avr:3, avril:3,
+                    mai:4,
+                    juin:5,
+                    juil:6, juillet:6,
+                    aout:7,
+                    sept:8, septembre:8,
+                    oct:9, octobre:9,
+                    nov:10, novembre:10,
+                    dec:11, decembre:11,
+                };
+                return new Date(Number(frenchMonth[2]), monthMap[frenchMonth[1]], 1).getTime();
+            }
+            const t = new Date(str).getTime();
+            return Number.isNaN(t) ? 0 : t;
         }
 
         function formatDateDDMMYYYY(date) {
@@ -4406,7 +5151,7 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             if (expected.length === 0) return;
 
             // Use last known value for cumulatif
-            const sorted = [...obj.measures].sort((a,b) => (a.timestamp || parseDateString(a.date)) - (b.timestamp || parseDateString(b.date)));
+            const sorted = [...obj.measures].sort((a,b) => parseKpiMeasureTime(a) - parseKpiMeasureTime(b));
             let lastValue = sorted.length ? sorted[sorted.length - 1].value : 0;
 
             expected.forEach(d => {
@@ -4597,12 +5342,33 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                 : `Valeur actuelle : ${currentLabel}${unitSuffix}`;
             setDashDate('jalonKpiMeasureDate', new Date().toISOString().slice(0, 10));
             document.getElementById('jalonKpiMeasureValue').value = '';
+            document.getElementById('jalonKpiMeasureTime').value = getDefaultMeasureTime();
+            document.getElementById('jalonKpiMeasureDuration').value = '1h';
+            document.getElementById('jalonKpiMeasureNote').value = '';
             document.getElementById('jalonKpiMeasureDateError').textContent = '';
             document.getElementById('jalonKpiMeasureValueError').textContent = '';
             document.getElementById('jalonKpiMeasureValue').previousElementSibling.textContent = mode === 'incremental' ? 'Valeur à ajouter' : 'Nouvelle valeur';
             document.getElementById('jalonKpiMeasureSubmitBtn').textContent = 'Ajouter';
             openModal('jalonKpiMeasureModalOverlay');
             setTimeout(() => document.getElementById('jalonKpiMeasureValue').focus(), 100);
+        }
+
+        function openJalonKpiMeasureModalFromVision(i) {
+            const obj = allObjectifs[i];
+            if (!obj) return;
+            const jalons = Array.isArray(obj.jalons) ? obj.jalons : [];
+            if (!jalons.length) {
+                showToast('Créez un jalon avant d’ajouter une mesure KPI');
+                return;
+            }
+            const activeIndex = jalons.findIndex(j => j.statut !== 'completed');
+            const activeJalon = activeIndex >= 0 ? jalons[activeIndex] : jalons[jalons.length - 1];
+            const jalonId = activeJalon?.id || '';
+            if (!jalonId) {
+                showToast('Jalon actif introuvable');
+                return;
+            }
+            openJalonKpiMeasureModal(i, jalonId, 'lagging');
         }
 
         function openJalonKpiMeasureEditModal(i, jalonId, kpiType, measureId) {
@@ -4700,6 +5466,9 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             document.getElementById('jalonKpiMeasureContext').style.display = 'none';
             document.getElementById('jalonKpiMeasureContext').textContent = '';
             document.getElementById('jalonKpiMeasureSubmitBtn').textContent = 'Enregistrer';
+            document.getElementById('jalonKpiMeasureTime').value = '';
+            document.getElementById('jalonKpiMeasureDuration').value = '1h';
+            document.getElementById('jalonKpiMeasureNote').value = '';
         }
 
         function handleJalonKpiMeasureSubmit(e) {
@@ -4708,6 +5477,9 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             if (i === null || !kpiType) return;
             const date = (document.getElementById('jalonKpiMeasureDate').value || '').trim();
             const valueRaw = (document.getElementById('jalonKpiMeasureValue').value || '').trim();
+            const time = (document.getElementById('jalonKpiMeasureTime').value || '').trim();
+            const duration = (document.getElementById('jalonKpiMeasureDuration').value || '1h').trim();
+            const note = (document.getElementById('jalonKpiMeasureNote').value || '').trim();
             document.getElementById('jalonKpiMeasureDateError').textContent = '';
             document.getElementById('jalonKpiMeasureValueError').textContent = '';
             if (!date) {
@@ -4731,14 +5503,15 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
             if (!kpi) return;
             if (!Array.isArray(kpi.measures)) kpi.measures = [];
             const mode = getKpiMeasureMode(kpi, kpiType);
-            applyJalonKpiMeasure(i, jalonId, kpiType, { date, value, mode });
+            applyJalonKpiMeasure(i, jalonId, kpiType, { date, value, mode, time, duration, note });
             document.getElementById('jalonKpiMeasureValue').value = '';
+            document.getElementById('jalonKpiMeasureNote').value = '';
             setDashDate('jalonKpiMeasureDate', new Date().toISOString().slice(0, 10));
             renderDashboard();
             closeJalonKpiMeasureModal();
         }
 
-        function applyJalonKpiMeasure(i, jalonId, kpiType, { date, value, measureId = null, mode = null }) {
+        function applyJalonKpiMeasure(i, jalonId, kpiType, { date, value, measureId = null, mode = null, time = null, duration = null, note = null }) {
             const obj = allObjectifs[i];
             const jalon = (obj?.jalons || []).find(j => (j.id || '') === jalonId);
             if (!jalon || !Array.isArray(jalon.kpis)) return;
@@ -4751,14 +5524,21 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
                 if (!existingMeasure) return;
                 existingMeasure.date = date;
                 existingMeasure.value = value;
+                if (time !== null) existingMeasure.time = time;
+                if (duration !== null) existingMeasure.duration = duration;
+                if (note !== null) existingMeasure.note = note;
             } else {
                 kpi.measures.push({
                     id: `m-${Date.now()}-${Math.random().toString(16).slice(2)}`,
                     date,
-                    value
+                    value,
+                    time,
+                    duration,
+                    note
                 });
             }
-            normalizeKpiMeasures(kpi, resolvedMode === 'incremental' || resolvedMode === 'absolute' ? undefined : kpiType);
+            kpi.modeMesure = resolvedMode;
+            normalizeKpiMeasures(kpi, kpiType);
             saveAllObjectifs();
         }
 
@@ -4939,6 +5719,248 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
         }
     </script>
 
+    <!-- VISION VIEW STYLES -->
+    <style>
+        /* Vision quick grid — top 2 cards */
+        .vision-quick-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(560px, 620px);
+            gap: 16px;
+            margin-bottom: 18px;
+            align-items: stretch;
+            position: relative;
+            z-index: 30;
+            overflow: visible;
+        }
+        .vision-quick-card {
+            background: #111111;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 10px;
+            padding: 12px 14px;
+            min-height: 86px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-width: 0;
+            overflow: visible;
+        }
+        .vision-quick-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 7px;
+        }
+        .vision-quick-label {
+            font-size: 11px;
+            font-weight: 650;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: rgba(255,253,246,0.62);
+        }
+        .vision-quick-meta {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 11.5px;
+            font-weight: 600;
+            color: rgba(255,253,246,0.72);
+            white-space: nowrap;
+        }
+        .vision-jalon-title {
+            font-size: 15px;
+            line-height: 1.25;
+            font-weight: 700;
+            color: #FFFDF6;
+            letter-spacing: -0.005em;
+        }
+        .vision-jalon-meta {
+            margin-top: 3px;
+            font-size: 11.5px;
+            color: rgba(255,253,246,0.52);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .vision-jalon-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #111111;
+            border: 1.5px solid rgba(255,255,255,0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: transparent;
+            font-size: 10px;
+            line-height: 1;
+        }
+        .vision-jalon-dot.done { border-color: rgba(255,255,255,0.22); color: rgba(255,255,255,0.6); }
+        .vision-jalon-dot.active { background: #EE4408; border: none; box-shadow: 0 0 0 3px rgba(238,68,8,0.18); color: transparent; }
+        .vision-jalon-dot-label { display: flex; justify-content: center; font-size: 9px; font-weight: 600; white-space: nowrap; letter-spacing: 0.03em; }
+        .vision-jalon-dot-label.done { color: rgba(255,253,246,0.50); }
+        .vision-jalon-dot-label.active { color: #FFFDF6; }
+        .vision-jalon-dot-label.upcoming { color: rgba(255,253,246,0.20); }
+
+        /* Calendar card */
+        .vision-calendar-card {
+            display: grid;
+            grid-template-columns: minmax(220px, 0.46fr) minmax(250px, 0.8fr);
+            column-gap: 18px;
+            align-items: center;
+            padding: 16px 18px 16px 28px;
+            overflow: visible;
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: none;
+            justify-self: stretch;
+        }
+        .vision-stats-col { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
+        .vision-stat-label { color: rgba(255,253,246,0.40); font-weight: 650; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; }
+        .vision-stat-value-row { display: flex; align-items: baseline; gap: 6px; min-width: 0; flex-wrap: nowrap; white-space: nowrap; }
+        .vision-stat-big { font-size: 31px; font-weight: 720; color: #FFFDF6; letter-spacing: -0.02em; line-height: 1; }
+        .vision-stat-big.effort { font-size: 25px; font-weight: 710; }
+        .vision-stat-target { font-size: 13.5px; color: rgba(255,253,246,0.54); font-weight: 500; }
+        .vision-stat-target.effort { font-size: 13px; color: rgba(255,253,246,0.52); }
+        .vision-days-elapsed { display: flex; align-items: center; gap: 5px; flex-wrap: nowrap; }
+        .vision-days-dot { width: 6px; height: 6px; border-radius: 50%; background: #EE4408; flex-shrink: 0; }
+        .vision-days-label { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 10.5px; color: #B87820; font-weight: 600; letter-spacing: 0.02em; }
+        .vision-effort-sep { padding-top: 12px; border-top: 1px solid rgba(255,253,246,0.10); display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+
+        /* Calendar panel */
+        .vision-cal-panel { position: relative; display: flex; flex-direction: column; align-items: center; justify-self: center; align-self: center; z-index: 3; width: 100%; flex-shrink: 0; overflow: visible; }
+        .vision-cal-grid {
+            display: grid;
+            grid-template-columns: repeat(7, minmax(0, 1fr));
+            grid-template-rows: 14px repeat(4, 32px);
+            row-gap: 4px;
+            column-gap: 4px;
+            align-items: center;
+            position: relative;
+            justify-content: center;
+            width: min(100%, 390px);
+            min-width: 240px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .vision-cal-day-label {
+            font-size: 10.5px;
+            line-height: 14px;
+            height: 14px;
+            font-weight: 650;
+            color: rgba(255,253,246,0.30);
+            text-align: center;
+        }
+        .vision-cal-cell {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            height: 32px;
+            border-radius: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            justify-self: center;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .vision-cal-cell.has-data { cursor: pointer; }
+        .vision-cal-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,253,246,0.08);
+        }
+        .vision-cal-dot.active { background: rgba(255,253,246,0.58); }
+        .vision-cal-dot.result { width: 10px; height: 10px; background: rgba(238,68,8,0.86); box-shadow: 0 0 0 2px rgba(238,68,8,0.10); z-index: 2; }
+        .vision-cal-dot.today { box-shadow: 0 0 0 2px #111111, 0 0 0 3.5px rgba(255,253,246,0.50); }
+        .vision-cal-elapsed-band {
+            position: absolute;
+            height: 22px;
+            border-radius: 999px;
+            background: rgba(184,120,32,0.07);
+            border: 1px solid rgba(184,120,32,0.38);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Popover */
+        .vision-cal-popover {
+            position: absolute;
+            right: -8px;
+            width: 260px;
+            top: calc(100% + 10px);
+            z-index: 120;
+            background: #171717;
+            border: 1px solid rgba(255,253,246,0.12);
+            border-radius: 10px;
+            padding: 14px;
+            box-shadow: 0 18px 42px rgba(0,0,0,0.42);
+            pointer-events: none;
+            display: none;
+        }
+        .vision-cal-popover.visible { display: block; }
+        .vision-cal-popover-hd { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+        .vision-cal-type-badge { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; border-radius: 4px; padding: 2px 7px; }
+        .vision-cal-type-badge.result-badge { color: #EE4408; background: rgba(238,68,8,0.12); }
+        .vision-cal-type-badge.effort-badge { color: #FFFDF6; background: rgba(255,253,246,0.10); }
+        .vision-cal-popover-date { font-size: 11px; color: rgba(255,253,246,0.52); font-weight: 500; }
+        .vision-cal-popover-top { display: grid; grid-template-columns: 46px 1fr; gap: 6px; align-items: start; margin-bottom: 2px; }
+        .vision-cal-popover-hours { display: grid; grid-template-rows: repeat(4, 23px); color: rgba(255,253,246,0.42); font-size: 10.5px; font-family: 'JetBrains Mono', ui-monospace, monospace; align-items: start; }
+        .vision-cal-popover-schedule { position: relative; height: 92px; border-left: 1px solid rgba(255,253,246,0.08); background: repeating-linear-gradient(to bottom, transparent 0, transparent 22px, rgba(255,253,246,0.07) 23px); overflow: hidden; }
+        .vision-cal-popover-block { position: absolute; left: 10px; right: 0; top: 34px; min-height: 32px; border-radius: 7px; background: rgba(255,253,246,0.08); border-left: 3px solid #FFFDF6; padding: 6px 8px; }
+        .vision-cal-popover-block.result-block { border-left-color: #EE4408; }
+        .vision-cal-popover-block-title { font-size: 12px; font-weight: 700; color: #FFFDF6; }
+        .vision-cal-popover-block-sub { font-size: 9.5px; font-weight: 600; margin-bottom: 3px; }
+        .vision-cal-popover-block-meta { margin-top: 2px; font-size: 11px; color: rgba(255,253,246,0.58); }
+        .vision-cal-popover-note { margin-top: 10px; padding-top: 9px; border-top: 1px solid rgba(255,253,246,0.08); font-size: 11.5px; line-height: 1.45; color: rgba(255,253,246,0.68); }
+
+        @media (max-width: 900px) {
+            .vision-quick-grid { grid-template-columns: 1fr; }
+            .vision-calendar-card {
+                grid-template-columns: 1fr !important;
+                gap: 16px !important;
+                padding-left: 14px !important;
+                padding-right: 14px !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                justify-self: stretch !important;
+            }
+            .vision-calendar-card > div:first-child {
+                max-width: none !important;
+                width: 100% !important;
+            }
+        }
+
+        /* KPI chips — JSX faithful */
+        .kpi-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .kpi-chip { display: inline-flex; align-items: center; gap: 5px; min-height: 26px; padding: 4px 8px; border-radius: 6px; background: rgba(255,253,246,0.045); border: 1px solid rgba(255,253,246,0.08); color: rgba(255,253,246,0.72); font-size: 11.5px; font-weight: 600; white-space: nowrap; }
+
+        /* Vision KPI + SMART card overrides — match JSX exactly */
+        .db-row-kpi-smart { grid-template-columns: minmax(0,1.15fr) minmax(0,1fr) !important; gap: 18px !important; }
+        .db-view-pilotage .kpi-panel { background: #111111 !important; border: 1px solid rgba(255,255,255,0.08) !important; border-radius: 10px !important; padding: 24px !important; box-shadow: none !important; gap: 0 !important; min-height: 0 !important; }
+        .db-view-pilotage .kpi-panel::before, .db-view-pilotage .smart-panel::before { display: none; }
+        .db-view-pilotage .smart-panel { background: #111111 !important; border: 1px solid rgba(255,255,255,0.08) !important; border-radius: 10px !important; padding: 24px !important; box-shadow: none !important; }
+        .db-view-pilotage .kpi-panel-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; padding-bottom: 0; gap: 16px; }
+        .db-view-pilotage .kpi-panel-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: rgba(255,253,246,0.62); font-family: inherit; }
+        .db-view-pilotage .kpi-panel-desc { font-size: 15px; color: #FFFDF6; font-weight: 650; line-height: 1.3; max-width: 520px; white-space: normal; overflow: visible; text-overflow: unset; font-family: inherit; letter-spacing: 0; }
+        .db-view-pilotage .kpi-add-btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 14px; border-radius: 8px; background: #FFFDF6 !important; color: #080809 !important; border: none !important; font-size: 12.5px; font-weight: 600; height: auto; font-family: inherit; letter-spacing: 0; }
+        .db-view-pilotage .kpi-add-btn:hover { background: #FFFDF6 !important; color: #080809 !important; filter: brightness(0.95); }
+        .db-view-pilotage .kpi-chart-area { border-top: 1px solid rgba(255,253,246,0.06); padding: 4px 0 0 0; margin-top: 4px; height: auto; min-height: 200px; flex: 1; }
+        .db-view-pilotage .smart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+        .db-view-pilotage .smart-title { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,253,246,0.62); font-family: inherit; }
+        .db-view-pilotage .smart-edit-btn { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 6px 12px; border-radius: 7px; border: 1px solid rgba(255,253,246,0.14); background: transparent; color: #FFFDF6; font-size: 12px; font-weight: 500; letter-spacing: 0; font-family: inherit; }
+        .db-view-pilotage .smart-edit-btn:hover { background: rgba(255,253,246,0.06); border-color: rgba(255,253,246,0.22); color: #FFFDF6; }
+        .db-view-pilotage .smart-view { display: block; flex: none; }
+        .db-view-pilotage .smart-row { display: grid; grid-template-columns: 34px 1fr; gap: 14px; align-items: flex-start; padding: 14px 0; border-bottom: 1px solid rgba(255,253,246,0.07); }
+        .db-view-pilotage .smart-row:last-child { border-bottom: none; }
+        .db-view-pilotage .smart-letter { flex-shrink: 0; margin-top: 0; }
+        .db-view-pilotage .smart-letter-badge { width: 26px; height: 26px; background: rgba(255,253,246,0.06); border: 1px solid rgba(255,253,246,0.10); color: #FFFDF6; font-size: 11px; font-weight: 700; box-shadow: none; font-family: inherit; margin-top: 2px; }
+        .db-view-pilotage .smart-texts { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+        .db-view-pilotage .smart-sublabel { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,253,246,0.58); font-family: inherit; margin-bottom: 0; line-height: 1; }
+        .db-view-pilotage .smart-value { font-size: 13.5px; color: #FFFDF6; font-weight: 400; font-family: inherit; line-height: 1.45; letter-spacing: -0.005em; -webkit-line-clamp: unset; overflow: visible; display: block; }
+        body::before { display: none !important; }
+    </style>
+
     <!-- CUSTOM CALENDAR -->
     <div id="dashCalPopup" style="position:fixed;z-index:99999;background:#1a1c22;border:1px solid rgba(255,253,246,0.14);border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,0.7);padding:14px;width:256px;user-select:none;display:none;"></div>
     <style>
@@ -5038,6 +6060,110 @@ let jalonKpiMeasureModalState = { projectIndex: null, jalonId: null, kpiType: nu
         });
         document.addEventListener('keydown',function(e){if(e.key==='Escape')popup.style.display='none';});
     })();
+    </script>
+    <script>
+    // DEV UTIL — appelle loadInitialState() depuis la console pour charger les données JSX
+    function loadInitialState() {
+        const ts = d => new Date(d).getTime();
+        const data = [{
+            id: 'carryit-main', titre: 'CarryIT — 1000 clients',
+            specifique: 'Atteindre 1000 client mensuel sur Carry it qui paye 8e par mois',
+            mesurable: '[Nb Clients] Nombre de client payant',
+            kpiUnit: 'clients',
+            atteignable: "Objectif atteignable en mettant en place une stratégie d'acquisition progressive : 50 clients en 2025, 300 en mars 2026, 1000 en septembre 2026, via marketing organique, partenariats et automatisation du funnel d'inscription.",
+            realiste: "Objectif ambitieux mais cohérent avec une période de 22 mois : phase bêta (3-4 mois), lancement (T2 2026), puis montée progressive jusqu'à 1000 abonnés. Le marché du développement personnel et de la productivité SaaS permet ce type de traction avec un bon positionnement et des coûts faibles d'acquisition.",
+            temporel: '30 septembre 2026',
+            kpiTarget: 1000,
+            measures: [
+                {id:1001,date:'01/09/2025',value:0,timestamp:ts('2025-09-01')},
+                {id:1002,date:'11/10/2025',value:0,timestamp:ts('2025-10-11')},
+                {id:1003,date:'11/11/2025',value:0,timestamp:ts('2025-11-11')},
+                {id:1004,date:'11/12/2025',value:0,timestamp:ts('2025-12-11')},
+                {id:1005,date:'11/01/2026',value:0,timestamp:ts('2026-01-11')},
+                {id:1006,date:'11/02/2026',value:0,timestamp:ts('2026-02-11')},
+                {id:1007,date:'11/03/2026',value:0,timestamp:ts('2026-03-11')},
+                {id:1008,date:'23/03/2026',value:0,timestamp:ts('2026-03-23')},
+                {id:1009,date:'31/03/2026',value:0,timestamp:ts('2026-03-31')},
+                {id:1010,date:'01/05/2026',value:0,timestamp:ts('2026-05-01')},
+                {id:1011,date:'01/06/2026',value:0,timestamp:ts('2026-06-01')},
+                {id:1012,date:'03/06/2026',value:0,timestamp:ts('2026-06-03')},
+            ],
+            jalons: [
+                {
+                    id:'m1774256505290-0',titre:'Cadrage produit finalisé',title:'Cadrage produit finalisé',
+                    date:'Avr 2026',month:'MOIS 1',statut:'completed',
+                    validation:'3 documentations techniques sont faites (Cahier des charges, ICP, USP)',
+                    kpis:[
+                        {titre:'3 documentations techniques sont faites',valeur:3,cible:3,unite:'docs',type:'lagging',measures:[]},
+                        {titre:'heures par semaines',valeur:4,cible:10,unite:'Heures',type:'leading',measures:[]},
+                    ],
+                    taches:[
+                        {id:1776501095069,titre:"Revoir l'ux du dashboard",statut:'completed'},
+                        {id:1776849772563,titre:'Faire tester la V0 à Raphael',statut:'completed'},
+                        {id:1778422321483,titre:'Revoir les jalons (UX/UI)',statut:'completed'},
+                        {id:1778422329089,titre:'Pouvoir valider un jalon',statut:'completed'},
+                    ],
+                },
+                {
+                    id:'m1774284014187',titre:'POC V0',title:'POC V0',
+                    date:'Mai 2026',month:'ÉTAPE',statut:'pending',
+                    validation:'V0 utilisable de bout en bout et testée par 15 utilisateurs',
+                    kpis:[
+                        {
+                            titre:'Heures entre chaque Test',valeur:0,cible:15,unite:'H/entre chaque test',type:'leading',
+                            measures:[
+                                {date:'2026-05-11',value:1},{date:'2026-05-11',value:2},{date:'2026-05-11',value:3},
+                                {date:'2026-05-12',value:1},{date:'2026-05-18',value:2},{date:'2026-05-20',value:2},
+                                {date:'2026-05-23',value:6},{date:'2026-05-25',value:3},{date:'2026-05-27',value:5},
+                                {date:'2026-05-30',value:7},{date:'2026-06-02',value:12},{date:'2026-06-03',value:13},
+                                {date:'2026-06-04',value:23},{date:'2026-06-08',value:25},
+                            ],
+                        },
+                        {
+                            titre:'V0 utilisable de bout en bout et testée par 15 utilisateurs',valeur:5,cible:15,unite:'Beta testeur',type:'lagging',
+                            measures:[{date:'2026-05-27',value:4},{date:'2026-06-08',value:5}],
+                        },
+                    ],
+                    taches:[
+                        {id:1776501094018,titre:'Revoir la zone des moyens courts termes',statut:'pending',priority:'high'},
+                        {id:1776501094522,titre:'Revoir la zone de pilotage',statut:'completed'},
+                        {id:1778484711100,titre:'Revoir Unboarding',statut:'completed'},
+                        {id:1779729128777,titre:'Dashboard',statut:'completed'},
+                        {id:1779728644436,titre:'Revoir la LP',statut:'completed'},
+                        {id:1779728987704,titre:'Revoir les jalons',statut:'completed'},
+                        {id:1779728650052,titre:'Revoir la page SMART',statut:'pending'},
+                    ],
+                },
+                {
+                    id:'m1774256505290-1',titre:'MVP carry it PRODUCTION',title:'MVP carry it PRODUCTION',
+                    date:'Juin 2026',month:'CAP 50%',statut:'pending',
+                    validation:'le MVP est déployé en production et les fonctionnalités prévues dans le périmètre MVP sont opérationnelles',
+                    kpis:[{titre:'MVP déployé en production',valeur:null,cible:null,unite:'',type:'lagging',measures:[]}],
+                    taches:[
+                        {id:1778484323985,titre:"Réaliser l'événement de lancement",statut:'pending',priority:'high'},
+                        {id:1778531618768,titre:'Lancer une Trend Tiktok',statut:'pending'},
+                        {id:1779129669179,titre:'Buisness PLAN',statut:'pending'},
+                    ],
+                },
+                {
+                    id:'m1774256505290-2',titre:'Lancement V1.0 (MMP)',title:'Lancement V1.0 (MMP)',
+                    date:'Sept 2026',month:'OBJECTIF 100%',statut:'pending',
+                    validation:'[Nb Clients] Nombre de client payant',
+                    kpis:[{titre:'[Nb Clients] Nombre de client payant',valeur:null,cible:null,unite:'',type:'lagging',measures:[]}],
+                    taches:[],
+                },
+                {
+                    id:'m1776272382186',titre:'1000 clients mensuels',title:'1000 clients mensuels',
+                    date:'Sept 2026',month:'OBJECTIF 100%',statut:'pending',
+                    validation:'KPI [Nb Clients] = 1000 clients payants mensuels',
+                    kpis:[{titre:'KPI [Nb Clients] = 1000 clients payants mensuels',valeur:null,cible:null,unite:'',type:'lagging',measures:[]}],
+                    taches:[],
+                },
+            ],
+        }];
+        localStorage.setItem('carryItAllObjectifs', JSON.stringify(data));
+        location.reload();
+    }
     </script>
 </body>
 </html>
