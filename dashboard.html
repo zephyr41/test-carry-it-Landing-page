@@ -216,22 +216,22 @@
                 <input type="hidden" id="jalonKpiType">
                 <input type="hidden" id="jalonKpiMode">
                 <div class="m-field">
-                    <label class="m-label" for="jalonKpiTitre">Métrique</label>
-                    <span class="m-hint">ce que tu mesures</span>
-                    <input class="m-input" type="text" id="jalonKpiTitre" placeholder="km courus, clients onboardés…" autocomplete="off">
+                    <label class="m-label" for="jalonKpiTitre" id="jalonKpiTitreLabel">Métrique</label>
+                    <span class="m-hint" id="jalonKpiTitreHint">ce que tu mesures</span>
+                    <input class="m-input" type="text" id="jalonKpiTitre" placeholder="km courus, clients onboardés..." autocomplete="off">
                 </div>
                 <div class="m-row">
                     <div class="m-field">
-                        <label class="m-label" for="jalonKpiCible">Cible</label>
-                        <span class="m-hint">le seuil que tu veux atteindre</span>
+                        <label class="m-label" for="jalonKpiCible" id="jalonKpiCibleLabel">Cible</label>
+                        <span class="m-hint" id="jalonKpiCibleHint">le seuil que tu veux atteindre</span>
                         <input class="m-input" type="number" min="0" id="jalonKpiCible" placeholder="100">
                     </div>
                     <div class="m-field">
-                        <label class="m-label" for="jalonKpiUnite">Unité</label>
-                        <input class="m-input" type="text" id="jalonKpiUnite" placeholder="km, clients…">
+                        <label class="m-label" for="jalonKpiUnite" id="jalonKpiUniteLabel">Unité</label>
+                        <input class="m-input" type="text" id="jalonKpiUnite" placeholder="km, clients...">
                     </div>
                 </div>
-                <div class="m-field">
+                <div class="m-field" id="jalonKpiModeField">
                     <label class="m-label">Fréquence de saisie</label>
                     <select class="m-input" id="jalonKpiFrequency" style="cursor:pointer">
                         <option value="Quotidien">Quotidien</option>
@@ -3873,17 +3873,23 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             const accent = isLeading ? '#5BAEC9' : '#EE4408';
             const accentSoft = isLeading ? 'rgba(91,174,201,0.12)' : 'rgba(238,68,8,0.12)';
             const accentBorder = isLeading ? 'rgba(91,174,201,0.32)' : 'rgba(238,68,8,0.32)';
-            const typeLabel = isLeading ? "Indicateur d'avancée" : "Indicateur de résultat";
+            const typeLabel = isLeading ? "effort" : "résultat";
+            const actionLabel = isLeading ? "Ajouter un effort" : "Ajouter un résultat";
+            const defineLabel = isLeading ? "Définir l'effort" : "Définir le résultat";
             const typeShort = isLeading ? 'EFFORT' : 'RÉSULTAT';
-            const typeIcon = isLeading
-                ? `<svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2 9L5 6L7 8L10 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 4H10V7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`
-                : `<svg width="11" height="11" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.5"/><circle cx="6" cy="6" r="1.8" fill="currentColor"/></svg>`;
+            const emptyCopy = isLeading
+                ? "L'action mesurable que tu répètes pour faire avancer le jalon."
+                : "La preuve mesurable que le jalon est atteint.";
 
             if (!kpi || !(kpi.titre || kpi.label || kpi.name)) {
-                return `<div style="display:flex;flex-direction:column;gap:14px;padding:24px;border-radius:12px;border:1px dashed rgba(255,253,246,0.12);background:rgba(255,253,246,0.02)">
-                    <div style="font-size:13px;color:rgba(255,253,246,0.74);line-height:1.5">Aucun <strong style="color:#FFFDF6;font-weight:600">${escHtml(typeLabel)}</strong> défini. Mesure ${isLeading ? 'ce que tu fais' : 'ce que ça donne'}.</div>
-                    <button onclick="openJalonKpiModal(${i}, '${escHtml(jalon?.id||'')}', '${type}')" style="display:inline-flex;align-items:center;gap:9px;padding:12px 14px;border-radius:9px;border:1px solid ${accentBorder};background:${accentSoft};color:${accent};font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;text-align:left">
-                        + ${escHtml(typeLabel)}
+                return `<div style="min-height:138px;display:flex;flex-direction:column;justify-content:space-between;gap:18px;padding:18px;border-radius:12px;border:1px dashed rgba(255,253,246,0.14);background:rgba(255,253,246,0.015)">
+                    <div style="display:flex;flex-direction:column;gap:7px">
+                        <span style="font-size:10px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:${accent}">${typeShort}</span>
+                        <div style="font-size:13px;line-height:1.42;color:rgba(255,253,246,0.64);max-width:42ch">${escHtml(emptyCopy)}</div>
+                    </div>
+                    <button onclick="openJalonKpiModal(${i}, '${escHtml(jalon?.id||'')}', '${type}')" style="align-self:flex-start;display:inline-flex;align-items:center;gap:8px;padding:9px 11px;border-radius:8px;border:1px solid ${accentBorder};background:${accentSoft};color:${accent};font-size:12.5px;font-weight:650;font-family:inherit;cursor:pointer;text-align:left">
+                        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                        ${escHtml(defineLabel)}
                     </button>
                 </div>`;
             }
@@ -3893,65 +3899,50 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             const current = getKpiCurrentValue(kpi);
             const target = getKpiTargetValue(kpi);
             const currentStr = Number.isFinite(current) ? formatMetricValue(current) : '0';
-            const modeLabel = kpi.mode === 'current' ? 'Valeur actuelle' : 'Cumulatif';
-            const modeGlyph = kpi.mode === 'current' ? '→' : 'Σ';
             const frequency = kpi.frequency || kpi.frequence || 'Hebdomadaire';
             const latestMeasure = getLatestKpiMeasure(kpi);
             const lastUpdate = getRelativeDayLabel(latestMeasure?.date || '');
-            const sparkHtml = buildSparklineSvg(kpi.history, accent);
             const hasTarget = typeof target === 'number' && target > 0;
             const pct = hasTarget ? Math.min(100, Math.round((current / target) * 100)) : null;
 
             const jid = escHtml(jalon?.id||'');
-            const progressHtmlFull = hasTarget
-                ? `<div style="display:flex;align-items:center;gap:10px">
-                    <div style="flex:1;height:2.5px;background:rgba(255,253,246,0.08);border-radius:2px;overflow:hidden"><div style="height:100%;width:${Math.min(pct,100)}%;background:${accent};border-radius:2px"></div></div>
-                    <span style="font-size:11.5px;font-variant-numeric:tabular-nums;color:rgba(255,253,246,0.74);font-family:ui-monospace,monospace;white-space:nowrap">${pct}%</span>
-                    <span data-kpi-target-key="${i}-${jid}-${type}" onclick="startInlineKpiTargetEdit(${i},'${jid}','${type}')" title="Modifier la cible" style="font-size:11px;color:#666;font-family:ui-monospace,monospace;cursor:pointer">/ ${escHtml(String(target))}</span>
-                   </div>`
-                : `<button onclick="startInlineKpiTargetEdit(${i},'${jid}','${type}')" style="display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:6px;border:1px dashed rgba(255,253,246,0.14);color:rgba(255,253,246,0.5);font-size:12px;font-family:inherit;background:transparent;cursor:pointer;width:100%;text-align:left">
-                    <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-                    Définir une cible
-                   </button>`;
-
             const freqShort = (() => { const f=(kpi.frequency||kpi.frequence||'').toLowerCase(); if(f.includes('hebdo')||f==='weekly') return 'Hebdo'; if(f.includes('quoti')||f==='daily') return 'Quotidien'; if(f.includes('mois')||f==='monthly') return 'Mensuel'; return frequency; })();
+            const targetText = hasTarget ? `/ ${escHtml(formatMetricValue(target))}${unit ? ' ' + escHtml(unit) : ''}` : '';
+            const metaText = `${lastUpdate ? escHtml(lastUpdate) + ' · ' : ''}${escHtml(freqShort)}`;
 
             return `
-            <div style="background:#1C1C1E;border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:18px 18px 16px;display:flex;flex-direction:column;gap:0;position:relative">
-
-                <!-- HEADER: type label + menu -->
-                <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px">
+            <div style="background:#1C1C1E;border:1px solid rgba(255,255,255,0.09);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:13px;position:relative;min-height:138px">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
                     <span style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:${accent}">${typeShort}</span>
-                    <button onclick="openJalonKpiModal(${i},'${jid}','${type}')" style="width:26px;height:26px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);border-radius:7px;color:rgba(235,235,245,0.5);cursor:pointer" title="Modifier ce KPI">
+                    <button onclick="openJalonKpiModal(${i},'${jid}','${type}')" style="width:26px;height:26px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,0.09);background:transparent;border-radius:7px;color:rgba(235,235,245,0.48);cursor:pointer" title="Modifier ${escHtml(typeLabel)}" aria-label="Modifier ${escHtml(typeLabel)}">
                         <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" width="13" height="13"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                     </button>
                 </div>
 
-                <!-- TITLE -->
-                <div data-kpi-title-key="${i}-${jid}-${type}" onclick="startInlineKpiTitleEdit(${i},'${jid}','${type}')" title="Modifier" style="font-size:18px;font-weight:600;color:#FFFDF6;letter-spacing:-0.02em;line-height:1.2;cursor:text;margin-bottom:4px">${label}</div>
-
-                <!-- MAJ + frequency -->
-                <div style="font-size:11.5px;color:rgba(235,235,245,0.32);margin-bottom:16px">${lastUpdate ? escHtml(lastUpdate)+' · ' : ''}${escHtml(freqShort)}</div>
-
-                <!-- VALUE + + button -->
-                <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:14px">
-                    <div style="display:flex;align-items:baseline;gap:6px">
-                        <span style="font-size:52px;font-weight:500;color:#FFFDF6;letter-spacing:-0.05em;line-height:0.88;font-variant-numeric:tabular-nums">${escHtml(currentStr)}</span>
-                        ${unit ? `<span style="font-size:15px;color:rgba(235,235,245,0.45);padding-bottom:4px">${escHtml(unit)}</span>` : ''}
-                        ${hasTarget ? `<span style="font-size:13px;color:rgba(235,235,245,0.28);padding-bottom:4px">/ <span data-kpi-target-key="${i}-${jid}-${type}" onclick="startInlineKpiTargetEdit(${i},'${jid}','${type}')" style="cursor:pointer" title="Modifier">${escHtml(String(target))}</span></span>` : ''}
-                    </div>
-                    <button onclick="openJalonKpiMeasureModal(${i},'${jid}','${type}')" style="width:36px;height:36px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,0.14);background:rgba(255,255,255,0.06);border-radius:10px;color:rgba(235,235,245,0.7);cursor:pointer;font-size:22px;font-weight:300;line-height:1;padding-bottom:1px" title="Ajouter une mesure">+</button>
+                <div style="display:flex;flex-direction:column;gap:4px">
+                    <div data-kpi-title-key="${i}-${jid}-${type}" onclick="startInlineKpiTitleEdit(${i},'${jid}','${type}')" title="Modifier" style="font-size:15px;font-weight:650;color:#FFFDF6;letter-spacing:0;line-height:1.25;cursor:text">${label}</div>
+                    <div style="font-size:11.5px;color:rgba(235,235,245,0.36)">${metaText}</div>
                 </div>
 
-                <!-- PROGRESS BAR -->
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:auto">
+                    <div style="min-width:0">
+                        <div style="display:flex;align-items:baseline;gap:6px;white-space:nowrap">
+                            <span style="font-size:31px;font-weight:650;color:#FFFDF6;letter-spacing:0;line-height:1;font-variant-numeric:tabular-nums">${escHtml(currentStr)}</span>
+                            ${unit ? `<span style="font-size:13px;color:rgba(235,235,245,0.52)">${escHtml(unit)}</span>` : ''}
+                            ${hasTarget ? `<span style="font-size:12px;color:rgba(235,235,245,0.34)" data-kpi-target-key="${i}-${jid}-${type}" onclick="startInlineKpiTargetEdit(${i},'${jid}','${type}')" title="Modifier la cible">${targetText}</span>` : ''}
+                        </div>
+                    </div>
+                    <button onclick="openJalonKpiMeasureModal(${i},'${jid}','${type}')" style="flex-shrink:0;display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 11px;border:1px solid ${accentBorder};background:${accentSoft};border-radius:8px;color:${accent};cursor:pointer;font-size:12.5px;font-weight:650;font-family:inherit;line-height:1" title="${escHtml(actionLabel)}">
+                        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                        ${escHtml(actionLabel)}
+                    </button>
+                </div>
+
                 ${hasTarget
                     ? `<div style="height:3px;background:rgba(255,255,255,0.08);border-radius:9999px;overflow:hidden">
                         <div style="height:100%;width:${Math.min(pct,100)}%;background:${accent};border-radius:9999px;transition:width 0.8s cubic-bezier(0.25,1,0.4,1)"></div>
                        </div>`
-                    : `<button onclick="startInlineKpiTargetEdit(${i},'${jid}','${type}')" style="display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border-radius:7px;border:1px dashed rgba(255,255,255,0.14);color:rgba(235,235,245,0.4);font-size:12px;font-family:inherit;background:transparent;cursor:pointer;width:100%;text-align:left">
-                        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-                        Définir une cible
-                       </button>`}
+                    : ''}
             </div>`;
         }
 
@@ -3972,11 +3963,11 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                         <div style="display:flex;gap:10px;flex-wrap:wrap;width:100%">
                             <button onclick="openJalonKpiModal(${i},'${jid}','leading')" style="flex:1 1 200px;display:inline-flex;align-items:center;gap:9px;padding:12px 14px;border-radius:9px;border:1px solid rgba(91,174,201,0.36);background:rgba(91,174,201,0.06);color:#5BAEC9;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;text-align:left">
                                 <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-                                <span>Indicateur d'avancée<span style="display:block;margin-top:2px;font-size:11.5px;font-weight:500;color:rgba(255,253,246,0.55)">Ce que tu fais qui crée la traction</span></span>
+                                <span>Définir l'effort<span style="display:block;margin-top:2px;font-size:11.5px;font-weight:500;color:rgba(255,253,246,0.55)">L'action mesurable à répéter</span></span>
                             </button>
                             <button onclick="openJalonKpiModal(${i},'${jid}','lagging')" style="flex:1 1 200px;display:inline-flex;align-items:center;gap:9px;padding:12px 14px;border-radius:9px;border:1px solid rgba(238,68,8,0.36);background:rgba(238,68,8,0.06);color:#EE4408;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;text-align:left">
                                 <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-                                <span>Indicateur de résultat<span style="display:block;margin-top:2px;font-size:11.5px;font-weight:500;color:rgba(255,253,246,0.55)">Le résultat que tu vises</span></span>
+                                <span>Définir le résultat<span style="display:block;margin-top:2px;font-size:11.5px;font-weight:500;color:rgba(255,253,246,0.55)">La preuve que le jalon est atteint</span></span>
                             </button>
                         </div>
                     </div>
@@ -3985,27 +3976,27 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
 
             // Exactly 1 KPI → show it + dashed "add 2nd" button
             if (hasLeading && !hasLagging) {
-                return `<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:28px">
+                return `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-bottom:28px">
                     ${renderJalonKpiCardV2(leading, jalon, i, 'leading')}
-                    <button onclick="openJalonKpiModal(${i},'${jid}','lagging')" style="display:flex;align-items:center;justify-content:center;gap:8px;min-height:120px;padding:16px;border-radius:20px;border:1px dashed rgba(255,253,246,0.14);background:transparent;color:rgba(255,253,246,0.5);font-size:13px;font-weight:500;font-family:inherit;cursor:pointer" onmouseenter="this.style.borderColor='rgba(255,253,246,0.32)';this.style.color='#FFFDF6'" onmouseleave="this.style.borderColor='rgba(255,253,246,0.14)';this.style.color='rgba(255,253,246,0.5)'">
+                    <button onclick="openJalonKpiModal(${i},'${jid}','lagging')" style="display:flex;align-items:center;justify-content:center;gap:8px;min-height:138px;padding:16px;border-radius:12px;border:1px dashed rgba(255,253,246,0.14);background:transparent;color:rgba(255,253,246,0.5);font-size:13px;font-weight:500;font-family:inherit;cursor:pointer" onmouseenter="this.style.borderColor='rgba(255,253,246,0.32)';this.style.color='#FFFDF6'" onmouseleave="this.style.borderColor='rgba(255,253,246,0.14)';this.style.color='rgba(255,253,246,0.5)'">
                         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                        Résultat
+                        Définir le résultat
                     </button>
                 </div>`;
             }
             if (hasLagging && !hasLeading) {
                 // leading (Effort) toujours à gauche → placeholder gauche, lagging à droite
-                return `<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:28px">
-                    <button onclick="openJalonKpiModal(${i},'${jid}','leading')" style="display:flex;align-items:center;justify-content:center;gap:8px;min-height:120px;padding:16px;border-radius:20px;border:1px dashed rgba(255,253,246,0.14);background:transparent;color:rgba(255,253,246,0.5);font-size:13px;font-weight:500;font-family:inherit;cursor:pointer" onmouseenter="this.style.borderColor='rgba(255,253,246,0.32)';this.style.color='#FFFDF6'" onmouseleave="this.style.borderColor='rgba(255,253,246,0.14)';this.style.color='rgba(255,253,246,0.5)'">
+                return `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-bottom:28px">
+                    <button onclick="openJalonKpiModal(${i},'${jid}','leading')" style="display:flex;align-items:center;justify-content:center;gap:8px;min-height:138px;padding:16px;border-radius:12px;border:1px dashed rgba(255,253,246,0.14);background:transparent;color:rgba(255,253,246,0.5);font-size:13px;font-weight:500;font-family:inherit;cursor:pointer" onmouseenter="this.style.borderColor='rgba(255,253,246,0.32)';this.style.color='#FFFDF6'" onmouseleave="this.style.borderColor='rgba(255,253,246,0.14)';this.style.color='rgba(255,253,246,0.5)'">
                         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                        Effort
+                        Définir l'effort
                     </button>
                     ${renderJalonKpiCardV2(lagging, jalon, i, 'lagging')}
                 </div>`;
             }
 
             // Both KPIs → Effort (leading) gauche, Résultat (lagging) droite
-            return `<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:28px">
+            return `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-bottom:28px">
                 ${renderJalonKpiCardV2(leading, jalon, i, 'leading')}
                 ${renderJalonKpiCardV2(lagging, jalon, i, 'lagging')}
             </div>`;
@@ -5426,9 +5417,25 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             jalonKpiModalState = { projectIndex: i, jalonId, kpiType, measureId: null };
             const kpi = (jalon.kpis || []).find(k => (k?.type || '') === kpiType) || {};
             const isLeading = kpiType === 'leading';
-            document.getElementById('jalonKpiModalTitle').textContent = isLeading ? 'Configurer le KPI Effort' : 'Configurer le KPI Résultat';
+            document.getElementById('jalonKpiModalTitle').textContent = isLeading ? "Définir l'effort suivi" : 'Définir le résultat visé';
             document.getElementById('jalonKpiType').value = kpiType;
-            setKpiMode(getKpiMeasureMode(kpi, kpiType));
+            setKpiMode(isLeading ? 'incremental' : getKpiMeasureMode(kpi, kpiType));
+            const titleLabel = document.getElementById('jalonKpiTitreLabel');
+            const titleHint = document.getElementById('jalonKpiTitreHint');
+            const titleInput = document.getElementById('jalonKpiTitre');
+            const targetLabel = document.getElementById('jalonKpiCibleLabel');
+            const targetHint = document.getElementById('jalonKpiCibleHint');
+            const unitLabel = document.getElementById('jalonKpiUniteLabel');
+            const unitInput = document.getElementById('jalonKpiUnite');
+            const modeField = document.getElementById('jalonKpiModeField');
+            if (titleLabel) titleLabel.textContent = isLeading ? 'Effort suivi' : 'Résultat suivi';
+            if (titleHint) titleHint.textContent = isLeading ? "l'action que tu veux répéter" : 'la preuve que le jalon avance';
+            if (titleInput) titleInput.placeholder = isLeading ? 'Tests utilisateurs, appels qualifiés...' : 'Beta testeurs, clients payants...';
+            if (targetLabel) targetLabel.textContent = isLeading ? 'Cible par période' : 'Cible';
+            if (targetHint) targetHint.textContent = isLeading ? 'combien tu veux en faire' : 'le seuil que tu veux atteindre';
+            if (unitLabel) unitLabel.textContent = isLeading ? "Unité d'effort" : 'Unité';
+            if (unitInput) unitInput.placeholder = isLeading ? 'tests, appels, sessions...' : 'clients, beta testeurs...';
+            if (modeField) modeField.style.display = isLeading ? 'none' : '';
             const critereSuggestion = !isLeading && !(kpi.titre) ? (jalon.critere || jalon.kpi || '') : '';
             document.getElementById('jalonKpiTitre').value = kpi.titre || critereSuggestion;
             document.getElementById('jalonKpiUnite').value = kpi.unite || '';
@@ -5452,7 +5459,9 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             const { projectIndex: i, jalonId } = jalonKpiModalState;
             if (i === null) return;
             const type = (document.getElementById('jalonKpiType').value || 'lagging').trim();
-            const measureMode = (document.getElementById('jalonKpiMode').value || getKpiMeasureMode(null, type)).trim();
+            const measureMode = type === 'leading'
+                ? 'incremental'
+                : (document.getElementById('jalonKpiMode').value || getKpiMeasureMode(null, type)).trim();
             const titre = document.getElementById('jalonKpiTitre').value.trim();
             const cibleRaw = document.getElementById('jalonKpiCible').value.trim();
             const unite = document.getElementById('jalonKpiUnite').value.trim();
@@ -5506,22 +5515,29 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             const unitSuffix = (kpi.unite || '').trim() ? ` ${kpi.unite.trim()}` : '';
             const mode = getKpiMeasureMode(kpi, kpiType);
             const context = document.getElementById('jalonKpiMeasureContext');
+            const isLeading = kpiType === 'leading';
             jalonKpiMeasureModalState = { projectIndex: i, jalonId, kpiType, measureId: null };
-            document.querySelector('#jalonKpiMeasureModalOverlay .m-title').textContent = 'Ajouter une mesure';
-            document.getElementById('jalonKpiMeasureSubtitle').textContent = mode === 'incremental'
-                ? `Ajoutez une progression pour ${kpi.titre}.`
-                : `Ajoutez une nouvelle valeur pour ${kpi.titre}.`;
+            document.querySelector('#jalonKpiMeasureModalOverlay .m-title').textContent = isLeading ? 'Ajouter un effort' : 'Ajouter un résultat';
+            document.getElementById('jalonKpiMeasureSubtitle').textContent = isLeading
+                ? `Note ce que tu as fait pour ${kpi.titre}.`
+                : (mode === 'incremental'
+                    ? `Ajoute une progression pour ${kpi.titre}.`
+                    : `Mets à jour la valeur de ${kpi.titre}.`);
             context.style.display = 'block';
-            context.textContent = mode === 'incremental'
-                ? `Total actuel : ${currentLabel}${unitSuffix}`
-                : `Valeur actuelle : ${currentLabel}${unitSuffix}`;
+            context.textContent = isLeading
+                ? `Déjà fait : ${currentLabel}${unitSuffix}`
+                : (mode === 'incremental'
+                    ? `Total actuel : ${currentLabel}${unitSuffix}`
+                    : `Valeur actuelle : ${currentLabel}${unitSuffix}`);
             setDashDate('jalonKpiMeasureDate', new Date().toISOString().slice(0, 10));
             document.getElementById('jalonKpiMeasureValue').value = '';
             document.getElementById('jalonKpiMeasureNote').value = '';
             document.getElementById('jalonKpiMeasureDateError').textContent = '';
             document.getElementById('jalonKpiMeasureValueError').textContent = '';
-            document.getElementById('jalonKpiMeasureValue').previousElementSibling.textContent = mode === 'incremental' ? 'Valeur à ajouter' : 'Nouvelle valeur';
-            document.getElementById('jalonKpiMeasureSubmitBtn').textContent = 'Ajouter';
+            document.getElementById('jalonKpiMeasureValue').previousElementSibling.textContent = isLeading
+                ? (unitSuffix ? `Quantité (${kpi.unite.trim()})` : 'Quantité réalisée')
+                : (mode === 'incremental' ? 'Valeur à ajouter' : 'Nouvelle valeur');
+            document.getElementById('jalonKpiMeasureSubmitBtn').textContent = isLeading ? "Enregistrer l'effort" : 'Enregistrer la mesure';
             openModal('jalonKpiMeasureModalOverlay');
             requestAnimationFrame(initJalonKpiTimeline);
             setTimeout(() => document.getElementById('jalonKpiMeasureValue').focus(), 100);
@@ -5654,19 +5670,20 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             const time = (document.getElementById('jalonKpiMeasureTime').value || '').trim();
             const duration = (document.getElementById('jalonKpiMeasureDuration').value || '1h').trim();
             const note = (document.getElementById('jalonKpiMeasureNote').value || '').trim();
+            const isLeading = kpiType === 'leading';
             document.getElementById('jalonKpiMeasureDateError').textContent = '';
             document.getElementById('jalonKpiMeasureValueError').textContent = '';
             if (!date) {
-                document.getElementById('jalonKpiMeasureDateError').textContent = 'La date est requise.';
+                document.getElementById('jalonKpiMeasureDateError').textContent = 'Choisis une date.';
                 return;
             }
             if (valueRaw === '') {
-                document.getElementById('jalonKpiMeasureValueError').textContent = 'La valeur est requise.';
+                document.getElementById('jalonKpiMeasureValueError').textContent = isLeading ? 'Indique la quantité réalisée.' : 'Indique la valeur mesurée.';
                 return;
             }
             const value = Number(valueRaw);
             if (!Number.isFinite(value)) {
-                document.getElementById('jalonKpiMeasureValueError').textContent = 'Valeur invalide.';
+                document.getElementById('jalonKpiMeasureValueError').textContent = 'Entre un nombre valide.';
                 return;
             }
             const obj = allObjectifs[i];
