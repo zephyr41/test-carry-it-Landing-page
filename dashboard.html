@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/styles.css">
 
-    <link rel="stylesheet" href="assets/css/dashboard.css?v=70">
+    <link rel="stylesheet" href="assets/css/dashboard.css?v=71">
     <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 </head>
 <body>
@@ -241,26 +241,9 @@
                 </div>
                 <div class="m-field">
                     <label class="m-label">Mode de saisie</label>
-                    <span class="m-hint">impacte le calcul du total</span>
                     <div class="m-mode-toggle">
-                        <button type="button" class="m-mode-btn" data-mode="incremental" onclick="setKpiMode('incremental')">
-                            <span class="m-mode-icon">
-                                <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M12 4v16m8-8H4"/></svg>
-                            </span>
-                            <span class="m-mode-body">
-                                <span class="m-mode-title">Cumulatif</span>
-                                <span class="m-mode-example">ex : 5 km → s'ajoute au total</span>
-                            </span>
-                        </button>
-                        <button type="button" class="m-mode-btn" data-mode="absolute" onclick="setKpiMode('absolute')">
-                            <span class="m-mode-icon">
-                                <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" stroke-width="2.2"/><path stroke-linecap="round" stroke-width="2.2" d="M12 2v3m0 14v3M2 12h3m14 0h3"/></svg>
-                            </span>
-                            <span class="m-mode-body">
-                                <span class="m-mode-title">Instantané</span>
-                                <span class="m-mode-example">ex : 150 abonnés → remplace</span>
-                            </span>
-                        </button>
+                        <button type="button" class="m-mode-btn" data-mode="incremental" onclick="setKpiMode('incremental')">Cumulatif</button>
+                        <button type="button" class="m-mode-btn" data-mode="absolute" onclick="setKpiMode('absolute')">Instantané</button>
                     </div>
                 </div>
                 <div class="m-error" id="jalonKpiError"></div>
@@ -1018,18 +1001,21 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                     <div class="db-view db-view-pilotage ${currentDashboardView === 'pilotage' ? 'active' : ''}"
                         data-view="pilotage"
                         ${currentDashboardView === 'pilotage' ? '' : 'hidden'}>
-                        <div class="db-section">
+                        <div class="db-section vision-section">
                             <!-- Row 1 : Vision long terme — Jalon actif + Résultat/Calendrier -->
                             <div class="vision-quick-grid">
                                 ${buildVisionJalonActifCard(obj, i)}
                                 ${buildVisionCalendarCard(obj, i)}
                             </div>
                             <!-- Row 2 : BlocVision — section label + KPI + SMART (BlocVision.jsx exact) -->
-                            <div style="margin-bottom:32px">
-                            <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.16em;color:rgba(255,253,246,0.72);margin-bottom:18px">Vision · Long terme</div>
-                            <div style="display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:18px;align-items:start">
+                            <div class="vision-support-area">
+                            <div class="vision-support-head">
+                                <span>Vision · Long terme</span>
+                                <p>Objectif, mesure principale et cadre SMART.</p>
+                            </div>
+                            <div class="vision-reference-grid">
                                 <!-- KPI CARD — BlocVision.jsx KPICard exact -->
-                                <div id="kpiPanel-${i}" style="background:#111111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:24px;display:flex;flex-direction:column;min-width:0">
+                                <div class="vision-kpi-card" id="kpiPanel-${i}" style="background:#111111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:24px;display:flex;flex-direction:column;min-width:0">
                                     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;gap:16px">
                                         <div style="display:flex;flex-direction:column;gap:5px;min-width:0">
                                             <span style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,253,246,0.62);white-space:nowrap">KPI global</span>
@@ -1048,7 +1034,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                                 </div>
 
                                 <!-- SMART CARD — BlocVision.jsx SmartCard exact -->
-                                <div style="background:#111111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:24px;display:flex;flex-direction:column;min-width:0">
+                                <div class="vision-smart-card" style="background:#111111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:24px;display:flex;flex-direction:column;min-width:0">
                                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
                                         <span style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,253,246,0.62);white-space:nowrap">Cadre SMART</span>
                                         <button type="button" onclick="enterSmartEdit(${i})" style="display:inline-flex;align-items:center;gap:6px;min-height:32px;padding:6px 12px;border-radius:7px;background:transparent;color:#FFFDF6;border:1px solid rgba(255,253,246,0.14);font-size:12px;font-weight:500;cursor:pointer;font-family:inherit">
@@ -1078,10 +1064,10 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                                 </div>
                             </div>
                             </div>
-                        </div>
 
-                        <!-- Citation -->
-                        <p class="db-citation" style="margin-top:16px">"C'est quand t'as envie d'abandonner que tout commence."</p>
+                            <!-- Citation -->
+                            <p class="db-citation vision-citation">"C'est quand t'as envie d'abandonner que tout commence."</p>
+                        </div>
                     </div>
 
                     <div class="db-view db-view-jalons ${currentDashboardView === 'jalons' ? 'active' : ''}"
@@ -1448,6 +1434,22 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                     const hoursHtml = displayHours.map(h => `<span>${String(h).padStart(2,'0')}:00</span>`).join('');
                     const schedStyle = timeOfDay ? '' : 'overflow:visible;display:flex;align-items:center;';
                     const blockPositionStyle = blockTop !== null ? `top:${blockTop}px;min-height:${blockHeight}px` : 'position:relative;top:auto';
+                    const parseDeltaValue = value => {
+                        if (value === null || value === undefined || value === '' || value === 'null' || value === 'undefined') return null;
+                        const parsed = Number(String(value).replace(/\s/g, '').replace(',', '.'));
+                        return Number.isFinite(parsed) ? parsed : null;
+                    };
+                    const buildDeltaBadge = (prev, next, unit, isResultTone) => {
+                        const previous = parseDeltaValue(prev);
+                        const current = parseDeltaValue(next);
+                        if (previous === null || current === null) return '';
+                        const delta = current - previous;
+                        const sign = delta > 0 ? '+' : delta < 0 ? '-' : '';
+                        const label = `${sign}${formatMetricValue(Math.abs(delta))}${unit ? ' ' + escHtml(unit) : ''}`;
+                        const color = isResultTone ? 'rgba(238,68,8,0.92)' : 'rgba(255,253,246,0.88)';
+                        const background = isResultTone ? 'rgba(238,68,8,0.12)' : 'rgba(255,253,246,0.09)';
+                        return `<span class="vision-cal-popover-delta" style="color:${color};background:${background}">${label}</span>`;
+                    };
 
                     let blockInner = '';
                     if (isResult) {
@@ -1457,10 +1459,14 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                         const valDisplay = (rp && rp !== '' && rp !== 'null' && rp !== 'undefined')
                             ? `${rp} <span style="color:rgba(255,253,246,0.4);font-weight:400">→</span> ${rv}`
                             : rv;
+                        const deltaBadge = buildDeltaBadge(rp, rv, ru, true);
                         blockInner = `
                             <div class="vision-cal-popover-block result-block" style="${blockPositionStyle}">
                                 <div class="vision-cal-popover-block-sub" style="color:rgba(238,68,8,0.8)">${escHtml(ru) || 'Résultat'}${timeOfDay ? ' · ' + timeOfDay : ''}</div>
-                                <div class="vision-cal-popover-block-title">${valDisplay}</div>
+                                <div class="vision-cal-popover-value-line">
+                                    <div class="vision-cal-popover-block-title">${valDisplay}</div>
+                                    ${deltaBadge}
+                                </div>
                                 <div style="margin-top:5px;display:flex;align-items:center;gap:4px">
                                     <span style="font-size:10px;color:#EE4408;font-weight:600">↺</span>
                                     <span style="font-size:10px;color:rgba(255,253,246,0.45);font-weight:500">Effort repart à 0</span>
@@ -1474,10 +1480,14 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                         const valDisplay = (ep && ep !== '' && ep !== 'null' && ep !== 'undefined')
                             ? `${ep} <span style="color:rgba(255,253,246,0.4);font-weight:400">→</span> ${ev}`
                             : ev;
+                        const deltaBadge = buildDeltaBadge(ep, ev, eu, false);
                         blockInner = `
                             <div class="vision-cal-popover-block" style="${blockPositionStyle}">
                                 <div class="vision-cal-popover-block-sub" style="color:rgba(255,253,246,0.48)">${escHtml(el) || type}${timeOfDay ? ' · ' + timeOfDay : ''}</div>
-                                <div class="vision-cal-popover-block-title">${valDisplay}</div>
+                                <div class="vision-cal-popover-value-line">
+                                    <div class="vision-cal-popover-block-title">${valDisplay}</div>
+                                    ${deltaBadge}
+                                </div>
                                 ${eu ? `<div class="vision-cal-popover-block-meta">${escHtml(eu)}</div>` : ''}
                             </div>`;
                     }
@@ -5954,11 +5964,16 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
     <!-- VISION VIEW STYLES -->
     <style>
         /* Vision quick grid — top 2 cards */
+        .vision-section {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
         .vision-quick-grid {
             display: grid;
-            grid-template-columns: minmax(0, 1fr) minmax(560px, 620px);
-            gap: 16px;
-            margin-bottom: 18px;
+            grid-template-columns: minmax(280px, 0.82fr) minmax(620px, 1.38fr);
+            gap: 18px;
+            margin-bottom: 26px;
             align-items: stretch;
             position: relative;
             z-index: 30;
@@ -5968,8 +5983,8 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             background: #111111;
             border: 1px solid rgba(255,255,255,0.08);
             border-radius: 10px;
-            padding: 12px 14px;
-            min-height: 86px;
+            padding: 16px 18px;
+            min-height: 128px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -5998,7 +6013,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             white-space: nowrap;
         }
         .vision-jalon-title {
-            font-size: 15px;
+            font-size: 16px;
             line-height: 1.25;
             font-weight: 700;
             color: #FFFDF6;
@@ -6035,10 +6050,10 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
         /* Calendar card */
         .vision-calendar-card {
             display: grid;
-            grid-template-columns: minmax(220px, 0.46fr) minmax(250px, 0.8fr);
-            column-gap: 18px;
+            grid-template-columns: minmax(220px, 0.42fr) minmax(280px, 0.9fr);
+            column-gap: 24px;
             align-items: center;
-            padding: 16px 18px 16px 28px;
+            padding: 18px 22px 18px 28px;
             overflow: visible;
             position: relative;
             z-index: 2;
@@ -6073,6 +6088,61 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             min-width: 240px;
             margin-left: auto;
             margin-right: auto;
+        }
+        .vision-support-area {
+            margin-bottom: 22px;
+            padding-top: 4px;
+        }
+        .vision-support-head {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 18px;
+            margin-bottom: 14px;
+            padding-top: 2px;
+        }
+        .vision-support-head span {
+            font-size: 11px;
+            font-weight: 650;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            color: rgba(255,253,246,0.72);
+            white-space: nowrap;
+        }
+        .vision-support-head p {
+            margin: 0;
+            max-width: 420px;
+            text-align: right;
+            font-size: 12px;
+            line-height: 1.35;
+            color: rgba(255,253,246,0.42);
+        }
+        .vision-reference-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.42fr) minmax(340px, 0.78fr);
+            gap: 18px;
+            align-items: start;
+        }
+        .vision-kpi-card {
+            min-height: 318px !important;
+            padding: 26px !important;
+        }
+        .vision-smart-card {
+            padding: 22px !important;
+            background: rgba(17,17,17,0.72) !important;
+        }
+        .vision-smart-card [id^="smartView"] > div[style*="grid-template-columns"] {
+            padding-top: 12px !important;
+            padding-bottom: 12px !important;
+        }
+        .vision-citation {
+            align-self: flex-end;
+            max-width: 520px;
+            margin: 2px 0 0 !important;
+            padding-top: 14px;
+            border-top: 1px solid rgba(255,253,246,0.07);
+            text-align: right;
+            color: rgba(255,253,246,0.42) !important;
         }
         .vision-cal-day-label {
             font-size: 10.5px;
@@ -6141,13 +6211,18 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
         .vision-cal-popover-schedule { position: relative; height: 92px; border-left: 1px solid rgba(255,253,246,0.08); background: repeating-linear-gradient(to bottom, transparent 0, transparent 22px, rgba(255,253,246,0.07) 23px); overflow: hidden; }
         .vision-cal-popover-block { position: absolute; left: 10px; right: 0; top: 34px; min-height: 32px; border-radius: 7px; background: rgba(255,253,246,0.08); border-left: 3px solid #FFFDF6; padding: 6px 8px; }
         .vision-cal-popover-block.result-block { border-left-color: #EE4408; }
+        .vision-cal-popover-value-line { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-width: 0; }
         .vision-cal-popover-block-title { font-size: 12px; font-weight: 700; color: #FFFDF6; }
+        .vision-cal-popover-delta { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; min-height: 18px; padding: 2px 6px; border-radius: 5px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 10px; font-weight: 700; line-height: 1; }
         .vision-cal-popover-block-sub { font-size: 9.5px; font-weight: 600; margin-bottom: 3px; }
         .vision-cal-popover-block-meta { margin-top: 2px; font-size: 11px; color: rgba(255,253,246,0.58); }
         .vision-cal-popover-note { margin-top: 10px; padding-top: 9px; border-top: 1px solid rgba(255,253,246,0.08); font-size: 11.5px; line-height: 1.45; color: rgba(255,253,246,0.68); }
 
         @media (max-width: 900px) {
-            .vision-quick-grid { grid-template-columns: 1fr; }
+            .vision-quick-grid {
+                grid-template-columns: 1fr;
+                margin-bottom: 22px;
+            }
             .vision-calendar-card {
                 grid-template-columns: 1fr !important;
                 gap: 16px !important;
@@ -6160,6 +6235,28 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             .vision-calendar-card > div:first-child {
                 max-width: none !important;
                 width: 100% !important;
+            }
+            .vision-support-head {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 6px;
+                margin-bottom: 12px;
+            }
+            .vision-support-head p {
+                max-width: none;
+                text-align: left;
+            }
+            .vision-reference-grid {
+                grid-template-columns: 1fr;
+            }
+            .vision-kpi-card,
+            .vision-smart-card {
+                padding: 20px !important;
+            }
+            .vision-citation {
+                align-self: stretch;
+                max-width: none;
+                text-align: left;
             }
         }
 

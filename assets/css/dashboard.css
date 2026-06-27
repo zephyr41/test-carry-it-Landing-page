@@ -4390,21 +4390,17 @@ select.m-input {
     height: 38px;
 }
 #jalonKpiModalOverlay .m-mode-toggle {
-    gap: 5px;
+    flex-direction: row;
+    gap: 6px;
 }
 #jalonKpiModalOverlay .m-mode-btn {
-    padding: 7px 10px;
-    gap: 8px;
-}
-#jalonKpiModalOverlay .m-mode-icon {
-    width: 24px;
-    height: 24px;
-}
-#jalonKpiModalOverlay .m-mode-title {
-    font-size: 11.5px;
-}
-#jalonKpiModalOverlay .m-mode-example {
-    font-size: 9.5px;
+    flex: 1;
+    width: auto;
+    padding: 8px 12px;
+    justify-content: center;
+    border-left-width: 1px;
+    font-size: 12.5px;
+    font-weight: 600;
 }
 #jalonKpiModalOverlay .m-btns {
     margin-top: 16px;
