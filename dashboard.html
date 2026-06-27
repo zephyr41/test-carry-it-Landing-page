@@ -1384,41 +1384,41 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                     <div style="display:flex;flex-direction:column;min-width:0;">
 
                         <!-- RÉSULTAT -->
-                        <span style="font-size:9px;font-weight:620;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,253,246,0.28);display:block;margin-bottom:8px">Résultat</span>
+                        <span style="font-size:9px;font-weight:620;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,253,246,0.28);display:block;margin-bottom:10px">Résultat</span>
 
-                        <div style="display:flex;align-items:baseline;gap:8px;white-space:nowrap;margin-bottom:9px">
-                            <span style="font-size:44px;font-weight:700;color:#FFFDF6;letter-spacing:-0.04em;line-height:1;">${escHtml(resultValueLabel)}</span>
-                            <span style="font-size:16px;font-weight:400;color:rgba(255,253,246,0.45);">/ ${escHtml(resultTargetText)}</span>
+                        <div style="display:flex;align-items:baseline;gap:10px;white-space:nowrap;margin-bottom:10px">
+                            <span style="font-size:56px;font-weight:700;color:#FFFDF6;letter-spacing:-0.04em;line-height:1;">${escHtml(resultValueLabel)}</span>
+                            <span style="font-size:20px;font-weight:400;color:rgba(255,253,246,0.50);">/ ${escHtml(resultTargetText)}</span>
                         </div>
 
-                        <!-- Progress bar -->
-                        <div style="height:3px;background:rgba(255,255,255,0.08);border-radius:2px;margin-bottom:10px;overflow:hidden;">
-                            <div style="height:100%;width:${resultProgress}%;background:rgba(255,253,246,0.35);border-radius:2px;"></div>
+                        <!-- Progress bar: olive green -->
+                        <div style="height:4px;background:rgba(255,255,255,0.07);border-radius:2px;margin-bottom:12px;overflow:hidden;">
+                            <div style="height:100%;width:${resultProgress}%;background:rgba(130,160,35,0.80);border-radius:2px;"></div>
                         </div>
 
-                        <!-- Delta résultat -->
-                        <div style="display:flex;align-items:center;gap:7px;margin-bottom:18px;">
-                            <span style="width:6px;height:6px;border-radius:50%;background:#EE4408;flex-shrink:0;"></span>
-                            <span style="font-size:13px;font-weight:430;color:rgba(255,253,246,0.75);white-space:nowrap;">${daysElapsed > 0 ? `+0 ${escHtml(resultUnit || 'résultat')} depuis ${daysElapsed}j` : 'Mis à jour aujourd\'hui'}</span>
+                        <!-- Stagnation -->
+                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:22px;">
+                            <span style="width:8px;height:8px;border-radius:50%;background:#EE4408;flex-shrink:0;"></span>
+                            <span style="font-size:14px;font-weight:430;color:rgba(255,253,246,0.80);white-space:nowrap;">${daysElapsed > 0 ? `Aucune progression depuis ${daysElapsed} jours` : 'Mis à jour aujourd\'hui'}</span>
                         </div>
 
                         <!-- Separator -->
-                        <div style="height:1px;background:rgba(255,255,255,0.07);margin-bottom:14px;"></div>
+                        <div style="height:1px;background:rgba(255,255,255,0.08);margin-bottom:16px;"></div>
 
                         <!-- EFFORT -->
-                        <span style="font-size:9px;font-weight:620;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,253,246,0.28);display:block;margin-bottom:8px">Effort depuis la dernière progression</span>
+                        <span style="font-size:9px;font-weight:620;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,253,246,0.28);display:block;margin-bottom:10px">Effort depuis la dernière progression</span>
 
-                        <div style="display:flex;align-items:baseline;gap:5px;white-space:nowrap;margin-bottom:10px;">
-                            <span style="font-size:44px;font-weight:700;color:#FFFDF6;letter-spacing:-0.04em;line-height:1;">${escHtml(effortValueLabel)}</span>
-                            ${effortUnitShort ? `<span style="font-size:19px;font-weight:400;color:rgba(255,253,246,0.45);">${escHtml(effortUnitShort)}</span>` : ''}
-                            <span style="font-size:14px;font-weight:400;color:rgba(255,253,246,0.32);white-space:nowrap;">/ ${escHtml(effortTargetLabel)}${effortUnitShort ? ' ' + escHtml(effortUnitShort) : ''} max</span>
+                        <div style="display:flex;align-items:baseline;gap:6px;white-space:nowrap;margin-bottom:14px;">
+                            <span style="font-size:56px;font-weight:700;color:#FFFDF6;letter-spacing:-0.04em;line-height:1;">${escHtml(effortValueLabel)}</span>
+                            ${effortUnitShort ? `<span style="font-size:24px;font-weight:400;color:rgba(255,253,246,0.50);">${escHtml(effortUnitShort)}</span>` : ''}
+                            <span style="font-size:16px;font-weight:400;color:rgba(255,253,246,0.38);white-space:nowrap;">/ ${escHtml(effortTargetLabel)}${effortUnitShort ? ' ' + escHtml(effortUnitShort) : ''} max</span>
                         </div>
 
-                        <!-- Overshoot: poids visuel sans box -->
+                        <!-- Overshoot badge (box) -->
                         ${effortOvershoot !== null && effortOvershoot > 0 ? `
-                        <div style="display:flex;align-items:baseline;gap:5px;white-space:nowrap;">
-                            <span style="font-size:16px;font-weight:650;color:#FFFDF6;">+${effortOvershoot}${effortUnitShort}</span>
-                            <span style="font-size:13px;font-weight:400;color:rgba(255,253,246,0.40);">au-dessus du seuil</span>
+                        <div style="display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.11);border-radius:8px;padding:9px 14px;width:fit-content;white-space:nowrap;">
+                            <span style="font-size:15px;font-weight:650;color:#FFFDF6;">+${effortOvershoot} ${effortUnitShort}</span>
+                            <span style="font-size:13px;font-weight:400;color:rgba(255,253,246,0.52);">par rapport au repère de ${escHtml(effortTargetLabel)} ${effortUnitShort}</span>
                         </div>` : ''}
 
                     </div>
