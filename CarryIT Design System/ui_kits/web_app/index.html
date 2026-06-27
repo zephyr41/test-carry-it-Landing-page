@@ -365,23 +365,25 @@ const App = () => {
     if (found) setKpiMeasureTarget(found);
   };
 
+  const toISODate = (d) => {
+    if (!d || !d.includes('/')) return d || '';
+    const [day, month, year] = d.split('/');
+    return `${year}-${month.padStart(2,'0')}-${day.padStart(2,'0')}`;
+  };
+
   const handleSaveKpiMeasure = ({ date, value, note, time }) => {
     if (!kpiMeasureTarget) return;
     const { jalonId, kpiIndex } = kpiMeasureTarget;
+    const isoDate = toISODate(date);
     setJalons(prev => prev.map(j => {
       if (j.id !== jalonId) return j;
       const kpis = [...(j.kpis || [])];
       const k = { ...kpis[kpiIndex] };
-      const measure = { date, value };
+      const measure = { date: isoDate, value };
       if (note) measure.note = note;
       if (time) measure.time = time;
       k.measures = [...(k.measures || []), measure]
-        .sort((a, b) => {
-          // Sort by date (DD/MM/YYYY) ascending
-          const ad = a.date.split('/');
-          const bd = b.date.split('/');
-          return new Date(`${ad[2]}-${ad[1]}-${ad[0]}`) - new Date(`${bd[2]}-${bd[1]}-${bd[0]}`);
-        });
+        .sort((a, b) => new Date(toISODate(a.date)) - new Date(toISODate(b.date)));
       k.value = k.measures[k.measures.length - 1].value;
       kpis[kpiIndex] = k;
       return { ...j, kpis };
@@ -464,6 +466,21 @@ const App = () => {
     setToast({ message: 'Mesure supprimée' });
   };
 
+  const handleUpdateMeasure = (jalonId, kpiIndex, measureIdx, newMeasure) => {
+    setJalons(prev => prev.map(j => {
+      if (j.id !== jalonId) return j;
+      const kpis = [...(j.kpis || [])];
+      const k = { ...kpis[kpiIndex] };
+      const m = [...(k.measures || [])];
+      m[measureIdx] = { ...m[measureIdx], ...newMeasure };
+      k.measures = m;
+      k.value = m.length ? m[m.length - 1].value : 0;
+      kpis[kpiIndex] = k;
+      return { ...j, kpis };
+    }));
+    setToast({ message: 'Mesure mise à jour' });
+  };
+
   const handleDeleteJalon = () => {
     if (!jalonEditTarget) return;
     const id = jalonEditTarget.id;
@@ -473,6 +490,21 @@ const App = () => {
       const remaining = jalons.filter(j => j.id !== id);
       if (remaining.length > 0) setActiveJalonId(remaining[0].id);
     }
+  };
+
+  const handleToggleTask = (jalonId, taskId) => {
+    setJalons(prev => prev.map(j => {
+      if (j.id !== jalonId) return j;
+      return { ...j, tasks: (j.tasks || []).map(t => t.id === taskId ? { ...t, done: !t.done } : t) };
+    }));
+  };
+
+  const handleAddTask = (jalonId, title, status) => {
+    setJalons(prev => prev.map(j => {
+      if (j.id !== jalonId) return j;
+      const newTask = { id: Date.now(), title, done: false, ...(status === 'doing' ? { priority: 'high' } : {}) };
+      return { ...j, tasks: [...(j.tasks || []), newTask] };
+    }));
   };
 
   return (
@@ -503,6 +535,7 @@ const App = () => {
             onEditJalon={handleEditJalon}
             onCreateJalon={handleCreateJalon}
             onDeleteMeasure={handleDeleteMeasure}
+            onUpdateMeasure={handleUpdateMeasure}
             railSide={tweaks.railSide}
             density={tweaks.density}
           />
@@ -513,6 +546,8 @@ const App = () => {
             activeJalonId={activeJalonId}
             onSelectJalon={setActiveJalonId}
             onValidate={handleValidateJalon}
+            onToggleTask={handleToggleTask}
+            onAddTask={handleAddTask}
             density={tweaks.density}
           />
         )}

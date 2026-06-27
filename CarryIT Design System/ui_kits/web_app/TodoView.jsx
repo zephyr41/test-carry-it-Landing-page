@@ -2,7 +2,7 @@
 // No extra header, no top-level "Add task" button. Just section label + content.
 // Exports: TodoView
 
-const TodoView = ({ jalons, activeJalonId, onSelectJalon, onValidate, density = 'comfort' }) => {
+const TodoView = ({ jalons, activeJalonId, onSelectJalon, onValidate, onToggleTask, onAddTask, density = 'comfort' }) => {
   const compact = density === 'compact';
   const targetJalon = jalons.find(j => j.id === activeJalonId)
     || jalons.find(j => !j.done)
@@ -30,6 +30,8 @@ const TodoView = ({ jalons, activeJalonId, onSelectJalon, onValidate, density = 
         activeJalonId={activeJalonId}
         onSelectJalon={onSelectJalon}
         onValidate={onValidate}
+        onToggleTask={onToggleTask}
+        onAddTask={onAddTask}
       />
     </div>
   );

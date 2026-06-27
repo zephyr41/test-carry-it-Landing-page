@@ -105,98 +105,24 @@ const Input = ({ value, onChange, placeholder, type = 'text', hasError }) => {
 };
 
 const AddMeasureModal = ({ open, onClose, kpiLabel, kpiUnite, kpiCible, kpiValeur, onSave }) => {
-  const HOUR_HEIGHT = 56;
-  const HOURS_START = 6;
-  const HOURS_END = 23;
-  const TOTAL_HOURS = HOURS_END - HOURS_START;
-
   const [selectedDate, setSelectedDate] = React.useState(new Date());
-  const [startHour, setStartHour] = React.useState(10);
-  const [duration, setDuration] = React.useState(1);
+  const [time, setTime] = React.useState('10:00');
+  const [duration, setDuration] = React.useState('1h');
   const [value, setValue] = React.useState('');
   const [note, setNote] = React.useState('');
   const [errors, setErrors] = React.useState({});
-
-  const timelineRef = React.useRef(null);
-  const scrollRef = React.useRef(null);
-  const dragState = React.useRef({ active: false });
 
   React.useEffect(() => {
     if (!open) return;
     const now = new Date();
     setSelectedDate(now);
-    const h = now.getHours() + now.getMinutes() / 60;
-    const snapped = Math.min(HOURS_END - 1, Math.max(HOURS_START, snap15(h)));
-    setStartHour(snapped);
-    setDuration(1);
+    setTime(`${String(now.getHours()).padStart(2,'0')}:00`);
+    setDuration('1h');
     setValue(''); setNote(''); setErrors({});
-    setTimeout(() => {
-      if (scrollRef.current) scrollRef.current.scrollTop = (snapped - HOURS_START - 1) * HOUR_HEIGHT;
-    }, 0);
   }, [open]);
 
-  const snap15 = (h) => Math.round(h * 4) / 4;
-  const yToHour = (y) => HOURS_START + y / HOUR_HEIGHT;
-  const getRelY = (clientY) => {
-    if (!timelineRef.current) return 0;
-    return clientY - timelineRef.current.getBoundingClientRect().top;
-  };
-
-  // Click+drag on empty timeline: set start + stretch duration
-  const handleTimelineMouseDown = (e) => {
-    e.preventDefault();
-    const startH = Math.max(HOURS_START, Math.min(HOURS_END - 0.25, snap15(yToHour(getRelY(e.clientY)))));
-    setStartHour(startH);
-    setDuration(0.25);
-    dragState.current = { active: true, fixedStart: startH };
-    const onMove = (ev) => {
-      const endH = snap15(yToHour(getRelY(ev.clientY)));
-      const newDur = Math.max(0.25, Math.min(HOURS_END - dragState.current.fixedStart, endH - dragState.current.fixedStart));
-      setDuration(newDur);
-    };
-    const onUp = () => { dragState.current.active = false; window.removeEventListener('mousemove', onMove); window.removeEventListener('mouseup', onUp); };
-    window.addEventListener('mousemove', onMove);
-    window.addEventListener('mouseup', onUp);
-  };
-
-  // Drag block body: move
-  const handleBlockMoveDown = (e) => {
-    e.stopPropagation();
-    const offsetH = yToHour(getRelY(e.clientY)) - startHour;
-    dragState.current = { active: true };
-    const onMove = (ev) => {
-      const newStart = snap15(yToHour(getRelY(ev.clientY)) - offsetH);
-      setStartHour(Math.max(HOURS_START, Math.min(HOURS_END - duration, newStart)));
-    };
-    const onUp = () => { dragState.current.active = false; window.removeEventListener('mousemove', onMove); window.removeEventListener('mouseup', onUp); };
-    window.addEventListener('mousemove', onMove);
-    window.addEventListener('mouseup', onUp);
-  };
-
-  // Drag bottom handle: resize duration
-  const handleResizeDown = (e) => {
-    e.stopPropagation();
-    dragState.current = { active: true };
-    const onMove = (ev) => {
-      const endH = snap15(yToHour(getRelY(ev.clientY)));
-      setDuration(Math.max(0.25, Math.min(HOURS_END - startHour, endH - startHour)));
-    };
-    const onUp = () => { dragState.current.active = false; window.removeEventListener('mousemove', onMove); window.removeEventListener('mouseup', onUp); };
-    window.addEventListener('mousemove', onMove);
-    window.addEventListener('mouseup', onUp);
-  };
-
-  const fmt = (h) => {
-    const hh = Math.floor(h), mm = Math.round((h - hh) * 60);
-    return `${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}`;
-  };
-  const fmtDuration = (d) => {
-    const m = Math.round(d * 60);
-    return m < 60 ? `${m}min` : `${Math.floor(m/60)}h${m%60 ? String(m%60).padStart(2,'0') : ''}`;
-  };
   const fmtDate = (d) => d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
   const fmtDateStr = (d) => `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
-
   const changeDate = (delta) => setSelectedDate(prev => { const d = new Date(prev); d.setDate(d.getDate() + delta); return d; });
 
   const handleSave = () => {
@@ -206,12 +132,12 @@ const AddMeasureModal = ({ open, onClose, kpiLabel, kpiUnite, kpiCible, kpiValeu
     else if (!Number.isInteger(Number(value))) e.value = 'Entier uniquement';
     setErrors(e);
     if (Object.keys(e).length > 0) return;
-    onSave({ date: fmtDateStr(selectedDate), value: Number(value), note: note.trim(), time: fmt(startHour), duration: fmtDuration(duration) });
+    onSave({ date: fmtDateStr(selectedDate), value: Number(value), note: note.trim(), time, duration });
     onClose();
   };
 
   const s = {
-    actions: { display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 14 },
+    actions: { display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 20 },
     cancelBtn: { padding: '0 16px', height: 38, borderRadius: 8, background: 'transparent', color: 'rgba(255,253,246,0.72)', border: '1px solid rgba(255,253,246,0.1)', fontFamily: 'inherit', fontSize: 13.5, fontWeight: 500, cursor: 'pointer' },
     saveBtn: { padding: '0 20px', height: 38, borderRadius: 8, background: '#EE4408', color: '#FFFDF6', border: 'none', fontFamily: 'inherit', fontSize: 13.5, fontWeight: 600, cursor: 'pointer' },
     noteTextarea: { background: 'rgba(0,0,0,0.32)', borderRadius: 8, padding: '10px 14px', fontFamily: 'inherit', fontSize: 13.5, color: '#FFFDF6', width: '100%', outline: 'none', resize: 'none', minHeight: 60, lineHeight: 1.5, boxSizing: 'border-box', border: '1px solid rgba(255,253,246,0.12)' },
@@ -219,64 +145,40 @@ const AddMeasureModal = ({ open, onClose, kpiLabel, kpiUnite, kpiCible, kpiValeu
 
   return (
     <Modal open={open} onClose={onClose} title={kpiLabel || 'Ajouter une mesure'}>
-      {/* KPI context */}
       {(kpiUnite || kpiCible !== '') && (
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14, background: 'rgba(255,253,246,0.04)', borderRadius: 7, padding: '7px 12px' }}>
           {kpiUnite && <span style={{ fontSize: 11.5, color: 'rgba(255,253,246,0.55)', fontWeight: 500 }}>Unité : <strong style={{ color: '#FFFDF6', fontWeight: 600 }}>{kpiUnite}</strong></span>}
           {kpiCible !== '' && <span style={{ fontSize: 11.5, color: 'rgba(255,253,246,0.55)', fontWeight: 500 }}>· Actuel : <strong style={{ color: '#FFFDF6', fontWeight: 600 }}>{kpiValeur}</strong> / <strong style={{ color: '#FFFDF6', fontWeight: 600 }}>{kpiCible}</strong></span>}
         </div>
       )}
-      {/* Date navigation */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+      
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
         <button style={{ background: 'none', border: 'none', color: 'rgba(255,253,246,0.5)', cursor: 'pointer', fontSize: 20, padding: '0 6px', lineHeight: 1, fontFamily: 'inherit' }} onClick={() => changeDate(-1)}>‹</button>
         <div style={{ flex: 1, textAlign: 'center', fontSize: 13.5, fontWeight: 600, color: '#FFFDF6', textTransform: 'capitalize' }}>{fmtDate(selectedDate)}</div>
         <button style={{ background: 'none', border: 'none', color: 'rgba(255,253,246,0.5)', cursor: 'pointer', fontSize: 20, padding: '0 6px', lineHeight: 1, fontFamily: 'inherit' }} onClick={() => changeDate(1)}>›</button>
       </div>
 
-      {/* Timeline */}
-      <div ref={scrollRef} style={{ height: 220, overflowY: 'auto', borderRadius: 8, border: '1px solid rgba(255,253,246,0.08)', background: 'rgba(0,0,0,0.18)', marginBottom: 14, userSelect: 'none' }}>
-        <div ref={timelineRef} style={{ position: 'relative', height: TOTAL_HOURS * HOUR_HEIGHT }} onMouseDown={handleTimelineMouseDown}>
-          {Array.from({ length: TOTAL_HOURS + 1 }, (_, i) => (
-            <div key={i} style={{ position: 'absolute', top: i * HOUR_HEIGHT, left: 0, right: 0, display: 'flex', alignItems: 'flex-start', pointerEvents: 'none' }}>
-              <span style={{ fontSize: 9.5, color: 'rgba(255,253,246,0.25)', fontFamily: '"JetBrains Mono", monospace', width: 42, textAlign: 'right', paddingRight: 8, lineHeight: 1, transform: 'translateY(-6px)', flexShrink: 0 }}>
-                {String(HOURS_START + i).padStart(2,'0')}:00
-              </span>
-              <div style={{ flex: 1, borderTop: '1px solid rgba(255,253,246,0.06)' }}></div>
-            </div>
-          ))}
-          {/* Effort block */}
-          <div
-            onMouseDown={handleBlockMoveDown}
-            style={{ position: 'absolute', left: 48, right: 8, top: (startHour - HOURS_START) * HOUR_HEIGHT, height: duration * HOUR_HEIGHT, background: 'rgba(238,68,8,0.14)', borderLeft: '3px solid #EE4408', borderRadius: '0 7px 7px 0', cursor: 'grab', zIndex: 2, overflow: 'hidden' }}
-          >
-            <div style={{ padding: '6px 10px' }}>
-              <span style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#EE4408', display: 'block' }}>Effort</span>
-              <span style={{ fontSize: 11, color: 'rgba(255,253,246,0.65)' }}>{fmt(startHour)} → {fmt(startHour + duration)} · {fmtDuration(duration)}</span>
-            </div>
-            {/* Resize handle */}
-            <div
-              onMouseDown={handleResizeDown}
-              style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 12, cursor: 'ns-resize', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-            >
-              <div style={{ width: 24, height: 3, borderRadius: 2, background: 'rgba(238,68,8,0.5)' }}></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Valeur + Note */}
-      <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
-        <div style={{ flex: '0 0 90px' }}>
-          <FormGroup label={kpiUnite ? `Valeur (${kpiUnite})` : 'Valeur'} error={errors.value}>
-            <Input value={value} onChange={setValue} placeholder="—" type="number" hasError={!!errors.value}/>
+      <div style={{ display: 'flex', gap: 12, marginBottom: 8 }}>
+        <div style={{ flex: 1 }}>
+          <FormGroup label="Heure" hint="Début de l'effort">
+            <Input value={time} onChange={setTime} placeholder="10:00" />
           </FormGroup>
         </div>
         <div style={{ flex: 1 }}>
-          <FormGroup label="Note (optionnelle)">
-            <textarea style={s.noteTextarea} value={note} onChange={e => setNote(e.target.value)} placeholder="Contexte, observations..." rows={2}/>
+          <FormGroup label="Durée" hint="Temps investi">
+            <Input value={duration} onChange={setDuration} placeholder="1h" />
+          </FormGroup>
+        </div>
+        <div style={{ flex: 1 }}>
+          <FormGroup label={kpiUnite ? `Valeur (${kpiUnite})` : 'Valeur'} error={errors.value}>
+            <Input value={value} onChange={setValue} placeholder="0" type="number" hasError={!!errors.value}/>
           </FormGroup>
         </div>
       </div>
+
+      <FormGroup label="Note (optionnelle)">
+        <textarea style={s.noteTextarea} value={note} onChange={e => setNote(e.target.value)} placeholder="Contexte, observations..." rows={2}/>
+      </FormGroup>
 
       <div style={s.actions}>
         <button style={s.cancelBtn} onClick={onClose}>Annuler</button>

@@ -41,6 +41,8 @@
   - un **rattachement** : objectif SMART ou jalon
   - une **valeur cible** *(optionnelle)*
   - Indicateur de la dernière MAJ
+  - un champ texte note
+  - un bloc de temps (optionnel)
 
   ### 4.1 Mode de mesure
 
@@ -83,6 +85,9 @@
   - Modifier la valeur de son KPI
   - Modifier la fréquence de mise à jour
   - Définir une valeur cible
+  - Définir un bloc de travail sur un calendrier
+  - Modifier son bloc de travail
+  - Avoir accès à son historique de KPI
 
   ## 8. Affichage dashboard
 

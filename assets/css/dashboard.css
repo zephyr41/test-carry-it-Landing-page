@@ -414,8 +414,8 @@ body::before {
 /* Row 1 : KPI + SMART côte à côte */
 .db-row-kpi-smart {
     display: grid;
-    grid-template-columns: 1.5fr 1fr;
-    gap: 16px;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    gap: 18px;
     align-items: start;
 }
 

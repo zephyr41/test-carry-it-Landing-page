@@ -280,51 +280,53 @@
     </div>
 
     <!-- ── MODAL: Ajouter une mesure KPI (jalon) ── -->
-    <div id="jalonKpiMeasureModalOverlay" class="m-overlay">
-        <div class="m-box m-box--measure" onclick="event.stopPropagation()" style="width:min(520px,calc(100vw - 28px));max-height:calc(100vh - 44px);overflow:auto">
-            <h3 class="m-title">Ajouter une mesure</h3>
-            <p class="m-sub" id="jalonKpiMeasureSubtitle">Ajoutez une progression pour ce KPI.</p>
-            <div class="m-context" id="jalonKpiMeasureContext" style="display:none;"></div>
+    <div id="jalonKpiMeasureModalOverlay" class="m-overlay" onclick="if(event.target===this)closeJalonKpiMeasureModal()">
+        <div class="m-box m-box--measure" onclick="event.stopPropagation()" style="width:min(440px,calc(100vw - 28px));max-height:calc(100vh - 44px);overflow-y:auto">
+            <div style="margin-bottom:18px">
+                <h3 class="m-title" style="margin-bottom:3px">Ajouter une mesure</h3>
+                <p class="m-sub" id="jalonKpiMeasureSubtitle" style="margin:0 0 3px;line-height:1.5"></p>
+                <p id="jalonKpiMeasureContext" style="font-size:12px;color:rgba(255,253,246,0.28);margin:0;display:none"></p>
+            </div>
             <form id="jalonKpiMeasureForm" onsubmit="handleJalonKpiMeasureSubmit(event)">
-                <div class="m-field">
-                    <label class="m-label">Date</label>
-                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:2px">
-                        <button type="button" onclick="changeJalonKpiMeasureDate(-1)" style="background:none;border:none;color:rgba(255,253,246,0.5);cursor:pointer;font-size:20px;padding:0 6px;line-height:1;font-family:inherit" aria-label="Jour précédent">‹</button>
-                        <button type="button" class="m-date-chip" id="jalonKpiMeasureDate-btn" onclick="openDashCal(this,'jalonKpiMeasureDate')" style="flex:1;justify-content:center;text-transform:capitalize"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span>Choisir une date…</span></button>
-                        <button type="button" onclick="changeJalonKpiMeasureDate(1)" style="background:none;border:none;color:rgba(255,253,246,0.5);cursor:pointer;font-size:20px;padding:0 6px;line-height:1;font-family:inherit" aria-label="Jour suivant">›</button>
-                    </div>
-                    <input type="hidden" id="jalonKpiMeasureDate">
-                    <div class="m-error" id="jalonKpiMeasureDateError"></div>
+                <div style="display:flex;align-items:center;gap:6px;margin-bottom:18px">
+                    <button type="button" onclick="changeJalonKpiMeasureDate(-1)" style="background:none;border:none;color:rgba(255,253,246,0.35);cursor:pointer;font-size:20px;padding:4px 6px;line-height:1;font-family:inherit;flex-shrink:0;transition:color 120ms" onmouseenter="this.style.color='rgba(255,253,246,0.8)'" onmouseleave="this.style.color='rgba(255,253,246,0.35)'" aria-label="Jour précédent">‹</button>
+                    <button type="button" id="jalonKpiMeasureDate-btn" onclick="openDashCal(this,'jalonKpiMeasureDate')" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:7px;background:none;border:none;color:rgba(255,253,246,0.72);font-size:14px;font-weight:500;font-family:inherit;cursor:pointer;padding:4px 0;text-transform:capitalize;transition:color 120ms" onmouseenter="this.style.color='#FFFDF6'" onmouseleave="this.style.color='rgba(255,253,246,0.72)'"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:0.55;flex-shrink:0"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span>Choisir une date…</span></button>
+                    <button type="button" onclick="changeJalonKpiMeasureDate(1)" style="background:none;border:none;color:rgba(255,253,246,0.35);cursor:pointer;font-size:20px;padding:4px 6px;line-height:1;font-family:inherit;flex-shrink:0;transition:color 120ms" onmouseenter="this.style.color='rgba(255,253,246,0.8)'" onmouseleave="this.style.color='rgba(255,253,246,0.35)'" aria-label="Jour suivant">›</button>
                 </div>
-                <div class="m-field">
-                    <label class="m-label" for="jalonKpiMeasureTime">Bloc de travail</label>
+                <input type="hidden" id="jalonKpiMeasureDate">
+                <div class="m-error" id="jalonKpiMeasureDateError" style="margin:-12px 0 12px"></div>
+                <div style="margin-bottom:16px">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                        <label style="font-size:10px;font-weight:600;color:rgba(255,253,246,0.22);letter-spacing:0.07em;text-transform:uppercase">Quand</label>
+                        <span id="jalonKpiTimelineSummary" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;color:rgba(255,253,246,0.42);font-weight:500">10:00 → 11:00 · 1h</span>
+                    </div>
                     <input type="hidden" id="jalonKpiMeasureTime">
                     <input type="hidden" id="jalonKpiMeasureDuration" value="1h">
-                    <div id="jalonKpiTimelineScroll" style="height:220px;overflow-y:auto;border-radius:8px;border:1px solid rgba(255,253,246,0.08);background:rgba(0,0,0,0.18);margin-bottom:14px;user-select:none">
+                    <div id="jalonKpiTimelineScroll" style="height:180px;overflow-y:auto;user-select:none">
                         <div id="jalonKpiTimeline" style="position:relative;height:952px" onmousedown="handleJalonKpiTimelineMouseDown(event)" ontouchstart="handleJalonKpiTimelineTouchStart(event)">
                             <div id="jalonKpiTimelineHours"></div>
-                            <div id="jalonKpiTimelineBlock" onmousedown="handleJalonKpiTimelineBlockDown(event)" ontouchstart="handleJalonKpiTimelineBlockTouchStart(event)" style="position:absolute;left:48px;right:8px;top:224px;height:56px;background:rgba(238,68,8,0.14);border-left:3px solid #EE4408;border-radius:0 7px 7px 0;cursor:grab;z-index:2;overflow:hidden">
-                                <div style="padding:6px 10px">
-                                    <span style="font-size:9.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#EE4408;display:block">Effort</span>
-                                    <span id="jalonKpiTimelineLabel" style="font-size:11px;color:rgba(255,253,246,0.65)">10:00 → 11:00 · 1h</span>
+                            <div id="jalonKpiTimelineBlock" onmousedown="handleJalonKpiTimelineBlockDown(event)" ontouchstart="handleJalonKpiTimelineBlockTouchStart(event)" style="position:absolute;left:48px;right:8px;top:224px;height:56px;background:rgba(255,253,246,0.08);border-left:3px solid #FFFDF6;border-radius:7px;cursor:grab;z-index:2;overflow:hidden">
+                                <div style="padding:6px 8px">
+                                    <span style="font-size:9.5px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,253,246,0.48);display:block;margin-bottom:3px">Effort</span>
+                                    <span id="jalonKpiTimelineLabel" style="font-size:12px;font-weight:700;color:#FFFDF6">10:00 → 11:00 · 1h</span>
                                 </div>
                                 <div onmousedown="handleJalonKpiTimelineResizeDown(event)" ontouchstart="handleJalonKpiTimelineResizeTouchStart(event)" style="position:absolute;bottom:0;left:0;right:0;height:12px;cursor:ns-resize;display:flex;align-items:center;justify-content:center">
-                                    <div style="width:24px;height:3px;border-radius:2px;background:rgba(238,68,8,0.5)"></div>
+                                    <div style="width:20px;height:2px;border-radius:2px;background:rgba(255,253,246,0.18)"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div style="display:flex;gap:12px;align-items:flex-start">
-                    <div style="flex:0 0 112px">
-                        <label class="m-label" for="jalonKpiMeasureValue">Valeur à ajouter</label>
-                        <input class="m-input" type="number" min="0" step="any" id="jalonKpiMeasureValue">
-                        <div class="m-error" id="jalonKpiMeasureValueError"></div>
-                    </div>
-                    <div style="flex:1;min-width:0">
-                        <label class="m-label" for="jalonKpiMeasureNote">Note</label>
-                        <textarea class="m-input" id="jalonKpiMeasureNote" rows="2" placeholder="Contexte, observations..." style="resize:none;min-height:60px;line-height:1.45"></textarea>
-                    </div>
+                <div style="margin-bottom:14px">
+                    <label id="jalonKpiMeasureValueLabel" style="font-size:9.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,253,246,0.30);display:block;margin-bottom:6px" for="jalonKpiMeasureValue">Quantité</label>
+                    <input id="jalonKpiMeasureValue" type="number" min="0" step="any" placeholder="0"
+                        style="width:100%;background:rgba(255,253,246,0.04);border:1px solid rgba(255,253,246,0.09);border-radius:7px;padding:8px 12px;color:#FFFDF6;font-size:17px;font-weight:600;font-family:inherit;outline:none;transition:border-color 150ms;-webkit-appearance:none;appearance:none;letter-spacing:-0.01em">
+                    <div class="m-error" id="jalonKpiMeasureValueError" style="margin-top:4px"></div>
+                </div>
+                <div style="padding-top:12px;border-top:1px solid rgba(255,253,246,0.08)">
+                    <label style="font-size:9.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,253,246,0.30);display:block;margin-bottom:6px" for="jalonKpiMeasureNote">Note</label>
+                    <textarea id="jalonKpiMeasureNote" rows="2" placeholder="Conditions, qualité, points notables..."
+                        style="width:100%;background:none;border:none;outline:none;resize:none;color:rgba(255,253,246,0.75);font-size:12px;line-height:1.5;font-family:inherit;min-height:44px;padding:0"></textarea>
                 </div>
                 <div class="m-btns">
                     <button type="button" class="m-btn-cancel" onclick="closeJalonKpiMeasureModal()">Annuler</button>
@@ -3560,8 +3562,8 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             for (let i = 0; i <= JALON_KPI_TL_TOTAL; i++) {
                 html += `
                     <div style="position:absolute;top:${i * JALON_KPI_TL_HOUR_HEIGHT}px;left:0;right:0;display:flex;align-items:flex-start;pointer-events:none">
-                        <span style="font-size:9.5px;color:rgba(255,253,246,0.25);font-family:&quot;JetBrains Mono&quot;,ui-monospace,monospace;width:42px;text-align:right;padding-right:8px;line-height:1;transform:translateY(-6px);flex-shrink:0">${String(JALON_KPI_TL_START + i).padStart(2, '0')}:00</span>
-                        <div style="flex:1;border-top:1px solid rgba(255,253,246,0.06)"></div>
+                        <span style="font-size:9.5px;color:rgba(255,253,246,0.40);font-family:&quot;JetBrains Mono&quot;,ui-monospace,monospace;width:42px;text-align:right;padding-right:8px;line-height:1;transform:translateY(-6px);flex-shrink:0">${String(JALON_KPI_TL_START + i).padStart(2, '0')}:00</span>
+                        <div style="flex:1;border-top:1px solid rgba(255,253,246,0.07)"></div>
                     </div>`;
             }
             target.innerHTML = html;
@@ -3583,9 +3585,10 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                 block.style.top = `${(safeStart - JALON_KPI_TL_START) * JALON_KPI_TL_HOUR_HEIGHT}px`;
                 block.style.height = `${safeDuration * JALON_KPI_TL_HOUR_HEIGHT}px`;
             }
-            if (label) {
-                label.textContent = `${formatTimelineHour(safeStart)} → ${formatTimelineHour(safeStart + safeDuration)} · ${formatTimelineDuration(safeDuration)}`;
-            }
+            const timeText = `${formatTimelineHour(safeStart)} → ${formatTimelineHour(safeStart + safeDuration)} · ${formatTimelineDuration(safeDuration)}`;
+            if (label) label.textContent = timeText;
+            const summary = document.getElementById('jalonKpiTimelineSummary');
+            if (summary) summary.textContent = timeText;
             if (timeInput) timeInput.value = formatTimelineHour(safeStart);
             if (durationInput) durationInput.value = formatTimelineDuration(safeDuration);
             if (shouldScroll) {
@@ -3646,16 +3649,42 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             handleJalonKpiTimelineMouseDown(event);
         }
 
+        function makeTimelineEdgeScroller(scroller) {
+            let rafId = null;
+            let lastY = 0;
+            const threshold = 48, maxSpeed = 10;
+            function tick() {
+                if (!scroller) return;
+                const rect = scroller.getBoundingClientRect();
+                if (lastY < rect.top + threshold) {
+                    const r = 1 - (lastY - rect.top) / threshold;
+                    scroller.scrollTop -= Math.ceil(maxSpeed * Math.max(0.1, r));
+                    rafId = requestAnimationFrame(tick);
+                } else if (lastY > rect.bottom - threshold) {
+                    const r = 1 - (rect.bottom - lastY) / threshold;
+                    scroller.scrollTop += Math.ceil(maxSpeed * Math.max(0.1, r));
+                    rafId = requestAnimationFrame(tick);
+                }
+            }
+            return {
+                update(y) { lastY = y; if (rafId) cancelAnimationFrame(rafId); tick(); },
+                cancel() { if (rafId) cancelAnimationFrame(rafId); rafId = null; }
+            };
+        }
+
         function handleJalonKpiTimelineBlockDown(event) {
             event.stopPropagation();
             event.preventDefault();
             const offset = timelineYToHour(getJalonKpiTimelineRelY(getPointerClientY(event))) - jalonKpiTimelineState.startHour;
+            const scroller = makeTimelineEdgeScroller(document.getElementById('jalonKpiTimelineScroll'));
             const onMove = ev => {
-                const nextStart = snapQuarterHour(timelineYToHour(getJalonKpiTimelineRelY(getPointerClientY(ev))) - offset);
+                const clientY = getPointerClientY(ev);
+                const nextStart = snapQuarterHour(timelineYToHour(getJalonKpiTimelineRelY(clientY)) - offset);
                 setJalonKpiTimeline(nextStart, jalonKpiTimelineState.duration);
+                scroller.update(clientY);
                 if (ev.cancelable) ev.preventDefault();
             };
-            const onUp = () => stopJalonKpiTimelineDrag(onMove, onUp);
+            const onUp = () => { scroller.cancel(); stopJalonKpiTimelineDrag(onMove, onUp); };
             startJalonKpiTimelineDrag(onMove, onUp);
         }
 
@@ -3666,12 +3695,15 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
         function handleJalonKpiTimelineResizeDown(event) {
             event.stopPropagation();
             event.preventDefault();
+            const scroller = makeTimelineEdgeScroller(document.getElementById('jalonKpiTimelineScroll'));
             const onMove = ev => {
-                const endHour = snapQuarterHour(timelineYToHour(getJalonKpiTimelineRelY(getPointerClientY(ev))));
+                const clientY = getPointerClientY(ev);
+                const endHour = snapQuarterHour(timelineYToHour(getJalonKpiTimelineRelY(clientY)));
                 setJalonKpiTimeline(jalonKpiTimelineState.startHour, endHour - jalonKpiTimelineState.startHour);
+                scroller.update(clientY);
                 if (ev.cancelable) ev.preventDefault();
             };
-            const onUp = () => stopJalonKpiTimelineDrag(onMove, onUp);
+            const onUp = () => { scroller.cancel(); stopJalonKpiTimelineDrag(onMove, onUp); };
             startJalonKpiTimelineDrag(onMove, onUp);
         }
 
@@ -5534,10 +5566,19 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             document.getElementById('jalonKpiMeasureNote').value = '';
             document.getElementById('jalonKpiMeasureDateError').textContent = '';
             document.getElementById('jalonKpiMeasureValueError').textContent = '';
-            document.getElementById('jalonKpiMeasureValue').previousElementSibling.textContent = isLeading
+            document.getElementById('jalonKpiMeasureValueLabel').textContent = isLeading
                 ? (unitSuffix ? `Quantité (${kpi.unite.trim()})` : 'Quantité réalisée')
                 : (mode === 'incremental' ? 'Valeur à ajouter' : 'Nouvelle valeur');
             document.getElementById('jalonKpiMeasureSubmitBtn').textContent = isLeading ? "Enregistrer l'effort" : 'Enregistrer la mesure';
+            const _tlBlock = document.getElementById('jalonKpiTimelineBlock');
+            if (_tlBlock) {
+                _tlBlock.style.borderLeft = isLeading ? '3px solid #FFFDF6' : '3px solid #EE4408';
+                const _tlTypeLabel = _tlBlock.querySelector('span:not(#jalonKpiTimelineLabel)');
+                if (_tlTypeLabel) {
+                    _tlTypeLabel.textContent = isLeading ? 'Effort' : 'Résultat';
+                    _tlTypeLabel.style.color = isLeading ? 'rgba(255,253,246,0.48)' : 'rgba(238,68,8,0.70)';
+                }
+            }
             openModal('jalonKpiMeasureModalOverlay');
             requestAnimationFrame(initJalonKpiTimeline);
             setTimeout(() => document.getElementById('jalonKpiMeasureValue').focus(), 100);
@@ -6159,6 +6200,15 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
         .m-date-chip:hover { background:rgba(255,253,246,0.08);border-color:rgba(255,253,246,0.22);color:#FFFDF6; }
         .m-date-chip svg { flex-shrink:0;opacity:0.6; }
         .m-date-chip.has-value { color:rgba(255,253,246,0.9); }
+        #jalonKpiTimelineScroll::-webkit-scrollbar { width:3px; }
+        #jalonKpiTimelineScroll::-webkit-scrollbar-track { background:transparent; }
+        #jalonKpiTimelineScroll::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.1);border-radius:2px; }
+        #jalonKpiMeasureDate-btn.has-value { color:rgba(255,253,246,0.92) !important; }
+        #jalonKpiMeasureDate-btn.has-value svg { opacity:0.65 !important; }
+        #jalonKpiMeasureNote::placeholder { color:rgba(255,253,246,0.28);font-style:italic; }
+        #jalonKpiMeasureValue::placeholder { color:rgba(255,253,246,0.22); }
+        #jalonKpiMeasureValue:focus { border-color:rgba(255,253,246,0.22);box-shadow:none; }
+        #jalonKpiMeasureValueLabel { display:block; }
         /* reuse cal-* classes from jalons if loaded, else define inline */
         #dashCalPopup .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
         #dashCalPopup .cal-nav{background:transparent;border:none;color:rgba(255,253,246,0.55);cursor:pointer;padding:4px 8px;border-radius:5px;font-size:16px;line-height:1;}

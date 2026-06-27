@@ -130,7 +130,7 @@ const JalonRailItem = ({ jalon, index, total, active, onClick, status, hasNext =
   );
 };
 
-const JalonDetail = ({ jalon, index, total, status, onValidate, onUpdateKPI, onAddKPI, onAddMeasure, onEditKPI, onEditJalon, onDeleteMeasure }) => {
+const JalonDetail = ({ jalon, index, total, status, onValidate, onUpdateKPI, onAddKPI, onAddMeasure, onEditKPI, onEditJalon, onDeleteMeasure, onUpdateMeasure }) => {
   if (!jalon) return null;
 
   const statusConf = {
@@ -298,6 +298,7 @@ const JalonDetail = ({ jalon, index, total, status, onValidate, onUpdateKPI, onA
               onEdit={(k) => onEditKPI && onEditKPI(jalon.id, i, k)}
               onUpdate={(next) => onUpdateKPI && onUpdateKPI(jalon.id, i, next)}
               onDeleteMeasure={(measureIdx) => onDeleteMeasure && onDeleteMeasure(jalon.id, i, measureIdx)}
+              onUpdateMeasure={(measureIdx, updated) => onUpdateMeasure && onUpdateMeasure(jalon.id, i, measureIdx, updated)}
             />
           ))
         ) : (
@@ -364,7 +365,7 @@ const JalonDetail = ({ jalon, index, total, status, onValidate, onUpdateKPI, onA
   );
 };
 
-const JalonsView = ({ jalons, activeJalonId, onSelectJalon, onValidate, onUpdateKPI, onAddKPI, onAddMeasure, onEditKPI, onEditJalon, onCreateJalon, onDeleteMeasure, railSide = 'left', density = 'comfort' }) => {
+const JalonsView = ({ jalons, activeJalonId, onSelectJalon, onValidate, onUpdateKPI, onAddKPI, onAddMeasure, onEditKPI, onEditJalon, onCreateJalon, onDeleteMeasure, onUpdateMeasure, railSide = 'left', density = 'comfort' }) => {
   const activeJalon = jalons.find(j => j.id === activeJalonId) || jalons[0];
   const activeIndex = jalons.findIndex(j => j.id === activeJalon.id);
 
@@ -540,6 +541,7 @@ const JalonsView = ({ jalons, activeJalonId, onSelectJalon, onValidate, onUpdate
             onEditKPI={onEditKPI}
             onEditJalon={onEditJalon}
             onDeleteMeasure={onDeleteMeasure}
+            onUpdateMeasure={onUpdateMeasure}
           />
         </section>
       </div>

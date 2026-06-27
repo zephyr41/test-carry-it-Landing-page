@@ -369,40 +369,15 @@ const KanbanColumn = ({ status, title, tasks, onToggle }) => {
   );
 };
 
-const EspaceExecution = ({ jalons, activeJalonId, onSelectJalon, onValidate }) => {
+const EspaceExecution = ({ jalons, activeJalonId, onSelectJalon, onValidate, onToggleTask, onAddTask }) => {
   const [view, setView] = React.useState('list');
-  const [tasks, setTasks] = React.useState({});
   const [collapsed, setCollapsed] = React.useState({ doing: false, todo: false, done: true });
 
-  React.useEffect(() => {
-    const defaultTasks = {};
-    jalons.forEach(j => { defaultTasks[j.id] = j.tasks || []; });
-    setTasks(defaultTasks);
-  }, [jalons]);
-
   const activeJalon = jalons.find(j => j.id === activeJalonId) || jalons[0];
-  const activeTasks = tasks[activeJalon?.id] || [];
+  const activeTasks = activeJalon?.tasks || [];
 
-  const toggleTask = (taskId) => {
-    setTasks(prev => ({
-      ...prev,
-      [activeJalon.id]: prev[activeJalon.id].map(t =>
-        t.id === taskId ? { ...t, done: !t.done } : t
-      ),
-    }));
-  };
-
-  const addTask = (title, status) => {
-    const newTask = {
-      id: 't' + Date.now(),
-      title, done: false,
-      priority: status === 'doing' ? 'high' : undefined,
-    };
-    setTasks(prev => ({
-      ...prev,
-      [activeJalon.id]: [...(prev[activeJalon.id] || []), newTask],
-    }));
-  };
+  const toggleTask = (taskId) => onToggleTask && onToggleTask(activeJalon.id, taskId);
+  const addTask = (title, status) => onAddTask && onAddTask(activeJalon.id, title, status);
 
   const getStatus = (t) => t.done ? 'done' : (t.priority === 'high' ? 'doing' : 'todo');
   const doing = activeTasks.filter(t => getStatus(t) === 'doing');
@@ -509,7 +484,7 @@ const EspaceExecution = ({ jalons, activeJalonId, onSelectJalon, onValidate }) =
       <div style={sectionStyles.tabsWrap}>
         <div style={sectionStyles.tabs}>
           {sorted.map((j, i) => {
-            const linkedTasks = tasks[j.id] || j.tasks || [];
+            const linkedTasks = j.tasks || [];
             const totalLinked = linkedTasks.length;
             const doneLinked = linkedTasks.filter(t => t.done).length;
             return (

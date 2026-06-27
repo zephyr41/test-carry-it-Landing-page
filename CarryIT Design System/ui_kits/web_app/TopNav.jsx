@@ -66,7 +66,7 @@ const TopNav = ({ activeView, onChange }) => {
     },
     logo: { width: 24, height: 24, objectFit: 'contain', flexShrink: 0 },
     brandName: {
-      fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+      fontFamily: '"Rifton", "Inter", system-ui, -apple-system, sans-serif',
       fontSize: 18, fontWeight: 400,
       letterSpacing: 0, lineHeight: 1,
       textTransform: 'uppercase',

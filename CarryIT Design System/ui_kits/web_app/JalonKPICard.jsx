@@ -5,7 +5,7 @@
 // Sparkline is clickable -> history sheet with the real measure list.
 // Exports: JalonKPICard, KPIEmptyState, KPIHistorySheet
 
-const KPIHistorySheet = ({ open, onClose, kpi, accent, onDeleteMeasure }) => {
+const KPIHistorySheet = ({ open, onClose, kpi, accent, onDeleteMeasure, onUpdateMeasure }) => {
   if (!open) return null;
   const measures = (kpi.measures || []).slice().reverse(); // newest first; original index preserved below
 
@@ -58,6 +58,15 @@ const KPIHistorySheet = ({ open, onClose, kpi, accent, onDeleteMeasure }) => {
       borderBottom: '1px solid rgba(255,253,246,0.05)',
     },
     rowDate: { fontSize: 13, color: '#FFFDF6' },
+    rowInput: {
+      background: 'transparent', border: 'none', color: '#FFFDF6', fontSize: 13,
+      fontFamily: 'inherit', outline: 'none', borderBottom: '1px solid transparent',
+      transition: 'border-color 0.2s', width: '100%',
+    },
+    rowNoteInput: {
+      background: 'transparent', border: 'none', color: 'rgba(255,253,246,0.72)', fontSize: 12,
+      fontFamily: 'inherit', outline: 'none', width: '100%', marginTop: 4,
+    },
     rowDelta: {
       fontSize: 11.5, color: 'rgba(255,253,246,0.72)',
       fontFamily: '"JetBrains Mono", ui-monospace, monospace',
@@ -115,9 +124,25 @@ const KPIHistorySheet = ({ open, onClose, kpi, accent, onDeleteMeasure }) => {
               : (delta > 0 ? `+${delta}` : `${delta}`);
             return (
               <div key={i} style={sheetStyles.row}>
-                <div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                   <div style={sheetStyles.rowDate}>{m.date}</div>
-                  <div style={sheetStyles.rowDelta}>{deltaLabel} vs précédent</div>
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <input
+                      style={{...sheetStyles.rowInput, width: 60, color: 'rgba(255,253,246,0.5)'}}
+                      value={m.time || ''}
+                      placeholder="10:00"
+                      onChange={e => onUpdateMeasure && onUpdateMeasure(originalIndex(i), { ...m, time: e.target.value })}
+                      onFocus={e => e.target.style.borderBottom = '1px solid rgba(255,253,246,0.2)'}
+                      onBlur={e => e.target.style.borderBottom = '1px solid transparent'}
+                    />
+                    <div style={sheetStyles.rowDelta}>{deltaLabel} vs précédent</div>
+                  </div>
+                  <input
+                    style={sheetStyles.rowNoteInput}
+                    value={m.note || ''}
+                    placeholder="Ajouter une note..."
+                    onChange={e => onUpdateMeasure && onUpdateMeasure(originalIndex(i), { ...m, note: e.target.value })}
+                  />
                 </div>
                 <div>
                   <span style={sheetStyles.rowVal}>{m.value}</span>
@@ -141,7 +166,7 @@ const KPIHistorySheet = ({ open, onClose, kpi, accent, onDeleteMeasure }) => {
   );
 };
 
-const JalonKPICard = ({ kpi, onAddMeasure, onUpdate, onEdit, onDeleteMeasure }) => {
+const JalonKPICard = ({ kpi, onAddMeasure, onUpdate, onEdit, onDeleteMeasure, onUpdateMeasure }) => {
   const isLeading = kpi.type === 'leading';
   const accent = '#EE4408';
 
@@ -513,6 +538,7 @@ const JalonKPICard = ({ kpi, onAddMeasure, onUpdate, onEdit, onDeleteMeasure }) 
         kpi={kpi}
         accent={accent}
         onDeleteMeasure={onDeleteMeasure}
+        onUpdateMeasure={onUpdateMeasure}
       />
     </div>
   );
