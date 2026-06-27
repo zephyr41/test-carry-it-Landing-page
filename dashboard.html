@@ -1001,35 +1001,72 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                     <div class="db-view db-view-pilotage ${currentDashboardView === 'pilotage' ? 'active' : ''}"
                         data-view="pilotage"
                         ${currentDashboardView === 'pilotage' ? '' : 'hidden'}>
-                        <div class="vision-section">
-                            ${buildVisionCtxStrip(obj, i)}
-                            <div class="vision-main-grid">
-                                <div class="vision-kpi-panel" id="kpiPanel-${i}">
-                                    <div class="vision-kpi-panel-head">
-                                        <p class="vision-kpi-meta">${escHtml(kpiDesc || 'Objectif principal')}</p>
-                                        <button class="vision-add-btn" onclick="openAddMeasureModal(${i})">
-                                            <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                        <div class="db-section vision-section">
+                            <!-- Row 1 : Vision long terme — Jalon actif + Résultat/Calendrier -->
+                            <div class="vision-quick-grid">
+                                ${buildVisionJalonActifCard(obj, i)}
+                                ${buildVisionCalendarCard(obj, i)}
+                            </div>
+                            <!-- Row 2 : BlocVision — section label + KPI + SMART (BlocVision.jsx exact) -->
+                            <div class="vision-support-area">
+                            <div class="vision-support-head">
+                                <span>Vision · Long terme</span>
+                                <p>Objectif, mesure principale et cadre SMART.</p>
+                            </div>
+                            <div class="vision-reference-grid">
+                                <!-- KPI CARD — BlocVision.jsx KPICard exact -->
+                                <div class="vision-kpi-card" id="kpiPanel-${i}" style="background:#111111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:24px;display:flex;flex-direction:column;min-width:0">
+                                    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;gap:16px">
+                                        <div style="display:flex;flex-direction:column;gap:5px;min-width:0">
+                                            <span style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,253,246,0.62);white-space:nowrap">KPI global</span>
+                                            <span id="kpiDesc-${i}" style="font-size:15px;color:#FFFDF6;font-weight:650;line-height:1.3;max-width:520px">${escHtml(kpiDesc)}</span>
+                                            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px">
+                                                <span id="kpiChipActuel-${i}" style="display:inline-flex;align-items:center;gap:5px;min-height:26px;padding:4px 8px;border-radius:6px;background:rgba(255,253,246,0.045);border:1px solid rgba(255,253,246,0.08);color:rgba(255,253,246,0.72);font-size:11.5px;font-weight:600;white-space:nowrap">Actuel ${kpiCurrent}${kpiUnit ? ' ' + escHtml(kpiUnit) : ''}</span>
+                                                <span style="display:inline-flex;align-items:center;gap:5px;min-height:26px;padding:4px 8px;border-radius:6px;background:rgba(255,253,246,0.045);border:1px solid rgba(255,253,246,0.08);color:rgba(255,253,246,0.72);font-size:11.5px;font-weight:600;white-space:nowrap">Cible ${kpiTarget}</span>
+                                            </div>
+                                        </div>
+                                        <button onclick="openAddMeasureModal(${i})" style="display:inline-flex;align-items:center;gap:6px;padding:9px 14px;border-radius:8px;background:#FFFDF6;color:#080809;border:none;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0">
+                                            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
                                             Ajouter une mesure
                                         </button>
                                     </div>
-                                    <div class="vision-kpi-hero">
-                                        <span class="vision-kpi-big-num">${escHtml(formatMetricValue(kpiCurrent))}</span>
-                                        <span class="vision-kpi-target-label">/ ${escHtml(formatMetricValue(kpiTarget))}${kpiUnit ? ' ' + escHtml(kpiUnit) : ''}</span>
-                                    </div>
-                                    <div class="vision-kpi-chips">
-                                        <span class="vision-kpi-chip" id="kpiChipActuel-${i}">Actuel ${kpiCurrent}${kpiUnit ? ' ' + escHtml(kpiUnit) : ''}</span>
-                                        <span class="vision-kpi-chip">Cible ${kpiTarget}</span>
-                                    </div>
-                                    <div id="kpiWrap-${i}" class="vision-chart-wrap"></div>
+                                    <div id="kpiWrap-${i}" style="flex:1;min-height:200px;border-top:1px solid rgba(255,253,246,0.06);padding-top:4px;margin-top:4px"></div>
                                 </div>
-                                <div class="vision-sidebar">
-                                    ${buildVisionCalendarCard(obj, i)}
-                                    ${buildVisionSmartCard(obj, i)}
+
+                                <!-- SMART CARD — BlocVision.jsx SmartCard exact -->
+                                <div class="vision-smart-card" style="background:#111111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:24px;display:flex;flex-direction:column;min-width:0">
+                                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+                                        <span style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,253,246,0.62);white-space:nowrap">Cadre SMART</span>
+                                        <button type="button" onclick="enterSmartEdit(${i})" style="display:inline-flex;align-items:center;gap:6px;min-height:32px;padding:6px 12px;border-radius:7px;background:transparent;color:#FFFDF6;border:1px solid rgba(255,253,246,0.14);font-size:12px;font-weight:500;cursor:pointer;font-family:inherit">
+                                            <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                            Modifier
+                                        </button>
+                                    </div>
+                                    <div id="smartView-${i}">
+                                        ${buildSmartRowJSX('S', "L'AMBITION", obj.specifique, 'specifique', true)}
+                                        ${buildSmartRowJSX('M', 'LA MESURE', obj.mesurable, 'mesurable')}
+                                        ${buildSmartRowJSX('A', 'ATTEIGNABLE', obj.atteignable, 'atteignable')}
+                                        ${buildSmartRowJSX('R', 'RÉALISTE', obj.realiste, 'realiste')}
+                                        ${buildSmartRowJSX('T', "L'ÉCHÉANCE", obj.temporel, 'temporel')}
+                                    </div>
+                                    <form class="smart-edit" id="smartEdit-${i}" onsubmit="saveSmartEdit(event, ${i})">
+                                        ${buildSmartEditRow('S', "L'Ambition", `smartSpec-${i}`, obj.specifique)}
+                                        ${buildSmartEditRow('M', 'La Mesure', `smartMes-${i}`, obj.mesurable)}
+                                        ${buildSmartEditRow('A', 'Atteignable', `smartAtt-${i}`, obj.atteignable)}
+                                        ${buildSmartEditRow('R', 'Réaliste', `smartRea-${i}`, obj.realiste)}
+                                        ${buildSmartEditRow('T', "L'Échéance", `smartTem-${i}`, obj.temporel)}
+                                        <div class="smart-error" id="smartError-${i}">Tous les champs sont requis.</div>
+                                        <div class="smart-edit-actions">
+                                            <button class="smart-btn smart-btn-cancel" type="button" onclick="cancelSmartEdit(${i})">Annuler</button>
+                                            <button class="smart-btn smart-btn-save" type="submit">Sauvegarder</button>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
-                            <div class="vision-citation-block">
-                                <p class="vision-citation-text">"C'est quand t'as envie d'abandonner que tout commence."</p>
                             </div>
+
+                            <!-- Citation -->
+                            <p class="db-citation vision-citation">"C'est quand t'as envie d'abandonner que tout commence."</p>
                         </div>
                     </div>
 
@@ -1084,93 +1121,67 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
         }
 
         // ──────────────────────────────────────────────────────────
-        // VISION VIEW — Context strip (replaces Jalon actif card)
+        // VISION VIEW — Jalon actif card
         // ──────────────────────────────────────────────────────────
-        function buildVisionCtxStrip(obj, i) {
-            const { jalons, activeIdx, activeJalon } = getVisionJalonContext(obj, i);
+        function buildVisionJalonActifCard(obj, i) {
+            const { jalons, activeIdx } = getVisionJalonContext(obj, i);
             const total = jalons.length;
-            const projTitle = obj.titre || obj.title || 'Ambition';
-            const jalonName = activeJalon
-                ? escHtml(activeJalon.titre || activeJalon.title || 'Jalon actif')
-                : total === 0 ? 'Aucun jalon' : 'Jalon actif';
-            const critere = activeJalon ? (activeJalon.critere || activeJalon.kpi || '') : '';
-            const jalonDate = activeJalon?.date ? formatDateJalonCourt(activeJalon.date) : '';
+            const cardStyle = 'background:#111111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px 14px;min-height:86px;display:flex;flex-direction:column;justify-content:space-between;min-width:0;overflow:visible';
+            const headStyle = 'display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:7px';
+            const labelStyle = 'font-size:11px;font-weight:650;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,253,246,0.62)';
+            const metaStyle = 'font-family:"JetBrains Mono",ui-monospace,monospace;font-size:11.5px;font-weight:600;color:rgba(255,253,246,0.72);white-space:nowrap';
+            const titleStyle = 'font-size:15px;line-height:1.25;font-weight:700;color:#FFFDF6;letter-spacing:-0.005em';
+            const validationStyle = 'margin-top:3px;font-size:11.5px;color:rgba(255,253,246,0.52);overflow:hidden;text-overflow:ellipsis;white-space:nowrap';
+            if (!total) return `<section style="${cardStyle};justify-content:center"><span style="font-size:11px;color:rgba(255,253,246,0.4)">Aucun jalon défini</span></section>`;
 
-            const dots = total > 0 ? jalons.map((j, idx) => {
-                const cls = idx < activeIdx ? 'done' : idx === activeIdx ? 'active' : 'upcoming';
-                return `<span class="vision-ctx-dot ${cls}" aria-hidden="true"></span>`;
-            }).join('') : '';
+            const activeJalon = jalons[activeIdx];
 
-            const jalonRowHtml = total > 0 ? `
-                <div class="vision-ctx-jalon-row">
-                    <div class="vision-ctx-dots" role="img" aria-label="Jalons : ${activeIdx + 1} sur ${total}">${dots}</div>
-                    <span class="vision-ctx-counter">${activeIdx + 1}/${total}</span>
-                    <span class="vision-ctx-sep" aria-hidden="true"></span>
-                    <span class="vision-ctx-jalon-name">${jalonName}</span>
-                    ${jalonDate ? `<span class="vision-ctx-date">· ${escHtml(jalonDate)}</span>` : ''}
-                </div>` : '';
+            const title = escHtml(activeJalon.titre || activeJalon.title || '—');
+            const validation = escHtml(activeJalon.validation || activeJalon.critere || activeJalon.kpi || activeJalon.description || '');
+            const halfCol = 50 / total;
+            const donePercent = total > 1 ? (activeIdx / total * 100) : 0;
 
-            const critereHtml = critere
-                ? `<p class="vision-ctx-critere">${escHtml(critere)}</p>`
-                : '';
-
-            return `
-                <div class="vision-ctx-strip">
-                    <span class="vision-ctx-title">${escHtml(projTitle)}</span>
-                    ${jalonRowHtml}
-                    ${critereHtml}
-                </div>`;
-        }
-
-        // ──────────────────────────────────────────────────────────
-        // VISION VIEW — SMART card (redesigned)
-        // ──────────────────────────────────────────────────────────
-        function buildVisionSmartCard(obj, i) {
-            const rows = [
-                { letter: 'S', label: "L'Ambition", field: 'specifique', value: obj.specifique },
-                { letter: 'M', label: 'La Mesure',  field: 'mesurable',  value: obj.mesurable  },
-                { letter: 'A', label: 'Atteignable', field: 'atteignable', value: obj.atteignable },
-                { letter: 'R', label: 'Réaliste',   field: 'realiste',   value: obj.realiste   },
-                { letter: 'T', label: "L'Échéance", field: 'temporel',   value: obj.temporel   },
-            ];
-
-            const rowsHtml = rows.map(r => {
-                const hasValue = r.value && String(r.value).trim();
-                const displayVal = hasValue ? escHtml(r.value) : '—';
+            const dots = jalons.map((j, idx) => {
+                const isDone = idx < activeIdx;
+                const isActive = idx === activeIdx;
+                const status = isDone ? 'done' : isActive ? 'active' : 'upcoming';
+                const firstWord = escHtml((j.titre || j.title || '').split(' ')[0]);
+                const check = isDone ? `<svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>` : '';
+                const dotStyle = isActive
+                    ? 'width:16px;height:16px;border-radius:50%;background:#EE4408;border:none;box-shadow:0 0 0 3px rgba(238,68,8,0.18);display:flex;align-items:center;justify-content:center;color:transparent;font-size:10px;line-height:1'
+                    : isDone
+                        ? 'width:16px;height:16px;border-radius:50%;background:#111111;border:1.5px solid rgba(255,255,255,0.22);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.6);font-size:10px;line-height:1'
+                        : 'width:16px;height:16px;border-radius:50%;background:#111111;border:1.5px solid rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;color:transparent;font-size:10px;line-height:1';
+                const labelColor = isDone ? 'rgba(255,253,246,0.50)' : isActive ? '#FFFDF6' : 'rgba(255,253,246,0.20)';
                 return `
-                    <div class="vision-smart-row">
-                        <span class="vision-smart-letter">${r.letter}</span>
-                        <div class="vision-smart-content">
-                            <span class="vision-smart-sublabel">${r.label}</span>
-                            <span class="vision-smart-value${!hasValue ? ' empty' : ''}" data-field="${r.field}">${displayVal}</span>
-                        </div>
+                    <div style="grid-column:${idx+1};grid-row:1;display:flex;justify-content:center;position:relative;z-index:1">
+                        <span class="vision-jalon-dot ${status}" style="${dotStyle}">${check}</span>
+                    </div>
+                    <div style="grid-column:${idx+1};grid-row:2;display:flex;justify-content:center">
+                        <span class="vision-jalon-dot-label ${status}" style="display:flex;justify-content:center;font-size:9px;font-weight:600;white-space:nowrap;letter-spacing:0.03em;color:${labelColor}">${firstWord}</span>
                     </div>`;
             }).join('');
 
             return `
-                <div class="vision-smart-panel">
-                    <div id="smartView-${i}" class="vision-smart-rows">
-                        ${rowsHtml}
+                <section class="vision-quick-card" style="${cardStyle}" aria-label="Position dans les jalons">
+                    <div class="vision-quick-head" style="${headStyle}">
+                        <span class="vision-quick-label" style="${labelStyle}">Jalon actif</span>
+                        <span class="vision-quick-meta" style="${metaStyle}">${activeIdx + 1}/${total}</span>
                     </div>
-                    <form class="smart-edit" id="smartEdit-${i}" onsubmit="saveSmartEdit(event, ${i})">
-                        ${buildSmartEditRow('S', "L'Ambition", `smartSpec-${i}`, obj.specifique)}
-                        ${buildSmartEditRow('M', 'La Mesure', `smartMes-${i}`, obj.mesurable)}
-                        ${buildSmartEditRow('A', 'Atteignable', `smartAtt-${i}`, obj.atteignable)}
-                        ${buildSmartEditRow('R', 'Réaliste', `smartRea-${i}`, obj.realiste)}
-                        ${buildSmartEditRow('T', "L'Échéance", `smartTem-${i}`, obj.temporel)}
-                        <div class="smart-error" id="smartError-${i}">Tous les champs sont requis.</div>
-                        <div class="smart-edit-actions">
-                            <button class="smart-btn smart-btn-cancel" type="button" onclick="cancelSmartEdit(${i})">Annuler</button>
-                            <button class="smart-btn smart-btn-save" type="submit">Sauvegarder</button>
+                    <div style="display:flex;flex-direction:column;flex-grow:1">
+                        <div>
+                            <div class="vision-jalon-title" style="${titleStyle}">${title}</div>
+                            <div class="vision-jalon-meta" style="${validationStyle}" title="${validation}">${validation}</div>
+                            <div style="margin-top:14px" aria-hidden="true">
+                                <div style="display:grid;grid-template-columns:repeat(${total},1fr);grid-template-rows:auto auto;row-gap:5px;position:relative">
+                                    <span style="position:absolute;left:${halfCol}%;right:${halfCol}%;top:8px;border-top:1px dashed rgba(255,253,246,0.10);pointer-events:none;z-index:0"></span>
+                                    <span style="position:absolute;left:${halfCol}%;top:8px;width:${donePercent}%;border-top:1px solid rgba(255,253,246,0.20);pointer-events:none;z-index:0"></span>
+                                    ${dots}
+                                </div>
+                            </div>
                         </div>
-                    </form>
-                    <button class="vision-smart-edit-btn" type="button" onclick="enterSmartEdit(${i})">
-                        <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                        </svg>
-                        Modifier
-                    </button>
-                </div>`;
+                    </div>
+                </section>`;
         }
 
         // ──────────────────────────────────────────────────────────
@@ -1290,12 +1301,14 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             const resultUnit = laggingKpi ? (laggingKpi.unite || laggingKpi.unit || '') : '';
             const resultValueLabel = formatMetricValue(resultValue);
             const resultTargetLabel = Number.isFinite(resultTarget) && resultTarget > 0 ? formatMetricValue(resultTarget) : '—';
+            const resultTargetText = `${resultTargetLabel}${resultUnit ? ' ' + resultUnit : ''}`;
 
             const effortValue = leadingKpi ? (getKpiCurrentValue(leadingKpi) ?? 0) : 0;
             const effortTarget = leadingKpi ? (getKpiTargetValue(leadingKpi) ?? 0) : 0;
             const effortUnit = leadingKpi ? (leadingKpi.unite || leadingKpi.unit || '') : '';
             const effortValueLabel = formatMetricValue(effortValue);
             const effortTargetLabel = Number.isFinite(effortTarget) && effortTarget > 0 ? formatMetricValue(effortTarget) : '—';
+            const effortTargetText = `${effortTargetLabel}${effortUnit ? ' ' + effortUnit : ''}`;
 
             let daysElapsed = 0;
             if (laggingKpi && Array.isArray(laggingKpi.measures) && laggingKpi.measures.length > 0) {
@@ -1307,12 +1320,40 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             }
 
             const cells = generateVisionCalCells(laggingKpi, leadingKpi, daysElapsed);
+            const calRowH = 32, calGap = 4, calLabelH = 14;
 
-            const dayLabels = ['L','M','M','J','V','S','D'].map(d => `<span class="vision-cal-day-label">${d}</span>`).join('');
+            const elapsedStartIdx = cells.reduce((last, c, idx) => c.isResultDay ? idx : last, -1);
+            const elapsedEndIdx = cells.findIndex(c => c.isToday);
+            const elapsedStart = elapsedStartIdx >= 0 ? elapsedStartIdx + 1 : Math.max(0, cells.findIndex(c => c.inCurrentPeriod));
+            const elapsedEnd = elapsedEndIdx >= 0 ? elapsedEndIdx : elapsedStart;
+
+            let bandsHtml = '';
+            if (elapsedStart >= 0 && elapsedEnd >= elapsedStart) {
+                const sw = Math.floor(elapsedStart / 7), ew = Math.floor(elapsedEnd / 7);
+                for (let w = sw; w <= ew; w++) {
+                    const sc = w === sw ? elapsedStart % 7 : 0;
+                    const ec = w === ew ? elapsedEnd % 7 : 6;
+                    const n = ec - sc + 1;
+                    const top = calLabelH + calGap + w * (calRowH + calGap) + Math.round((calRowH - 22) / 2);
+                    const cellW = `((100% - ${calGap*6}px) / 7)`;
+                    const left = sc > 0 ? `calc(${sc} * (${cellW} + ${calGap}px) - 1px)` : `calc(-1px)`;
+                    const width = `calc(${n} * ${cellW} + ${(n-1)*calGap}px + 2px)`;
+                    bandsHtml += `<span class="vision-cal-elapsed-band" style="position:absolute;height:22px;border-radius:999px;background:rgba(184,120,32,0.07);border:1px solid rgba(184,120,32,0.38);pointer-events:none;z-index:0;left:${left};width:${width};top:${top}px"></span>`;
+                }
+            }
+
+            const dayLabelStyle = 'font-size:10.5px;line-height:14px;height:14px;font-weight:650;color:rgba(255,253,246,0.30);text-align:center';
+            const dayLabels = ['L','M','M','J','V','S','D'].map(d => `<span class="vision-cal-day-label" style="${dayLabelStyle}">${d}</span>`).join('');
 
             const cellsHtml = cells.map(cell => {
                 const dotCls = `vision-cal-dot${cell.isResultDay ? ' result' : cell.active ? ' active' : ''}${cell.isToday ? ' today' : ''}`;
                 const cellCls = `vision-cal-cell${cell.active ? ' has-data' : ''}`;
+                const cellStyle = 'position:relative;z-index:1;width:100%;height:32px;border-radius:11px;display:flex;align-items:center;justify-content:center;justify-self:center;flex-direction:column;gap:2px';
+                const dotStyle = cell.isResultDay
+                    ? `width:10px;height:10px;border-radius:50%;background:rgba(238,68,8,0.86);box-shadow:${cell.isToday ? '0 0 0 2px #111111, 0 0 0 3.5px rgba(255,253,246,0.50)' : '0 0 0 2px rgba(238,68,8,0.10)'};z-index:2`
+                    : cell.active
+                        ? `width:8px;height:8px;border-radius:50%;background:rgba(255,253,246,0.58);${cell.isToday ? 'box-shadow:0 0 0 2px #111111, 0 0 0 3.5px rgba(255,253,246,0.50)' : ''}`
+                        : `width:8px;height:8px;border-radius:50%;background:rgba(255,253,246,0.08);${cell.isToday ? 'box-shadow:0 0 0 2px #111111, 0 0 0 3.5px rgba(255,253,246,0.50)' : ''}`;
                 const data = cell.active ? [
                     `data-type="${cell.type}"`,
                     `data-date="${escHtml(cell.date)}"`,
@@ -1327,41 +1368,40 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                     `data-time="${escHtml(cell.timeOfDay || '')}"`,
                     `data-duration="${escHtml(cell.duration || '')}"`,
                 ].join(' ') : `data-date="${escHtml(cell.date)}" data-note="${escHtml(cell.note)}"`;
-                return `<span class="${cellCls}" ${data}><span class="${dotCls}"></span></span>`;
+                return `<span class="${cellCls}" style="${cellStyle}" ${data}><span class="${dotCls}" style="${dotStyle}"></span></span>`;
             }).join('');
 
-            const daysHtml = daysElapsed > 0
-                ? `<span class="vision-cal-days-inline"><span class="vision-cal-days-dot" aria-hidden="true"></span>${daysElapsed}j sans mesure</span>`
-                : '';
-
             return `
-                <div class="vision-cal-card" aria-label="Résultat et effort">
-                    <div class="vision-cal-stats">
-                        <div class="vision-cal-stat">
-                            <span class="vision-cal-stat-label">Effort</span>
-                            <div class="vision-cal-stat-val-row">
-                                <span class="vision-cal-stat-num effort">${escHtml(effortValueLabel)}</span>
-                                <span class="vision-cal-stat-target">/ ${escHtml(effortTargetLabel)}${effortUnit ? ' ' + escHtml(effortUnit) : ''}</span>
-                            </div>
+                <section class="vision-quick-card vision-calendar-card"
+                    style="background:#111111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;display:grid;grid-template-columns:minmax(220px,0.46fr) minmax(250px,0.8fr);column-gap:18px;align-items:center;justify-content:stretch;padding:16px 18px 16px 28px;overflow:visible;position:relative;z-index:2;width:100%;max-width:none;justify-self:stretch;min-height:86px;min-width:0"
+                    aria-label="Résultat et effort">
+                    <div class="vision-stats-col" style="display:flex;flex-direction:column;gap:7px;min-width:0">
+                        <span class="vision-stat-label" style="color:rgba(255,253,246,0.40);font-weight:650;font-size:10px;text-transform:uppercase;letter-spacing:0.08em">Résultat</span>
+                        <div class="vision-stat-value-row" style="display:flex;align-items:baseline;gap:6px;min-width:0;flex-wrap:nowrap;white-space:nowrap">
+                            <span class="vision-stat-big" style="font-size:31px;font-weight:720;color:#FFFDF6;letter-spacing:-0.02em;line-height:1">${escHtml(resultValueLabel)}</span>
+                            <span class="vision-stat-target" style="font-size:13.5px;color:rgba(255,253,246,0.54);font-weight:500">/ ${escHtml(resultTargetText)}</span>
                         </div>
-                        <span class="vision-cal-stat-sep" aria-hidden="true"></span>
-                        <div class="vision-cal-stat">
-                            <span class="vision-cal-stat-label">Résultat</span>
-                            <div class="vision-cal-stat-val-row">
-                                <span class="vision-cal-stat-num">${escHtml(resultValueLabel)}</span>
-                                <span class="vision-cal-stat-target">/ ${escHtml(resultTargetLabel)}${resultUnit ? ' ' + escHtml(resultUnit) : ''}</span>
+                        <div class="vision-days-elapsed" style="display:flex;align-items:center;gap:5px;flex-wrap:nowrap">
+                            <span class="vision-days-dot" style="width:6px;height:6px;border-radius:50%;background:#EE4408;flex-shrink:0"></span>
+                            <span class="vision-days-label" style="font-family:&quot;JetBrains Mono&quot;,ui-monospace,monospace;font-size:10.5px;color:#B87820;font-weight:600;letter-spacing:0.02em">${daysElapsed}j sans mesure</span>
+                        </div>
+                        <div class="vision-effort-sep" style="padding-top:12px;border-top:1px solid rgba(255,253,246,0.10);display:flex;flex-direction:column;gap:3px;min-width:0">
+                            <span class="vision-stat-label" style="color:rgba(255,253,246,0.40);font-weight:650;font-size:10px;text-transform:uppercase;letter-spacing:0.08em">Effort</span>
+                            <div class="vision-stat-value-row" style="display:flex;align-items:baseline;gap:6px;min-width:0;flex-wrap:nowrap;white-space:nowrap">
+                                <span class="vision-stat-big effort" style="font-size:25px;font-weight:710;color:#FFFDF6;letter-spacing:-0.02em;line-height:1">${escHtml(effortValueLabel)}</span>
+                                <span class="vision-stat-target effort" style="font-size:13px;color:rgba(255,253,246,0.52);font-weight:500">/ ${escHtml(effortTargetText)}</span>
                             </div>
-                            ${daysHtml}
                         </div>
                     </div>
-                    <div class="vision-cal-panel" id="vcal-panel-${i}">
-                        <div class="vision-cal-grid" id="vcal-grid-${i}" aria-label="Calendrier d'effort sur 28 jours">
+                    <div class="vision-cal-panel" id="vcal-panel-${i}" style="position:relative;display:flex;flex-direction:column;align-items:center;justify-self:center;align-self:center;z-index:3;width:100%;flex-shrink:0;overflow:visible">
+                        <div class="vision-cal-grid" id="vcal-grid-${i}" style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));grid-template-rows:14px repeat(4,32px);row-gap:4px;column-gap:4px;align-items:center;position:relative;justify-content:center;width:min(100%,390px);min-width:240px;margin-left:auto;margin-right:auto" aria-label="Calendrier d'effort sur 28 jours">
+                            ${bandsHtml}
                             ${dayLabels}
                             ${cellsHtml}
                         </div>
                         <div class="vision-cal-popover" id="vcal-popover-${i}"></div>
                     </div>
-                </div>`;
+                </section>`;
         }
 
         function initVisionCalendarInteractions(i) {
@@ -5923,476 +5963,229 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
 
     <!-- VISION VIEW STYLES -->
     <style>
-        /* ─── Section shell ─── */
+        /* Vision quick grid — top 2 cards */
         .vision-section {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 0;
         }
-
-        /* ─── Context strip ─── */
-        .vision-ctx-strip {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            padding-bottom: 14px;
-            border-bottom: 1px solid rgba(255,253,246,0.06);
-        }
-        .vision-ctx-title {
-            font-size: 15px;
-            font-weight: 650;
-            color: #FFFDF6;
-            letter-spacing: -0.01em;
-            line-height: 1.2;
-        }
-        .vision-ctx-jalon-row {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            min-width: 0;
-        }
-        .vision-ctx-jalon-name {
-            font-size: 12px;
-            font-weight: 500;
-            color: rgba(255,253,246,0.65);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 200px;
-        }
-        .vision-ctx-date {
-            font-size: 12px;
-            color: rgba(255,253,246,0.38);
-            font-weight: 400;
-            white-space: nowrap;
-        }
-        .vision-ctx-sep {
-            width: 1px;
-            height: 11px;
-            background: rgba(255,253,246,0.14);
-            flex-shrink: 0;
-        }
-        .vision-ctx-dots {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .vision-ctx-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: rgba(255,253,246,0.12);
-            flex-shrink: 0;
-            transition: background 180ms, transform 180ms, box-shadow 180ms;
-        }
-        .vision-ctx-dot.done { background: rgba(255,253,246,0.32); }
-        .vision-ctx-dot.active {
-            background: #EE4408;
-            transform: scale(1.2);
-            box-shadow: 0 0 0 2px rgba(238,68,8,0.20);
-        }
-        .vision-ctx-counter {
-            font-family: 'JetBrains Mono', ui-monospace, monospace;
-            font-size: 10.5px;
-            font-weight: 600;
-            color: rgba(255,253,246,0.35);
-            letter-spacing: 0.02em;
-        }
-        .vision-ctx-critere {
-            margin: 0;
-            font-size: 11.5px;
-            color: rgba(255,253,246,0.42);
-            line-height: 1.4;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .vision-days-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            padding: 2px 7px;
-            border-radius: 5px;
-            background: rgba(184,120,32,0.09);
-            border: 1px solid rgba(184,120,32,0.20);
-            font-family: 'JetBrains Mono', ui-monospace, monospace;
-            font-size: 10px;
-            font-weight: 600;
-            color: #B87820;
-            letter-spacing: 0.02em;
-            white-space: nowrap;
-        }
-        .vision-days-badge-dot {
-            width: 4px;
-            height: 4px;
-            border-radius: 50%;
-            background: #EE4408;
-            flex-shrink: 0;
-        }
-        /* ─── KPI panel header ─── */
-        .vision-kpi-panel-head {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-        .vision-add-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 12px;
-            border-radius: 7px;
-            background: #FFFDF6;
-            color: #080809;
-            border: none;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: filter 150ms;
-            white-space: nowrap;
-            font-family: inherit;
-            flex-shrink: 0;
-        }
-        .vision-add-btn:hover { filter: brightness(0.90); }
-
-        /* ─── Main grid: KPI panel left, sidebar right ─── */
-        .vision-main-grid {
+        .vision-quick-grid {
             display: grid;
-            grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
-            gap: 12px;
+            grid-template-columns: minmax(280px, 0.82fr) minmax(620px, 1.38fr);
+            gap: 18px;
+            margin-bottom: 26px;
             align-items: stretch;
-        }
-
-        /* ─── KPI panel ─── */
-        .vision-kpi-panel {
-            background: #111111;
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 10px;
-            padding: 22px 24px 20px;
-            display: flex;
-            flex-direction: column;
-            min-width: 0;
-            overflow: visible;
-        }
-        .vision-kpi-meta {
-            font-size: 12.5px;
-            font-weight: 450;
-            color: rgba(255,253,246,0.55);
-            line-height: 1.4;
-            margin: 0;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            flex: 1;
-            min-width: 0;
-        }
-        .vision-kpi-hero {
-            display: flex;
-            align-items: baseline;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-        .vision-kpi-big-num {
-            font-size: 46px;
-            font-weight: 760;
-            color: #FFFDF6;
-            letter-spacing: -0.035em;
-            line-height: 1;
-        }
-        .vision-kpi-target-label {
-            font-size: 15px;
-            color: rgba(255,253,246,0.38);
-            font-weight: 500;
-            letter-spacing: -0.01em;
-        }
-        .vision-kpi-chips {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-bottom: 14px;
-        }
-        .vision-kpi-chip {
-            display: inline-flex;
-            align-items: center;
-            min-height: 23px;
-            padding: 3px 8px;
-            border-radius: 5px;
-            background: rgba(255,253,246,0.04);
-            border: 1px solid rgba(255,253,246,0.08);
-            color: rgba(255,253,246,0.60);
-            font-size: 11px;
-            font-weight: 500;
-            white-space: nowrap;
-        }
-        .vision-chart-wrap {
-            flex: 1;
-            min-height: 160px;
-            border-top: 1px solid rgba(255,253,246,0.06);
-            padding-top: 10px;
-            margin-top: 2px;
-        }
-
-        /* ─── Sidebar ─── */
-        .vision-sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            min-width: 0;
-        }
-
-        /* ─── Calendar card ─── */
-        .vision-cal-card {
-            background: #111111;
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 10px;
-            padding: 14px 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            min-width: 0;
-            overflow: visible;
             position: relative;
+            z-index: 30;
+            overflow: visible;
         }
-        .vision-cal-stats {
-            display: flex;
-            flex-direction: row;
-            align-items: flex-start;
-            gap: 10px;
-        }
-        .vision-cal-stat {
+        .vision-quick-card {
+            background: #111111;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 10px;
+            padding: 16px 18px;
+            min-height: 128px;
             display: flex;
             flex-direction: column;
-            gap: 2px;
+            justify-content: space-between;
             min-width: 0;
-            flex: 1;
+            overflow: visible;
         }
-        .vision-cal-stat-label {
-            font-size: 9.5px;
+        .vision-quick-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 7px;
+        }
+        .vision-quick-label {
+            font-size: 11px;
             font-weight: 650;
             text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: rgba(255,253,246,0.38);
+            letter-spacing: 0.1em;
+            color: rgba(255,253,246,0.62);
         }
-        .vision-cal-stat-val-row {
-            display: flex;
-            align-items: baseline;
-            gap: 4px;
-            flex-wrap: nowrap;
-        }
-        .vision-cal-stat-num {
-            font-size: 20px;
-            font-weight: 720;
-            color: #FFFDF6;
-            letter-spacing: -0.02em;
-            line-height: 1;
-        }
-        .vision-cal-stat-num.effort {
-            font-size: 18px;
-            font-weight: 700;
-        }
-        .vision-cal-stat-target {
-            font-size: 11px;
-            color: rgba(255,253,246,0.38);
-            font-weight: 500;
-            white-space: nowrap;
-        }
-        .vision-cal-days-inline {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            margin-top: 2px;
+        .vision-quick-meta {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
             font-size: 11.5px;
             font-weight: 600;
-            color: #EE4408;
+            color: rgba(255,253,246,0.72);
+            white-space: nowrap;
         }
-        .vision-cal-days-dot {
-            width: 6px;
-            height: 6px;
+        .vision-jalon-title {
+            font-size: 16px;
+            line-height: 1.25;
+            font-weight: 700;
+            color: #FFFDF6;
+            letter-spacing: -0.005em;
+        }
+        .vision-jalon-meta {
+            margin-top: 3px;
+            font-size: 11.5px;
+            color: rgba(255,253,246,0.52);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .vision-jalon-dot {
+            width: 16px;
+            height: 16px;
             border-radius: 50%;
-            background: #EE4408;
-            flex-shrink: 0;
-        }
-
-        /* ─── Calendar grid ─── */
-        .vision-cal-panel {
-            position: relative;
+            background: #111111;
+            border: 1.5px solid rgba(255,255,255,0.12);
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: transparent;
+            font-size: 10px;
+            line-height: 1;
+        }
+        .vision-jalon-dot.done { border-color: rgba(255,255,255,0.22); color: rgba(255,255,255,0.6); }
+        .vision-jalon-dot.active { background: #EE4408; border: none; box-shadow: 0 0 0 3px rgba(238,68,8,0.18); color: transparent; }
+        .vision-jalon-dot-label { display: flex; justify-content: center; font-size: 9px; font-weight: 600; white-space: nowrap; letter-spacing: 0.03em; }
+        .vision-jalon-dot-label.done { color: rgba(255,253,246,0.50); }
+        .vision-jalon-dot-label.active { color: #FFFDF6; }
+        .vision-jalon-dot-label.upcoming { color: rgba(255,253,246,0.20); }
+
+        /* Calendar card */
+        .vision-calendar-card {
+            display: grid;
+            grid-template-columns: minmax(220px, 0.42fr) minmax(280px, 0.9fr);
+            column-gap: 24px;
+            align-items: center;
+            padding: 18px 22px 18px 28px;
             overflow: visible;
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: none;
+            justify-self: stretch;
         }
-        .vision-cal-stat-sep {
-            width: 1px;
-            height: 28px;
-            background: rgba(255,253,246,0.08);
-            flex-shrink: 0;
-            align-self: center;
-        }
+        .vision-stats-col { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
+        .vision-stat-label { color: rgba(255,253,246,0.40); font-weight: 650; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; }
+        .vision-stat-value-row { display: flex; align-items: baseline; gap: 6px; min-width: 0; flex-wrap: nowrap; white-space: nowrap; }
+        .vision-stat-big { font-size: 31px; font-weight: 720; color: #FFFDF6; letter-spacing: -0.02em; line-height: 1; }
+        .vision-stat-big.effort { font-size: 25px; font-weight: 710; }
+        .vision-stat-target { font-size: 13.5px; color: rgba(255,253,246,0.54); font-weight: 500; }
+        .vision-stat-target.effort { font-size: 13px; color: rgba(255,253,246,0.52); }
+        .vision-days-elapsed { display: flex; align-items: center; gap: 5px; flex-wrap: nowrap; }
+        .vision-days-dot { width: 6px; height: 6px; border-radius: 50%; background: #EE4408; flex-shrink: 0; }
+        .vision-days-label { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 10.5px; color: #B87820; font-weight: 600; letter-spacing: 0.02em; }
+        .vision-effort-sep { padding-top: 12px; border-top: 1px solid rgba(255,253,246,0.10); display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+
+        /* Calendar panel */
+        .vision-cal-panel { position: relative; display: flex; flex-direction: column; align-items: center; justify-self: center; align-self: center; z-index: 3; width: 100%; flex-shrink: 0; overflow: visible; }
         .vision-cal-grid {
             display: grid;
-            grid-template-columns: repeat(7, 22px);
-            grid-template-rows: 14px repeat(4, 16px);
-            row-gap: 3px;
-            column-gap: 3px;
+            grid-template-columns: repeat(7, minmax(0, 1fr));
+            grid-template-rows: 14px repeat(4, 32px);
+            row-gap: 4px;
+            column-gap: 4px;
             align-items: center;
             position: relative;
+            justify-content: center;
+            width: min(100%, 390px);
+            min-width: 240px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .vision-support-area {
+            margin-bottom: 22px;
+            padding-top: 4px;
+        }
+        .vision-support-head {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 18px;
+            margin-bottom: 14px;
+            padding-top: 2px;
+        }
+        .vision-support-head span {
+            font-size: 11px;
+            font-weight: 650;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            color: rgba(255,253,246,0.72);
+            white-space: nowrap;
+        }
+        .vision-support-head p {
+            margin: 0;
+            max-width: 420px;
+            text-align: right;
+            font-size: 12px;
+            line-height: 1.35;
+            color: rgba(255,253,246,0.42);
+        }
+        .vision-reference-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.42fr) minmax(340px, 0.78fr);
+            gap: 18px;
+            align-items: start;
+        }
+        .vision-kpi-card {
+            min-height: 318px !important;
+            padding: 26px !important;
+        }
+        .vision-smart-card {
+            padding: 22px !important;
+            background: rgba(17,17,17,0.72) !important;
+        }
+        .vision-smart-card [id^="smartView"] > div[style*="grid-template-columns"] {
+            padding-top: 12px !important;
+            padding-bottom: 12px !important;
+        }
+        .vision-citation {
+            align-self: flex-end;
+            max-width: 520px;
+            margin: 2px 0 0 !important;
+            padding-top: 14px;
+            border-top: 1px solid rgba(255,253,246,0.07);
+            text-align: right;
+            color: rgba(255,253,246,0.42) !important;
         }
         .vision-cal-day-label {
-            font-size: 9.5px;
+            font-size: 10.5px;
             line-height: 14px;
             height: 14px;
             font-weight: 650;
-            color: rgba(255,253,246,0.22);
+            color: rgba(255,253,246,0.30);
             text-align: center;
         }
         .vision-cal-cell {
             position: relative;
             z-index: 1;
             width: 100%;
-            height: 16px;
-            border-radius: 4px;
+            height: 32px;
+            border-radius: 11px;
             display: flex;
             align-items: center;
             justify-content: center;
+            justify-self: center;
+            flex-direction: column;
+            gap: 2px;
         }
         .vision-cal-cell.has-data { cursor: pointer; }
         .vision-cal-dot {
-            width: 5px;
-            height: 5px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
             background: rgba(255,253,246,0.08);
         }
-        .vision-cal-dot.active { background: rgba(255,253,246,0.50); }
-        .vision-cal-dot.result {
-            width: 7px;
-            height: 7px;
-            background: rgba(238,68,8,0.86);
-            box-shadow: 0 0 0 2px rgba(238,68,8,0.12);
-            z-index: 2;
-        }
-        .vision-cal-dot.today {
-            box-shadow: 0 0 0 1.5px #111111, 0 0 0 2.5px rgba(255,253,246,0.45);
-        }
+        .vision-cal-dot.active { background: rgba(255,253,246,0.58); }
+        .vision-cal-dot.result { width: 10px; height: 10px; background: rgba(238,68,8,0.86); box-shadow: 0 0 0 2px rgba(238,68,8,0.10); z-index: 2; }
+        .vision-cal-dot.today { box-shadow: 0 0 0 2px #111111, 0 0 0 3.5px rgba(255,253,246,0.50); }
         .vision-cal-elapsed-band {
             position: absolute;
-            height: 10px;
+            height: 22px;
             border-radius: 999px;
             background: rgba(184,120,32,0.07);
-            border: 1px solid rgba(184,120,32,0.28);
+            border: 1px solid rgba(184,120,32,0.38);
             pointer-events: none;
             z-index: 0;
         }
 
-        /* ─── Smart panel ─── */
-        .vision-smart-panel {
-            background: #111111;
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 10px;
-            padding: 14px 16px;
-            display: flex;
-            flex-direction: column;
-            min-width: 0;
-        }
-        .vision-smart-rows {
-            display: flex;
-            flex-direction: column;
-        }
-        .vision-smart-row {
-            display: grid;
-            grid-template-columns: 22px 1fr;
-            gap: 9px;
-            align-items: flex-start;
-            padding: 9px 0;
-            border-bottom: 1px solid rgba(255,253,246,0.06);
-        }
-        .vision-smart-row:last-child { border-bottom: none; }
-        .vision-smart-letter {
-            width: 20px;
-            height: 20px;
-            border-radius: 4px;
-            background: rgba(255,253,246,0.05);
-            border: 1px solid rgba(255,253,246,0.09);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 9.5px;
-            font-weight: 700;
-            color: rgba(255,253,246,0.70);
-            flex-shrink: 0;
-            margin-top: 1px;
-            font-family: 'JetBrains Mono', ui-monospace, monospace;
-        }
-        .vision-smart-content {
-            display: flex;
-            flex-direction: column;
-            gap: 1px;
-            min-width: 0;
-        }
-        .vision-smart-sublabel {
-            font-size: 9px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.09em;
-            color: rgba(255,253,246,0.38);
-            line-height: 1;
-        }
-        .vision-smart-value {
-            font-size: 12px;
-            color: #FFFDF6;
-            font-weight: 400;
-            line-height: 1.45;
-            letter-spacing: -0.005em;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        .vision-smart-value.empty {
-            color: rgba(255,253,246,0.25);
-            font-style: italic;
-        }
-        .vision-smart-edit-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            margin-top: 8px;
-            padding: 5px 9px;
-            border-radius: 5px;
-            border: 1px solid rgba(255,253,246,0.10);
-            background: transparent;
-            color: rgba(255,253,246,0.50);
-            font-size: 10.5px;
-            font-weight: 500;
-            cursor: pointer;
-            align-self: flex-start;
-            transition: background 150ms, border-color 150ms, color 150ms;
-            font-family: inherit;
-        }
-        .vision-smart-edit-btn:hover {
-            background: rgba(255,253,246,0.05);
-            border-color: rgba(255,253,246,0.18);
-            color: rgba(255,253,246,0.80);
-        }
-        /* Hide edit button while form is open */
-        .vision-smart-panel:has(.smart-edit[style*="flex"]) .vision-smart-edit-btn {
-            display: none;
-        }
-
-        /* ─── Citation ─── */
-        .vision-citation-block {
-            padding-top: 10px;
-            border-top: 1px solid rgba(255,253,246,0.05);
-            text-align: right;
-        }
-        .vision-citation-text {
-            margin: 0;
-            font-size: 11.5px;
-            line-height: 1.5;
-            color: rgba(255,253,246,0.28);
-            font-style: italic;
-        }
-
-        /* ─── Calendar popover ─── */
+        /* Popover */
         .vision-cal-popover {
             position: absolute;
             right: -8px;
@@ -6425,6 +6218,75 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
         .vision-cal-popover-block-meta { margin-top: 2px; font-size: 11px; color: rgba(255,253,246,0.58); }
         .vision-cal-popover-note { margin-top: 10px; padding-top: 9px; border-top: 1px solid rgba(255,253,246,0.08); font-size: 11.5px; line-height: 1.45; color: rgba(255,253,246,0.68); }
 
+        @media (max-width: 900px) {
+            .vision-quick-grid {
+                grid-template-columns: 1fr;
+                margin-bottom: 22px;
+            }
+            .vision-calendar-card {
+                grid-template-columns: 1fr !important;
+                gap: 16px !important;
+                padding-left: 14px !important;
+                padding-right: 14px !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                justify-self: stretch !important;
+            }
+            .vision-calendar-card > div:first-child {
+                max-width: none !important;
+                width: 100% !important;
+            }
+            .vision-support-head {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 6px;
+                margin-bottom: 12px;
+            }
+            .vision-support-head p {
+                max-width: none;
+                text-align: left;
+            }
+            .vision-reference-grid {
+                grid-template-columns: 1fr;
+            }
+            .vision-kpi-card,
+            .vision-smart-card {
+                padding: 20px !important;
+            }
+            .vision-citation {
+                align-self: stretch;
+                max-width: none;
+                text-align: left;
+            }
+        }
+
+        /* KPI chips — JSX faithful */
+        .kpi-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .kpi-chip { display: inline-flex; align-items: center; gap: 5px; min-height: 26px; padding: 4px 8px; border-radius: 6px; background: rgba(255,253,246,0.045); border: 1px solid rgba(255,253,246,0.08); color: rgba(255,253,246,0.72); font-size: 11.5px; font-weight: 600; white-space: nowrap; }
+
+        /* Vision KPI + SMART card overrides — match JSX exactly */
+        .db-row-kpi-smart { grid-template-columns: minmax(0,1.15fr) minmax(0,1fr) !important; gap: 18px !important; }
+        .db-view-pilotage .kpi-panel { background: #111111 !important; border: 1px solid rgba(255,255,255,0.08) !important; border-radius: 10px !important; padding: 24px !important; box-shadow: none !important; gap: 0 !important; min-height: 0 !important; }
+        .db-view-pilotage .kpi-panel::before, .db-view-pilotage .smart-panel::before { display: none; }
+        .db-view-pilotage .smart-panel { background: #111111 !important; border: 1px solid rgba(255,255,255,0.08) !important; border-radius: 10px !important; padding: 24px !important; box-shadow: none !important; }
+        .db-view-pilotage .kpi-panel-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; padding-bottom: 0; gap: 16px; }
+        .db-view-pilotage .kpi-panel-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: rgba(255,253,246,0.62); font-family: inherit; }
+        .db-view-pilotage .kpi-panel-desc { font-size: 15px; color: #FFFDF6; font-weight: 650; line-height: 1.3; max-width: 520px; white-space: normal; overflow: visible; text-overflow: unset; font-family: inherit; letter-spacing: 0; }
+        .db-view-pilotage .kpi-add-btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 14px; border-radius: 8px; background: #FFFDF6 !important; color: #080809 !important; border: none !important; font-size: 12.5px; font-weight: 600; height: auto; font-family: inherit; letter-spacing: 0; }
+        .db-view-pilotage .kpi-add-btn:hover { background: #FFFDF6 !important; color: #080809 !important; filter: brightness(0.95); }
+        .db-view-pilotage .kpi-chart-area { border-top: 1px solid rgba(255,253,246,0.06); padding: 4px 0 0 0; margin-top: 4px; height: auto; min-height: 200px; flex: 1; }
+        .db-view-pilotage .smart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+        .db-view-pilotage .smart-title { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,253,246,0.62); font-family: inherit; }
+        .db-view-pilotage .smart-edit-btn { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 6px 12px; border-radius: 7px; border: 1px solid rgba(255,253,246,0.14); background: transparent; color: #FFFDF6; font-size: 12px; font-weight: 500; letter-spacing: 0; font-family: inherit; }
+        .db-view-pilotage .smart-edit-btn:hover { background: rgba(255,253,246,0.06); border-color: rgba(255,253,246,0.22); color: #FFFDF6; }
+        .db-view-pilotage .smart-view { display: block; flex: none; }
+        .db-view-pilotage .smart-row { display: grid; grid-template-columns: 34px 1fr; gap: 14px; align-items: flex-start; padding: 14px 0; border-bottom: 1px solid rgba(255,253,246,0.07); }
+        .db-view-pilotage .smart-row:last-child { border-bottom: none; }
+        .db-view-pilotage .smart-letter { flex-shrink: 0; margin-top: 0; }
+        .db-view-pilotage .smart-letter-badge { width: 26px; height: 26px; background: rgba(255,253,246,0.06); border: 1px solid rgba(255,253,246,0.10); color: #FFFDF6; font-size: 11px; font-weight: 700; box-shadow: none; font-family: inherit; margin-top: 2px; }
+        .db-view-pilotage .smart-texts { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+        .db-view-pilotage .smart-sublabel { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,253,246,0.58); font-family: inherit; margin-bottom: 0; line-height: 1; }
+        .db-view-pilotage .smart-value { font-size: 13.5px; color: #FFFDF6; font-weight: 400; font-family: inherit; line-height: 1.45; letter-spacing: -0.005em; -webkit-line-clamp: unset; overflow: visible; display: block; }
         body::before { display: none !important; }
     </style>
 
