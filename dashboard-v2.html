@@ -1,364 +1,1127 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CarryIT — Dashboard v2 (Impeccable Revision)</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CarryIT — Dashboard Premium</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;750&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
   <style>
-    /* ── TOKENS ── */
     :root {
-      --bg:        #08090b;
-      --surface:   #121217;
-      --surface-2: #18181f;
-      --surface-hover: rgba(255,255,255,0.03);
-      --line:      rgba(255,255,255,0.05);
-      --text:      #f3f1fa;
-      --muted:     #8f8c9d;
-      --muted-2:   #696676;
-      --accent:    #ee4408;
-      --green:     #36d66d;
-      --panel-bg:  rgba(18, 18, 23, 0.95);
-      --panel-sh:  inset 0 1px 0 rgba(255,255,255,0.03), 0 12px 30px rgba(0,0,0,0.25);
-      --radius:    14px;
+      --p-density: 1;
+
+      --bg: #eef2f8;
+      --surface: #ffffff;
+      --surface-soft: #f8fafc;
+      --ink: #0f172a;
+      --ink-2: #263244;
+      --muted: #7b8798;
+      --muted-2: #a5afbf;
+      --line: rgba(148, 163, 184, 0.24);
+      --line-strong: rgba(100, 116, 139, 0.28);
+
+      --accent: #4f46e5;
+      --accent-2: #111827;
+      --accent-soft: rgba(79, 70, 229, 0.10);
+
+      --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
+      --shadow-md: 0 10px 30px rgba(15, 23, 42, 0.07);
+      --shadow-lg: 0 24px 70px rgba(15, 23, 42, 0.10);
+
+      --r-sm: 12px;
+      --r-md: 18px;
+      --r-lg: 28px;
+      --r-xl: 34px;
+
+      --s-1: calc(var(--p-density) * 4px);
+      --s-2: calc(var(--p-density) * 8px);
+      --s-3: calc(var(--p-density) * 12px);
+      --s-4: calc(var(--p-density) * 16px);
+      --s-5: calc(var(--p-density) * 20px);
+      --s-6: calc(var(--p-density) * 24px);
+      --s-8: calc(var(--p-density) * 32px);
+      --s-10: calc(var(--p-density) * 40px);
+      --s-12: calc(var(--p-density) * 48px);
+      --s-16: calc(var(--p-density) * 64px);
     }
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { height: 100%; background: var(--bg); }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      min-height: 100%;
+      background: var(--bg);
+    }
+
     body {
-      font-family: Inter, system-ui, sans-serif;
-      color: var(--text);
-      overflow: hidden;
-      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 18% 8%, rgba(79, 70, 229, 0.10), transparent 26rem),
+        radial-gradient(circle at 86% 22%, rgba(15, 23, 42, 0.09), transparent 26rem),
+        var(--bg);
+      letter-spacing: -0.02em;
     }
-    button { cursor: pointer; font: inherit; color: inherit; background: transparent; border: none; }
-    a { text-decoration: none; color: inherit; }
 
-    /* ── APP SHELL ── */
-    .app-shell {
+    button {
+      font: inherit;
+    }
+
+    .shell {
+      min-height: 100vh;
       display: grid;
-      grid-template-columns: 240px 1fr;
-      height: 100vh;
-      min-width: 1100px;
+      grid-template-columns: 272px minmax(0, 1fr);
+      gap: var(--s-6);
+      padding: var(--s-6);
     }
 
-    /* ── SIDEBAR ── */
-    .db-sidebar {
-      background: #0b0b0e;
-      border-right: 1px solid var(--line);
-      padding: 24px 20px;
+    .sidebar {
+      position: sticky;
+      top: var(--s-6);
+      height: calc(100vh - var(--s-12));
       display: flex;
       flex-direction: column;
+      border: 1px solid rgba(255, 255, 255, 0.78);
+      border-radius: var(--r-xl);
+      background: rgba(255, 255, 255, 0.72);
+      box-shadow: var(--shadow-md);
+      backdrop-filter: blur(24px);
+      overflow: hidden;
     }
 
-    .db-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 32px; }
-    .db-logo-mark { width: 28px; height: 28px; background: var(--accent); border-radius: 7px; display: grid; place-items: center; }
-    .db-logo-name { font-size: 13px; font-weight: 750; color: #fff; letter-spacing: 0.05em; }
+    .sidebar-inner {
+      padding: var(--s-6);
+      display: flex;
+      flex-direction: column;
+      min-height: 100%;
+    }
 
-    /* Profile/Objective Card - Darker, rounder, inset */
-    .db-objective {
-      background: #111115;
-      border-radius: 12px;
-      padding: 10px 12px;
+    .brand {
       display: flex;
       align-items: center;
-      gap: 10px;
-      margin-bottom: 32px;
-      box-shadow: inset 0 2px 8px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.02);
-      border: 1px solid rgba(255,255,255,0.02);
-    }
-    .db-obj-avatar { width: 32px; height: 32px; border-radius: 8px; background: rgba(255,255,255,0.04); display: grid; place-items: center; font-size: 11px; font-weight: 700; color: #aaa; }
-    .db-obj-info { flex: 1; min-width: 0; }
-    .db-obj-name { display: block; font-size: 12px; font-weight: 600; color: #e8e6f0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .db-obj-sub { display: block; font-size: 10px; color: #696676; margin-top: 2px; }
-
-    .db-nav-label { font-size: 10px; font-weight: 600; color: #555; text-transform: uppercase; margin-bottom: 8px; padding-left: 6px; letter-spacing: 0.04em; }
-    .db-nav { display: flex; flex-direction: column; gap: 4px; }
-    .db-nav-btn { height: 36px; border-radius: 8px; display: flex; align-items: center; gap: 10px; padding: 0 10px; color: #8f8c9d; font-size: 13px; font-weight: 500; transition: 0.15s; }
-    .db-nav-btn:hover { color: #d0cedd; background: var(--surface-hover); }
-    .db-nav-btn.active { color: #fff; background: rgba(238,68,8,0.08); }
-    .db-nav-ico { width: 16px; height: 16px; opacity: 0.6; }
-    .db-nav-btn.active .db-nav-ico { color: var(--accent); opacity: 1; }
-
-    .db-sidebar-spacer { flex: 1; }
-
-    /* ── MAIN CONTENT ── */
-    .db-content {
-      padding: 32px 40px;
-      overflow-y: auto;
-      background: radial-gradient(circle at 40% 0%, rgba(238,68,8,0.03) 0%, transparent 40%), var(--bg);
+      gap: var(--s-3);
+      margin-bottom: var(--s-10);
     }
 
-    .db-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; }
-    .db-header-title { font-size: 28px; font-weight: 750; letter-spacing: -0.5px; color: #fff; line-height: 1; }
-    .db-header-sub { font-size: 12px; color: var(--muted); margin-top: 8px; font-weight: 500; }
-
-    .db-btn { height: 32px; border-radius: 6px; background: rgba(255,255,255,0.04); border: 1px solid var(--line); color: #bbb; font-size: 12px; font-weight: 500; padding: 0 12px; display: inline-flex; align-items: center; gap: 6px; transition: 0.15s; }
-    .db-btn:hover { background: rgba(255,255,255,0.08); color: #fff; border-color: rgba(255,255,255,0.1); }
-    .db-btn-accent { background: var(--accent); border-color: var(--accent); color: #fff; }
-    .db-btn-accent:hover { background: #d13d07; border-color: #d13d07; }
-
-    /* ── LAYOUT 2 COLUMNS ── */
-    .db-main-layout {
+    .brand-mark {
+      width: 44px;
+      height: 44px;
+      border-radius: 16px;
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 340px;
-      gap: 24px;
+      place-items: center;
+      background:
+        linear-gradient(145deg, #1f2937 0%, #0f172a 100%);
+      color: white;
+      font-weight: 900;
+      font-size: 19px;
+      letter-spacing: -0.06em;
+      box-shadow: 0 14px 34px rgba(15, 23, 42, 0.20);
+    }
+
+    .brand-copy strong {
+      display: block;
+      font-size: 17px;
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -0.05em;
+    }
+
+    .brand-copy span {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 650;
+      letter-spacing: -0.01em;
+    }
+
+    .nav-label {
+      margin-bottom: var(--s-2);
+      padding-left: var(--s-2);
+      color: var(--muted-2);
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+    }
+
+    .nav {
+      display: grid;
+      gap: var(--s-2);
+      list-style: none;
+    }
+
+    .nav a {
+      min-height: 46px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--s-3);
+      padding: 0 var(--s-4);
+      border-radius: 16px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 760;
+      transition: background .18s ease, color .18s ease, transform .18s ease;
+    }
+
+    .nav a:hover {
+      background: rgba(15, 23, 42, 0.04);
+      color: var(--ink);
+    }
+
+    .nav a.active {
+      color: var(--ink);
+      background: white;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .nav-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 99px;
+      background: currentColor;
+      opacity: 0;
+    }
+
+    .active .nav-dot {
+      opacity: 1;
+    }
+
+    .sidebar-bottom {
+      margin-top: auto;
+      padding-top: var(--s-6);
+    }
+
+    .sync-panel {
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: var(--s-5);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.90), rgba(248,250,252,.82));
+    }
+
+    .sync-panel strong {
+      display: block;
+      margin-bottom: var(--s-2);
+      font-size: 13px;
+      font-weight: 850;
+    }
+
+    .sync-panel p {
+      margin-bottom: var(--s-4);
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+      font-weight: 560;
+    }
+
+    .sync-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--s-2);
+    }
+
+    .ghost-button {
+      min-height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: white;
+      color: var(--ink-2);
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .main {
+      min-width: 0;
+      display: grid;
+      gap: var(--s-6);
+    }
+
+    .topbar {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--s-6);
+      padding: 0 var(--s-2);
+    }
+
+    .breadcrumb {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .breadcrumb strong {
+      color: var(--ink);
+      font-weight: 850;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--s-3);
+    }
+
+    .button {
+      min-height: 44px;
+      border: 0;
+      border-radius: 999px;
+      padding: 0 var(--s-5);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 850;
+      letter-spacing: -0.02em;
+    }
+
+    .button.primary {
+      color: white;
+      background: var(--ink);
+      box-shadow: 0 16px 34px rgba(15, 23, 42, 0.18);
+    }
+
+    .button.secondary {
+      color: var(--ink);
+      background: rgba(255,255,255,0.68);
+      border: 1px solid rgba(255,255,255,0.80);
+    }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(340px, .72fr);
+      gap: var(--s-6);
       align-items: start;
     }
 
-    .db-panel {
-      background: var(--panel-bg);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--panel-sh);
-      padding: 20px;
+    .left-stack,
+    .right-stack {
+      display: grid;
+      gap: var(--s-6);
+      min-width: 0;
     }
-    
-    .db-panel-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-    .db-panel-head h2 { font-size: 15px; font-weight: 600; color: #e8e5ef; }
 
-    /* ── KPI CARD (Left) ── */
-    .db-kpi-panel { min-height: 380px; display: flex; flex-direction: column; }
-    .db-kpi-metrics { display: flex; align-items: baseline; gap: 12px; margin-bottom: 30px; }
-    .db-kpi-val { font-size: 40px; font-weight: 750; color: #fff; letter-spacing: -1px; line-height: 1; }
-    .db-kpi-target { font-size: 13px; color: var(--muted-2); font-weight: 500; }
-    .db-kpi-delta { font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: 4px; background: rgba(54,214,109,0.1); color: var(--green); }
+    .card {
+      position: relative;
+      border: 1px solid rgba(255, 255, 255, 0.82);
+      border-radius: var(--r-xl);
+      background: rgba(255, 255, 255, 0.82);
+      box-shadow: var(--shadow-md);
+      backdrop-filter: blur(20px);
+      overflow: hidden;
+    }
 
-    .db-chart-wrap { flex: 1; min-height: 250px; position: relative; }
-    .db-chart-wrap svg { width: 100%; height: 100%; display: block; overflow: visible; }
+    .card.dark {
+      color: white;
+      background:
+        radial-gradient(circle at 80% 0%, rgba(99,102,241,.35), transparent 24rem),
+        linear-gradient(145deg, #1f2937 0%, #0f172a 62%, #090d16 100%);
+      border-color: rgba(255,255,255,.10);
+      box-shadow: var(--shadow-lg);
+    }
 
-    /* ── JALON ACTIF (Right 1) ── */
-    .db-jalon-actif { margin-bottom: 16px; }
-    .db-badge { font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 4px; background: rgba(255,255,255,0.06); color: #ccc; }
-    .db-badge.current { background: rgba(238,68,8,0.12); color: var(--accent); }
-    .db-jalon-title { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 6px; }
-    .db-jalon-desc { font-size: 12px; color: var(--muted); line-height: 1.5; margin-bottom: 16px; }
-    .db-progress-bar { height: 4px; background: rgba(255,255,255,0.05); border-radius: 2px; overflow: hidden; margin-bottom: 8px; }
-    .db-progress-fill { height: 100%; background: var(--accent); width: 45%; border-radius: 2px; }
-    .db-progress-text { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted-2); font-weight: 500; }
+    .hero-card {
+      min-height: 370px;
+      padding: var(--s-8);
+      display: grid;
+      align-content: space-between;
+      gap: var(--s-12);
+    }
 
-    /* ── TODO (Right 2) ── */
-    .db-todo-panel { margin-bottom: 16px; padding: 16px 20px; }
-    .db-todo-list { display: flex; flex-direction: column; }
-    .db-task { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.03); }
-    .db-task:last-child { border-bottom: none; padding-bottom: 0; }
-    .db-task-check { width: 14px; height: 14px; border-radius: 4px; border: 1.5px solid rgba(255,255,255,0.2); flex-shrink: 0; margin-top: 2px; cursor: pointer; }
-    .db-task-check.done { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.1); }
-    .db-task-text { font-size: 12.5px; color: #d0cedd; font-weight: 400; line-height: 1.4; }
-    .db-task.done .db-task-text { color: var(--muted-2); text-decoration: line-through; }
+    .hero-top {
+      display: flex;
+      justify-content: space-between;
+      gap: var(--s-6);
+      align-items: flex-start;
+    }
 
-    /* ── SMART COMPACT (Right 3) ── */
-    .db-smart-panel { padding: 16px 20px; }
-    .db-smart-grid { display: grid; gap: 10px; }
-    .db-smart-row { display: flex; gap: 12px; align-items: baseline; }
-    .db-smart-letter { font-size: 10px; font-weight: 700; color: var(--muted-2); width: 12px; }
-    .db-smart-text { font-size: 12px; color: #bbb; line-height: 1.4; }
+    .kicker {
+      color: rgba(255,255,255,.58);
+      font-size: 12px;
+      font-weight: 850;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+    }
 
+    .hero-title {
+      max-width: 620px;
+    }
+
+    .hero-title h1 {
+      margin-top: var(--s-4);
+      font-size: clamp(38px, 6vw, 74px);
+      line-height: .92;
+      font-weight: 900;
+      letter-spacing: -.08em;
+    }
+
+    .hero-title h1 span {
+      color: rgba(255,255,255,.42);
+      font-weight: 850;
+    }
+
+    .hero-title p {
+      max-width: 580px;
+      margin-top: var(--s-5);
+      color: rgba(255,255,255,.68);
+      font-size: 15px;
+      line-height: 1.6;
+      font-weight: 560;
+      letter-spacing: -0.01em;
+    }
+
+    .deadline-chip {
+      display: grid;
+      gap: var(--s-1);
+      min-width: 156px;
+      padding: var(--s-4);
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 20px;
+      background: rgba(255,255,255,.08);
+      text-align: right;
+    }
+
+    .deadline-chip span {
+      color: rgba(255,255,255,.52);
+      font-size: 11px;
+      font-weight: 850;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .deadline-chip strong {
+      color: white;
+      font-size: 15px;
+      line-height: 1.25;
+      font-weight: 850;
+    }
+
+    .hero-bottom {
+      display: grid;
+      gap: var(--s-3);
+    }
+
+    .progress-line {
+      height: 12px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255,255,255,.12);
+    }
+
+    .progress-fill {
+      width: 0.5%;
+      min-width: 8px;
+      height: 100%;
+      border-radius: inherit;
+      background: white;
+      box-shadow: 0 0 26px rgba(255,255,255,.55);
+    }
+
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: var(--s-4);
+      color: rgba(255,255,255,.58);
+      font-size: 12px;
+      font-weight: 760;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--s-4);
+    }
+
+    .metric {
+      min-height: 150px;
+      padding: var(--s-5);
+      display: grid;
+      align-content: space-between;
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 850;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .metric strong {
+      display: block;
+      margin-top: var(--s-5);
+      font-size: 42px;
+      line-height: .92;
+      font-weight: 900;
+      letter-spacing: -.075em;
+    }
+
+    .metric p {
+      margin-top: var(--s-3);
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+      font-weight: 600;
+    }
+
+    .panel {
+      padding: var(--s-6);
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--s-5);
+      margin-bottom: var(--s-6);
+    }
+
+    .panel-title span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 850;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .panel-title h2 {
+      margin-top: var(--s-2);
+      font-size: 22px;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: -.06em;
+    }
+
+    .pill {
+      flex: 0 0 auto;
+      border-radius: 999px;
+      padding: var(--s-2) var(--s-3);
+      color: var(--ink);
+      background: var(--surface-soft);
+      border: 1px solid var(--line);
+      font-size: 12px;
+      font-weight: 850;
+    }
+
+    .chart-wrap {
+      min-height: 292px;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: var(--s-5);
+      background:
+        linear-gradient(to right, rgba(148,163,184,.16) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(148,163,184,.16) 1px, transparent 1px),
+        linear-gradient(180deg, #fbfcff, #f7f9fd);
+      background-size: 20% 100%, 100% 25%, 100% 100%;
+    }
+
+    .chart-wrap svg {
+      width: 100%;
+      height: 220px;
+      display: block;
+      overflow: visible;
+    }
+
+    .chart-target {
+      stroke: #9aa4b2;
+      stroke-width: 2;
+      stroke-dasharray: 7 8;
+    }
+
+    .chart-base {
+      stroke: #d8dee8;
+      stroke-width: 2;
+    }
+
+    .chart-progress {
+      fill: none;
+      stroke: var(--ink);
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .chart-dot {
+      fill: var(--ink);
+    }
+
+    .chart-labels {
+      display: flex;
+      justify-content: space-between;
+      gap: var(--s-3);
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .milestone-card {
+      padding: var(--s-6);
+      display: grid;
+      gap: var(--s-8);
+    }
+
+    .milestone-main h2 {
+      margin-top: var(--s-2);
+      font-size: 42px;
+      line-height: .92;
+      font-weight: 900;
+      letter-spacing: -.08em;
+    }
+
+    .milestone-main p {
+      margin-top: var(--s-4);
+      color: var(--ink-2);
+      font-size: 14px;
+      line-height: 1.55;
+      font-weight: 560;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: var(--s-2);
+      margin-top: var(--s-5);
+    }
+
+    .step {
+      height: 8px;
+      border-radius: 999px;
+      background: #e3e8f1;
+    }
+
+    .step.done,
+    .step.active {
+      background: var(--ink);
+    }
+
+    .step.active {
+      opacity: .74;
+    }
+
+    .facts {
+      display: grid;
+      gap: var(--s-3);
+    }
+
+    .fact {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--s-4);
+      padding-top: var(--s-3);
+      border-top: 1px solid var(--line);
+      font-size: 13px;
+    }
+
+    .fact span {
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .fact strong {
+      font-weight: 850;
+      text-align: right;
+    }
+
+    .execution-card {
+      padding: var(--s-6);
+    }
+
+    .task {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--s-5);
+      padding: var(--s-4);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: var(--surface-soft);
+    }
+
+    .task-left {
+      display: flex;
+      align-items: center;
+      gap: var(--s-3);
+      min-width: 0;
+    }
+
+    .check {
+      width: 22px;
+      height: 22px;
+      border: 2px solid var(--line-strong);
+      border-radius: 8px;
+      background: white;
+      flex: 0 0 auto;
+    }
+
+    .task-copy {
+      min-width: 0;
+    }
+
+    .task-copy strong {
+      display: block;
+      font-size: 15px;
+      line-height: 1.2;
+      font-weight: 850;
+    }
+
+    .task-copy span {
+      display: block;
+      margin-top: var(--s-1);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .status {
+      flex: 0 0 auto;
+      padding: var(--s-2) var(--s-3);
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: white;
+      color: var(--ink-2);
+      font-size: 12px;
+      font-weight: 850;
+    }
+
+    .diagnosis {
+      padding: var(--s-6);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.90), rgba(248,250,252,.78));
+    }
+
+    .diagnosis p {
+      color: var(--ink-2);
+      font-size: 14px;
+      line-height: 1.65;
+      font-weight: 560;
+    }
+
+    .diagnosis strong {
+      color: var(--ink);
+      font-weight: 850;
+    }
+
+    details.smart-card {
+      padding: var(--s-6);
+    }
+
+    summary {
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--s-5);
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    summary .summary-title span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 850;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    summary .summary-title strong {
+      display: block;
+      margin-top: var(--s-2);
+      font-size: 20px;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: -.05em;
+    }
+
+    summary::after {
+      content: "+";
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-weight: 850;
+      flex: 0 0 auto;
+    }
+
+    details[open] summary::after {
+      content: "–";
+    }
+
+    .smart-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: var(--s-4);
+      margin-top: var(--s-6);
+      padding-top: var(--s-6);
+      border-top: 1px solid var(--line);
+    }
+
+    .smart-item {
+      display: grid;
+      gap: var(--s-2);
+      min-width: 0;
+    }
+
+    .smart-letter {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: var(--ink);
+      color: white;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .smart-item strong {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 850;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .smart-item p {
+      color: var(--ink-2);
+      font-size: 13px;
+      line-height: 1.5;
+      font-weight: 560;
+    }
+
+    @media (max-width: 1180px) {
+      .shell {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: relative;
+        top: auto;
+        height: auto;
+      }
+
+      .sidebar-inner {
+        min-height: 0;
+      }
+
+      .nav {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      .sidebar-bottom {
+        display: none;
+      }
+
+      .dashboard {
+        grid-template-columns: 1fr;
+      }
+
+      .right-stack {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      }
+    }
+
+    @media (max-width: 780px) {
+      .shell {
+        padding: var(--s-4);
+        gap: var(--s-4);
+      }
+
+      .topbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .top-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .button {
+        width: 100%;
+      }
+
+      .hero-top {
+        display: grid;
+      }
+
+      .deadline-chip {
+        text-align: left;
+      }
+
+      .metrics,
+      .right-stack,
+      .smart-grid,
+      .nav {
+        grid-template-columns: 1fr;
+      }
+
+      .chart-labels {
+        display: none;
+      }
+    }
   </style>
 </head>
+
 <body>
-<div class="app-shell">
+  <div class="shell">
+    <aside class="sidebar" aria-label="Navigation CarryIT">
+      <div class="sidebar-inner">
+        <div class="brand">
+          <div class="brand-mark">C</div>
+          <div class="brand-copy">
+            <strong>CarryIT</strong>
+            <span>1000 clients</span>
+          </div>
+        </div>
 
-  <!-- SIDEBAR -->
-  <aside class="db-sidebar">
-    <a class="db-logo" href="#">
-      <div class="db-logo-mark">
-        <svg width="12" height="12" fill="none" viewBox="0 0 14 14">
-          <path fill="#fff" d="M2 2h3v10H2V2ZM6 2h6L9 7l3 5H6L3 7l3-5Z"/>
-        </svg>
+        <div class="nav-label">Vue</div>
+        <ul class="nav">
+          <li><a class="active" href="#">Vision long terme <span class="nav-dot"></span></a></li>
+          <li><a href="#">Jalons <span class="nav-dot"></span></a></li>
+          <li><a href="#">Exécution <span class="nav-dot"></span></a></li>
+          <li><a href="#">Historique <span class="nav-dot"></span></a></li>
+        </ul>
+
+        <div class="sidebar-bottom">
+          <div class="sync-panel">
+            <strong>Données locales</strong>
+            <p>Export JSON et import manuel. Aucun bloc de synchronisation dans la vue principale.</p>
+            <div class="sync-actions">
+              <button class="ghost-button">Export</button>
+              <button class="ghost-button">Import</button>
+            </div>
+          </div>
+        </div>
       </div>
-      <span class="db-logo-name">CARRY IT</span>
-    </a>
+    </aside>
 
-    <div class="db-objective">
-      <div class="db-obj-avatar">🎯</div>
-      <div class="db-obj-info">
-        <span class="db-obj-name">500 clients actifs</span>
-        <span class="db-obj-sub">Mois 7 · 29%</span>
-      </div>
-    </div>
+    <main class="main">
+      <header class="topbar">
+        <div class="breadcrumb">
+          CarryIT / <strong>Vision long terme</strong>
+        </div>
 
-    <div class="db-nav-section">
-      <p class="db-nav-label">Navigation</p>
-      <div class="db-nav">
-        <button class="db-nav-btn active" type="button">
-          <svg class="db-nav-ico" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 19V5M4 19h16M9 16V9M14 16V7M19 16v-4"/>
-          </svg>
-          Dashboard
-        </button>
-        <button class="db-nav-btn" type="button" style="color:#696676;">
-          <svg class="db-nav-ico" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 11l3 3L22 4"/>
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
-          </svg>
-          To-do
-        </button>
-        <button class="db-nav-btn" type="button" style="color:#696676;">
-          <svg class="db-nav-ico" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 21V5m0 0l14 5L4 15"/>
-          </svg>
-          Jalons
-        </button>
-      </div>
-    </div>
-    
-    <div class="db-sidebar-spacer"></div>
-    <div class="db-nav">
-      <button class="db-nav-btn" type="button" style="color:#696676;">
-        <svg class="db-nav-ico" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <circle cx="12" cy="12" r="3" stroke-width="2"/>
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/>
-        </svg>
-        Paramètres
-      </button>
-    </div>
-  </aside>
+        <div class="top-actions">
+          <button class="button secondary">Synchroniser</button>
+          <button class="button primary">Ajouter une mesure</button>
+        </div>
+      </header>
 
-  <!-- MAIN CONTENT -->
-  <main class="db-content">
-    <header class="db-header">
-      <div>
-        <h1 class="db-header-title">Vision</h1>
-        <p class="db-header-sub">Suivi global · Mois 7 sur 24</p>
-      </div>
-      <div style="display:flex;gap:8px;">
-        <button class="db-btn">Historique</button>
-      </div>
-    </header>
+      <section class="dashboard">
+        <div class="left-stack">
+          <article class="card dark hero-card">
+            <div class="hero-top">
+              <div class="hero-title">
+                <div class="kicker">Preuve principale · clients payants</div>
+                <h1>0 <span>/ 1000</span></h1>
+                <p>
+                  Objectif long terme : atteindre 1000 clients mensuels payants sur CarryIT.
+                  Cette vue garde seulement la cible, le jalon actif et les signaux d’exécution.
+                </p>
+              </div>
 
-    <div class="db-main-layout">
-      
-      <!-- LEFT: KPI CARD -->
-      <div class="db-left-col">
-        <article class="db-panel db-kpi-panel">
-          <div class="db-panel-head">
-            <h2>Clients actifs</h2>
-            <button class="db-btn db-btn-accent">+ Mesure</button>
-          </div>
-          
-          <div class="db-kpi-metrics">
-            <span class="db-kpi-val">147</span>
-            <span class="db-kpi-target">/ 500 cible</span>
-            <span class="db-kpi-delta pos">↗ +18 ce mois</span>
-          </div>
-          
-          <div class="db-chart-wrap">
-            <svg viewBox="0 0 680 250" preserveAspectRatio="none">
-              <!-- Grid lines -->
-              <path fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1" d="M30 40 H660 M30 100 H660 M30 160 H660 M30 220 H660"/>
-              <!-- X-axis text -->
-              <text x="30" y="240" font-size="10" fill="#696676">Jan</text>
-              <text x="156" y="240" font-size="10" fill="#696676">Fév</text>
-              <text x="282" y="240" font-size="10" fill="#696676">Mar</text>
-              <text x="408" y="240" font-size="10" fill="#696676">Avr</text>
-              <text x="534" y="240" font-size="10" fill="#696676">Mai</text>
-              <text x="660" y="240" text-anchor="end" font-size="10" fill="#696676">Jun</text>
-              
-              <!-- Data area -->
-              <path fill="url(#gradientChart)" d="M30,220 C100,210 150,180 282,140 C400,100 500,80 660,40 L660,220 L30,220 Z"/>
-              <!-- Data line -->
-              <path fill="none" stroke="var(--accent)" stroke-width="2" d="M30,220 C100,210 150,180 282,140 C400,100 500,80 660,40"/>
-              
-              <!-- Target line (discreet) -->
-              <path fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1" stroke-dasharray="4,4" d="M30,10 H660"/>
-              <text x="660" y="22" text-anchor="end" font-size="9" fill="#8f8c9d">Objectif 500</text>
-              
-              <!-- Current point -->
-              <circle cx="660" cy="40" r="4" fill="var(--bg)" stroke="var(--accent)" stroke-width="2"/>
-              
-              <defs>
-                <linearGradient id="gradientChart" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0" stop-color="var(--accent)" stop-opacity="0.1"/>
-                  <stop offset="1" stop-color="var(--accent)" stop-opacity="0"/>
-                </linearGradient>
-              </defs>
-            </svg>
-          </div>
-        </article>
-      </div>
+              <div class="deadline-chip">
+                <span>Échéance</span>
+                <strong>30 septembre 2026</strong>
+              </div>
+            </div>
 
-      <!-- RIGHT: COMPACT STACK -->
-      <div class="db-right-col">
-        
-        <!-- Jalon Actif -->
-        <article class="db-panel db-jalon-actif">
-          <div class="db-panel-head" style="margin-bottom: 12px;">
-            <h2 style="font-size:13px; font-weight:600; color:#bbb;">Jalon Actif · 4/7</h2>
-            <span class="db-badge current">Mois 11</span>
-          </div>
-          <h3 class="db-jalon-title">200 clients — MRR stable</h3>
-          <p class="db-jalon-desc">Atteindre un revenu mensuel récurrent stable justifiant l'acquisition. Churn &lt; 5%.</p>
-          <div class="db-progress-bar">
-            <div class="db-progress-fill"></div>
-          </div>
-          <div class="db-progress-text">
-            <span>Avancement tâches</span>
-            <span>45%</span>
-          </div>
-        </article>
+            <div class="hero-bottom">
+              <div class="progress-line" aria-hidden="true">
+                <div class="progress-fill"></div>
+              </div>
+              <div class="progress-meta">
+                <span>Actuel : 0 client</span>
+                <span>Cible : 1000 clients</span>
+              </div>
+            </div>
+          </article>
 
-        <!-- To-do -->
-        <article class="db-panel db-todo-panel">
-          <div class="db-panel-head" style="margin-bottom: 10px;">
-            <h2 style="font-size:13px; font-weight:600; color:#bbb;">Exécution</h2>
-            <span style="font-size:10px; color:var(--muted-2);">Lié au jalon</span>
-          </div>
-          <div class="db-todo-list">
-            <div class="db-task">
-              <div class="db-task-check"></div>
-              <span class="db-task-text">Campagne LinkedIn — 3 posts</span>
-            </div>
-            <div class="db-task">
-              <div class="db-task-check"></div>
-              <span class="db-task-text">5 entretiens utilisateurs</span>
-            </div>
-            <div class="db-task done">
-              <div class="db-task-check done"><svg width="8" height="8" style="margin:2px 0 0 2px" fill="none" stroke="#fff" stroke-width="2" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg></div>
-              <span class="db-task-text">Refonte pricing page</span>
-            </div>
-            <div class="db-task done">
-              <div class="db-task-check done"><svg width="8" height="8" style="margin:2px 0 0 2px" fill="none" stroke="#fff" stroke-width="2" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg></div>
-              <span class="db-task-text">Emails d'onboarding</span>
-            </div>
-          </div>
-        </article>
+          <section class="metrics" aria-label="État actuel">
+            <article class="card metric">
+              <div>
+                <span>Résultat</span>
+                <strong>5 / 15</strong>
+              </div>
+              <p>Beta testeurs · dernier +1 le 08/06.</p>
+            </article>
 
-        <!-- SMART Compact -->
-        <article class="db-panel db-smart-panel">
-          <div class="db-panel-head" style="margin-bottom: 12px;">
-            <h2 style="font-size:13px; font-weight:600; color:#bbb;">Cadre SMART</h2>
-          </div>
-          <div class="db-smart-grid">
-            <div class="db-smart-row">
-              <span class="db-smart-letter">S</span>
-              <span class="db-smart-text">Prouver l'attractivité via 500 clients payants.</span>
-            </div>
-            <div class="db-smart-row">
-              <span class="db-smart-letter">M</span>
-              <span class="db-smart-text">Nombre de clients actifs (au moins 1 login/30j).</span>
-            </div>
-            <div class="db-smart-row">
-              <span class="db-smart-letter">A</span>
-              <span class="db-smart-text">Croissance visée : +21/mois. Churn &lt; 5%.</span>
-            </div>
-            <div class="db-smart-row">
-              <span class="db-smart-letter">R</span>
-              <span class="db-smart-text">Budget d'acquisition maîtrisé.</span>
-            </div>
-            <div class="db-smart-row">
-              <span class="db-smart-letter">T</span>
-              <span class="db-smart-text">Décembre 2027 (24 mois).</span>
-            </div>
-          </div>
-        </article>
+            <article class="card metric">
+              <div>
+                <span>Effort</span>
+                <strong>22h</strong>
+              </div>
+              <p>Dernier effort mesuré : +4h le 26/06.</p>
+            </article>
 
-      </div>
-    </div>
-  </main>
+            <article class="card metric">
+              <div>
+                <span>Inertie</span>
+                <strong>19j</strong>
+              </div>
+              <p>Sans nouveau résultat mesuré.</p>
+            </article>
+          </section>
 
-</div>
+          <article class="card panel">
+            <div class="panel-head">
+              <div class="panel-title">
+                <span>Trajectoire</span>
+                <h2>Progression vers 1000 clients</h2>
+              </div>
+              <div class="pill">Actuel 0</div>
+            </div>
+
+            <div class="chart-wrap" role="img" aria-label="Courbe de progression actuelle vers 1000 clients">
+              <svg viewBox="0 0 760 220" preserveAspectRatio="none">
+                <line x1="0" y1="42" x2="760" y2="42" class="chart-target"></line>
+                <line x1="0" y1="190" x2="760" y2="190" class="chart-base"></line>
+                <polyline points="0,190 130,190 260,190 390,189 520,189 650,189 760,189" class="chart-progress"></polyline>
+                <circle cx="760" cy="189" r="6" class="chart-dot"></circle>
+                <text x="0" y="28" fill="#7b8798" font-size="12" font-weight="700">1000 cible</text>
+                <text x="698" y="214" fill="#7b8798" font-size="12" font-weight="700">0 actuel</text>
+              </svg>
+
+              <div class="chart-labels">
+                <span>01/09</span>
+                <span>11/11</span>
+                <span>11/01</span>
+                <span>11/03</span>
+                <span>31/03</span>
+                <span>01/06</span>
+                <span>30/09</span>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <aside class="right-stack">
+          <article class="card milestone-card">
+            <div class="milestone-main">
+              <div class="panel-title">
+                <span>Jalon actif</span>
+              </div>
+              <h2>POC V0</h2>
+              <p>V0 utilisable de bout en bout et testée par 15 utilisateurs.</p>
+
+              <div class="steps" aria-label="Jalon 2 sur 5">
+                <span class="step done"></span>
+                <span class="step active"></span>
+                <span class="step"></span>
+                <span class="step"></span>
+                <span class="step"></span>
+              </div>
+            </div>
+
+            <div class="facts">
+              <div class="fact">
+                <span>Position</span>
+                <strong>2 / 5</strong>
+              </div>
+              <div class="fact">
+                <span>Phase</span>
+                <strong>cadrage → POC</strong>
+              </div>
+              <div class="fact">
+                <span>Validation</span>
+                <strong>15 testeurs</strong>
+              </div>
+            </div>
+          </article>
+
+          <article class="card execution-card">
+            <div class="panel-head">
+              <div class="panel-title">
+                <span>Exécution</span>
+                <h2>Tâche active</h2>
+              </div>
+              <div class="pill">4 ouvertes</div>
+            </div>
+
+            <div class="task">
+              <div class="task-left">
+                <span class="check" aria-hidden="true"></span>
+                <div class="task-copy">
+                  <strong>Refaire la section SMART</strong>
+                  <span>liée au jalon POC V0</span>
+                </div>
+              </div>
+              <span class="status">En cours</span>
+            </div>
+          </article>
+
+          <article class="card diagnosis">
+            <div class="panel-head">
+              <div class="panel-title">
+                <span>Lecture</span>
+                <h2>Diagnostic</h2>
+              </div>
+            </div>
+            <p>
+              <strong>Effort récent</strong>, mais aucun nouveau résultat depuis <strong>19 jours</strong>.
+              La prochaine action doit être décidée dans Exécution, pas dans Vision.
+            </p>
+          </article>
+        </aside>
+      </section>
+
+      <details class="card smart-card">
+        <summary>
+          <span class="summary-title">
+            <span>Cadre</span>
+            <strong>SMART condensé</strong>
+          </span>
+        </summary>
+
+        <div class="smart-grid">
+          <div class="smart-item">
+            <span class="smart-letter">S</span>
+            <strong>Ambition</strong>
+            <p>1000 clients mensuels payants sur CarryIT.</p>
+          </div>
+
+          <div class="smart-item">
+            <span class="smart-letter">M</span>
+            <strong>Mesure</strong>
+            <p>[Nb Clients] Nombre de clients payants.</p>
+          </div>
+
+          <div class="smart-item">
+            <span class="smart-letter">A</span>
+            <strong>Atteignable</strong>
+            <p>Bêta, MVP, lancement, acquisition.</p>
+          </div>
+
+          <div class="smart-item">
+            <span class="smart-letter">R</span>
+            <strong>Réaliste</strong>
+            <p>Période cible de 22 mois.</p>
+          </div>
+
+          <div class="smart-item">
+            <span class="smart-letter">T</span>
+            <strong>Échéance</strong>
+            <p>30 septembre 2026.</p>
+          </div>
+        </div>
+      </details>
+    </main>
+  </div>
 </body>
 </html>
