@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/styles.css">
 
-    <link rel="stylesheet" href="assets/css/dashboard.css?v=79">
+    <link rel="stylesheet" href="assets/css/dashboard.css?v=80">
     <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 </head>
 <body>
@@ -1132,18 +1132,18 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                         data-view="pilotage"
                         ${currentDashboardView === 'pilotage' ? '' : 'hidden'}>
                         <div class="db-section vision-section">
-                            <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr) minmax(0,1fr) minmax(0,1fr);gap:10px">
+                            <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px">
                                 ${buildVisionScorecard(obj, i, globalKpi, kpiDesc, kpiUnit, kpiTarget, kpiCurrent)}
                                 ${buildVisionJalonActifCard(obj, i)}
                             </div>
                             <div class="vision-main-grid">
                                 <!-- KPI CARD -->
                                 <div class="vision-kpi-card" id="kpiPanel-${i}" style="background:#141519;border:1px solid rgba(255,253,246,0.08);border-radius:12px;padding:20px;display:flex;flex-direction:column;min-width:0">
-                                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:16px">
-                                        <span id="kpiDesc-${i}" style="font-size:13px;font-weight:500;color:rgba(255,253,246,0.55);letter-spacing:0.005em;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(kpiDesc)}</span>
-                                        <button onclick="openAddMeasureModal(${i})" style="display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:6px;background:rgba(255,253,246,0.06);color:rgba(255,253,246,0.6);border:none;font-size:11.5px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0;transition:background 0.15s" onmouseover="this.style.background='rgba(255,253,246,0.1)'" onmouseout="this.style.background='rgba(255,253,246,0.06)'">
-                                            <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-                                            Ajouter
+                                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:16px">
+                                        <span id="kpiDesc-${i}" style="font-size:12px;font-weight:500;color:rgba(255,253,246,0.4);letter-spacing:0.01em;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Évolution KPI</span>
+                                        <button onclick="openAddMeasureModal(${i})" style="display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:6px;background:rgba(255,253,246,0.06);color:rgba(255,253,246,0.55);border:none;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0" onmouseover="this.style.background='rgba(255,253,246,0.1)'" onmouseout="this.style.background='rgba(255,253,246,0.06)'">
+                                            <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                                            Mesure
                                         </button>
                                     </div>
                                     <div id="kpiWrap-${i}" style="flex:1;min-height:180px"></div>
@@ -1275,7 +1275,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             const card1 = `
                 <div style="${cardBase};display:flex;flex-direction:column;cursor:pointer" onclick="switchDashboardView('jalons')">
                     <div style="font-size:11px;font-weight:500;color:rgba(255,253,246,0.4);letter-spacing:0.01em;margin-bottom:12px">Jalon actif · <span style="color:rgba(255,253,246,0.3)">${activeIdx + 1}/${total}</span></div>
-                    <div style="font-size:22px;font-weight:730;color:#FFFDF6;line-height:1.1;letter-spacing:-0.02em">${escHtml(title)}</div>
+                    <div style="font-size:22px;font-weight:730;color:#FFFDF6;line-height:1.1;letter-spacing:-0.03em">${escHtml(title)}</div>
                     <div style="margin-top:16px;height:3px;background:rgba(255,253,246,0.07);border-radius:2px;overflow:hidden">
                         <div style="height:100%;width:${progressPct}%;background:#EE4408;border-radius:2px;transition:width 0.3s"></div>
                     </div>
