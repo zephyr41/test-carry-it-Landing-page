@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/styles.css">
 
-    <link rel="stylesheet" href="assets/css/dashboard.css?v=75">
+    <link rel="stylesheet" href="assets/css/dashboard.css?v=77">
     <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 </head>
 <body>
@@ -1017,14 +1017,12 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             const deltaText = latestMeta.days === null
                 ? 'Aucune mesure'
                 : latestMeta.days === 0 ? "Aujourd'hui" : `il y a ${latestMeta.days}j`;
-            const cardBase = 'background:#141519;border:1px solid rgba(255,253,246,0.08);border-radius:12px;padding:20px;min-width:0;display:flex;flex-direction:column;justify-content:space-between;gap:14px';
+            const cardBase = 'background:#141519;border:1px solid rgba(255,253,246,0.08);border-radius:12px;padding:20px;min-width:0;display:flex;flex-direction:column;gap:0';
             return `
                 <div style="${cardBase}">
-                    <div style="font-size:11px;font-weight:500;color:rgba(255,253,246,0.4);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:0.01em">${escHtml(kpiDesc || 'KPI principal')}</div>
-                    <div>
-                        <div style="font-size:28px;font-weight:730;color:#FFFDF6;line-height:1;letter-spacing:-0.03em;font-variant-numeric:tabular-nums" id="kpiChipActuel-${i}">${escHtml(formatMetricValue(kpiCurrent))} <span style="font-size:15px;font-weight:500;color:rgba(255,253,246,0.28)">/ ${escHtml(formatMetricValue(kpiTarget))}</span></div>
-                        <div style="font-size:11px;color:rgba(255,253,246,0.35);margin-top:6px">${percent}% · ${escHtml(deltaText)}</div>
-                    </div>
+                    <div style="font-size:11px;font-weight:500;color:rgba(255,253,246,0.4);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:0.01em;margin-bottom:12px">${escHtml(kpiDesc || 'KPI principal')}</div>
+                    <div style="font-size:28px;font-weight:730;color:#FFFDF6;line-height:1;letter-spacing:-0.03em;font-variant-numeric:tabular-nums" id="kpiChipActuel-${i}">${escHtml(formatMetricValue(kpiCurrent))} <span style="font-size:15px;font-weight:500;color:rgba(255,253,246,0.28)">/ ${escHtml(formatMetricValue(kpiTarget))}</span></div>
+                    <div style="font-size:11px;color:rgba(255,253,246,0.35);margin-top:8px">${percent}% · ${escHtml(deltaText)}</div>
                 </div>`;
         }
 
@@ -1277,40 +1275,33 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                     </div>`;
             }).join('');
 
-            // Card 1 — Jalon actif (titre + validation + timeline)
+            // Card 1 — Jalon actif (titre + simple progress bar)
+            const progressPct = total > 1 ? Math.round((activeIdx / (total - 1)) * 100) : 0;
             const card1 = `
-                <div style="${cardBase};display:flex;flex-direction:column;gap:10px;cursor:pointer" onclick="switchDashboardView('jalons')">
-                    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
-                        <span style="font-size:12px;color:rgba(255,253,246,0.45)">Jalon actif</span>
-                        <span style="font-size:11px;color:rgba(255,253,246,0.35)">${activeIdx + 1}/${total}</span>
+                <div style="${cardBase};display:flex;flex-direction:column;cursor:pointer" onclick="switchDashboardView('jalons')">
+                    <div style="font-size:11px;font-weight:500;color:rgba(255,253,246,0.4);letter-spacing:0.01em;margin-bottom:12px">Jalon actif · <span style="color:rgba(255,253,246,0.3)">${activeIdx + 1}/${total}</span></div>
+                    <div style="font-size:22px;font-weight:730;color:#FFFDF6;line-height:1.1;letter-spacing:-0.02em">${escHtml(title)}</div>
+                    <div style="margin-top:16px;height:3px;background:rgba(255,253,246,0.07);border-radius:2px;overflow:hidden">
+                        <div style="height:100%;width:${progressPct}%;background:#EE4408;border-radius:2px;transition:width 0.3s"></div>
                     </div>
-                    <div>
-                        <div style="font-size:15px;font-weight:700;color:#FFFDF6;letter-spacing:-0.01em;line-height:1.25">${title}</div>
-                        <div style="margin-top:3px;font-size:11.5px;color:rgba(255,253,246,0.45);overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${validation}">${validation}</div>
-                    </div>
-                    <div aria-hidden="true">
-                        <div style="display:grid;grid-template-columns:repeat(${total},1fr);grid-template-rows:auto auto;row-gap:5px;position:relative">
-                            <span style="position:absolute;left:${halfCol}%;right:${halfCol}%;top:8px;border-top:1px dashed rgba(255,253,246,0.10);pointer-events:none;z-index:0"></span>
-                            <span style="position:absolute;left:${halfCol}%;top:8px;width:${donePercent}%;border-top:1px solid rgba(255,253,246,0.20);pointer-events:none;z-index:0"></span>
-                            ${dots}
-                        </div>
+                    <div style="display:flex;justify-content:space-between;margin-top:6px">
+                        <span style="font-size:10px;color:rgba(255,253,246,0.3)">${escHtml((jalons[0]?.titre || '').split(' ')[0] || '')}</span>
+                        <span style="font-size:10px;color:rgba(255,253,246,0.3)">${escHtml((jalons[total-1]?.titre || '').split(' ')[0] || '')}</span>
                     </div>
                 </div>`;
 
             // Card 2 — Résultat (lagging KPI)
             const card2 = `
-                <div style="${cardBase};display:flex;flex-direction:column;justify-content:space-between;gap:12px">
-                    <div style="font-size:11px;font-weight:500;color:rgba(255,253,246,0.38);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:0.01em">${escHtml(resultLabel)}</div>
-                    <div>
-                        <div style="font-size:26px;font-weight:730;color:#FFFDF6;line-height:1;letter-spacing:-0.03em;font-variant-numeric:tabular-nums">${fmtKpi(resultValue, resultTarget, resultUnit)}</div>
-                        ${lastMeasureText ? `<div style="font-size:11px;color:rgba(255,253,246,0.35);margin-top:6px">${escHtml(lastMeasureText)}</div>` : ''}
-                    </div>
+                <div style="${cardBase};display:flex;flex-direction:column">
+                    <div style="font-size:11px;font-weight:500;color:rgba(255,253,246,0.38);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:0.01em;margin-bottom:12px">${escHtml(resultLabel)}</div>
+                    <div style="font-size:26px;font-weight:730;color:#FFFDF6;line-height:1;letter-spacing:-0.03em;font-variant-numeric:tabular-nums">${fmtKpi(resultValue, resultTarget, resultUnit)}</div>
+                    ${lastMeasureText ? `<div style="font-size:11px;color:rgba(255,253,246,0.35);margin-top:8px">${escHtml(lastMeasureText)}</div>` : ''}
                 </div>`;
 
             // Card 3 — Effort (leading KPI)
             const card3 = `
-                <div style="${cardBase};display:flex;flex-direction:column;justify-content:space-between;gap:12px">
-                    <div style="font-size:11px;font-weight:500;color:rgba(255,253,246,0.38);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:0.01em">${escHtml(effortLabel)}</div>
+                <div style="${cardBase};display:flex;flex-direction:column">
+                    <div style="font-size:11px;font-weight:500;color:rgba(255,253,246,0.38);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:0.01em;margin-bottom:12px">${escHtml(effortLabel)}</div>
                     <div style="font-size:26px;font-weight:730;color:#FFFDF6;line-height:1;letter-spacing:-0.03em;font-variant-numeric:tabular-nums">${fmtKpi(effortValue, effortTarget, effortUnit)}</div>
                 </div>`;
 
