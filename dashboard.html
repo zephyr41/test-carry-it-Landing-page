@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/styles.css">
 
-    <link rel="stylesheet" href="assets/css/dashboard.css?v=77">
+    <link rel="stylesheet" href="assets/css/dashboard.css?v=78">
     <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 </head>
 <body>
@@ -1139,16 +1139,14 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                             <div class="vision-main-grid">
                                 <!-- KPI CARD -->
                                 <div class="vision-kpi-card" id="kpiPanel-${i}" style="background:#141519;border:1px solid rgba(255,253,246,0.08);border-radius:12px;padding:20px;display:flex;flex-direction:column;min-width:0">
-                                    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;gap:16px">
-                                        <div style="display:flex;flex-direction:column;gap:5px;min-width:0">
-                                            <span id="kpiDesc-${i}" style="font-size:15px;color:#FFFDF6;font-weight:650;line-height:1.3;max-width:640px">${escHtml(kpiDesc)}</span>
-                                        </div>
-                                        <button onclick="openAddMeasureModal(${i})" style="display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:8px;background:transparent;color:#FFFDF6;border:1px solid rgba(255,253,246,0.14);font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0">
-                                            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-                                            Ajouter une mesure
+                                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:16px">
+                                        <span id="kpiDesc-${i}" style="font-size:13px;font-weight:500;color:rgba(255,253,246,0.55);letter-spacing:0.005em;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(kpiDesc)}</span>
+                                        <button onclick="openAddMeasureModal(${i})" style="display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:6px;background:rgba(255,253,246,0.06);color:rgba(255,253,246,0.6);border:none;font-size:11.5px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0;transition:background 0.15s" onmouseover="this.style.background='rgba(255,253,246,0.1)'" onmouseout="this.style.background='rgba(255,253,246,0.06)'">
+                                            <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                                            Ajouter
                                         </button>
                                     </div>
-                                    <div id="kpiWrap-${i}" style="flex:1;min-height:180px;border-top:1px solid rgba(255,253,246,0.06);padding-top:8px;margin-top:2px"></div>
+                                    <div id="kpiWrap-${i}" style="flex:1;min-height:180px"></div>
                                 </div>
                             </div>
                             ${buildVisionSmartCompact(obj, i, globalKpi)}
@@ -1182,14 +1180,11 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
 
         // SmartCard row — styles inline JSX exact (BlocVision.jsx SmartCard)
         function buildSmartRowJSX(letter, label, value, fieldKey, isFirst) {
-            const sep = isFirst ? '' : '<div style="height:1px;background:rgba(255,253,246,0.07)"></div>';
+            const sep = isFirst ? '' : '<div style="height:1px;background:rgba(255,253,246,0.05)"></div>';
             return `${sep}
-                <div style="display:grid;grid-template-columns:34px 1fr;gap:14px;align-items:flex-start;padding:14px 0">
-                    <span style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:4px;background:rgba(255,253,246,0.06);color:#FFFDF6;font-size:11px;font-weight:700;border:1px solid rgba(255,253,246,0.1);margin-top:2px;font-family:inherit;flex-shrink:0">${letter}</span>
-                    <div style="display:flex;flex-direction:column;gap:4px;min-width:0">
-                        <span style="font-size:10px;font-weight:600;color:rgba(255,253,246,0.45)">${label}</span>
-                        <span style="font-size:13.5px;color:#FFFDF6;line-height:1.45;letter-spacing:-0.005em" data-field="${fieldKey || ''}">${escHtml(value || '—')}</span>
-                    </div>
+                <div style="display:grid;grid-template-columns:22px 1fr;gap:12px;align-items:baseline;padding:11px 0">
+                    <span style="font-size:10px;font-weight:700;color:rgba(255,253,246,0.28);font-family:inherit;letter-spacing:0.04em">${letter}</span>
+                    <span style="font-size:13px;color:rgba(255,253,246,0.85);line-height:1.5;letter-spacing:-0.005em" data-field="${fieldKey || ''}">${escHtml(value || '—')}</span>
                 </div>`;
         }
 
