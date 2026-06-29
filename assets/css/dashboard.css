@@ -11950,8 +11950,8 @@ body::before {
 
 .vision-kpi-card,
 .vision-smart-card {
-    min-height: 336px !important;
-    padding: 24px !important;
+    min-height: 240px !important;
+    padding: 20px !important;
 }
 
 .dbx-inline-049,
