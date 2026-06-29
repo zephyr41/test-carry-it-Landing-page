@@ -1007,21 +1007,16 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                                 ${buildVisionJalonActifCard(obj, i)}
                                 ${buildVisionCalendarCard(obj, i)}
                             </div>
-                            <!-- Row 2 : BlocVision — section label + KPI + SMART (BlocVision.jsx exact) -->
+                            <!-- Row 2 : KPI + SMART -->
                             <div class="vision-support-area">
-                            <div class="vision-support-head">
-                                <span>Vision · Long terme</span>
-                                <p>Objectif, mesure principale et cadre SMART.</p>
-                            </div>
                             <div class="vision-reference-grid">
-                                <!-- KPI CARD — BlocVision.jsx KPICard exact -->
+                                <!-- KPI CARD -->
                                 <div class="vision-kpi-card" id="kpiPanel-${i}" style="background:#111111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:24px;display:flex;flex-direction:column;min-width:0">
                                     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;gap:16px">
                                         <div style="display:flex;flex-direction:column;gap:5px;min-width:0">
-                                            <span style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,253,246,0.62);white-space:nowrap">KPI global</span>
-                                            <span id="kpiDesc-${i}" style="font-size:15px;color:#FFFDF6;font-weight:650;line-height:1.3;max-width:520px">${escHtml(kpiDesc)}</span>
-                                            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px">
-                                                <span id="kpiChipActuel-${i}" style="display:inline-flex;align-items:center;gap:5px;min-height:26px;padding:4px 8px;border-radius:6px;background:rgba(255,253,246,0.045);border:1px solid rgba(255,253,246,0.08);color:rgba(255,253,246,0.72);font-size:11.5px;font-weight:600;white-space:nowrap">Actuel ${kpiCurrent}${kpiUnit ? ' ' + escHtml(kpiUnit) : ''}</span>
+                                            <span id="kpiDesc-${i}" style="font-size:16px;color:#FFFDF6;font-weight:650;line-height:1.3;max-width:520px">${escHtml(kpiDesc)}</span>
+                                            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px">
+                                                <span id="kpiChipActuel-${i}" style="display:inline-flex;align-items:center;gap:5px;min-height:26px;padding:4px 8px;border-radius:6px;background:rgba(255,253,246,0.045);border:1px solid rgba(255,253,246,0.08);color:rgba(255,253,246,0.72);font-size:11.5px;font-weight:600;white-space:nowrap">Actuel ${kpiCurrent}</span>
                                                 <span style="display:inline-flex;align-items:center;gap:5px;min-height:26px;padding:4px 8px;border-radius:6px;background:rgba(255,253,246,0.045);border:1px solid rgba(255,253,246,0.08);color:rgba(255,253,246,0.72);font-size:11.5px;font-weight:600;white-space:nowrap">Cible ${kpiTarget}</span>
                                             </div>
                                         </div>
@@ -1033,21 +1028,29 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                                     <div id="kpiWrap-${i}" style="flex:1;min-height:200px;border-top:1px solid rgba(255,253,246,0.06);padding-top:4px;margin-top:4px"></div>
                                 </div>
 
-                                <!-- SMART CARD — BlocVision.jsx SmartCard exact -->
+                                <!-- SMART CARD -->
                                 <div class="vision-smart-card" style="background:#111111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:24px;display:flex;flex-direction:column;min-width:0">
                                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-                                        <span style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,253,246,0.62);white-space:nowrap">Cadre SMART</span>
+                                        <span style="font-size:12px;font-weight:600;color:rgba(255,253,246,0.55);white-space:nowrap">SMART</span>
                                         <button type="button" onclick="enterSmartEdit(${i})" style="display:inline-flex;align-items:center;gap:6px;min-height:32px;padding:6px 12px;border-radius:7px;background:transparent;color:#FFFDF6;border:1px solid rgba(255,253,246,0.14);font-size:12px;font-weight:500;cursor:pointer;font-family:inherit">
                                             <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                             Modifier
                                         </button>
                                     </div>
                                     <div id="smartView-${i}">
-                                        ${buildSmartRowJSX('S', "L'AMBITION", obj.specifique, 'specifique', true)}
-                                        ${buildSmartRowJSX('M', 'LA MESURE', obj.mesurable, 'mesurable')}
-                                        ${buildSmartRowJSX('A', 'ATTEIGNABLE', obj.atteignable, 'atteignable')}
-                                        ${buildSmartRowJSX('R', 'RÉALISTE', obj.realiste, 'realiste')}
-                                        ${buildSmartRowJSX('T', "L'ÉCHÉANCE", obj.temporel, 'temporel')}
+                                        ${buildSmartRowJSX('S', "L'ambition", obj.specifique, 'specifique', true)}
+                                        ${buildSmartRowJSX('M', 'Mesure', obj.mesurable, 'mesurable')}
+                                        <div style="height:1px;background:rgba(255,253,246,0.07)"></div>
+                                        <button type="button" id="smartARToggle-${i}" onclick="toggleSmartAR(${i})" style="display:flex;align-items:center;justify-content:space-between;width:100%;padding:10px 0;background:none;border:none;color:rgba(255,253,246,0.38);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;letter-spacing:0.02em">
+                                            <span>Atteignable · Réaliste</span>
+                                            <svg class="smart-ar-arrow" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" style="transition:transform 0.18s;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                                        </button>
+                                        <div id="smartARRows-${i}" hidden>
+                                            ${buildSmartRowJSX('A', 'Atteignable', obj.atteignable, 'atteignable', true)}
+                                            ${buildSmartRowJSX('R', 'Réaliste', obj.realiste, 'realiste')}
+                                            <div style="height:1px;background:rgba(255,253,246,0.07)"></div>
+                                        </div>
+                                        ${buildSmartRowJSX('T', "L'échéance", obj.temporel, 'temporel', true)}
                                     </div>
                                     <form class="smart-edit" id="smartEdit-${i}" onsubmit="saveSmartEdit(event, ${i})">
                                         ${buildSmartEditRow('S', "L'Ambition", `smartSpec-${i}`, obj.specifique)}
@@ -1102,10 +1105,19 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                 <div style="display:grid;grid-template-columns:34px 1fr;gap:14px;align-items:flex-start;padding:14px 0">
                     <span style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:4px;background:rgba(255,253,246,0.06);color:#FFFDF6;font-size:11px;font-weight:700;border:1px solid rgba(255,253,246,0.1);margin-top:2px;font-family:inherit;flex-shrink:0">${letter}</span>
                     <div style="display:flex;flex-direction:column;gap:4px;min-width:0">
-                        <span style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,253,246,0.58)">${label}</span>
+                        <span style="font-size:10px;font-weight:600;color:rgba(255,253,246,0.45)">${label}</span>
                         <span style="font-size:13.5px;color:#FFFDF6;line-height:1.45;letter-spacing:-0.005em" data-field="${fieldKey || ''}">${escHtml(value || '—')}</span>
                     </div>
                 </div>`;
+        }
+
+        function toggleSmartAR(idx) {
+            const rows = document.getElementById('smartARRows-' + idx);
+            const btn = document.getElementById('smartARToggle-' + idx);
+            if (!rows || !btn) return;
+            const open = !rows.hidden;
+            rows.hidden = open;
+            btn.querySelector('.smart-ar-arrow').style.transform = open ? '' : 'rotate(180deg)';
         }
 
         function buildSmartEditRow(letter, label, id, value) {
@@ -1126,10 +1138,9 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
         function buildVisionJalonActifCard(obj, i) {
             const { jalons, activeIdx } = getVisionJalonContext(obj, i);
             const total = jalons.length;
-            const cardStyle = 'background:#111111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px 14px;min-height:86px;display:flex;flex-direction:column;justify-content:space-between;min-width:0;overflow:visible';
-            const headStyle = 'display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:7px';
-            const labelStyle = 'font-size:11px;font-weight:650;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,253,246,0.62)';
-            const metaStyle = 'font-family:"JetBrains Mono",ui-monospace,monospace;font-size:11.5px;font-weight:600;color:rgba(255,253,246,0.72);white-space:nowrap';
+            const cardStyle = 'background:#111111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px 16px;min-height:86px;display:flex;flex-direction:column;justify-content:space-between;min-width:0;overflow:visible';
+            const headStyle = 'display:flex;justify-content:flex-end;align-items:center;gap:12px;margin-bottom:10px';
+            const metaStyle = 'font-family:"JetBrains Mono",ui-monospace,monospace;font-size:11.5px;font-weight:600;color:rgba(255,253,246,0.45);white-space:nowrap';
             const titleStyle = 'font-size:15px;line-height:1.25;font-weight:700;color:#FFFDF6;letter-spacing:-0.005em';
             const validationStyle = 'margin-top:3px;font-size:11.5px;color:rgba(255,253,246,0.52);overflow:hidden;text-overflow:ellipsis;white-space:nowrap';
             if (!total) return `<section style="${cardStyle};justify-content:center"><span style="font-size:11px;color:rgba(255,253,246,0.4)">Aucun jalon défini</span></section>`;
@@ -1165,8 +1176,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             return `
                 <section class="vision-quick-card" style="${cardStyle}" aria-label="Position dans les jalons">
                     <div class="vision-quick-head" style="${headStyle}">
-                        <span class="vision-quick-label" style="${labelStyle}">Jalon actif</span>
-                        <span class="vision-quick-meta" style="${metaStyle}">${activeIdx + 1}/${total}</span>
+                        <span class="vision-quick-meta" style="${metaStyle}">Jalon ${activeIdx + 1}/${total}</span>
                     </div>
                     <div style="display:flex;flex-direction:column;flex-grow:1">
                         <div>
@@ -1379,17 +1389,16 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                     style="background:#111111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;display:grid;grid-template-columns:minmax(220px,0.46fr) minmax(250px,0.8fr);column-gap:18px;align-items:center;justify-content:stretch;padding:16px 18px 16px 28px;overflow:visible;position:relative;z-index:2;width:100%;max-width:none;justify-self:stretch;min-height:86px;min-width:0"
                     aria-label="Résultat et effort">
                     <div class="vision-stats-col" style="display:flex;flex-direction:column;gap:7px;min-width:0">
-                        <span class="vision-stat-label" style="color:rgba(255,253,246,0.40);font-weight:650;font-size:10px;text-transform:uppercase;letter-spacing:0.08em">Résultat</span>
                         <div class="vision-stat-value-row" style="display:flex;align-items:baseline;gap:6px;min-width:0;flex-wrap:nowrap;white-space:nowrap">
                             <span class="vision-stat-big" style="font-size:31px;font-weight:720;color:#FFFDF6;letter-spacing:-0.02em;line-height:1">${escHtml(resultValueLabel)}</span>
                             <span class="vision-stat-target" style="font-size:13.5px;color:rgba(255,253,246,0.54);font-weight:500">/ ${escHtml(resultTargetText)}</span>
                         </div>
                         <div class="vision-days-elapsed" style="display:flex;align-items:center;gap:5px;flex-wrap:nowrap">
                             <span class="vision-days-dot" style="width:6px;height:6px;border-radius:50%;background:#EE4408;flex-shrink:0"></span>
-                            <span class="vision-days-label" style="font-family:&quot;JetBrains Mono&quot;,ui-monospace,monospace;font-size:10.5px;color:#B87820;font-weight:600;letter-spacing:0.02em">Aucune progression enregistrée depuis ${daysElapsed}j</span>
+                            <span class="vision-days-label" style="font-family:&quot;JetBrains Mono&quot;,ui-monospace,monospace;font-size:10.5px;color:#B87820;font-weight:600;letter-spacing:0.02em">${daysElapsed > 0 ? `Aucune progression depuis ${daysElapsed}j` : 'Mis à jour aujourd\'hui'}</span>
                         </div>
-                        <div class="vision-effort-sep" style="padding-top:12px;border-top:1px solid rgba(255,253,246,0.10);display:flex;flex-direction:column;gap:3px;min-width:0">
-                            <span class="vision-stat-label" style="color:rgba(255,253,246,0.40);font-weight:650;font-size:10px;text-transform:uppercase;letter-spacing:0.08em">Effort depuis dernière progression</span>
+                        <div class="vision-effort-sep" style="padding-top:10px;border-top:1px solid rgba(255,253,246,0.08);display:flex;flex-direction:column;gap:3px;min-width:0">
+                            <span style="font-size:10px;font-weight:600;color:rgba(255,253,246,0.38)">Effort</span>
                             <div class="vision-stat-value-row" style="display:flex;align-items:baseline;gap:6px;min-width:0;flex-wrap:nowrap;white-space:nowrap">
                                 <span class="vision-stat-big effort" style="font-size:25px;font-weight:710;color:#FFFDF6;letter-spacing:-0.02em;line-height:1">${escHtml(effortValueLabel)}${effortUnitShort ? `<span style="font-size:14px;font-weight:500;color:rgba(255,253,246,0.7)">${escHtml(effortUnitShort)}</span>` : ''}</span>
                                 <span class="vision-stat-target effort" style="font-size:13px;color:rgba(255,253,246,0.52);font-weight:500">/ ${escHtml(effortTargetLabel)}${effortUnitShort ? ' ' + escHtml(effortUnitShort) : ''} max</span>
@@ -1403,6 +1412,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                             ${dayLabels}
                             ${cellsHtml}
                         </div>
+                        ${(!(leadingKpi && Array.isArray(leadingKpi.measures) && leadingKpi.measures.length > 0) && !(laggingKpi && Array.isArray(laggingKpi.measures) && laggingKpi.measures.length > 0)) ? `<p style="margin:8px 0 0;font-size:10.5px;color:rgba(255,253,246,0.28);text-align:center;line-height:1.4">Enregistre un effort ou un résultat<br>pour le voir apparaître ici.</p>` : ''}
                         <div class="vision-cal-popover" id="vcal-popover-${i}"></div>
                     </div>
                 </section>`;
@@ -5013,10 +5023,10 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                 c.addEventListener('mouseleave', () => { tip.style.display = 'none'; });
             });
 
-            // Sync "Actuel" chip with latest measure value
+            // Sync "Actuel" chip with latest measure value (no unit — shown in KPI title)
             const actualChip = document.getElementById(`kpiChipActuel-${i}`);
             if (actualChip && n > 0) {
-                actualChip.textContent = `Actuel ${data[n - 1].value}${unit ? ' ' + unit : ''}`;
+                actualChip.textContent = `Actuel ${data[n - 1].value}`;
             }
         }
 
