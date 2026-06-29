@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/styles.css">
 
-    <link rel="stylesheet" href="assets/css/dashboard.css?v=73">
+    <link rel="stylesheet" href="assets/css/dashboard.css?v=74">
     <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 </head>
 <body>
@@ -387,6 +387,29 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                 valeur: kpi.valeur ?? value,
                 measures,
             };
+        }
+
+        function cleanMetricLabel(label = '') {
+            const text = String(label || '')
+                .replace(/\[[^\]]+\]\s*/g, '')
+                .replace(/\bKPI\b\s*/gi, '')
+                .replace(/\s+/g, ' ')
+                .trim();
+            if (!text) return 'Métrique principale';
+            if (/nombre de client payant/i.test(text)) return 'Clients payants';
+            if (/clients payants mensuels/i.test(text)) return 'Clients payants mensuels';
+            return text.charAt(0).toUpperCase() + text.slice(1);
+        }
+
+        function formatCompactNumber(value) {
+            const number = Number(value);
+            if (!Number.isFinite(number)) return '—';
+            return new Intl.NumberFormat('fr-FR').format(number);
+        }
+
+        function formatKpiChipValue(value, unit = '') {
+            const normalizedUnit = String(unit || '').trim();
+            return `${formatCompactNumber(value)}${normalizedUnit ? ' ' + normalizedUnit : ''}`.trim();
         }
 
         function normalizeReactKpi(kpi = {}) {
@@ -977,10 +1000,12 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             }, { M: obj.mesurable || '' });
             const globalMeasures = Array.isArray(globalKpi.measures) ? globalKpi.measures : [];
             const latestGlobalMeasure = globalMeasures.length ? getKpiCurrentValue(globalKpi) : null;
-            const kpiDesc = globalKpi.label || globalKpi.titre || obj.mesurable || '';
+            const kpiDesc = cleanMetricLabel(globalKpi.label || globalKpi.titre || obj.mesurable || '');
             const kpiUnit = globalKpi.unit || globalKpi.unite || obj.kpiUnit || extractKPIUnit(obj.mesurable) || '';
             const kpiTarget = getKpiTargetValue(globalKpi) ?? (typeof obj.kpiTarget === 'number' ? obj.kpiTarget : 400);
             const kpiCurrent = latestGlobalMeasure ?? getKpiCurrentValue(globalKpi) ?? 0;
+            const kpiCurrentLabel = formatKpiChipValue(kpiCurrent, kpiUnit);
+            const kpiTargetLabel = formatKpiChipValue(kpiTarget, kpiUnit);
 
             return `
             <div class="proj-card">
@@ -1016,8 +1041,8 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                                         <div class="dbx-inline-050">
                                             <span id="kpiDesc-${i}" class="dbx-inline-051">${escHtml(kpiDesc)}</span>
                                             <div class="dbx-inline-052">
-                                                <span id="kpiChipActuel-${i}" class="dbx-inline-053">Actuel ${kpiCurrent}</span>
-                                                <span class="dbx-inline-053">Cible ${kpiTarget}</span>
+                                                <span id="kpiChipActuel-${i}" class="dbx-inline-053">${escHtml(kpiCurrentLabel)} actuel</span>
+                                                <span class="dbx-inline-053">Objectif ${escHtml(kpiTargetLabel)}</span>
                                             </div>
                                         </div>
                                         <button onclick="openAddMeasureModal(${i})" class="dbx-inline-054">
@@ -5025,7 +5050,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             // Sync "Actuel" chip with latest measure value (no unit — shown in KPI title)
             const actualChip = document.getElementById(`kpiChipActuel-${i}`);
             if (actualChip && n > 0) {
-                actualChip.textContent = `Actuel ${data[n - 1].value}`;
+                actualChip.textContent = `${formatKpiChipValue(data[n - 1].value, unit)} actuel`;
             }
         }
 
@@ -6462,7 +6487,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
         const data = [{
             id: 'carryit-main', titre: 'CarryIT — 1000 clients',
             specifique: 'Atteindre 1000 client mensuel sur Carry it qui paye 8e par mois',
-            mesurable: '[Nb Clients] Nombre de client payant',
+            mesurable: 'Clients payants',
             kpiUnit: 'clients',
             atteignable: "Objectif atteignable en mettant en place une stratégie d'acquisition progressive : 50 clients en 2025, 300 en mars 2026, 1000 en septembre 2026, via marketing organique, partenariats et automatisation du funnel d'inscription.",
             realiste: "Objectif ambitieux mais cohérent avec une période de 22 mois : phase bêta (3-4 mois), lancement (T2 2026), puis montée progressive jusqu'à 1000 abonnés. Le marché du développement personnel et de la productivité SaaS permet ce type de traction avec un bon positionnement et des coûts faibles d'acquisition.",
@@ -6542,15 +6567,15 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                 {
                     id:'m1774256505290-2',titre:'Lancement V1.0 (MMP)',title:'Lancement V1.0 (MMP)',
                     date:'Sept 2026',month:'OBJECTIF 100%',statut:'pending',
-                    validation:'[Nb Clients] Nombre de client payant',
-                    kpis:[{titre:'[Nb Clients] Nombre de client payant',valeur:null,cible:null,unite:'',type:'lagging',measures:[]}],
+                    validation:'Nombre de clients payants',
+                    kpis:[{titre:'Clients payants',valeur:null,cible:null,unite:'clients',type:'lagging',measures:[]}],
                     taches:[],
                 },
                 {
                     id:'m1776272382186',titre:'1000 clients mensuels',title:'1000 clients mensuels',
                     date:'Sept 2026',month:'OBJECTIF 100%',statut:'pending',
-                    validation:'KPI [Nb Clients] = 1000 clients payants mensuels',
-                    kpis:[{titre:'KPI [Nb Clients] = 1000 clients payants mensuels',valeur:null,cible:null,unite:'',type:'lagging',measures:[]}],
+                    validation:'1000 clients payants mensuels',
+                    kpis:[{titre:'Clients payants mensuels',valeur:null,cible:1000,unite:'clients',type:'lagging',measures:[]}],
                     taches:[],
                 },
             ],

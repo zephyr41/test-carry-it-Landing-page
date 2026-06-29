@@ -11585,7 +11585,7 @@ body {
     --db-brand: #ee4408;
     --db-brand-soft: rgba(238, 68, 8, 0.12);
     --db-blue: #5b7eea;
-    --db-green: #79d189;
+    --db-success: #79d189;
     --db-warn: #e4b44f;
     --db-card-radius: 10px;
     --db-control-radius: 8px;
@@ -11854,7 +11854,7 @@ body::before {
 .dbx-inline-077,
 .dbx-inline-083,
 .dbx-inline-124 {
-    color: rgba(121,209,137,0.78) !important;
+    color: rgba(255,253,246,0.58) !important;
 }
 
 .vision-jalon-title {
@@ -11875,9 +11875,9 @@ body::before {
 }
 
 .vision-jalon-dot.done {
-    background: rgba(121,209,137,0.10) !important;
-    border-color: rgba(121,209,137,0.38) !important;
-    color: rgba(121,209,137,0.88) !important;
+    background: rgba(255,253,246,0.055) !important;
+    border-color: rgba(255,253,246,0.24) !important;
+    color: rgba(255,253,246,0.68) !important;
 }
 
 .vision-jalon-dot.active {
@@ -11939,7 +11939,7 @@ body::before {
 }
 
 .vision-cal-dot.active {
-    background: rgba(121,209,137,0.70) !important;
+    background: rgba(91,126,234,0.72) !important;
 }
 
 .vision-cal-dot.result {
@@ -12152,6 +12152,16 @@ body::before {
 .dbx-inline-047:focus {
     border-color: rgba(238,68,8,0.62) !important;
     box-shadow: 0 0 0 3px rgba(238,68,8,0.14) !important;
+}
+
+.proj-primary-btn {
+    background: var(--db-ink) !important;
+    border-color: var(--db-ink) !important;
+    color: var(--db-bg) !important;
+}
+
+.kpih-delta.pos {
+    color: rgba(91,126,234,0.86) !important;
 }
 
 @media (max-width: 1180px) {
