@@ -5000,30 +5000,55 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                 return `<text x="${xFor(idx, n)}" y="${H - 10}" text-anchor="middle" font-size="10" fill="rgba(255,253,246,0.38)" font-family="'Inter',system-ui,sans-serif">${label}</text>`;
             }).join('');
 
-            // Dots
+            const unit = globalKpi.unit || globalKpi.unite || obj.kpiUnit || extractKPIUnit(obj.mesurable) || '';
+
+            // Dots: visual circle + larger transparent hit area with data attrs
             const dots = data.map((d, idx) => {
                 const x = xFor(idx, n);
                 const y = yFor(d.value);
                 const isLast = idx === n - 1;
-                return `<circle cx="${x}" cy="${y}" r="${isLast ? 4.5 : 3}" fill="#FFFDF6" stroke="${isLast ? '#111111' : 'none'}" stroke-width="${isLast ? 2.5 : 0}"/>`;
+                const dDate = d.displayDate || d.iso || '';
+                return `<circle cx="${x}" cy="${y}" r="${isLast ? 4.5 : 3}" fill="#FFFDF6" stroke="${isLast ? '#111111' : 'none'}" stroke-width="${isLast ? 2.5 : 0}"/>
+<circle cx="${x}" cy="${y}" r="14" fill="transparent" class="kpi-dot-hit" data-date="${dDate}" data-value="${d.value}" data-unit="${unit}" style="cursor:default"/>`;
             }).join('');
 
-            const tooltipX = Math.min(lastX + 10, W - padR - 52);
-            const tooltipY = Math.max(lastY - 14, padT);
-
+            container.style.position = 'relative';
             container.innerHTML = `<svg width="100%" height="200" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
                 ${yGrid}
                 ${xLabels}
                 ${areaPath ? `<path d="${areaPath}" fill="rgba(255,253,246,0.04)"/>` : ''}
                 ${n > 1 ? `<polyline points="${linePoints}" fill="none" stroke="#FFFDF6" stroke-width="2.25" stroke-linejoin="round" stroke-linecap="round"/>` : ''}
                 ${dots}
-                ${n > 0 ? `<g transform="translate(${tooltipX},${tooltipY})"><rect x="0" y="0" width="42" height="22" rx="4" fill="#FFFDF6"/><text x="21" y="15" text-anchor="middle" font-size="12" font-weight="700" fill="#080809" font-family="'Inter',system-ui,sans-serif">${data[n - 1].value}</text></g>` : ''}
             </svg>`;
+
+            // Hover tooltip
+            const tip = document.createElement('div');
+            tip.style.cssText = 'position:absolute;display:none;pointer-events:none;background:rgba(12,13,16,0.97);border:1px solid rgba(255,253,246,0.12);border-radius:8px;padding:8px 12px;font-family:Inter,system-ui,sans-serif;z-index:20;white-space:nowrap;box-shadow:0 4px 24px rgba(0,0,0,0.6);transition:opacity 0.1s';
+            container.appendChild(tip);
+
+            container.querySelectorAll('.kpi-dot-hit').forEach(c => {
+                c.addEventListener('mouseenter', () => {
+                    const dStr = c.dataset.date || '';
+                    const vStr = c.dataset.value ?? '';
+                    const uStr = c.dataset.unit || '';
+                    tip.innerHTML = `<div style="font-size:10px;color:rgba(255,253,246,0.4);margin-bottom:4px;letter-spacing:0.04em">${dStr}</div><div style="font-size:15px;font-weight:700;color:#FFFDF6;line-height:1">${vStr}${uStr ? `<span style="font-size:11px;font-weight:500;color:rgba(255,253,246,0.5);margin-left:3px">${uStr}</span>` : ''}</div>`;
+                    tip.style.display = 'block';
+                    const cr = c.getBoundingClientRect();
+                    const pr = container.getBoundingClientRect();
+                    const cx = cr.left - pr.left + cr.width / 2;
+                    const cy = cr.top - pr.top;
+                    const tw = tip.offsetWidth;
+                    const th = tip.offsetHeight;
+                    const topPos = cy - th - 10;
+                    tip.style.top = (topPos < 0 ? cy + 18 : topPos) + 'px';
+                    tip.style.left = Math.max(4, Math.min(cx - tw / 2, pr.width - tw - 4)) + 'px';
+                });
+                c.addEventListener('mouseleave', () => { tip.style.display = 'none'; });
+            });
 
             // Sync "Actuel" chip with latest measure value
             const actualChip = document.getElementById(`kpiChipActuel-${i}`);
             if (actualChip && n > 0) {
-                const unit = globalKpi.unit || globalKpi.unite || obj.kpiUnit || extractKPIUnit(obj.mesurable) || '';
                 actualChip.textContent = `Actuel ${data[n - 1].value}${unit ? ' ' + unit : ''}`;
             }
         }
