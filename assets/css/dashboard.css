@@ -11807,12 +11807,10 @@ body::before {
 .jkpi-card,
 .task-table,
 .kanban-column {
-    background:
-        linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.012)),
-        var(--db-panel) !important;
-    border: 1px solid var(--db-line) !important;
-    border-radius: var(--db-card-radius) !important;
-    box-shadow: var(--db-card-shadow) !important;
+    background: #141519 !important;
+    border: 1px solid rgba(255,253,246,0.08) !important;
+    border-radius: 12px !important;
+    box-shadow: none !important;
 }
 
 .vision-quick-card:hover,
