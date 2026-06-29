@@ -11777,7 +11777,7 @@ body::before {
 }
 
 .vision-section {
-    gap: 0 !important;
+    gap: 16px !important;
 }
 
 .vision-quick-grid {
@@ -11810,18 +11810,9 @@ body::before {
 .task-table,
 .kanban-column {
     background: #141519 !important;
-    border: 1px solid rgba(255,253,246,0.08) !important;
+    border: none !important;
     border-radius: 12px !important;
     box-shadow: none !important;
-}
-
-.vision-quick-card:hover,
-.dbx-inline-070:hover,
-.dbx-inline-048:hover,
-.jkpi-card:hover,
-.jt-block:hover,
-.jl-pilot-card:hover {
-    border-color: rgba(255,253,246,0.16) !important;
 }
 
 .vision-quick-card {

@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/styles.css">
 
-    <link rel="stylesheet" href="assets/css/dashboard.css?v=80">
+    <link rel="stylesheet" href="assets/css/dashboard.css?v=81">
     <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 </head>
 <body>
@@ -1017,11 +1017,11 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             const deltaText = latestMeta.days === null
                 ? 'Aucune mesure'
                 : latestMeta.days === 0 ? "Aujourd'hui" : `il y a ${latestMeta.days}j`;
-            const cardBase = 'background:#141519;border:1px solid rgba(255,253,246,0.08);border-radius:12px;padding:20px;min-width:0;display:flex;flex-direction:column;gap:0';
+            const cardBase = 'background:#141519;border:none;border-radius:12px;padding:20px;min-width:0;display:flex;flex-direction:column;gap:0';
             return `
                 <div style="${cardBase}">
                     <div style="font-size:11px;font-weight:500;color:rgba(255,253,246,0.4);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:0.01em;margin-bottom:12px">${escHtml(kpiDesc || 'KPI principal')}</div>
-                    <div style="font-size:28px;font-weight:730;color:#FFFDF6;line-height:1;letter-spacing:-0.03em;font-variant-numeric:tabular-nums" id="kpiChipActuel-${i}">${escHtml(formatMetricValue(kpiCurrent))} <span style="font-size:15px;font-weight:500;color:rgba(255,253,246,0.28)">/ ${escHtml(formatMetricValue(kpiTarget))}</span></div>
+                    <div style="font-size:28px;font-weight:650;color:#FFFDF6;line-height:1;letter-spacing:-0.03em;font-variant-numeric:tabular-nums" id="kpiChipActuel-${i}">${escHtml(formatMetricValue(kpiCurrent))} <span style="font-size:15px;font-weight:450;color:rgba(255,253,246,0.28)">/ ${escHtml(formatMetricValue(kpiTarget))}</span></div>
                     <div style="font-size:11px;color:rgba(255,253,246,0.35);margin-top:8px">${percent}% · ${escHtml(deltaText)}</div>
                 </div>`;
         }
@@ -1138,7 +1138,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                             </div>
                             <div class="vision-main-grid">
                                 <!-- KPI CARD -->
-                                <div class="vision-kpi-card" id="kpiPanel-${i}" style="background:#141519;border:1px solid rgba(255,253,246,0.08);border-radius:12px;padding:20px;display:flex;flex-direction:column;min-width:0">
+                                <div class="vision-kpi-card" id="kpiPanel-${i}" style="background:#141519;border:none;border-radius:12px;padding:20px;display:flex;flex-direction:column;min-width:0">
                                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:16px">
                                         <span id="kpiDesc-${i}" style="font-size:12px;font-weight:500;color:rgba(255,253,246,0.4);letter-spacing:0.01em;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Évolution KPI</span>
                                         <button onclick="openAddMeasureModal(${i})" style="display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:6px;background:rgba(255,253,246,0.06);color:rgba(255,253,246,0.55);border:none;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0" onmouseover="this.style.background='rgba(255,253,246,0.1)'" onmouseout="this.style.background='rgba(255,253,246,0.06)'">
@@ -1215,7 +1215,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
         function buildVisionJalonActifCard(obj, i) {
             const { jalons, activeIdx } = getVisionJalonContext(obj, i);
             const total = jalons.length;
-            const cardBase = 'background:#141519;border:1px solid rgba(255,253,246,0.08);border-radius:12px;padding:20px;min-width:0';
+            const cardBase = 'background:#141519;border:none;border-radius:12px;padding:20px;min-width:0';
 
             if (!total) return `<div style="${cardBase};display:flex;align-items:center;justify-content:center;min-height:72px"><span style="font-size:11px;color:rgba(255,253,246,0.4)">Aucun jalon défini</span></div>`;
 
@@ -1275,7 +1275,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             const card1 = `
                 <div style="${cardBase};display:flex;flex-direction:column;cursor:pointer" onclick="switchDashboardView('jalons')">
                     <div style="font-size:11px;font-weight:500;color:rgba(255,253,246,0.4);letter-spacing:0.01em;margin-bottom:12px">Jalon actif · <span style="color:rgba(255,253,246,0.3)">${activeIdx + 1}/${total}</span></div>
-                    <div style="font-size:22px;font-weight:730;color:#FFFDF6;line-height:1.1;letter-spacing:-0.03em">${escHtml(title)}</div>
+                    <div style="font-size:22px;font-weight:650;color:#FFFDF6;line-height:1.1;letter-spacing:-0.03em">${escHtml(title)}</div>
                     <div style="margin-top:16px;height:3px;background:rgba(255,253,246,0.07);border-radius:2px;overflow:hidden">
                         <div style="height:100%;width:${progressPct}%;background:#EE4408;border-radius:2px;transition:width 0.3s"></div>
                     </div>
@@ -1289,7 +1289,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             const card2 = `
                 <div style="${cardBase};display:flex;flex-direction:column">
                     <div style="font-size:11px;font-weight:500;color:rgba(255,253,246,0.38);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:0.01em;margin-bottom:12px">${escHtml(resultLabel)}</div>
-                    <div style="font-size:26px;font-weight:730;color:#FFFDF6;line-height:1;letter-spacing:-0.03em;font-variant-numeric:tabular-nums">${fmtKpi(resultValue, resultTarget, resultUnit)}</div>
+                    <div style="font-size:26px;font-weight:650;color:#FFFDF6;line-height:1;letter-spacing:-0.03em;font-variant-numeric:tabular-nums">${fmtKpi(resultValue, resultTarget, resultUnit)}</div>
                     ${lastMeasureText ? `<div style="font-size:11px;color:rgba(255,253,246,0.35);margin-top:8px">${escHtml(lastMeasureText)}</div>` : ''}
                 </div>`;
 
@@ -1297,7 +1297,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             const card3 = `
                 <div style="${cardBase};display:flex;flex-direction:column">
                     <div style="font-size:11px;font-weight:500;color:rgba(255,253,246,0.38);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:0.01em;margin-bottom:12px">${escHtml(effortLabel)}</div>
-                    <div style="font-size:26px;font-weight:730;color:#FFFDF6;line-height:1;letter-spacing:-0.03em;font-variant-numeric:tabular-nums">${fmtKpi(effortValue, effortTarget, effortUnit)}</div>
+                    <div style="font-size:26px;font-weight:650;color:#FFFDF6;line-height:1;letter-spacing:-0.03em;font-variant-numeric:tabular-nums">${fmtKpi(effortValue, effortTarget, effortUnit)}</div>
                 </div>`;
 
             return `${card1}${card2}${card3}`;
@@ -6304,7 +6304,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             min-width: 0;
             padding: 18px 20px 12px;
             background: #141519;
-            border: 1px solid rgba(255,253,246,0.08);
+            border: none;
             border-radius: 12px;
         }
         .vision-panel-head {
@@ -6314,15 +6314,15 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             gap: 14px;
             margin-bottom: 16px;
             padding-bottom: 14px;
-            border-bottom: 1px solid rgba(255,253,246,0.06);
+            border-bottom: 1px solid rgba(255,253,246,0.05);
         }
         .vision-panel h2 {
             margin: 0;
-            color: rgba(255,253,246,0.65);
-            font-size: 12px;
+            color: rgba(255,253,246,0.45);
+            font-size: 11px;
             line-height: 1.2;
-            font-weight: 600;
-            letter-spacing: 0.06em;
+            font-weight: 500;
+            letter-spacing: 0.05em;
             text-transform: uppercase;
         }
         .vision-panel button {
