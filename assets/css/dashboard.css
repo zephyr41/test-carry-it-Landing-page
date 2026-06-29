@@ -5203,8 +5203,8 @@ body.panel-open .db-row-kpi-smart {
     --db-surface: #0f1013;
     --db-surface-2: #14161b;
     --db-surface-3: #191b21;
-    --db-border: rgba(255,253,246,0.12);
-    --db-border-soft: rgba(255,253,246,0.075);
+    --db-border: rgba(255,253,246,0.07);
+    --db-border-soft: rgba(255,253,246,0.04);
     --db-text: #FFFDF6;
     --db-muted: #929292;
     --db-subtle: rgba(255,253,246,0.42);
@@ -5297,16 +5297,16 @@ body {
 }
 
 .proj-body {
-    padding: 34px 0 0;
+    padding: 28px 0 0;
     gap: 0;
 }
 
 .db-view {
-    gap: 42px;
+    gap: 32px;
 }
 
 .db-section {
-    gap: 18px;
+    gap: 16px;
 }
 
 .db-section-label,
