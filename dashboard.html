@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/styles.css">
 
-    <link rel="stylesheet" href="assets/css/dashboard.css?v=83">
+    <link rel="stylesheet" href="assets/css/dashboard.css?v=85">
     <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 </head>
 <body>
@@ -1053,7 +1053,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                 <div style="${cardBase}">
                     <div style="font-size:11px;font-weight:500;color:rgba(255,253,246,0.4);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:0.01em;margin-bottom:12px">${escHtml(kpiDesc || 'KPI principal')}</div>
                     <div style="font-size:28px;font-weight:650;color:#FFFDF6;line-height:1;letter-spacing:-0.03em;font-variant-numeric:tabular-nums" id="kpiChipActuel-${i}">${escHtml(formatMetricValue(kpiCurrent))} <span style="font-size:15px;font-weight:450;color:rgba(255,253,246,0.28)">/ ${escHtml(formatMetricValue(kpiTarget))}</span></div>
-                    ${buildKpiDeltaHtml(globalKpi, `<div style="font-size:11px;color:rgba(255,253,246,0.35);margin-top:10px">${percent}% · ${escHtml(deltaText)}</div>`)}
+                    ${buildKpiDeltaHtml(globalKpi, `<div style="display:flex;align-items:center;gap:5px;margin-top:10px"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 6h6" stroke="rgba(255,253,246,0.22)" stroke-width="1.8" stroke-linecap="round"/></svg><span style="font-size:11px;color:rgba(255,253,246,0.32)">${percent}% · ${escHtml(deltaText)}</span></div>`)}
                 </div>`;
         }
 
@@ -5222,7 +5222,9 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             // Sync situation actuelle card with latest measure value
             const actualChip = document.getElementById(`kpiChipActuel-${i}`);
             if (actualChip && n > 0) {
-                actualChip.innerHTML = `${data[n - 1].value}${unit ? ' ' + unit : ''} <em>/ ${target}</em>`;
+                const chipUnit = unit ? `<span style="font-size:17px;font-weight:450;color:rgba(255,253,246,0.55)"> ${unit}</span>` : '';
+                const chipTarget = target != null ? `<span style="font-size:15px;font-weight:450;color:rgba(255,253,246,0.28)"> / ${target}</span>` : '';
+                actualChip.innerHTML = `${data[n - 1].value}${chipUnit}${chipTarget}`;
             }
         }
 
