@@ -130,7 +130,7 @@ body::before {
 
 .db-main-tab.active {
     color: #FFFDF6;
-    background: rgba(255,253,246,0.09);
+    background: transparent;
 }
 
 .db-main-tab-icon {
@@ -4544,7 +4544,7 @@ select.m-input {
     align-items: center;
     gap: 6px;
     background: transparent;
-    border: 1px solid rgba(255,255,255,0.12);
+    border: 0;
     border-radius: 6px;
     padding: 5px 10px 5px 12px;
     color: rgba(255,255,255,0.80);
@@ -5252,11 +5252,14 @@ body {
 
 .proj-edit-link,
 .proj-btn-icon,
-.db-nav-trigger,
 .db-nav-list,
 .db-nav-item {
     border-color: var(--db-border);
     background: var(--db-surface);
+    color: var(--db-muted);
+}
+.db-nav-trigger {
+    border-color: var(--db-border);
     color: var(--db-muted);
 }
 
@@ -6345,7 +6348,7 @@ body {
 .dashboard-nav-tabs .db-main-tab.active {
     color: var(--db-text);
     border-bottom-color: transparent;
-    background: rgba(255,253,246,0.09);
+    background: transparent;
 }
 
 .dashboard-nav-tabs .db-main-tab-icon {
