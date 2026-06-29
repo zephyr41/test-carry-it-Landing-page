@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/styles.css">
 
-    <link rel="stylesheet" href="assets/css/dashboard.css?v=81">
+    <link rel="stylesheet" href="assets/css/dashboard.css?v=83">
     <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 </head>
 <body>
@@ -986,6 +986,37 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             return date.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
         }
 
+        function getKpiMeasureValue(m) {
+            const totalRaw = m?.total !== undefined ? m.total : m?.cumulative;
+            const totalNum = (totalRaw !== null && totalRaw !== undefined && totalRaw !== '') ? Number(totalRaw) : null;
+            if (Number.isFinite(totalNum)) return totalNum;
+            const v = m?.value !== undefined ? m.value : m?.valeur;
+            const num = (v !== null && v !== undefined && v !== '') ? Number(v) : null;
+            return Number.isFinite(num) ? num : null;
+        }
+
+        function getKpiDelta(kpi) {
+            const recent = getRecentKpiMeasures(kpi, 2);
+            if (recent.length < 2) return null;
+            const curr = getKpiMeasureValue(recent[0]);
+            const prev = getKpiMeasureValue(recent[1]);
+            if (curr === null || prev === null || prev === 0) return null;
+            const pct = ((curr - prev) / Math.abs(prev)) * 100;
+            return { pct, isUp: pct >= 0 };
+        }
+
+        function buildKpiDeltaHtml(kpi, fallback) {
+            const delta = getKpiDelta(kpi);
+            if (!delta) return fallback;
+            const color = delta.isUp ? '#4ADE80' : '#F87171';
+            const arrow = delta.isUp
+                ? `<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 9L6 3.5L10 9" stroke="${color}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+                : `<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 3.5L6 8.5L10 3.5" stroke="${color}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+            const sign = delta.isUp ? '+' : '';
+            const pctText = `${sign}${Math.round(Math.abs(delta.pct))}%`;
+            return `<div style="display:flex;align-items:center;gap:5px;margin-top:10px">${arrow}<span style="font-size:11px;font-weight:600;color:${color}">${pctText}</span><span style="font-size:11px;color:rgba(255,253,246,0.3)">vs précédent</span></div>`;
+        }
+
         function getVisionLatestMeasureMeta(kpi) {
             const latest = getLatestKpiMeasure(kpi);
             if (!latest) return { label: 'Aucune mesure', date: null, days: null };
@@ -1017,12 +1048,12 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             const deltaText = latestMeta.days === null
                 ? 'Aucune mesure'
                 : latestMeta.days === 0 ? "Aujourd'hui" : `il y a ${latestMeta.days}j`;
-            const cardBase = 'background:#141519;border:none;border-radius:12px;padding:20px;min-width:0;display:flex;flex-direction:column;gap:0';
+            const cardBase = 'background:#141519;border:none;border-radius:12px;padding:24px;min-width:0;display:flex;flex-direction:column;gap:0';
             return `
                 <div style="${cardBase}">
                     <div style="font-size:11px;font-weight:500;color:rgba(255,253,246,0.4);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:0.01em;margin-bottom:12px">${escHtml(kpiDesc || 'KPI principal')}</div>
                     <div style="font-size:28px;font-weight:650;color:#FFFDF6;line-height:1;letter-spacing:-0.03em;font-variant-numeric:tabular-nums" id="kpiChipActuel-${i}">${escHtml(formatMetricValue(kpiCurrent))} <span style="font-size:15px;font-weight:450;color:rgba(255,253,246,0.28)">/ ${escHtml(formatMetricValue(kpiTarget))}</span></div>
-                    <div style="font-size:11px;color:rgba(255,253,246,0.35);margin-top:8px">${percent}% · ${escHtml(deltaText)}</div>
+                    ${buildKpiDeltaHtml(globalKpi, `<div style="font-size:11px;color:rgba(255,253,246,0.35);margin-top:10px">${percent}% · ${escHtml(deltaText)}</div>`)}
                 </div>`;
         }
 
@@ -1138,7 +1169,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                             </div>
                             <div class="vision-main-grid">
                                 <!-- KPI CARD -->
-                                <div class="vision-kpi-card" id="kpiPanel-${i}" style="background:#141519;border:none;border-radius:12px;padding:20px;display:flex;flex-direction:column;min-width:0">
+                                <div class="vision-kpi-card" id="kpiPanel-${i}" style="background:#141519;border:none;border-radius:12px;padding:24px;display:flex;flex-direction:column;min-width:0">
                                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:16px">
                                         <span id="kpiDesc-${i}" style="font-size:12px;font-weight:500;color:rgba(255,253,246,0.4);letter-spacing:0.01em;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Évolution KPI</span>
                                         <button onclick="openAddMeasureModal(${i})" style="display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:6px;background:rgba(255,253,246,0.06);color:rgba(255,253,246,0.55);border:none;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0" onmouseover="this.style.background='rgba(255,253,246,0.1)'" onmouseout="this.style.background='rgba(255,253,246,0.06)'">
@@ -1182,9 +1213,9 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
         function buildSmartRowJSX(letter, label, value, fieldKey, isFirst) {
             const sep = isFirst ? '' : '<div style="height:1px;background:rgba(255,253,246,0.05)"></div>';
             return `${sep}
-                <div style="display:grid;grid-template-columns:22px 1fr;gap:12px;align-items:baseline;padding:11px 0">
-                    <span style="font-size:10px;font-weight:700;color:rgba(255,253,246,0.28);font-family:inherit;letter-spacing:0.04em">${letter}</span>
-                    <span style="font-size:13px;color:rgba(255,253,246,0.85);line-height:1.5;letter-spacing:-0.005em" data-field="${fieldKey || ''}">${escHtml(value || '—')}</span>
+                <div style="display:grid;grid-template-columns:22px 1fr;gap:12px;align-items:baseline;padding:13px 0">
+                    <span style="font-size:10px;font-weight:700;color:rgba(255,253,246,0.25);font-family:inherit;letter-spacing:0.04em">${letter}</span>
+                    <span style="font-size:13px;color:rgba(255,253,246,0.7);line-height:1.5;letter-spacing:-0.005em" data-field="${fieldKey || ''}">${escHtml(value || '—')}</span>
                 </div>`;
         }
 
@@ -1215,7 +1246,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
         function buildVisionJalonActifCard(obj, i) {
             const { jalons, activeIdx } = getVisionJalonContext(obj, i);
             const total = jalons.length;
-            const cardBase = 'background:#141519;border:none;border-radius:12px;padding:20px;min-width:0';
+            const cardBase = 'background:#141519;border:none;border-radius:12px;padding:24px;min-width:0';
 
             if (!total) return `<div style="${cardBase};display:flex;align-items:center;justify-content:center;min-height:72px"><span style="font-size:11px;color:rgba(255,253,246,0.4)">Aucun jalon défini</span></div>`;
 
@@ -1286,11 +1317,12 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                 </div>`;
 
             // Card 2 — Résultat (lagging KPI)
+            const resultFallback = lastMeasureText ? `<div style="font-size:11px;color:rgba(255,253,246,0.35);margin-top:10px">${escHtml(lastMeasureText)}</div>` : '';
             const card2 = `
                 <div style="${cardBase};display:flex;flex-direction:column">
                     <div style="font-size:11px;font-weight:500;color:rgba(255,253,246,0.38);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:0.01em;margin-bottom:12px">${escHtml(resultLabel)}</div>
                     <div style="font-size:26px;font-weight:650;color:#FFFDF6;line-height:1;letter-spacing:-0.03em;font-variant-numeric:tabular-nums">${fmtKpi(resultValue, resultTarget, resultUnit)}</div>
-                    ${lastMeasureText ? `<div style="font-size:11px;color:rgba(255,253,246,0.35);margin-top:8px">${escHtml(lastMeasureText)}</div>` : ''}
+                    ${lagging ? buildKpiDeltaHtml(lagging, resultFallback) : resultFallback}
                 </div>`;
 
             // Card 3 — Effort (leading KPI)
@@ -1298,6 +1330,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                 <div style="${cardBase};display:flex;flex-direction:column">
                     <div style="font-size:11px;font-weight:500;color:rgba(255,253,246,0.38);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:0.01em;margin-bottom:12px">${escHtml(effortLabel)}</div>
                     <div style="font-size:26px;font-weight:650;color:#FFFDF6;line-height:1;letter-spacing:-0.03em;font-variant-numeric:tabular-nums">${fmtKpi(effortValue, effortTarget, effortUnit)}</div>
+                    ${leading ? buildKpiDeltaHtml(leading, '') : ''}
                 </div>`;
 
             return `${card1}${card2}${card3}`;
@@ -6302,7 +6335,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
         }
         .vision-panel {
             min-width: 0;
-            padding: 18px 20px 12px;
+            padding: 22px 24px 16px;
             background: #141519;
             border: none;
             border-radius: 12px;
