@@ -8,11 +8,6 @@ Le dashboard suit le principe de **Divulgation Progressive** et la **Pyramide In
 *   **Onglet 2 : Jalons** (Pont temporel / Architecture)
 *   **Onglet 3 : Exécution** (Action quotidienne)
 
-## 2. Design System (Esthétique de la Vérité)
-*   **Règle absolue** : Monochrome strict (Noir, Blanc, Gris).
-*   **Interdiction** : Pas d'usage sémantique du Vert ou du Rouge pour indiquer le succès ou l'échec. Le chiffre est un fait froid, il n'émet pas de jugement moral.
-*   **Minimalisme** : Suppression maximale des bordures, ombres et éléments de décoration (Data-Ink ratio).
-
 ## 3. Flux de Données et Interactions
 *   **Zero Data (Empty State)** : Pris en charge par l'onboarding. Le dashboard n'est jamais généré vide.
 *   **Mise à jour des KPIs** : Aucune mise à jour automatique. Pour garantir l'ownership de l'utilisateur, la mise à jour s'effectue via une **Modale**.
