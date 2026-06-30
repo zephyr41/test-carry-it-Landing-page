@@ -1299,7 +1299,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             const card1 = `
                 <div style="${cardBase};display:flex;flex-direction:column;cursor:pointer" onclick="switchDashboardView('jalons')">
                     <div style="font-size:11px;font-weight:500;color:rgba(255,253,246,0.4);letter-spacing:0.01em;margin-bottom:12px">Jalon actif · <span style="color:rgba(255,253,246,0.3)">${activeIdx + 1}/${total}</span></div>
-                    <div style="font-size:22px;font-weight:650;color:#FFFDF6;line-height:1.1;letter-spacing:-0.03em">${escHtml(title)}</div>
+                    <div style="font-size:26px;font-weight:600;color:#FFFDF6;line-height:1.1;letter-spacing:-0.03em">${escHtml(title)}</div>
                     <div style="margin-top:auto;padding-top:16px;display:grid;grid-template-columns:repeat(${total},1fr);grid-template-rows:auto auto;gap:6px 0;position:relative">
                         <div style="position:absolute;top:24px;left:${Math.round(50/total)}%;right:${Math.round(50/total)}%;height:1.5px;background:rgba(255,253,246,0.1);z-index:0"></div>
                         ${dots}
@@ -6231,6 +6231,8 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             display: flex;
             flex-direction: column;
             gap: 12px;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Helvetica, Arial, sans-serif;
+            font-optical-sizing: auto;
         }
         .vision-scorecard {
             display: none;
