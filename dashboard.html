@@ -99,38 +99,38 @@
 
     <!-- ── MODAL: Sync données ── -->
     <div id="syncModalOverlay" class="m-overlay" onclick="if(event.target===this)closeSyncModal()">
-        <div class="m-box" onclick="event.stopPropagation()" style="max-width:360px;width:90%;">
+        <div class="m-box dbx-inline-001" onclick="event.stopPropagation()">
             <h3 class="m-title">Synchroniser mes données</h3>
-            <p class="m-sub" style="margin-bottom:24px;">Transfère tes données entre appareils via un fichier JSON.</p>
+            <p class="m-sub dbx-inline-002">Transfère tes données entre appareils via un fichier JSON.</p>
 
-            <button onclick="exportData()" style="width:100%;padding:14px;background:#EE4408;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:12px;">
+            <button onclick="exportData()" class="dbx-inline-003">
                 ↓ Exporter mes données
             </button>
 
-            <label style="width:100%;display:block;">
-                <div style="width:100%;padding:14px;background:rgba(255,255,255,0.06);color:#fff;border:1px solid rgba(255,255,255,0.12);border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;text-align:center;box-sizing:border-box;">
+            <label class="dbx-inline-004">
+                <div class="dbx-inline-005">
                     ↑ Importer mes données
                 </div>
-                <input type="file" accept=".json" onchange="importData(event)" style="display:none;">
+                <input type="file" accept=".json" onchange="importData(event)" class="dbx-inline-006">
             </label>
 
-            <p style="font-size:11px;color:rgba(255,255,255,0.3);text-align:center;margin-top:16px;">Tes données ne quittent jamais ton appareil.</p>
+            <p class="dbx-inline-007">Tes données ne quittent jamais ton appareil.</p>
 
-            <button onclick="closeSyncModal()" style="width:100%;padding:12px;background:none;border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:rgba(255,255,255,0.5);font-size:14px;cursor:pointer;margin-top:12px;">Fermer</button>
+            <button onclick="closeSyncModal()" class="dbx-inline-008">Fermer</button>
         </div>
     </div>
 
     <!-- KPI Action Menu (inline dropdown) -->
-    <div id="kpiActionMenuPanel" style="display:none;position:fixed;z-index:200;min-width:220px;background:#1A1A1C;border:1px solid rgba(255,253,246,0.12);border-radius:10px;padding:6px;box-shadow:0 12px 32px rgba(0,0,0,0.55)"></div>
+    <div id="kpiActionMenuPanel" class="dbx-inline-009"></div>
 
     <!-- Jalon Secondary Actions Menu -->
-    <div id="jalonSecondaryMenuPanel" style="display:none;position:fixed;z-index:200;min-width:200px;background:#1A1A1C;border:1px solid rgba(255,253,246,0.12);border-radius:10px;padding:6px;box-shadow:0 12px 32px rgba(0,0,0,0.55)"></div>
+    <div id="jalonSecondaryMenuPanel" class="dbx-inline-010"></div>
 
     <!-- KPI History Sheet (slide-in right panel) -->
-    <div id="kpiHistoryBackdrop" style="display:none;position:fixed;inset:0;z-index:150;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px)" onclick="closeKpiHistorySheet()"></div>
-    <div id="kpiHistorySheet" style="display:none;position:fixed;top:0;right:0;bottom:0;z-index:151;width:min(440px,100%);background:#0F0F11;border-left:1px solid rgba(255,253,246,0.1);display:flex;flex-direction:column;transform:translateX(100%);transition:transform 240ms cubic-bezier(0.16,1,0.3,1)">
-        <div id="kpiHistorySheetHead" style="padding:24px 28px 18px;display:flex;align-items:flex-start;gap:12px;border-bottom:1px solid rgba(255,253,246,0.08)"></div>
-        <div id="kpiHistorySheetBody" style="flex:1;overflow-y:auto;padding:12px 0"></div>
+    <div id="kpiHistoryBackdrop" onclick="closeKpiHistorySheet()" class="dbx-inline-011"></div>
+    <div id="kpiHistorySheet" class="dbx-inline-012">
+        <div id="kpiHistorySheetHead" class="dbx-inline-013"></div>
+        <div id="kpiHistorySheetBody" class="dbx-inline-014"></div>
     </div>
 
     <!-- Dashboard -->
@@ -233,7 +233,7 @@
                 </div>
                 <div class="m-field" id="jalonKpiModeField">
                     <label class="m-label">Fréquence de saisie</label>
-                    <select class="m-input" id="jalonKpiFrequency" style="cursor:pointer">
+                    <select class="m-input dbx-inline-015" id="jalonKpiFrequency">
                         <option value="Quotidien">Quotidien</option>
                         <option value="Hebdomadaire">Hebdomadaire</option>
                         <option value="Mensuel">Mensuel</option>
@@ -247,12 +247,12 @@
                     </div>
                 </div>
                 <div class="m-error" id="jalonKpiError"></div>
-                <div class="m-btns" style="flex-direction:column;gap:8px">
-                    <div style="display:flex;gap:8px;width:100%">
-                        <button type="button" class="m-btn-cancel" onclick="closeJalonKpiModal()" style="flex:1">Annuler</button>
-                        <button type="submit" class="m-btn-ok" style="flex:1">Enregistrer</button>
+                <div class="m-btns dbx-inline-016">
+                    <div class="dbx-inline-017">
+                        <button type="button" class="m-btn-cancel dbx-inline-018" onclick="closeJalonKpiModal()">Annuler</button>
+                        <button type="submit" class="m-btn-ok dbx-inline-018">Enregistrer</button>
                     </div>
-                    <button type="button" onclick="deleteKpiFromModal()" style="width:100%;padding:9px;border-radius:8px;border:none;background:rgba(255,59,48,0.1);color:#ff6b56;font-size:13px;font-weight:500;font-family:inherit;cursor:pointer" onmouseenter="this.style.background='rgba(255,59,48,0.18)'" onmouseleave="this.style.background='rgba(255,59,48,0.1)'">Supprimer ce KPI</button>
+                    <button type="button" onclick="deleteKpiFromModal()" class="dbx-inline-019">Supprimer ce KPI</button>
                 </div>
             </form>
             <div class="m-history-wrap">
@@ -264,52 +264,52 @@
 
     <!-- ── MODAL: Ajouter une mesure KPI (jalon) ── -->
     <div id="jalonKpiMeasureModalOverlay" class="m-overlay" onclick="if(event.target===this)closeJalonKpiMeasureModal()">
-        <div class="m-box m-box--measure" onclick="event.stopPropagation()" style="width:min(440px,calc(100vw - 28px));max-height:calc(100vh - 44px);overflow-y:auto">
-            <div style="margin-bottom:18px">
-                <h3 class="m-title" style="margin-bottom:3px">Ajouter une mesure</h3>
-                <p class="m-sub" id="jalonKpiMeasureSubtitle" style="margin:0 0 3px;line-height:1.5"></p>
-                <p id="jalonKpiMeasureContext" style="font-size:12px;color:rgba(255,253,246,0.28);margin:0;display:none"></p>
+        <div class="m-box m-box--measure dbx-inline-020" onclick="event.stopPropagation()">
+            <div class="dbx-inline-021">
+                <h3 class="m-title dbx-inline-022">Ajouter une mesure</h3>
+                <p class="m-sub dbx-inline-023" id="jalonKpiMeasureSubtitle"></p>
+                <p id="jalonKpiMeasureContext" class="dbx-inline-024"></p>
             </div>
             <form id="jalonKpiMeasureForm" onsubmit="handleJalonKpiMeasureSubmit(event)">
-                <div style="display:flex;align-items:center;gap:6px;margin-bottom:18px">
-                    <button type="button" onclick="changeJalonKpiMeasureDate(-1)" style="background:none;border:none;color:rgba(255,253,246,0.35);cursor:pointer;font-size:20px;padding:4px 6px;line-height:1;font-family:inherit;flex-shrink:0;transition:color 120ms" onmouseenter="this.style.color='rgba(255,253,246,0.8)'" onmouseleave="this.style.color='rgba(255,253,246,0.35)'" aria-label="Jour précédent">‹</button>
-                    <button type="button" id="jalonKpiMeasureDate-btn" onclick="openDashCal(this,'jalonKpiMeasureDate')" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:7px;background:none;border:none;color:rgba(255,253,246,0.72);font-size:14px;font-weight:500;font-family:inherit;cursor:pointer;padding:4px 0;text-transform:capitalize;transition:color 120ms" onmouseenter="this.style.color='#FFFDF6'" onmouseleave="this.style.color='rgba(255,253,246,0.72)'"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:0.55;flex-shrink:0"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span>Choisir une date…</span></button>
-                    <button type="button" onclick="changeJalonKpiMeasureDate(1)" style="background:none;border:none;color:rgba(255,253,246,0.35);cursor:pointer;font-size:20px;padding:4px 6px;line-height:1;font-family:inherit;flex-shrink:0;transition:color 120ms" onmouseenter="this.style.color='rgba(255,253,246,0.8)'" onmouseleave="this.style.color='rgba(255,253,246,0.35)'" aria-label="Jour suivant">›</button>
+                <div class="dbx-inline-025">
+                    <button type="button" onclick="changeJalonKpiMeasureDate(-1)" aria-label="Jour précédent" class="dbx-inline-026">‹</button>
+                    <button type="button" id="jalonKpiMeasureDate-btn" onclick="openDashCal(this,'jalonKpiMeasureDate')" class="dbx-inline-027"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="dbx-inline-028"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span>Choisir une date…</span></button>
+                    <button type="button" onclick="changeJalonKpiMeasureDate(1)" aria-label="Jour suivant" class="dbx-inline-026">›</button>
                 </div>
                 <input type="hidden" id="jalonKpiMeasureDate">
-                <div class="m-error" id="jalonKpiMeasureDateError" style="margin:-12px 0 12px"></div>
-                <div style="margin-bottom:16px">
-                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-                        <label style="font-size:10px;font-weight:600;color:rgba(255,253,246,0.22);letter-spacing:0.07em;text-transform:uppercase">Quand</label>
-                        <span id="jalonKpiTimelineSummary" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;color:rgba(255,253,246,0.42);font-weight:500">10:00 → 11:00 · 1h</span>
+                <div class="m-error dbx-inline-029" id="jalonKpiMeasureDateError"></div>
+                <div class="dbx-inline-030">
+                    <div class="dbx-inline-031">
+                        <label class="dbx-inline-032">Quand</label>
+                        <span id="jalonKpiTimelineSummary" class="dbx-inline-033">10:00 → 11:00 · 1h</span>
                     </div>
                     <input type="hidden" id="jalonKpiMeasureTime">
                     <input type="hidden" id="jalonKpiMeasureDuration" value="1h">
-                    <div id="jalonKpiTimelineScroll" style="height:180px;overflow-y:auto;user-select:none">
-                        <div id="jalonKpiTimeline" style="position:relative;height:952px" onmousedown="handleJalonKpiTimelineMouseDown(event)" ontouchstart="handleJalonKpiTimelineTouchStart(event)">
+                    <div id="jalonKpiTimelineScroll" class="dbx-inline-034">
+                        <div id="jalonKpiTimeline" onmousedown="handleJalonKpiTimelineMouseDown(event)" ontouchstart="handleJalonKpiTimelineTouchStart(event)" class="dbx-inline-035">
                             <div id="jalonKpiTimelineHours"></div>
-                            <div id="jalonKpiTimelineBlock" onmousedown="handleJalonKpiTimelineBlockDown(event)" ontouchstart="handleJalonKpiTimelineBlockTouchStart(event)" style="position:absolute;left:48px;right:8px;top:224px;height:56px;background:rgba(255,253,246,0.08);border-left:3px solid #FFFDF6;border-radius:7px;cursor:grab;z-index:2;overflow:hidden">
-                                <div style="padding:6px 8px">
-                                    <span style="font-size:9.5px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,253,246,0.48);display:block;margin-bottom:3px">Effort</span>
-                                    <span id="jalonKpiTimelineLabel" style="font-size:12px;font-weight:700;color:#FFFDF6">10:00 → 11:00 · 1h</span>
+                            <div id="jalonKpiTimelineBlock" onmousedown="handleJalonKpiTimelineBlockDown(event)" ontouchstart="handleJalonKpiTimelineBlockTouchStart(event)" class="dbx-inline-036">
+                                <div class="dbx-inline-037">
+                                    <span class="dbx-inline-038">Effort</span>
+                                    <span id="jalonKpiTimelineLabel" class="dbx-inline-039">10:00 → 11:00 · 1h</span>
                                 </div>
-                                <div onmousedown="handleJalonKpiTimelineResizeDown(event)" ontouchstart="handleJalonKpiTimelineResizeTouchStart(event)" style="position:absolute;bottom:0;left:0;right:0;height:12px;cursor:ns-resize;display:flex;align-items:center;justify-content:center">
-                                    <div style="width:20px;height:2px;border-radius:2px;background:rgba(255,253,246,0.18)"></div>
+                                <div onmousedown="handleJalonKpiTimelineResizeDown(event)" ontouchstart="handleJalonKpiTimelineResizeTouchStart(event)" class="dbx-inline-040">
+                                    <div class="dbx-inline-041"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div style="margin-bottom:14px">
-                    <label id="jalonKpiMeasureValueLabel" style="font-size:9.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,253,246,0.30);display:block;margin-bottom:6px" for="jalonKpiMeasureValue">Quantité</label>
+                <div class="dbx-inline-042">
+                    <label id="jalonKpiMeasureValueLabel" for="jalonKpiMeasureValue" class="dbx-inline-043">Quantité</label>
                     <input id="jalonKpiMeasureValue" type="number" min="0" step="any" placeholder="0"
-                        style="width:100%;background:rgba(255,253,246,0.04);border:1px solid rgba(255,253,246,0.09);border-radius:7px;padding:8px 12px;color:#FFFDF6;font-size:17px;font-weight:600;font-family:inherit;outline:none;transition:border-color 150ms;-webkit-appearance:none;appearance:none;letter-spacing:-0.01em">
-                    <div class="m-error" id="jalonKpiMeasureValueError" style="margin-top:4px"></div>
+                        class="dbx-inline-044">
+                    <div class="m-error dbx-inline-045" id="jalonKpiMeasureValueError"></div>
                 </div>
-                <div style="padding-top:12px;border-top:1px solid rgba(255,253,246,0.08)">
-                    <label style="font-size:9.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,253,246,0.30);display:block;margin-bottom:6px" for="jalonKpiMeasureNote">Note</label>
+                <div class="dbx-inline-046">
+                    <label for="jalonKpiMeasureNote" class="dbx-inline-043">Note</label>
                     <textarea id="jalonKpiMeasureNote" rows="2" placeholder="Conditions, qualité, points notables..."
-                        style="width:100%;background:none;border:none;outline:none;resize:none;color:rgba(255,253,246,0.75);font-size:12px;line-height:1.5;font-family:inherit;min-height:44px;padding:0"></textarea>
+                        class="dbx-inline-047"></textarea>
                 </div>
                 <div class="m-btns">
                     <button type="button" class="m-btn-cancel" onclick="closeJalonKpiMeasureModal()">Annuler</button>
@@ -765,10 +765,10 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
 
                 // Dropdown item
                 const li = document.createElement('li');
-                li.style.cssText = 'list-style:none;display:flex;align-items:center;gap:4px;';
+                li.className = 'db-nav-row';
                 const btn = document.createElement('button');
                 btn.className = 'db-nav-item' + (i === currentCarouselIndex ? ' active' : '');
-                btn.style.flex = '1';
+                btn.classList.add('db-nav-item-main');
                 btn.textContent = obj.titre || `Projet ${i + 1}`;
                 btn.onclick = () => { switchProject(i); closeNavDropdown(); };
                 const delBtn = document.createElement('button');
@@ -1008,13 +1008,13 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
         function buildKpiDeltaHtml(kpi, fallback) {
             const delta = getKpiDelta(kpi);
             if (!delta) return fallback;
-            const color = delta.isUp ? '#4ADE80' : '#F87171';
+            const trendClass = delta.isUp ? 'da-trend--success' : 'da-trend--danger';
             const arrow = delta.isUp
-                ? `<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 9L6 3.5L10 9" stroke="${color}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`
-                : `<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 3.5L6 8.5L10 3.5" stroke="${color}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+                ? `<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 9L6 3.5L10 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+                : `<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 3.5L6 8.5L10 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
             const sign = delta.isUp ? '+' : '';
             const pctText = `${sign}${Math.round(Math.abs(delta.pct))}%`;
-            return `<div style="display:flex;align-items:center;gap:5px;margin-top:10px">${arrow}<span style="font-size:11px;font-weight:600;color:${color}">${pctText}</span><span style="font-size:11px;color:rgba(255,253,246,0.3)">vs précédent</span></div>`;
+            return `<div class="da-trend ${trendClass}">${arrow}<span>${pctText}</span><span>vs précédent</span></div>`;
         }
 
         function getVisionLatestMeasureMeta(kpi) {
@@ -1043,19 +1043,17 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
         }
 
         function buildVisionScorecard(obj, i, globalKpi, kpiDesc, kpiUnit, kpiTarget, kpiCurrent) {
-            const percent = formatKpiPercent(kpiCurrent, kpiTarget) ?? 0;
             const latestMeta = getVisionLatestMeasureMeta(globalKpi);
             const deltaText = latestMeta.days === null
                 ? 'Aucune mesure'
                 : latestMeta.days === 0 ? "Aujourd'hui" : `il y a ${latestMeta.days}j`;
-            const kpiAlertColor = latestMeta.days === null ? '#9ca3af' : latestMeta.days > 14 ? '#b45309' : '#6b7280';
-            const cardBase = 'background:#ffffff;border:none;border-radius:16px;padding:20px 24px;min-width:0;display:flex;flex-direction:column;gap:0;box-shadow:0 12px 32px rgba(255,255,255,0.05);transition:border-color 0.3s cubic-bezier(0.16,1,0.3,1),transform 0.3s cubic-bezier(0.16,1,0.3,1);overflow:hidden;color:#121214';
+            const staleClass = latestMeta.days === null ? 'is-muted' : latestMeta.days > 14 ? 'is-stale' : '';
             return `
-                <div style="${cardBase}">
-                    <div style="font-size:11px;font-weight:500;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:0.01em;margin-bottom:10px">${escHtml(kpiDesc || 'KPI principal')}</div>
-                    <div style="font-size:42px;font-weight:700;color:#121214;line-height:1;letter-spacing:-0.04em;font-variant-numeric:tabular-nums" id="kpiChipActuel-${i}">${escHtml(formatMetricValue(kpiCurrent))}<span style="font-size:16px;font-weight:450;color:#9ca3af"> / ${escHtml(formatMetricValue(kpiTarget))}</span></div>
-                    ${buildKpiDeltaHtml(globalKpi, `<div style="margin-top:10px"><span style="font-size:11px;font-weight:500;color:${kpiAlertColor}">— ${escHtml(deltaText)}</span></div>`)}
-                </div>`;
+                <article class="da-card da-card--white da-metric-card">
+                    <div class="da-card-title">${escHtml(kpiDesc || 'KPI principal')}</div>
+                    <div id="kpiChipActuel-${i}" class="da-metric-large">${escHtml(formatMetricValue(kpiCurrent))}<span class="da-metric-total"> / ${escHtml(formatMetricValue(kpiTarget))}</span></div>
+                    ${buildKpiDeltaHtml(globalKpi, `<div class="da-metric-subtitle ${staleClass}">— ${escHtml(deltaText)}</div>`)}
+                </article>`;
         }
 
         function buildVisionMilestonePanel(obj, i) {
@@ -1093,14 +1091,14 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
 
         function buildVisionSmartCompact(obj, i, globalKpi) {
             return `
-                <aside class="vision-panel vision-smart-compact">
-                    <div class="vision-panel-head">
+                <aside class="da-card da-panel da-smart-panel vision-smart-compact">
+                    <div class="da-panel-header">
                         <div>
-                            <h2>SMART</h2>
+                            <h2 class="da-panel-title">SMART</h2>
                         </div>
-                        <button type="button" onclick="enterSmartEdit(${i})">Modifier</button>
+                        <button class="da-btn da-btn--ghost" type="button" onclick="enterSmartEdit(${i})">Modifier</button>
                     </div>
-                    <div>
+                    <div class="da-smart-list">
                         ${buildSmartRowJSX('S', "L'Ambition", obj.specifique, 'specifique', true)}
                         ${buildSmartRowJSX('M', 'La Mesure', obj.mesurable, 'mesurable', false)}
                         ${buildSmartRowJSX('A', 'Atteignable', obj.atteignable, 'atteignable', false)}
@@ -1157,22 +1155,22 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                         data-view="pilotage"
                         ${currentDashboardView === 'pilotage' ? '' : 'hidden'}>
                         <div class="db-section vision-section">
-                            <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px">
+                            <div class="da-dashboard-grid">
                                 ${buildVisionScorecard(obj, i, globalKpi, kpiDesc, kpiUnit, kpiTarget, kpiCurrent)}
                                 ${buildVisionJalonActifCard(obj, i)}
                             </div>
-                            <div class="vision-secondary-grid">
+                            <div class="da-dashboard-secondary-grid">
                                 <!-- KPI CARD -->
-                                <div class="vision-kpi-card" id="kpiPanel-${i}" style="display:flex;flex-direction:column;min-width:0">
-                                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:16px">
-                                        <span id="kpiDesc-${i}" style="font-size:12px;font-weight:500;color:rgba(255,253,246,0.4);letter-spacing:0.01em;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Évolution KPI</span>
-                                        <button onclick="openAddMeasureModal(${i})" style="display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:6px;background:rgba(255,253,246,0.06);color:rgba(255,253,246,0.55);border:none;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0" onmouseover="this.style.background='rgba(255,253,246,0.1)'" onmouseout="this.style.background='rgba(255,253,246,0.06)'">
+                                <section class="da-card da-panel da-chart-card" id="kpiPanel-${i}">
+                                    <div class="da-panel-header">
+                                        <span id="kpiDesc-${i}" class="da-panel-title">Évolution KPI</span>
+                                        <button onclick="openAddMeasureModal(${i})" class="da-btn da-btn--ghost">
                                             <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
                                             Mesure
                                         </button>
                                     </div>
-                                    <div id="kpiWrap-${i}" style="flex:1;min-height:360px"></div>
-                                </div>
+                                    <div id="kpiWrap-${i}" class="da-chart-body"></div>
+                                </section>
                                 ${buildVisionSmartCompact(obj, i, globalKpi)}
                             </div>
                         </div>
@@ -1205,11 +1203,11 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
 
         // SmartCard row — styles inline JSX exact (BlocVision.jsx SmartCard)
         function buildSmartRowJSX(letter, label, value, fieldKey, isFirst) {
-            const sep = isFirst ? '' : '<div style="height:1px;background:rgba(255,253,246,0.05)"></div>';
+            const sep = isFirst ? '' : '<div class="da-smart-separator"></div>';
             return `${sep}
-                <div style="display:grid;grid-template-columns:22px 1fr;gap:12px;align-items:baseline;padding:13px 0">
-                    <span style="font-size:10px;font-weight:700;color:rgba(255,253,246,0.32);font-family:inherit;letter-spacing:0.04em">${letter}</span>
-                    <span style="font-size:13px;color:rgba(255,253,246,0.7);line-height:1.5;letter-spacing:-0.005em" data-field="${fieldKey || ''}">${escHtml(value || '—')}</span>
+                <div class="da-smart-row">
+                    <span class="da-smart-letter">${letter}</span>
+                    <span data-field="${fieldKey || ''}" class="da-smart-value">${escHtml(value || '—')}</span>
                 </div>`;
         }
 
@@ -1240,15 +1238,11 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
         function buildVisionJalonActifCard(obj, i) {
             const { jalons, activeIdx } = getVisionJalonContext(obj, i);
             const total = jalons.length;
-            const cardBase = 'background:rgba(24,24,27,0.6);border:1px solid rgba(255,255,255,0.05);border-radius:16px;padding:16px 20px;min-width:0;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 24px 48px -12px rgba(0,0,0,0.4);transition:border-color 0.3s cubic-bezier(0.16,1,0.3,1),transform 0.3s cubic-bezier(0.16,1,0.3,1);overflow:hidden';
 
-            if (!total) return `<div style="${cardBase};display:flex;align-items:center;justify-content:center;min-height:72px"><span style="font-size:11px;color:rgba(255,253,246,0.4)">Aucun jalon défini</span></div>`;
+            if (!total) return `<article class="da-card da-empty-card"><span>Aucun jalon défini</span></article>`;
 
             const activeJalon = jalons[activeIdx];
             const title = escHtml(activeJalon.titre || activeJalon.title || '—');
-            const validation = escHtml(activeJalon.validation || activeJalon.critere || activeJalon.kpi || activeJalon.description || '');
-            const halfCol = 50 / total;
-            const donePercent = total > 1 ? (activeIdx / total * 100) : 0;
 
             const lagging = getJalonKpiByType(activeJalon, 'lagging');
             const leading = getJalonKpiByType(activeJalon, 'leading');
@@ -1271,7 +1265,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                 if (!Number.isFinite(val)) return '—';
                 const v = formatMetricValue(val);
                 const t = Number.isFinite(target) ? ` / ${formatMetricValue(target)}` : '';
-                const u = unit ? ` <span style="font-size:12px;color:rgba(235,235,245,0.45)">${escHtml(unit)}</span>` : '';
+                const u = unit ? ` <span class="da-metric-unit">${escHtml(unit)}</span>` : '';
                 return `${v}${t}${u}`;
             };
 
@@ -1280,64 +1274,54 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                 const isActive = idx === activeIdx;
                 const firstWord = escHtml(`J${idx + 1}`);
                 const check = isDone ? `<svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>` : '';
-                const dotStyle = isActive
-                    ? 'width:16px;height:16px;border-radius:50%;background:#EE4408;border:none;box-shadow:0 0 0 3px rgba(238,68,8,0.18);display:flex;align-items:center;justify-content:center;color:transparent;font-size:10px;line-height:1'
-                    : isDone
-                        ? 'width:16px;height:16px;border-radius:50%;background:#121214;border:1.5px solid rgba(255,255,255,0.22);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.6);font-size:10px;line-height:1'
-                        : 'width:16px;height:16px;border-radius:50%;background:#121214;border:1.5px solid rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;color:transparent;font-size:10px;line-height:1';
-                const labelColor = isDone ? 'rgba(255,253,246,0.50)' : isActive ? '#FFFDF6' : 'rgba(255,253,246,0.20)';
+                const state = isActive ? 'is-active' : isDone ? 'is-complete' : 'is-upcoming';
                 return `
-                    <div style="grid-column:${idx+1};grid-row:1;display:flex;justify-content:center;position:relative;z-index:1">
-                        <span style="${dotStyle}">${check}</span>
-                    </div>
-                    <div style="grid-column:${idx+1};grid-row:2;display:flex;justify-content:center">
-                        <span style="display:flex;justify-content:center;font-size:9px;font-weight:300;white-space:nowrap;letter-spacing:0.03em;color:${labelColor}">${firstWord}</span>
-                    </div>`;
+                    <span class="da-step ${state}">
+                        <span class="da-step-dot">${check}</span>
+                        <span class="da-step-label">${firstWord}</span>
+                    </span>`;
             }).join('');
 
             // Card 1 — Jalon actif (titre + dot roadmap)
             const card1 = `
-                <div style="${cardBase};display:flex;flex-direction:column;cursor:pointer" onclick="switchDashboardView('jalons')">
-                    <div style="font-size:11px;font-weight:300;color:rgba(255,253,246,0.4);letter-spacing:0.01em;margin-bottom:12px">Jalon actif · <span style="color:rgba(255,253,246,0.3)">${activeIdx + 1}/${total}</span></div>
-                    <div style="font-size:26px;font-weight:700;color:#FFFDF6;line-height:1.1;letter-spacing:-0.04em">${escHtml(title)}</div>
-                    <div style="margin-top:auto;padding-top:16px;display:grid;grid-template-columns:repeat(${total},1fr);grid-template-rows:auto auto;gap:6px 0;position:relative">
-                        <div style="position:absolute;top:24px;left:${Math.round(50/total)}%;right:${Math.round(50/total)}%;height:1.5px;background:rgba(255,253,246,0.1);z-index:0"></div>
+                <article class="da-card da-milestone-card" onclick="switchDashboardView('jalons')">
+                    <div class="da-card-title">Jalon actif · <span>${activeIdx + 1}/${total}</span></div>
+                    <div class="da-card-heading">${escHtml(title)}</div>
+                    <div class="da-stepper">
+                        <span class="da-stepper-line" aria-hidden="true"></span>
                         ${dots}
                     </div>
-                </div>`;
+                </article>`;
 
             // Card 2 — Résultat (lagging KPI)
-            const lastMeasureDays = latestResultMeta.days;
-            const lastMeasureColor = lastMeasureDays === null ? 'rgba(255,253,246,0.32)' : lastMeasureDays <= 7 ? 'rgba(255,253,246,0.32)' : lastMeasureDays <= 21 ? '#FB923C' : '#F87171';
-            const lastMeasureLine = lastMeasureText ? `<div style="font-size:11px;font-weight:300;color:${lastMeasureColor};margin-top:6px">${escHtml(lastMeasureText)}</div>` : '';
-            const kpiSubLabel = resultLabel ? `<div style="font-size:11px;font-weight:300;color:rgba(255,253,246,0.35);line-height:1.4;margin-bottom:10px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical">${escHtml(resultLabel)}</div>` : '';
+            const lastMeasureLine = lastMeasureText ? `<div class="da-metric-subtitle">${escHtml(lastMeasureText)}</div>` : '';
+            const kpiSubLabel = resultLabel ? `<div class="da-kpi-label">${escHtml(resultLabel)}</div>` : '';
             const card2 = `
-                <div style="${cardBase};display:flex;flex-direction:column">
-                    <div style="font-size:10px;font-weight:700;color:rgba(255,253,246,0.38);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px">Résultat</div>
+                <article class="da-card da-kpi-summary-card">
+                    <div class="da-card-title">Résultat</div>
                     ${kpiSubLabel}
-                    <div style="font-size:24px;font-weight:700;color:#FFFDF6;line-height:1;letter-spacing:-0.03em;font-variant-numeric:tabular-nums">${fmtKpi(resultValue, resultTarget, resultUnit)}</div>
+                    <div class="da-metric-medium">${fmtKpi(resultValue, resultTarget, resultUnit)}</div>
                     ${lastMeasureLine}
-                </div>`;
+                </article>`;
 
             // Card 3 — Effort (leading KPI)
             const latestEffortMeta = leading ? getVisionLatestMeasureMeta(leading) : { days: null };
             const effortMeasureText = latestEffortMeta.days === null ? '' : latestEffortMeta.days === 0 ? "Mesuré aujourd'hui" : `Mesuré il y a ${latestEffortMeta.days}j`;
-            const effortMeasureColor = latestEffortMeta.days === null ? 'rgba(255,253,246,0.32)' : latestEffortMeta.days <= 7 ? 'rgba(255,253,246,0.32)' : latestEffortMeta.days <= 21 ? '#FB923C' : '#F87171';
-            const effortMeasureLine = effortMeasureText ? `<div style="font-size:11px;font-weight:300;color:${effortMeasureColor};margin-top:6px">${escHtml(effortMeasureText)}</div>` : '';
+            const effortMeasureLine = effortMeasureText ? `<div class="da-metric-subtitle">${escHtml(effortMeasureText)}</div>` : '';
             const effortDiff = Number.isFinite(effortValue) && Number.isFinite(effortTarget) ? effortValue - effortTarget : null;
             const effortDiffSign = effortDiff !== null ? (effortDiff > 0 ? '+' : '') : '';
             const effortUnitShort = effortUnit ? effortUnit.split(/[\s\/]/)[0] : '';
-            const effortDiffLine = effortDiff !== null && Number.isFinite(effortTarget) ? `<div style="font-size:11px;font-weight:300;color:rgba(255,253,246,0.6);margin-top:6px">${effortDiffSign}${escHtml(formatMetricValue(effortDiff))}${effortUnitShort ? ' ' + escHtml(effortUnitShort) : ''} / ${escHtml(formatMetricValue(effortTarget))}${effortUnitShort ? ' ' + escHtml(effortUnitShort) : ''}</div>` : '';
-            const effortSubLabel = effortLabel ? `<div style="font-size:11px;font-weight:300;color:rgba(255,253,246,0.35);line-height:1.4;margin-bottom:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(effortLabel)}</div>` : '';
+            const effortDiffLine = effortDiff !== null && Number.isFinite(effortTarget) ? `<div class="da-metric-subtitle">${effortDiffSign}${escHtml(formatMetricValue(effortDiff))}${effortUnitShort ? ' ' + escHtml(effortUnitShort) : ''} / ${escHtml(formatMetricValue(effortTarget))}${effortUnitShort ? ' ' + escHtml(effortUnitShort) : ''}</div>` : '';
+            const effortSubLabel = effortLabel ? `<div class="da-kpi-label">${escHtml(effortLabel)}</div>` : '';
             const card3 = `
-                <div style="${cardBase};display:flex;flex-direction:column">
-                    <div style="font-size:10px;font-weight:700;color:rgba(255,253,246,0.38);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px">Effort</div>
+                <article class="da-card da-kpi-summary-card">
+                    <div class="da-card-title">Effort</div>
                     ${effortSubLabel}
-                    <div style="font-size:24px;font-weight:700;color:#FFFDF6;line-height:1;letter-spacing:-0.03em;font-variant-numeric:tabular-nums">${fmtKpi(effortValue, effortTarget, effortUnitShort)}</div>
-                    ${!Number.isFinite(effortValue) ? `<div style="font-size:11px;font-weight:300;color:rgba(255,253,246,0.28);margin-top:8px;line-height:1.4">KPI effort non défini sur ce jalon</div>` : ''}
+                    <div class="da-metric-medium">${fmtKpi(effortValue, effortTarget, effortUnitShort)}</div>
+                    ${!Number.isFinite(effortValue) ? `<div class="da-metric-subtitle">KPI effort non défini sur ce jalon</div>` : ''}
                     ${effortMeasureLine}
                     ${effortDiffLine}
-                </div>`;
+                </article>`;
 
             return `${card1}${card2}${card3}`;
         }
@@ -1345,51 +1329,6 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
         // ──────────────────────────────────────────────────────────
         // VISION VIEW — Résultat + Effort standalone card
         // ──────────────────────────────────────────────────────────
-        function buildVisionResultatEffortCard(obj, i) {
-            const { activeJalon } = getVisionJalonContext(obj, i);
-            if (!activeJalon) return `<div style="background:#1c1c22;border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:18px 20px;display:flex;align-items:center;justify-content:center;min-width:0"><span style="font-size:11px;color:rgba(255,253,246,0.3)">Aucun jalon actif</span></div>`;
-
-            const lagging = getJalonKpiByType(activeJalon, 'lagging');
-            const leading = getJalonKpiByType(activeJalon, 'leading');
-
-            // Résultat
-            const resultValue = lagging ? (getKpiCurrentValue(lagging) ?? null) : null;
-            const resultTarget = lagging ? getKpiTargetValue(lagging) : null;
-            const resultUnit = lagging ? (lagging.unite || lagging.unit || '') : '';
-            const resultLabel = lagging ? (lagging.titre || lagging.label || 'Résultat') : 'Résultat';
-            const resultText = Number.isFinite(resultValue) && Number.isFinite(resultTarget)
-                ? `${formatMetricValue(resultValue)} / ${formatMetricValue(resultTarget)}${resultUnit ? ' ' + resultUnit : ''}`
-                : (Number.isFinite(resultValue) ? `${formatMetricValue(resultValue)}${resultUnit ? ' ' + resultUnit : ''}` : '—');
-
-            // Last measure date
-            const latestMeta = lagging ? getVisionLatestMeasureMeta(lagging) : { days: null };
-            const lastMeasureText = latestMeta.days === null ? ''
-                : latestMeta.days === 0 ? "Mesuré aujourd'hui"
-                : `Mesuré il y a ${latestMeta.days}j`;
-
-            // Effort
-            const effortValue = leading ? getKpiPeriodValue(leading, 'leading', activeJalon) : null;
-            const effortTarget = leading ? getKpiTargetValue(leading) : null;
-            const effortUnit = leading ? (leading.unite || leading.unit || '') : '';
-            const effortLabel = leading ? (leading.titre || leading.label || 'Effort') : 'Effort';
-            const effortText = Number.isFinite(effortValue) && Number.isFinite(effortTarget)
-                ? `${formatMetricValue(effortValue)} / ${formatMetricValue(effortTarget)}${effortUnit ? ' ' + effortUnit : ''}`
-                : (Number.isFinite(effortValue) ? `${formatMetricValue(effortValue)}${effortUnit ? ' ' + effortUnit : ''}` : '—');
-
-            return `
-                <div style="background:#1c1c22;border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:18px 20px;display:flex;flex-direction:column;min-width:0;box-shadow:0 4px 20px rgba(0,0,0,0.2)">
-                    <div style="padding-bottom:14px">
-                        <div style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,253,246,0.38);margin-bottom:8px">${escHtml(resultLabel)}</div>
-                        <div style="font-size:22px;font-weight:720;color:#FFFDF6;line-height:1;letter-spacing:-0.01em">${escHtml(resultText)}</div>
-                        ${lastMeasureText ? `<div style="display:flex;align-items:center;gap:5px;margin-top:7px"><span style="width:6px;height:6px;border-radius:50%;background:#EE4408;flex-shrink:0"></span><span style="font-size:11px;color:rgba(255,253,246,0.45)">${escHtml(lastMeasureText)}</span></div>` : ''}
-                    </div>
-                    <div style="height:1px;background:rgba(255,253,246,0.07)"></div>
-                    <div style="padding-top:14px">
-                        <div style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,253,246,0.38);margin-bottom:8px">${escHtml(effortLabel)}</div>
-                        <div style="font-size:22px;font-weight:720;color:#FFFDF6;line-height:1;letter-spacing:-0.01em">${escHtml(effortText)}</div>
-                    </div>
-                </div>`;
-        }
 
         // ──────────────────────────────────────────────────────────
         // VISION VIEW — Calendar + Résultat/Effort card
@@ -1497,124 +1436,6 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             });
         }
 
-        function buildVisionCalendarCard(obj, i) {
-            const { jalons, activeIdx, activeJalon } = getVisionJalonContext(obj, i);
-
-            const laggingKpi = activeJalon ? getJalonKpiByType(activeJalon, 'lagging') : null;
-            const leadingKpi = activeJalon ? getJalonKpiByType(activeJalon, 'leading') : null;
-
-            const resultValue = laggingKpi ? (getKpiCurrentValue(laggingKpi) ?? 0) : 0;
-            const resultTarget = laggingKpi ? (getKpiTargetValue(laggingKpi) ?? 0) : 0;
-            const resultUnit = laggingKpi ? (laggingKpi.unite || laggingKpi.unit || '') : '';
-            const resultValueLabel = formatMetricValue(resultValue);
-            const resultTargetLabel = Number.isFinite(resultTarget) && resultTarget > 0 ? formatMetricValue(resultTarget) : '—';
-            const resultTargetText = `${resultTargetLabel}${resultUnit ? ' ' + resultUnit : ''}`;
-
-            const effortTarget = leadingKpi ? (getKpiTargetValue(leadingKpi) ?? 0) : 0;
-            const effortUnit = leadingKpi ? (leadingKpi.unite || leadingKpi.unit || '') : '';
-            // Compute effort since last result (mode-aware: absolute=last snapshot, incremental=sum)
-            const effortValue = getKpiPeriodValue(leadingKpi, 'leading', activeJalon);
-            const effortValueLabel = formatMetricValue(effortValue);
-            const effortTargetLabel = Number.isFinite(effortTarget) && effortTarget > 0 ? formatMetricValue(effortTarget) : '—';
-            const effortTargetText = `${effortTargetLabel}${effortUnit ? ' ' + effortUnit : ''}`;
-            const effortUnitShort = effortUnit ? effortUnit.split(/[\s\/]/)[0] : '';
-            const effortOvershoot = (Number.isFinite(effortValue) && effortValue > 0 && Number.isFinite(effortTarget) && effortTarget > 0) ? Math.round((effortValue - effortTarget) * 10) / 10 : null;
-
-            let daysElapsed = 0;
-            if (laggingKpi && Array.isArray(laggingKpi.measures) && laggingKpi.measures.length > 0) {
-                const sorted = [...laggingKpi.measures].sort((a,b) => parseKpiMeasureTime(a) - parseKpiMeasureTime(b));
-                const last = sorted[sorted.length - 1];
-                const today = new Date(); today.setHours(0,0,0,0);
-                const lastD = new Date(parseKpiMeasureTime(last)); lastD.setHours(0,0,0,0);
-                if (!isNaN(lastD)) daysElapsed = Math.max(0, Math.floor((today - lastD) / 86400000));
-            }
-
-            const cells = generateVisionCalCells(laggingKpi, leadingKpi, daysElapsed);
-            const calRowH = 24, calGap = 3, calLabelH = 14;
-
-            const elapsedStartIdx = cells.reduce((last, c, idx) => c.isResultDay ? idx : last, -1);
-            const elapsedEndIdx = cells.findIndex(c => c.isToday);
-            const elapsedStart = elapsedStartIdx >= 0 ? elapsedStartIdx + 1 : Math.max(0, cells.findIndex(c => c.inCurrentPeriod));
-            const elapsedEnd = elapsedEndIdx >= 0 ? elapsedEndIdx : elapsedStart;
-
-            let bandsHtml = '';
-            if (elapsedStart >= 0 && elapsedEnd >= elapsedStart) {
-                const sw = Math.floor(elapsedStart / 7), ew = Math.floor(elapsedEnd / 7);
-                for (let w = sw; w <= ew; w++) {
-                    const sc = w === sw ? elapsedStart % 7 : 0;
-                    const ec = w === ew ? elapsedEnd % 7 : 6;
-                    const n = ec - sc + 1;
-                    const top = calLabelH + calGap + w * (calRowH + calGap) + Math.round((calRowH - 22) / 2);
-                    const cellW = `((100% - ${calGap*6}px) / 7)`;
-                    const left = sc > 0 ? `calc(${sc} * (${cellW} + ${calGap}px) - 1px)` : `calc(-1px)`;
-                    const width = `calc(${n} * ${cellW} + ${(n-1)*calGap}px + 2px)`;
-                    bandsHtml += `<span class="vision-cal-elapsed-band" style="position:absolute;height:22px;border-radius:999px;background:rgba(184,120,32,0.07);border:1px solid rgba(184,120,32,0.38);pointer-events:none;z-index:0;left:${left};width:${width};top:${top}px"></span>`;
-                }
-            }
-
-            const dayLabelStyle = 'font-size:10.5px;line-height:14px;height:14px;font-weight:650;color:rgba(255,253,246,0.30);text-align:center';
-            const dayLabels = ['L','M','M','J','V','S','D'].map(d => `<span class="vision-cal-day-label" style="${dayLabelStyle}">${d}</span>`).join('');
-
-            const cellsHtml = cells.map(cell => {
-                const dotCls = `vision-cal-dot${cell.isResultDay ? ' result' : cell.active ? ' active' : ''}${cell.isToday ? ' today' : ''}`;
-                const cellCls = `vision-cal-cell${cell.active ? ' has-data' : ''}`;
-                const cellStyle = 'position:relative;z-index:1;width:100%;height:32px;border-radius:11px;display:flex;align-items:center;justify-content:center;justify-self:center;flex-direction:column;gap:2px';
-                const dotStyle = cell.isResultDay
-                    ? `width:10px;height:10px;border-radius:50%;background:rgba(238,68,8,0.86);box-shadow:${cell.isToday ? '0 0 0 2px #111111, 0 0 0 3.5px rgba(255,253,246,0.50)' : '0 0 0 2px rgba(238,68,8,0.10)'};z-index:2`
-                    : cell.active
-                        ? `width:8px;height:8px;border-radius:50%;background:rgba(255,253,246,0.58);${cell.isToday ? 'box-shadow:0 0 0 2px #111111, 0 0 0 3.5px rgba(255,253,246,0.50)' : ''}`
-                        : `width:8px;height:8px;border-radius:50%;background:rgba(255,253,246,0.08);${cell.isToday ? 'box-shadow:0 0 0 2px #111111, 0 0 0 3.5px rgba(255,253,246,0.50)' : ''}`;
-                const data = cell.active ? [
-                    `data-type="${cell.type}"`,
-                    `data-date="${escHtml(cell.date)}"`,
-                    `data-effort-value="${cell.effortValue ?? ''}"`,
-                    `data-effort-prev="${cell.effortPrev ?? ''}"`,
-                    `data-effort-unit="${escHtml(cell.effortUnit || '')}"`,
-                    `data-effort-label="${escHtml(cell.effortLabel || '')}"`,
-                    `data-result-value="${cell.resultValue ?? ''}"`,
-                    `data-result-prev="${cell.resultPrevValue ?? ''}"`,
-                    `data-result-unit="${escHtml(cell.resultUnit || '')}"`,
-                    `data-note="${escHtml(cell.userNote || '')}"`,
-                    `data-time="${escHtml(cell.timeOfDay || '')}"`,
-                    `data-duration="${escHtml(cell.duration || '')}"`,
-                ].join(' ') : `data-date="${escHtml(cell.date)}" data-note="${escHtml(cell.note)}"`;
-                return `<span class="${cellCls}" style="${cellStyle}" ${data}><span class="${dotCls}" style="${dotStyle}"></span></span>`;
-            }).join('');
-
-            return `
-                <section class="vision-quick-card vision-calendar-card"
-                    style="background:#1c1c22;border:1px solid rgba(255,255,255,0.08);border-radius:20px;display:grid;grid-template-columns:minmax(220px,0.46fr) minmax(250px,0.8fr);column-gap:18px;align-items:center;justify-content:stretch;padding:16px 18px 16px 28px;overflow:visible;position:relative;z-index:2;width:100%;max-width:none;justify-self:stretch;min-height:86px;min-width:0;box-shadow:0 4px 20px rgba(0,0,0,0.2)"
-                    aria-label="Résultat et effort">
-                    <div class="vision-stats-col" style="display:flex;flex-direction:column;gap:7px;min-width:0">
-                        <div class="vision-stat-value-row" style="display:flex;align-items:baseline;gap:6px;min-width:0;flex-wrap:nowrap;white-space:nowrap">
-                            <span class="vision-stat-big" style="font-size:31px;font-weight:720;color:#FFFDF6;letter-spacing:-0.02em;line-height:1">${escHtml(resultValueLabel)}</span>
-                            <span class="vision-stat-target" style="font-size:13.5px;color:rgba(255,253,246,0.54);font-weight:500">/ ${escHtml(resultTargetText)}</span>
-                        </div>
-                        <div class="vision-days-elapsed" style="display:flex;align-items:center;gap:5px;flex-wrap:nowrap">
-                            <span class="vision-days-dot" style="width:6px;height:6px;border-radius:50%;background:#EE4408;flex-shrink:0"></span>
-                            <span class="vision-days-label" style="font-family:&quot;JetBrains Mono&quot;,ui-monospace,monospace;font-size:10.5px;color:#B87820;font-weight:600;letter-spacing:0.02em">${daysElapsed > 0 ? `Aucune progression depuis ${daysElapsed}j` : 'Mis à jour aujourd\'hui'}</span>
-                        </div>
-                        <div class="vision-effort-sep" style="padding-top:10px;border-top:1px solid rgba(255,253,246,0.08);display:flex;flex-direction:column;gap:3px;min-width:0">
-                            <span style="font-size:10px;font-weight:600;color:rgba(255,253,246,0.38)">Effort</span>
-                            <div class="vision-stat-value-row" style="display:flex;align-items:baseline;gap:6px;min-width:0;flex-wrap:nowrap;white-space:nowrap">
-                                <span class="vision-stat-big effort" style="font-size:25px;font-weight:710;color:#FFFDF6;letter-spacing:-0.02em;line-height:1">${escHtml(effortValueLabel)}${effortUnitShort ? `<span style="font-size:14px;font-weight:500;color:rgba(255,253,246,0.7)">${escHtml(effortUnitShort)}</span>` : ''}</span>
-                                <span class="vision-stat-target effort" style="font-size:13px;color:rgba(255,253,246,0.52);font-weight:500">/ ${escHtml(effortTargetLabel)}${effortUnitShort ? ' ' + escHtml(effortUnitShort) : ''} max</span>
-                            </div>
-                            ${effortOvershoot !== null && effortOvershoot > 0 ? `<span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:600;color:rgba(255,210,60,0.9);letter-spacing:0.02em;margin-top:1px">Seuil dépassé +${effortOvershoot}${effortUnitShort}</span>` : ''}
-                        </div>
-                    </div>
-                    <div class="vision-cal-panel" id="vcal-panel-${i}" style="position:relative;display:flex;flex-direction:column;align-items:center;justify-self:center;align-self:center;z-index:3;width:100%;flex-shrink:0;overflow:visible">
-                        <div class="vision-cal-grid" id="vcal-grid-${i}" style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));grid-template-rows:14px repeat(4,24px);row-gap:3px;column-gap:3px;align-items:center;position:relative;justify-content:center;width:min(100%,360px);min-width:200px;margin-left:auto;margin-right:auto" aria-label="Calendrier d'effort sur 28 jours">
-                            ${bandsHtml}
-                            ${dayLabels}
-                            ${cellsHtml}
-                        </div>
-                        ${(!(leadingKpi && Array.isArray(leadingKpi.measures) && leadingKpi.measures.length > 0) && !(laggingKpi && Array.isArray(laggingKpi.measures) && laggingKpi.measures.length > 0)) ? `<p style="margin:8px 0 0;font-size:10.5px;color:rgba(255,253,246,0.28);text-align:center;line-height:1.4">Enregistre un effort ou un résultat<br>pour le voir apparaître ici.</p>` : ''}
-                        <div class="vision-cal-popover" id="vcal-popover-${i}"></div>
-                    </div>
-                </section>`;
-        }
-
         function initVisionCalendarInteractions(i) {
             const grid = document.getElementById(`vcal-grid-${i}`);
             const popover = document.getElementById(`vcal-popover-${i}`);
@@ -1659,7 +1480,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                         const label = `${sign}${formatMetricValue(Math.abs(delta))}${unit ? ' ' + escHtml(unit) : ''}`;
                         const color = isResultTone ? 'rgba(238,68,8,0.92)' : 'rgba(255,253,246,0.88)';
                         const background = isResultTone ? 'rgba(238,68,8,0.12)' : 'rgba(255,253,246,0.09)';
-                        return `<span class="vision-cal-popover-delta" style="color:${color};background:${background}">${label}</span>`;
+                        return `<span class="vision-cal-popover-delta">${label}</span>`;
                     };
 
                     let blockInner = '';
@@ -1669,10 +1490,10 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                         const ru = cell.dataset.resultUnit;
                         const deltaBadge = buildDeltaBadge(rp, rv, ru, true);
                         blockInner = `
-                            <div class="vision-cal-popover-block result-block" style="${blockPositionStyle}">
-                                <div class="vision-cal-popover-block-sub" style="color:rgba(238,68,8,0.65);font-size:9px">${escHtml(ru) || 'Résultat'}${timeOfDay ? ' · ' + timeOfDay : ''}</div>
+                            <div class="vision-cal-popover-block result-block">
+                                <div class="vision-cal-popover-block-sub dbx-inline-101">${escHtml(ru) || 'Résultat'}${timeOfDay ? ' · ' + timeOfDay : ''}</div>
                                 <div class="vision-cal-popover-value-line">
-                                    <div class="vision-cal-popover-block-title" style="font-size:11px;font-weight:600">${rv || '—'}</div>
+                                    <div class="vision-cal-popover-block-title dbx-inline-102">${rv || '—'}</div>
                                     ${deltaBadge}
                                 </div>
                             </div>`;
@@ -1683,10 +1504,10 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                         const el = cell.dataset.effortLabel;
                         const deltaBadge = buildDeltaBadge(ep, ev, eu, false);
                         blockInner = `
-                            <div class="vision-cal-popover-block" style="${blockPositionStyle}">
-                                <div class="vision-cal-popover-block-sub" style="color:rgba(255,253,246,0.35);font-size:9px">${escHtml(el) || type}${timeOfDay ? ' · ' + timeOfDay : ''}</div>
+                            <div class="vision-cal-popover-block">
+                                <div class="vision-cal-popover-block-sub dbx-inline-103">${escHtml(el) || type}${timeOfDay ? ' · ' + timeOfDay : ''}</div>
                                 <div class="vision-cal-popover-value-line">
-                                    <div class="vision-cal-popover-block-title" style="font-size:11px;font-weight:600">${ev || '—'}</div>
+                                    <div class="vision-cal-popover-block-title dbx-inline-102">${ev || '—'}</div>
                                     ${deltaBadge}
                                 </div>
                             </div>`;
@@ -1701,9 +1522,9 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                         </div>
                         <div class="vision-cal-popover-top">
                             <div class="vision-cal-popover-hours">${hoursHtml}</div>
-                            <div class="vision-cal-popover-schedule" style="${schedStyle}">${blockInner}</div>
+                            <div class="vision-cal-popover-schedule">${blockInner}</div>
                         </div>
-                        ${note ? `<div class="vision-cal-popover-note" style="border-top:1px solid rgba(255,253,246,0.08);padding-top:8px;margin-top:6px;font-size:11px;line-height:1.45;color:rgba(255,253,246,0.55)">${escHtml(note)}</div>` : ''}`;
+                        ${note ? `<div class="vision-cal-popover-note dbx-inline-104">${escHtml(note)}</div>` : ''}`;
                     popover.classList.add('visible');
                 });
             });
@@ -1715,7 +1536,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                         <div class="vision-cal-popover-hd">
                             <span class="vision-cal-popover-date">${cell.dataset.date || ''}</span>
                         </div>
-                        <div style="font-size:11.5px;color:rgba(255,253,246,0.40);line-height:1.45">${escHtml(note)}</div>`;
+                        <div class="dbx-inline-105">${escHtml(note)}</div>`;
                     popover.classList.add('visible');
                 });
             });
@@ -1927,7 +1748,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                         <span>${label}</span>
                         <strong>${groupTasks.length}</strong>
                     </button>
-                    <div class="task-list-dropzone ${status}" style="display:${collapsed ? 'none' : ''};">
+                    <div class="task-list-dropzone ${status}">
                         ${groupTasks.map((t, ti) => renderTaskItem(t, i, ti)).join('')}
                         ${addRow}
                     </div>
@@ -1944,7 +1765,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                     <span>Terminées</span>
                     <strong>${done.length}</strong>
                 </button>
-                <div class="done-group task-list-dropzone done" style="display:${collapsed ? 'none' : 'block'};">
+                <div class="done-group task-list-dropzone done">
                     ${done.length
                         ? done.map((t, ti) => renderTaskItem(t, i, ti)).join('')
                         : ''}
@@ -1979,7 +1800,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                         <span class="add-task-ghost-icon" aria-hidden="true">+</span>
                         <span class="add-task-ghost-text">Ajouter une action...</span>
                     </button>
-                    <div class="add-task-editor" id="addTaskEditor-${i}-${status}" style="display:none;" onclick="event.stopPropagation()">
+                    <div class="add-task-editor dbx-inline-006" id="addTaskEditor-${i}-${status}" onclick="event.stopPropagation()">
                         <span class="add-task-ghost-icon" aria-hidden="true">+</span>
                         <input type="text" id="${inputId}"
                             placeholder="Ajouter une action..."
@@ -2275,7 +2096,10 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             if (!row) return;
             const rect = row.getBoundingClientRect();
             const ghost = row.cloneNode(true);
-            ghost.style.cssText = `position:fixed;left:${rect.left}px;right:${window.innerWidth - rect.right}px;top:${rect.top}px;z-index:9999;opacity:0.88;pointer-events:none;box-shadow:0 4px 20px rgba(0,0,0,0.55);border-radius:4px;`;
+            ghost.classList.add('touch-drag-ghost', 'touch-drag-ghost--task');
+            ghost.style.left = `${rect.left}px`;
+            ghost.style.right = `${window.innerWidth - rect.right}px`;
+            ghost.style.top = `${rect.top}px`;
             document.body.appendChild(ghost);
             _touchTaskGhost = ghost;
             row.style.opacity = '0.3';
@@ -2334,7 +2158,10 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             if (!item) return;
             const rect = item.getBoundingClientRect();
             const ghost = item.cloneNode(true);
-            ghost.style.cssText = `position:fixed;left:${rect.left}px;right:${window.innerWidth - rect.right}px;top:${rect.top}px;z-index:9999;opacity:0.88;pointer-events:none;box-shadow:0 4px 16px rgba(0,0,0,0.5);border-radius:4px;`;
+            ghost.classList.add('touch-drag-ghost', 'touch-drag-ghost--subtask');
+            ghost.style.left = `${rect.left}px`;
+            ghost.style.right = `${window.innerWidth - rect.right}px`;
+            ghost.style.top = `${rect.top}px`;
             document.body.appendChild(ghost);
             _touchSubGhost = ghost;
             item.style.opacity = '0.3';
@@ -3001,7 +2828,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                     ondragover="subtaskItemDragOver(event, ${i}, ${task.id}, ${s.id})"
                     ondragleave="subtaskItemDragLeave(event)"
                     ondrop="subtaskItemDrop(event, ${i}, ${task.id}, ${s.id})">
-                    <span class="subtask-drag-handle" style="cursor:grab;opacity:0.35;font-size:11px;padding:0 4px 0 0;"
+                    <span class="subtask-drag-handle dbx-inline-106"
                         ontouchstart="subtaskGripTouchStart(event, ${i}, ${task.id}, ${s.id})">⠿</span>
                     <button class="subtask-icon-btn"
                         onclick="toggleSubtask(${i}, ${task.id}, ${s.id}); renderTaskPanel();"
@@ -3026,7 +2853,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                             enterkeyhint="go"
                             type="text"
                             onblur="addSubtaskFromPanel(${i}, ${task.id});">
-                        <button type="submit" style="position:absolute;opacity:0;pointer-events:none;width:0;height:0;"></button>
+                        <button type="submit" class="dbx-inline-107"></button>
                     </form>
                 </div>
             `;
@@ -3382,13 +3209,13 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             const taskPct = totalTasks > 0 ? Math.round((doneTasks / totalTasks) * 100) : 0;
             const taskBarColor = detailSt === 'done' ? '#0A2A53' : '#404025';
             const taskBlock = totalTasks > 0 ? `
-                <div style="margin-bottom:24px">
-                    <div style="font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:#929292;margin-bottom:10px">Avancement des tâches</div>
-                    <div style="display:flex;align-items:center;gap:18px">
-                        <span style="font-size:18px;font-weight:700;color:#FFFDF6;letter-spacing:-0.02em">${doneTasks}<span style="font-size:12px;font-weight:400;color:#929292">/${totalTasks}</span></span>
-                        <div style="flex:1">
-                            <div style="height:4px;background:rgba(255,253,246,0.06);border-radius:3px;overflow:hidden"><div style="height:100%;width:${taskPct}%;background:${taskBarColor};border-radius:3px"></div></div>
-                            <div style="font-size:11px;color:#929292;margin-top:4px">${taskPct}% complétées</div>
+                <div class="dbx-inline-002">
+                    <div class="dbx-inline-108">Avancement des tâches</div>
+                    <div class="dbx-inline-109">
+                        <span class="dbx-inline-110">${doneTasks}<span class="dbx-inline-111">/${totalTasks}</span></span>
+                        <div class="dbx-inline-018">
+                            <div class="dbx-inline-112"><div></div></div>
+                            <div class="dbx-inline-113">${taskPct}% complétées</div>
                         </div>
                     </div>
                 </div>` : '';
@@ -3400,31 +3227,31 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                 ? 'background:rgba(10,42,83,0.5);color:#7aa8d8;border:1px solid rgba(10,42,83,0.7)'
                 : 'background:#0A2A53;color:#FFFDF6;border:none';
             const kpiHtml = renderJalonKpiCardsV2(selectedJalon, i, detailSt);
-            return `<div id="jalons-detail-${i}" style="padding:4px 0 0">
-                        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:10px">
-                            <div style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:#929292;flex-wrap:wrap">
+            return `<div id="jalons-detail-${i}" class="dbx-inline-114">
+                        <div class="dbx-inline-115">
+                            <div class="dbx-inline-116">
                                 <span>Jalon ${num}/${total}</span>
                                 <span aria-hidden="true">·</span>
                                 <span>${monthLabel}</span>
                                 <span aria-hidden="true">·</span>
-                                <span style="display:inline-flex;align-items:center;gap:4px;color:${stConf.color}"><span style="width:5px;height:5px;border-radius:50%;background:${stConf.dot};display:inline-block;flex-shrink:0"></span>${stConf.label}</span>
+                                <span><span></span>${stConf.label}</span>
                             </div>
-                            <button onclick="openJalonEditModal(${i},'${escHtml(selectedJalon?.id||'')}')" style="display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:500;color:#929292;background:none;border:none;cursor:pointer;font-family:inherit;padding:4px 0;flex-shrink:0" title="Modifier ce jalon">
+                            <button onclick="openJalonEditModal(${i},'${escHtml(selectedJalon?.id||'')}')" title="Modifier ce jalon" class="dbx-inline-117">
                                 <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                 Modifier
                             </button>
                         </div>
-                        <h2 data-jalon-title onclick="startInlineJalonTitleEdit(${i},'${escHtml(selectedJalon?.id||'')}')" style="font-family:inherit;font-size:26px;font-weight:700;color:#FFFDF6;letter-spacing:-0.02em;line-height:1.15;margin-bottom:8px;cursor:text" title="Cliquer pour modifier">${title}</h2>
-                        <div style="font-size:13.5px;color:#929292;margin-bottom:24px">Échéance · ${date || '—'}</div>
-                        <div style="height:1px;background:rgba(255,253,246,0.07);margin:0 0 22px"></div>
-                        <div style="font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:#929292;margin-bottom:10px">Critère de validation</div>
-                        <p data-jalon-critere onclick="startInlineJalonCritereEdit(${i},'${escHtml(selectedJalon?.id||'')}')" style="font-size:14.5px;color:#FFFDF6;line-height:1.55;margin-bottom:28px;font-weight:400;max-width:640px;cursor:text" title="Cliquer pour modifier">${validationText || '<span style="color:#929292">—</span>'}</p>
-                        <div style="font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:#929292;margin-bottom:10px">KPI de jalon</div>
+                        <h2 data-jalon-title onclick="startInlineJalonTitleEdit(${i},'${escHtml(selectedJalon?.id||'')}')" title="Cliquer pour modifier" class="dbx-inline-118">${title}</h2>
+                        <div class="dbx-inline-119">Échéance · ${date || '—'}</div>
+                        <div class="dbx-inline-120"></div>
+                        <div class="dbx-inline-108">Critère de validation</div>
+                        <p data-jalon-critere onclick="startInlineJalonCritereEdit(${i},'${escHtml(selectedJalon?.id||'')}')" title="Cliquer pour modifier" class="dbx-inline-121">${validationText || '<span class="dbx-inline-122">—</span>'}</p>
+                        <div class="dbx-inline-108">KPI de jalon</div>
                         ${kpiHtml}
                         ${taskBlock}
-                        <div style="display:flex;gap:10px;align-items:center;padding-top:18px;border-top:1px solid rgba(255,253,246,0.07)">
-                            <button onclick="${validateOnclick}" style="${validateStyle};display:inline-flex;align-items:center;gap:7px;padding:10px 18px;border-radius:8px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit">${validateLabel}</button>
-                            <button onclick="toggleJalonSecondaryMenu(event,${i},'${escHtml(selectedJalon?.id||'')}')" style="margin-left:auto;display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;background:transparent;color:#929292;border:1px solid rgba(255,253,246,0.1);cursor:pointer;font-family:inherit" title="Plus d'actions">
+                        <div class="dbx-inline-123">
+                            <button onclick="${validateOnclick}">${validateLabel}</button>
+                            <button onclick="toggleJalonSecondaryMenu(event,${i},'${escHtml(selectedJalon?.id||'')}')" title="Plus d'actions" class="dbx-inline-124">
                                 <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/><circle cx="5" cy="12" r="1.8"/></svg>
                             </button>
                         </div>
@@ -3435,9 +3262,9 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             const jalons = getSortedProjectJalons(obj);
 
             if (jalons.length === 0) {
-                return `<div style="padding:32px 0;text-align:center">
-                    <p style="font-size:13px;color:#929292;margin-bottom:16px">Aucun jalon planifié pour ce projet.</p>
-                    <a href="#" onclick="openJalonsForProject(${i});return false" style="font-size:12px;color:rgba(255,253,246,0.25);text-decoration:none;border-bottom:1px dashed rgba(255,253,246,0.12);padding-bottom:2px">+ Planifier les jalons de ce projet</a>
+                return `<div class="dbx-inline-125">
+                    <p class="dbx-inline-126">Aucun jalon planifié pour ce projet.</p>
+                    <a href="#" onclick="openJalonsForProject(${i});return false" class="dbx-inline-127">+ Planifier les jalons de ce projet</a>
                 </div>`;
             }
 
@@ -3480,35 +3307,35 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
 
                 railItems += `
                 <div data-jid="${escHtml(jalon.id || '')}" onclick="selectJalon(${i}, '${escHtml(jalon.id || '')}')"
-                    style="display:grid;grid-template-columns:56px 28px 1fr;gap:12px;cursor:pointer;padding-bottom:24px;position:relative;align-items:start;user-select:none">
-                    <div style="padding-top:1px;text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:2px">
-                        <span style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:${st === 'upcoming' ? '#666' : sc.dateColor}">${monthShort}</span>
+                    class="dbx-inline-128">
+                    <div class="dbx-inline-129">
+                        <span>${monthShort}</span>
                     </div>
-                    <div style="position:relative;width:28px;display:flex;justify-content:center;align-items:flex-start;padding-top:1px">
-                        ${!isLast ? `<div style="position:absolute;top:23px;bottom:-3px;left:50%;width:1.5px;background:${sc.line};transform:translateX(-50%)"></div>` : ''}
-                        <div style="width:22px;height:22px;border-radius:50%;background:${sc.dot};display:flex;align-items:center;justify-content:center;border:${dotBorder};box-shadow:${dotShadow};color:${sc.inner};position:relative;z-index:1;flex-shrink:0">${checkSvg}</div>
+                    <div class="dbx-inline-130">
+                        ${!isLast ? `<div></div>` : ''}
+                        <div>${checkSvg}</div>
                     </div>
-                    <div data-jbody style="padding:1px 8px 4px 4px;border-radius:6px;background:${isSelected ? 'rgba(255,253,246,0.04)' : 'transparent'};margin-left:-4px;margin-right:-8px">
-                        <div data-jtitle style="font-size:13px;font-weight:${isSelected ? 600 : 500};color:${st === 'upcoming' ? '#929292' : '#FFFDF6'};line-height:1.3;letter-spacing:-0.005em">${title}</div>
+                    <div data-jbody>
+                        <div data-jtitle>${title}</div>
                     </div>
                 </div>`;
             });
 
             return `
             <div>
-                <div style="margin-bottom:28px">
-                    <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.16em;color:#929292;margin-bottom:8px">Jalons</div>
-                    <h2 style="font-family:inherit;font-size:22px;font-weight:700;color:#FFFDF6;letter-spacing:-0.02em;line-height:1.2;margin-bottom:4px">Pilotage des jalons</h2>
+                <div class="dbx-inline-131">
+                    <div class="dbx-inline-132">Jalons</div>
+                    <h2 class="dbx-inline-133">Pilotage des jalons</h2>
                             </div>
-                <div style="display:grid;grid-template-columns:280px 1fr;gap:32px;align-items:start">
+                <div class="dbx-inline-134">
 
                     <!-- RAIL (plain sticky, no card) -->
-                    <div style="position:sticky;top:84px;padding-top:4px">
-                        <div style="font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:#929292;margin-bottom:22px;padding-bottom:12px;border-bottom:1px solid rgba(255,253,246,0.07)">
+                    <div class="dbx-inline-135">
+                        <div class="dbx-inline-136">
                             Timeline
                         </div>
                         ${railItems}
-                        <button onclick="openJalonsForProject(${i})" style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#929292;background:none;border:none;cursor:pointer;font-family:inherit;padding:8px 4px;border-radius:6px;padding-left:86px">
+                        <button onclick="openJalonsForProject(${i})" class="dbx-inline-137">
                             + Ajouter un jalon
                         </button>
                     </div>
@@ -3766,9 +3593,9 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             let html = '';
             for (let i = 0; i <= JALON_KPI_TL_TOTAL; i++) {
                 html += `
-                    <div style="position:absolute;top:${i * JALON_KPI_TL_HOUR_HEIGHT}px;left:0;right:0;display:flex;align-items:flex-start;pointer-events:none">
-                        <span style="font-size:9.5px;color:rgba(255,253,246,0.40);font-family:&quot;JetBrains Mono&quot;,ui-monospace,monospace;width:42px;text-align:right;padding-right:8px;line-height:1;transform:translateY(-6px);flex-shrink:0">${String(JALON_KPI_TL_START + i).padStart(2, '0')}:00</span>
-                        <div style="flex:1;border-top:1px solid rgba(255,253,246,0.07)"></div>
+                    <div>
+                        <span class="dbx-inline-138">${String(JALON_KPI_TL_START + i).padStart(2, '0')}:00</span>
+                        <div class="dbx-inline-139"></div>
                     </div>`;
             }
             target.innerHTML = html;
@@ -4077,7 +3904,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                                 ? `Cible : <strong>${escHtml(String(targetLabel))}${unite ? escHtml(unite) : ''} · ${percent}%</strong>`
                                 : `<span class="kpi-progress-copy"><strong>${percent}%</strong> atteint</span>`}</span>
                         </div>
-                        <div class="kpi-progress-bar"><div class="kpi-progress-fill" style="width:${Math.min(percent,100)}%"></div></div>
+                        <div class="kpi-progress-bar"><div class="kpi-progress-fill"></div></div>
                    </div>`
                 : '';
 
@@ -4131,7 +3958,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             const lx = xs[xs.length - 1].toFixed(1);
             const ly = ys[ys.length - 1].toFixed(1);
             const gid = 'spk' + accent.replace('#','') + history.length;
-            return `<svg width="${sW}" height="${sH}" viewBox="0 0 ${sW} ${sH}" style="display:block">
+            return `<svg width="${sW}" height="${sH}" viewBox="0 0 ${sW} ${sH}" class="dbx-inline-140">
                 <defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${accent}" stop-opacity="0.22"/><stop offset="100%" stop-color="${accent}" stop-opacity="0"/></linearGradient></defs>
                 <path d="${area}" fill="url(#${gid})"/>
                 <path d="${path}" fill="none" stroke="${accent}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -4154,12 +3981,12 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                 : "La preuve mesurable que le jalon est atteint.";
 
             if (!kpi || !(kpi.titre || kpi.label || kpi.name)) {
-                return `<div style="min-height:138px;display:flex;flex-direction:column;justify-content:space-between;gap:18px;padding:18px;border-radius:12px;border:1px dashed rgba(255,253,246,0.14);background:rgba(255,253,246,0.015)">
-                    <div style="display:flex;flex-direction:column;gap:7px">
-                        <span style="font-size:10px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:${accent}">${typeShort}</span>
-                        <div style="font-size:13px;line-height:1.42;color:rgba(255,253,246,0.64);max-width:42ch">${escHtml(emptyCopy)}</div>
+                return `<div class="dbx-inline-141">
+                    <div class="dbx-inline-142">
+                        <span>${typeShort}</span>
+                        <div class="dbx-inline-143">${escHtml(emptyCopy)}</div>
                     </div>
-                    <button onclick="openJalonKpiModal(${i}, '${escHtml(jalon?.id||'')}', '${type}')" style="align-self:flex-start;display:inline-flex;align-items:center;gap:8px;padding:9px 11px;border-radius:8px;border:1px solid ${accentBorder};background:${accentSoft};color:${accent};font-size:12.5px;font-weight:650;font-family:inherit;cursor:pointer;text-align:left">
+                    <button onclick="openJalonKpiModal(${i}, '${escHtml(jalon?.id||'')}', '${type}')">
                         <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
                         ${escHtml(defineLabel)}
                     </button>
@@ -4183,36 +4010,36 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             const metaText = `${lastUpdate ? escHtml(lastUpdate) + ' · ' : ''}${escHtml(freqShort)}`;
 
             return `
-            <div style="background:#1C1C1E;border:1px solid rgba(255,255,255,0.09);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:13px;position:relative;min-height:138px">
-                <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
-                    <span style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:${accent}">${typeShort}</span>
-                    <button onclick="openJalonKpiModal(${i},'${jid}','${type}')" style="width:26px;height:26px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,0.09);background:transparent;border-radius:7px;color:rgba(235,235,245,0.48);cursor:pointer" title="Modifier ${escHtml(typeLabel)}" aria-label="Modifier ${escHtml(typeLabel)}">
+            <div class="dbx-inline-144">
+                <div class="dbx-inline-145">
+                    <span>${typeShort}</span>
+                    <button onclick="openJalonKpiModal(${i},'${jid}','${type}')" title="Modifier ${escHtml(typeLabel)}" aria-label="Modifier ${escHtml(typeLabel)}" class="dbx-inline-146">
                         <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" width="13" height="13"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                     </button>
                 </div>
 
-                <div style="display:flex;flex-direction:column;gap:4px">
-                    <div data-kpi-title-key="${i}-${jid}-${type}" onclick="startInlineKpiTitleEdit(${i},'${jid}','${type}')" title="Modifier" style="font-size:15px;font-weight:650;color:#FFFDF6;letter-spacing:0;line-height:1.25;cursor:text">${label}</div>
-                    <div style="font-size:11.5px;color:rgba(235,235,245,0.36)">${metaText}</div>
+                <div class="dbx-inline-147">
+                    <div data-kpi-title-key="${i}-${jid}-${type}" onclick="startInlineKpiTitleEdit(${i},'${jid}','${type}')" title="Modifier" class="dbx-inline-148">${label}</div>
+                    <div class="dbx-inline-149">${metaText}</div>
                 </div>
 
-                <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:auto">
-                    <div style="min-width:0">
-                        <div style="display:flex;align-items:baseline;gap:6px;white-space:nowrap">
-                            <span style="font-size:31px;font-weight:650;color:#FFFDF6;letter-spacing:0;line-height:1;font-variant-numeric:tabular-nums">${escHtml(currentStr)}</span>
-                            ${unit ? `<span style="font-size:13px;color:rgba(235,235,245,0.52)">${escHtml(unit)}</span>` : ''}
-                            ${hasTarget ? `<span style="font-size:12px;color:rgba(235,235,245,0.34)" data-kpi-target-key="${i}-${jid}-${type}" onclick="startInlineKpiTargetEdit(${i},'${jid}','${type}')" title="Modifier la cible">${targetText}</span>` : ''}
+                <div class="dbx-inline-150">
+                    <div class="dbx-inline-151">
+                        <div class="dbx-inline-152">
+                            <span class="dbx-inline-153">${escHtml(currentStr)}</span>
+                            ${unit ? `<span class="dbx-inline-154">${escHtml(unit)}</span>` : ''}
+                            ${hasTarget ? `<span data-kpi-target-key="${i}-${jid}-${type}" onclick="startInlineKpiTargetEdit(${i},'${jid}','${type}')" title="Modifier la cible" class="dbx-inline-155">${targetText}</span>` : ''}
                         </div>
                     </div>
-                    <button onclick="openJalonKpiMeasureModal(${i},'${jid}','${type}')" style="flex-shrink:0;display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 11px;border:1px solid ${accentBorder};background:${accentSoft};border-radius:8px;color:${accent};cursor:pointer;font-size:12.5px;font-weight:650;font-family:inherit;line-height:1" title="${escHtml(actionLabel)}">
+                    <button onclick="openJalonKpiMeasureModal(${i},'${jid}','${type}')" title="${escHtml(actionLabel)}">
                         <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
                         ${escHtml(actionLabel)}
                     </button>
                 </div>
 
                 ${hasTarget
-                    ? `<div style="height:3px;background:rgba(255,255,255,0.08);border-radius:9999px;overflow:hidden">
-                        <div style="height:100%;width:${Math.min(pct,100)}%;background:${accent};border-radius:9999px;transition:width 0.8s cubic-bezier(0.25,1,0.4,1)"></div>
+                    ? `<div class="dbx-inline-156">
+                        <div></div>
                        </div>`
                     : ''}
             </div>`;
@@ -4229,17 +4056,17 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
 
             // No KPIs → full empty state
             if (!hasAny) {
-                return `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-bottom:28px">
-                    <div style="grid-column:1/-1;display:flex;flex-direction:column;align-items:flex-start;gap:14px;padding:24px;border-radius:12px;border:1px dashed rgba(255,253,246,0.12);background:rgba(255,253,246,0.02)">
-                        <div style="font-size:13px;color:rgba(255,253,246,0.74);line-height:1.5">Aucun KPI pour <strong style="color:#FFFDF6;font-weight:600">${escHtml(jalon.titre||jalon.title||'ce jalon')}</strong>. Crée jusqu'à <strong style="color:#FFFDF6">2 KPI</strong> à partir du critère de validation.</div>
-                        <div style="display:flex;gap:10px;flex-wrap:wrap;width:100%">
-                            <button onclick="openJalonKpiModal(${i},'${jid}','leading')" style="flex:1 1 200px;display:inline-flex;align-items:center;gap:9px;padding:12px 14px;border-radius:9px;border:1px solid rgba(91,174,201,0.36);background:rgba(91,174,201,0.06);color:#5BAEC9;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;text-align:left">
+                return `<div class="dbx-inline-157">
+                    <div class="dbx-inline-158">
+                        <div class="dbx-inline-159">Aucun KPI pour <strong class="dbx-inline-160">${escHtml(jalon.titre||jalon.title||'ce jalon')}</strong>. Crée jusqu'à <strong class="dbx-inline-161">2 KPI</strong> à partir du critère de validation.</div>
+                        <div class="dbx-inline-162">
+                            <button onclick="openJalonKpiModal(${i},'${jid}','leading')" class="dbx-inline-163">
                                 <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-                                <span>Définir l'effort<span style="display:block;margin-top:2px;font-size:11.5px;font-weight:500;color:rgba(255,253,246,0.55)">L'action mesurable à répéter</span></span>
+                                <span>Définir l'effort<span class="dbx-inline-164">L'action mesurable à répéter</span></span>
                             </button>
-                            <button onclick="openJalonKpiModal(${i},'${jid}','lagging')" style="flex:1 1 200px;display:inline-flex;align-items:center;gap:9px;padding:12px 14px;border-radius:9px;border:1px solid rgba(238,68,8,0.36);background:rgba(238,68,8,0.06);color:#EE4408;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;text-align:left">
+                            <button onclick="openJalonKpiModal(${i},'${jid}','lagging')" class="dbx-inline-165">
                                 <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-                                <span>Définir le résultat<span style="display:block;margin-top:2px;font-size:11.5px;font-weight:500;color:rgba(255,253,246,0.55)">La preuve que le jalon est atteint</span></span>
+                                <span>Définir le résultat<span class="dbx-inline-164">La preuve que le jalon est atteint</span></span>
                             </button>
                         </div>
                     </div>
@@ -4248,9 +4075,9 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
 
             // Exactly 1 KPI → show it + dashed "add 2nd" button
             if (hasLeading && !hasLagging) {
-                return `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-bottom:28px">
+                return `<div class="dbx-inline-157">
                     ${renderJalonKpiCardV2(leading, jalon, i, 'leading')}
-                    <button onclick="openJalonKpiModal(${i},'${jid}','lagging')" style="display:flex;align-items:center;justify-content:center;gap:8px;min-height:138px;padding:16px;border-radius:12px;border:1px dashed rgba(255,253,246,0.14);background:transparent;color:rgba(255,253,246,0.5);font-size:13px;font-weight:500;font-family:inherit;cursor:pointer" onmouseenter="this.style.borderColor='rgba(255,253,246,0.32)';this.style.color='#FFFDF6'" onmouseleave="this.style.borderColor='rgba(255,253,246,0.14)';this.style.color='rgba(255,253,246,0.5)'">
+                    <button onclick="openJalonKpiModal(${i},'${jid}','lagging')" class="dbx-inline-166">
                         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                         Définir le résultat
                     </button>
@@ -4258,8 +4085,8 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             }
             if (hasLagging && !hasLeading) {
                 // leading (Effort) toujours à gauche → placeholder gauche, lagging à droite
-                return `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-bottom:28px">
-                    <button onclick="openJalonKpiModal(${i},'${jid}','leading')" style="display:flex;align-items:center;justify-content:center;gap:8px;min-height:138px;padding:16px;border-radius:12px;border:1px dashed rgba(255,253,246,0.14);background:transparent;color:rgba(255,253,246,0.5);font-size:13px;font-weight:500;font-family:inherit;cursor:pointer" onmouseenter="this.style.borderColor='rgba(255,253,246,0.32)';this.style.color='#FFFDF6'" onmouseleave="this.style.borderColor='rgba(255,253,246,0.14)';this.style.color='rgba(255,253,246,0.5)'">
+                return `<div class="dbx-inline-157">
+                    <button onclick="openJalonKpiModal(${i},'${jid}','leading')" class="dbx-inline-166">
                         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                         Définir l'effort
                     </button>
@@ -4268,7 +4095,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             }
 
             // Both KPIs → Effort (leading) gauche, Résultat (lagging) droite
-            return `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-bottom:28px">
+            return `<div class="dbx-inline-157">
                 ${renderJalonKpiCardV2(leading, jalon, i, 'leading')}
                 ${renderJalonKpiCardV2(lagging, jalon, i, 'lagging')}
             </div>`;
@@ -4414,8 +4241,8 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                 {id:'delete', icon:'M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16', label:'Supprimer ce KPI', danger:true},
             ];
             panel.innerHTML = items.map(it => {
-                if (it.id === 'sep') return `<div style="height:1px;background:rgba(255,253,246,0.08);margin:4px 0"></div>`;
-                return `<button onmousedown="kpiMenuAction('${it.id}');event.stopPropagation()" onmouseenter="this.style.background='rgba(255,253,246,0.06)'" onmouseleave="this.style.background='transparent'" style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:6px;background:transparent;border:none;color:${it.danger?'#ff6b56':'#FFFDF6'};font-size:13px;font-weight:500;font-family:inherit;cursor:pointer;text-align:left;width:100%">
+                if (it.id === 'sep') return `<div class="dbx-inline-167"></div>`;
+                return `<button onmousedown="kpiMenuAction('${it.id}');event.stopPropagation()">
                     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="${it.icon}"/></svg>
                     ${escHtml(it.label)}
                 </button>`;
@@ -4465,7 +4292,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                 {id:'add-kpi', label:'Ajouter un KPI', icon:'M12 4v16m8-8H4'},
             ];
             panel.innerHTML = items.map(it =>
-                `<button onmousedown="jalonSecondaryMenuAction('${it.id}');event.stopPropagation()" onmouseenter="this.style.background='rgba(255,253,246,0.06)'" onmouseleave="this.style.background='transparent'" style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:6px;background:transparent;border:none;color:#FFFDF6;font-size:13px;font-weight:500;font-family:inherit;cursor:pointer;text-align:left;width:100%">
+                `<button onmousedown="jalonSecondaryMenuAction('${it.id}');event.stopPropagation()" class="dbx-inline-168">
                     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="${it.icon}"/></svg>
                     ${escHtml(it.label)}
                 </button>`
@@ -4649,58 +4476,54 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             const desc      = escHtml(jalon.desc   || '');
             const critere   = escHtml(jalon.critere || jalon.kpi || '');
 
-            const IS = 'width:100%;box-sizing:border-box;background:#1C1C1F;border:1px solid rgba(255,253,246,0.12);border-radius:10px;padding:10px 14px;font-family:inherit;font-size:14px;color:#FFFDF6;outline:none;transition:border-color 0.15s,box-shadow 0.15s';
-            const FI = `this.style.borderColor='rgba(238,68,8,0.8)';this.style.boxShadow='0 0 0 3px rgba(238,68,8,0.15)'`;
-            const FO = `this.style.borderColor='rgba(255,253,246,0.12)';this.style.boxShadow='none'`;
-
             let overlay = document.getElementById('jalonEditModalOverlay');
             if (!overlay) {
                 overlay = document.createElement('div');
                 overlay.id = 'jalonEditModalOverlay';
-                overlay.style.cssText = 'position:fixed;inset:0;z-index:6000;background:rgba(0,0,0,0.72);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box';
+                overlay.className = 'jalon-edit-overlay';
                 overlay.addEventListener('mousedown', e => { if (e.target === overlay) closeJalonEditModal(); });
                 document.body.appendChild(overlay);
             }
             overlay.style.display = 'flex';
             overlay.innerHTML = `
-                <div style="background:#111113;border:1px solid rgba(255,253,246,0.1);border-radius:16px;padding:28px;width:min(560px,100%);max-height:88vh;overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,0,0.8);position:relative">
-                    <button onclick="closeJalonEditModal()" style="position:absolute;top:16px;right:16px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;background:rgba(255,253,246,0.06);border:none;border-radius:6px;color:#929292;cursor:pointer;font-family:inherit" title="Fermer">
+                <div class="dbx-inline-169">
+                    <button onclick="closeJalonEditModal()" title="Fermer" class="dbx-inline-170">
                         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
                     </button>
-                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-right:36px">
-                        <span style="font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#929292">JALON ${idx+1} / ${total}</span>
-                        ${rawDate ? `<span style="font-size:11px;color:rgba(146,146,146,0.6)">·</span><span style="font-size:11px;color:rgba(146,146,146,0.6)">${dateLabel}</span>` : ''}
+                    <div class="dbx-inline-171">
+                        <span class="dbx-inline-172">JALON ${idx+1} / ${total}</span>
+                        ${rawDate ? `<span class="dbx-inline-173">·</span><span class="dbx-inline-173">${dateLabel}</span>` : ''}
                     </div>
-                    <div style="height:1px;background:rgba(255,253,246,0.07);margin:0 0 22px"></div>
-                    <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:22px">
-                        <label style="font-size:13px;font-weight:600;color:#FFFDF6">Titre du jalon</label>
-                        <span style="font-size:11px;color:#929292">Un nom court.</span>
-                        <input id="jem-title" type="text" value="${titre}" placeholder="Ex : Premier client payant" style="${IS}" onfocus="${FI}" onblur="${FO}">
+                    <div class="dbx-inline-120"></div>
+                    <div class="dbx-inline-174">
+                        <label class="dbx-inline-175">Titre du jalon</label>
+                        <span class="dbx-inline-176">Un nom court.</span>
+                        <input id="jem-title" type="text" value="${titre}" placeholder="Ex : Premier client payant">
                     </div>
-                    <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:22px">
-                        <label style="font-size:13px;font-weight:600;color:#FFFDF6">Description du jalon</label>
-                        <span style="font-size:11px;color:#929292">L'objectif, en une phrase simple.</span>
-                        <textarea id="jem-desc" rows="2" placeholder="Ex : Terminer un marathon complet." style="${IS};resize:none;line-height:1.55" onfocus="${FI}" onblur="${FO}">${desc}</textarea>
+                    <div class="dbx-inline-174">
+                        <label class="dbx-inline-175">Description du jalon</label>
+                        <span class="dbx-inline-176">L'objectif, en une phrase simple.</span>
+                        <textarea id="jem-desc" rows="2" placeholder="Ex : Terminer un marathon complet.">${desc}</textarea>
                     </div>
-                    <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:22px">
-                        <label style="font-size:13px;font-weight:600;color:#FFFDF6">Critère de validation</label>
-                        <span style="font-size:11px;color:#929292">Une règle claire que tu peux vérifier.</span>
-                        <textarea id="jem-critere" rows="3" placeholder="Une règle simple, vérifiable oui ou non." style="${IS};resize:none;line-height:1.55" onfocus="${FI}" onblur="${FO}">${critere}</textarea>
+                    <div class="dbx-inline-174">
+                        <label class="dbx-inline-175">Critère de validation</label>
+                        <span class="dbx-inline-176">Une règle claire que tu peux vérifier.</span>
+                        <textarea id="jem-critere" rows="3" placeholder="Une règle simple, vérifiable oui ou non.">${critere}</textarea>
                     </div>
-                    <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:6px">
-                        <label style="font-size:13px;font-weight:600;color:#FFFDF6">Échéance</label>
-                        <span style="font-size:11px;color:#929292">Date cible du jalon.</span>
+                    <div class="dbx-inline-177">
+                        <label class="dbx-inline-175">Échéance</label>
+                        <span class="dbx-inline-176">Date cible du jalon.</span>
                         <div>
-                            <button id="jem-date-chip" onclick="openJemDatePicker(this)" style="display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border-radius:8px;background:rgba(238,68,8,0.10);border:1px solid rgba(238,68,8,0.35);color:#EE4408;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;transition:background 120ms">
+                            <button id="jem-date-chip" onclick="openJemDatePicker(this)" class="dbx-inline-178">
                                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
                                 <span id="jem-date-label">${dateLabel}</span>
                             </button>
                             <input id="jem-date" type="hidden" value="${rawDate}">
                         </div>
                     </div>
-                    <div style="height:1px;background:rgba(255,253,246,0.07);margin:22px 0 18px"></div>
-                    <div style="display:flex;justify-content:flex-end">
-                        <button onclick="saveJalonEditModal()" style="padding:10px 24px;border-radius:8px;background:#EE4408;color:#fff;border:none;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit">Sauvegarder</button>
+                    <div class="dbx-inline-179"></div>
+                    <div class="dbx-inline-180">
+                        <button onclick="saveJalonEditModal()" class="dbx-inline-181">Sauvegarder</button>
                     </div>
                 </div>`;
         }
@@ -4749,7 +4572,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             const input = document.createElement('input');
             input.type = 'text';
             input.value = current;
-            input.style.cssText = 'width:100%;box-sizing:border-box;font-family:inherit;font-size:26px;font-weight:700;color:#FFFDF6;letter-spacing:-0.02em;line-height:1.15;background:transparent;border:none;border-bottom:2px solid rgba(238,68,8,0.7);outline:none;padding:0 0 4px;margin-bottom:8px';
+            input.className = 'inline-jalon-title-input';
             h2.replaceWith(input);
             input.focus();
             input.select();
@@ -4764,7 +4587,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                 newH2.setAttribute('data-jalon-title', '');
                 newH2.setAttribute('onclick', `startInlineJalonTitleEdit(${i},'${jalonId}')`);
                 newH2.setAttribute('title', 'Cliquer pour modifier');
-                newH2.style.cssText = 'font-family:inherit;font-size:26px;font-weight:700;color:#FFFDF6;letter-spacing:-0.02em;line-height:1.15;margin-bottom:8px;cursor:text';
+                newH2.className = 'inline-jalon-title';
                 newH2.textContent = val || current;
                 input.replaceWith(newH2);
                 if (val && val !== current) {
@@ -4790,7 +4613,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             const ta = document.createElement('textarea');
             ta.value = current;
             ta.rows = 3;
-            ta.style.cssText = 'width:100%;box-sizing:border-box;font-family:inherit;font-size:14.5px;color:#FFFDF6;line-height:1.55;font-weight:400;background:rgba(255,253,246,0.04);border:1px solid rgba(238,68,8,0.5);border-radius:8px;outline:none;padding:10px 12px;resize:none;margin-bottom:28px;box-shadow:0 0 0 3px rgba(238,68,8,0.12)';
+            ta.className = 'inline-jalon-critere-input';
             p.replaceWith(ta);
             ta.focus();
             const commit = () => {
@@ -4800,9 +4623,9 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                 newP.setAttribute('data-jalon-critere', '');
                 newP.setAttribute('onclick', `startInlineJalonCritereEdit(${i},'${jalonId}')`);
                 newP.setAttribute('title', 'Cliquer pour modifier');
-                newP.style.cssText = 'font-size:14.5px;color:#FFFDF6;line-height:1.55;margin-bottom:28px;font-weight:400;max-width:640px;cursor:text';
+                newP.className = 'inline-jalon-critere';
                 newP.textContent = val || '';
-                if (!val) newP.innerHTML = '<span style="color:#929292">—</span>';
+                if (!val) newP.innerHTML = '<span class="dbx-inline-122">—</span>';
                 ta.replaceWith(newP);
             };
             ta.addEventListener('blur', commit);
@@ -4820,7 +4643,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             const input = document.createElement('input');
             input.type = 'text';
             input.value = current;
-            input.style.cssText = 'font-size:14px;font-weight:500;color:#FFFDF6;letter-spacing:-0.005em;line-height:1.3;width:100%;background:rgba(255,253,246,0.04);border:1px solid rgba(91,174,201,0.32);border-radius:5px;padding:4px 6px;font-family:inherit;outline:none;box-sizing:border-box';
+            input.className = 'inline-kpi-title-input';
             el.replaceWith(input);
             input.focus();
             const commit = () => {
@@ -4840,7 +4663,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             const input = document.createElement('input');
             input.type = 'number';
             input.value = current.replace(/[^0-9.]/g,'');
-            input.style.cssText = 'font-size:11px;color:#FFFDF6;width:60px;background:rgba(255,253,246,0.04);border:1px solid rgba(91,174,201,0.32);border-radius:4px;padding:2px 5px;font-family:ui-monospace,monospace;outline:none;text-align:center';
+            input.className = 'inline-kpi-target-input';
             el.replaceWith(input);
             input.focus(); input.select();
             const commit = () => {
@@ -4869,17 +4692,17 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             });
             const head = document.getElementById('kpiHistorySheetHead');
             head.innerHTML = `
-                <div style="flex:1;min-width:0">
-                    <div style="font-size:10.5px;font-weight:700;letter-spacing:0.1em;color:${accent};text-transform:uppercase;margin-bottom:6px">Historique des mesures</div>
-                    <div style="font-size:18px;font-weight:700;color:#FFFDF6;letter-spacing:-0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(label)}</div>
+                <div class="dbx-inline-182">
+                    <div>Historique des mesures</div>
+                    <div class="dbx-inline-183">${escHtml(label)}</div>
                 </div>
-                <button onclick="closeKpiHistorySheet()" style="width:30px;height:30px;border-radius:6px;border:none;background:transparent;color:#929292;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <button onclick="closeKpiHistorySheet()" class="dbx-inline-184">
                     <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>`;
             const fmt = (d) => { try { return new Date(d).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'}); } catch{return d;} };
             const body = document.getElementById('kpiHistorySheetBody');
             if (allEntries.length === 0) {
-                body.innerHTML = `<div style="padding:40px 28px;font-size:13.5px;color:#929292;text-align:center">Aucune mesure enregistrée.</div>`;
+                body.innerHTML = `<div class="dbx-inline-185">Aucune mesure enregistrée.</div>`;
             } else {
                 body.innerHTML = allEntries.map((m,idx) => {
                     const val = m.valeur ?? m.value ?? 0;
@@ -4887,13 +4710,13 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                     const prevVal = prev ? (prev.valeur ?? prev.value ?? 0) : null;
                     const delta = prevVal !== null ? val - prevVal : null;
                     const deltaStr = delta === null ? '—' : (delta > 0 ? `+${delta}` : `${delta}`);
-                    return `<div style="display:grid;grid-template-columns:1fr auto auto;gap:16px;align-items:center;padding:14px 28px;border-bottom:1px solid rgba(255,253,246,0.05)">
+                    return `<div class="dbx-inline-186">
                         <div>
-                            <div style="font-size:13px;color:#FFFDF6">${fmt(m.date)}</div>
-                            <div style="font-size:11.5px;color:#929292;font-family:ui-monospace,monospace">${deltaStr} vs précédent</div>
+                            <div class="dbx-inline-187">${fmt(m.date)}</div>
+                            <div class="dbx-inline-188">${deltaStr} vs précédent</div>
                         </div>
-                        <div style="font-size:18px;font-weight:700;color:#FFFDF6;font-variant-numeric:tabular-nums;letter-spacing:-0.01em">${val}<span style="font-size:11px;color:#929292;font-weight:400;margin-left:4px">${escHtml(kpi.unite||kpi.unit||'')}</span></div>
-                        <button onclick="deleteKpiHistoryEntry(${i},'${escHtml(jalonId)}','${kpiType}',${idx})" style="width:26px;height:26px;border-radius:6px;border:none;background:transparent;color:rgba(255,253,246,0.3);cursor:pointer;display:flex;align-items:center;justify-content:center">
+                        <div class="dbx-inline-189">${val}<span class="dbx-inline-190">${escHtml(kpi.unite||kpi.unit||'')}</span></div>
+                        <button onclick="deleteKpiHistoryEntry(${i},'${escHtml(jalonId)}','${kpiType}',${idx})" class="dbx-inline-191">
                             <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6M9 6V4h6v2"/></svg>
                         </button>
                     </div>`;
@@ -4977,8 +4800,8 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             if (!sorted.length) {
                 return `
                 <div class="jt-section">
-                    <div class="jt-block db-card db-card-execution" style="padding:20px;text-align:center;">
-                        <a href="#" onclick="openJalonsForProject(${i})" style="font-size:12px;color:rgba(255,255,255,0.25);text-decoration:none;border-bottom:1px dashed rgba(255,255,255,0.12);">+ Planifier les jalons</a>
+                    <div class="jt-block db-card db-card-execution dbx-inline-192">
+                        <a href="#" onclick="openJalonsForProject(${i})" class="dbx-inline-193">+ Planifier les jalons</a>
                     </div>
                 </div>`;
             }
@@ -5187,12 +5010,12 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                 const isLast = idx === n - 1;
                 const dDate = d.displayDate || d.iso || '';
                 return `<circle cx="${x}" cy="${y}" r="${isLast ? 4.5 : 3}" fill="#FFFDF6" stroke="${isLast ? '#111111' : 'none'}" stroke-width="${isLast ? 2.5 : 0}"/>
-<circle cx="${x}" cy="${y}" r="14" fill="transparent" class="kpi-dot-hit" data-date="${dDate}" data-value="${d.value}" data-unit="${unit}" style="cursor:default"/>`;
+<circle cx="${x}" cy="${y}" r="14" fill="transparent" class="kpi-dot-hit dbx-inline-194" data-date="${dDate}" data-value="${d.value}" data-unit="${unit}"/>`;
             }).join('');
 
             container.style.position = 'relative';
             const svgHeight = Math.max(container.clientHeight || 0, 300);
-            container.innerHTML = `<svg width="100%" height="${svgHeight}" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="display:block">
+            container.innerHTML = `<svg width="100%" height="${svgHeight}" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" class="dbx-inline-140">
                 ${yGrid}
                 ${targetLine}
                 ${expectedLine}
@@ -5204,7 +5027,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
 
             // Hover tooltip
             const tip = document.createElement('div');
-            tip.style.cssText = 'position:absolute;display:none;pointer-events:none;background:rgba(12,13,16,0.97);border:1px solid rgba(255,253,246,0.12);border-radius:8px;padding:8px 12px;font-family:Inter,system-ui,sans-serif;z-index:20;white-space:nowrap;box-shadow:0 4px 24px rgba(0,0,0,0.6);transition:opacity 0.1s';
+            tip.className = 'kpi-chart-tooltip';
             container.appendChild(tip);
 
             container.querySelectorAll('.kpi-dot-hit').forEach(c => {
@@ -5212,7 +5035,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                     const dStr = c.dataset.date || '';
                     const vStr = c.dataset.value ?? '';
                     const uStr = c.dataset.unit || '';
-                    tip.innerHTML = `<div style="font-size:10px;color:rgba(255,253,246,0.4);margin-bottom:4px;letter-spacing:0.04em">${dStr}</div><div style="font-size:15px;font-weight:700;color:#FFFDF6;line-height:1">${vStr}${uStr ? `<span style="font-size:11px;font-weight:500;color:rgba(255,253,246,0.5);margin-left:3px">${uStr}</span>` : ''}</div>`;
+                    tip.innerHTML = `<div class="dbx-inline-195">${dStr}</div><div class="dbx-inline-196">${vStr}${uStr ? `<span class="dbx-inline-197">${uStr}</span>` : ''}</div>`;
                     tip.style.display = 'block';
                     const cr = c.getBoundingClientRect();
                     const pr = container.getBoundingClientRect();
@@ -5230,7 +5053,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             // Sync situation actuelle card with latest measure value
             const actualChip = document.getElementById(`kpiChipActuel-${i}`);
             if (actualChip && n > 0) {
-                const chipTarget = target != null ? `<span style="font-size:16px;font-weight:450;color:rgba(255,253,246,0.25)"> / ${escHtml(formatMetricValue(target))}</span>` : '';
+                const chipTarget = target != null ? `<span class="dbx-inline-198"> / ${escHtml(formatMetricValue(target))}</span>` : '';
                 actualChip.innerHTML = `${escHtml(formatMetricValue(data[n - 1].value))}${chipTarget}`;
             }
         }
@@ -5460,15 +5283,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
         // ──────────────────────────────────────────────────────────
         function showToast(msg) {
             const t = document.createElement('div');
-            t.style.cssText = `
-                position:fixed;bottom:40px;left:50%;
-                transform:translateX(-50%) translateY(80px);
-                background:#2C8657;color:#fff;
-                padding:12px 24px;border-radius:10px;
-                font-size:14px;font-weight:600;
-                z-index:20000;transition:all 0.3s;
-                font-family:'Inter',sans-serif;
-            `;
+            t.className = 'dashboard-toast';
             t.textContent = msg;
             document.body.appendChild(t);
             requestAnimationFrame(() => {
@@ -6227,607 +6042,11 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
     </script>
 
     <!-- VISION VIEW STYLES -->
-    <style>
-        /* Vision quick grid — top 2 cards */
-        .vision-section {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            font-optical-sizing: auto;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            font-feature-settings: 'cv01' 1, 'cv11' 1, 'tnum' 1;
-        }
-        .vision-scorecard {
-            display: none;
-        }
-        .vision-scorecard-main {
-            min-width: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .vision-scorecard-kicker {
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.14em;
-            color: rgba(255,253,246,0.48);
-        }
-        .vision-scorecard h1 {
-            margin: 0;
-            max-width: 820px;
-            color: #FFFDF6;
-            font-size: clamp(30px, 4vw, 56px);
-            line-height: 0.98;
-            font-weight: 720;
-            letter-spacing: 0;
-        }
-        .vision-scorecard p {
-            margin: 0;
-            max-width: 760px;
-            color: rgba(255,253,246,0.66);
-            font-size: 14.5px;
-            line-height: 1.55;
-        }
-        .vision-scorecard-meta {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 4px;
-        }
-        .vision-scorecard-meta span {
-            display: inline-flex;
-            min-height: 28px;
-            align-items: center;
-            padding: 5px 9px;
-            border-radius: 7px;
-            border: 1px solid rgba(255,253,246,0.08);
-            background: rgba(255,253,246,0.035);
-            color: rgba(255,253,246,0.55);
-            font-size: 11.5px;
-            font-weight: 600;
-        }
-        .vision-scorecard-meta strong { color: rgba(255,253,246,0.86); font-weight: 650; }
-        .vision-scorecard-metrics {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 10px;
-        }
-        .vision-scorecard-metrics article {
-            min-width: 0;
-            padding: 12px 14px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            gap: 6px;
-            border-radius: 8px;
-            border: 1px solid rgba(255,253,246,0.08);
-            background: rgba(255,253,246,0.035);
-        }
-        .vision-scorecard-metrics span,
-        .vision-panel-head span,
-        .vision-milestone-facts span,
-        .vision-smart-compact dt {
-            color: rgba(255,253,246,0.42);
-            font-size: 10.5px;
-            font-weight: 700;
-            letter-spacing: 0.11em;
-            text-transform: uppercase;
-        }
-        .vision-scorecard-metrics strong {
-            color: #FFFDF6;
-            font-size: 19px;
-            line-height: 1;
-            font-weight: 720;
-            letter-spacing: 0;
-            overflow-wrap: anywhere;
-        }
-        .vision-scorecard-metrics strong em {
-            font-style: normal;
-            color: rgba(255,253,246,0.46);
-            font-size: 13px;
-            font-weight: 550;
-        }
-        .vision-scorecard-metrics small {
-            color: rgba(255,253,246,0.54);
-            font-size: 12px;
-            line-height: 1.35;
-        }
-        .vision-scorecard-metrics .active-milestone {
-            border-color: rgba(238,68,8,0.28);
-            background: rgba(238,68,8,0.075);
-        }
-        .vision-main-grid {
-            display: grid;
-            grid-template-columns: minmax(0, 1fr);
-            gap: 0;
-        }
-        .vision-secondary-grid {
-            display: grid;
-            grid-template-columns: 3fr 1fr;
-            gap: 16px;
-            align-items: start;
-        }
-        .vision-smart-compact {
-            align-self: start;
-        }
-        .vision-panel {
-            min-width: 0;
-            padding: 22px 24px 16px;
-            background: rgba(24,24,27,0.6);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 16px;
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            box-shadow: 0 24px 48px -12px rgba(0,0,0,0.4);
-            transition: border-color 0.3s cubic-bezier(0.16,1,0.3,1), transform 0.3s cubic-bezier(0.16,1,0.3,1);
-            overflow: hidden;
-        }
-        .vision-panel:hover {
-            border-color: rgba(255,255,255,0.12);
-            transform: translateY(-2px);
-        }
-        .vision-panel-head {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 14px;
-            margin-bottom: 16px;
-            padding-bottom: 14px;
-            border-bottom: 1px solid rgba(255,253,246,0.05);
-        }
-        .vision-panel h2 {
-            margin: 0;
-            color: rgba(255,253,246,0.45);
-            font-size: 11px;
-            line-height: 1.2;
-            font-weight: 500;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-        }
-        .vision-panel button {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 28px;
-            padding: 4px 12px;
-            border-radius: 6px;
-            border: 1px solid rgba(255,253,246,0.1);
-            background: transparent;
-            color: rgba(255,253,246,0.5);
-            font: inherit;
-            font-size: 11px;
-            font-weight: 600;
-            cursor: pointer;
-            white-space: nowrap;
-        }
-        .vision-milestone-facts {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 10px;
-            margin-bottom: 18px;
-        }
-        .vision-milestone-facts div {
-            padding: 12px;
-            border-radius: 8px;
-            background: rgba(255,253,246,0.04);
-        }
-        .vision-milestone-facts strong {
-            display: block;
-            margin-top: 8px;
-            color: #FFFDF6;
-            font-size: 20px;
-            line-height: 1.1;
-        }
-        .vision-roadmap {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-        .vision-roadmap-step {
-            display: inline-flex;
-            align-items: center;
-            min-height: 30px;
-            padding: 6px 10px;
-            border-radius: 7px;
-            border: 1px solid rgba(255,253,246,0.08);
-            color: rgba(255,253,246,0.46);
-            background: rgba(255,253,246,0.025);
-            font-size: 12px;
-            font-weight: 650;
-        }
-        .vision-roadmap-step.done { color: rgba(255,253,246,0.62); }
-        .vision-roadmap-step.active {
-            color: #FFFDF6;
-            border-color: rgba(238,68,8,0.38);
-            background: rgba(238,68,8,0.11);
-        }
-        .vision-smart-compact p {
-            margin: 0 0 16px;
-            color: rgba(255,253,246,0.68);
-            font-size: 13.5px;
-            line-height: 1.55;
-        }
-        .vision-smart-compact dl {
-            margin: 0;
-            display: grid;
-            gap: 10px;
-        }
-        .vision-smart-compact dl div {
-            padding-top: 10px;
-            border-top: 1px solid rgba(255,253,246,0.08);
-        }
-        .vision-smart-compact dd {
-            margin: 5px 0 0;
-            color: #FFFDF6;
-            font-size: 13px;
-            line-height: 1.45;
-        }
-        .vision-smart-compact .smart-edit { margin-top: 16px; }
-        .vision-quick-grid {
-            display: grid;
-            grid-template-columns: minmax(280px, 0.82fr) minmax(620px, 1.38fr);
-            gap: 18px;
-            margin-bottom: 26px;
-            align-items: stretch;
-            position: relative;
-            z-index: 30;
-            overflow: visible;
-        }
-        .vision-quick-card {
-            background: #1c1c22;
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 20px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-            padding: 16px 18px;
-            min-height: 128px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            min-width: 0;
-            overflow: visible;
-        }
-        .vision-quick-head {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 7px;
-        }
-        .vision-quick-label {
-            font-size: 11px;
-            font-weight: 650;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: rgba(255,253,246,0.62);
-        }
-        .vision-quick-meta {
-            font-family: 'JetBrains Mono', ui-monospace, monospace;
-            font-size: 11.5px;
-            font-weight: 600;
-            color: rgba(255,253,246,0.72);
-            white-space: nowrap;
-        }
-        .vision-jalon-title {
-            font-size: 16px;
-            line-height: 1.25;
-            font-weight: 700;
-            color: #FFFDF6;
-            letter-spacing: -0.005em;
-        }
-        .vision-jalon-meta {
-            margin-top: 3px;
-            font-size: 11.5px;
-            color: rgba(255,253,246,0.52);
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        .vision-jalon-dot {
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: #121214;
-            border: 1.5px solid rgba(255,255,255,0.12);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: transparent;
-            font-size: 10px;
-            line-height: 1;
-        }
-        .vision-jalon-dot.done { border-color: rgba(255,255,255,0.22); color: rgba(255,255,255,0.6); }
-        .vision-jalon-dot.active { background: #EE4408; border: none; box-shadow: 0 0 0 3px rgba(238,68,8,0.18); color: transparent; }
-        .vision-jalon-dot-label { display: flex; justify-content: center; font-size: 9px; font-weight: 600; white-space: nowrap; letter-spacing: 0.03em; }
-        .vision-jalon-dot-label.done { color: rgba(255,253,246,0.50); }
-        .vision-jalon-dot-label.active { color: #FFFDF6; }
-        .vision-jalon-dot-label.upcoming { color: rgba(255,253,246,0.20); }
 
-        /* Calendar card */
-        .vision-calendar-card {
-            display: grid;
-            grid-template-columns: minmax(220px, 0.42fr) minmax(280px, 0.9fr);
-            column-gap: 24px;
-            align-items: center;
-            padding: 18px 22px 18px 28px;
-            overflow: visible;
-            position: relative;
-            z-index: 2;
-            width: 100%;
-            max-width: none;
-            justify-self: stretch;
-        }
-        .vision-stats-col { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
-        .vision-stat-label { color: rgba(255,253,246,0.40); font-weight: 650; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; }
-        .vision-stat-value-row { display: flex; align-items: baseline; gap: 6px; min-width: 0; flex-wrap: nowrap; white-space: nowrap; }
-        .vision-stat-big { font-size: 31px; font-weight: 720; color: #FFFDF6; letter-spacing: -0.02em; line-height: 1; }
-        .vision-stat-big.effort { font-size: 25px; font-weight: 710; }
-        .vision-stat-target { font-size: 13.5px; color: rgba(255,253,246,0.54); font-weight: 500; }
-        .vision-stat-target.effort { font-size: 13px; color: rgba(255,253,246,0.52); }
-        .vision-days-elapsed { display: flex; align-items: center; gap: 5px; flex-wrap: nowrap; }
-        .vision-days-dot { width: 6px; height: 6px; border-radius: 50%; background: #EE4408; flex-shrink: 0; }
-        .vision-days-label { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 10.5px; color: #B87820; font-weight: 600; letter-spacing: 0.02em; }
-        .vision-effort-sep { padding-top: 12px; border-top: 1px solid rgba(255,253,246,0.10); display: flex; flex-direction: column; gap: 3px; min-width: 0; }
-
-        /* Calendar panel */
-        .vision-cal-panel { position: relative; display: flex; flex-direction: column; align-items: center; justify-self: center; align-self: center; z-index: 3; width: 100%; flex-shrink: 0; overflow: visible; }
-        .vision-cal-grid {
-            display: grid;
-            grid-template-columns: repeat(7, minmax(0, 1fr));
-            grid-template-rows: 14px repeat(4, 32px);
-            row-gap: 4px;
-            column-gap: 4px;
-            align-items: center;
-            position: relative;
-            justify-content: center;
-            width: min(100%, 390px);
-            min-width: 240px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .vision-support-area {
-            margin-bottom: 22px;
-            padding-top: 4px;
-        }
-        .vision-support-head {
-            display: flex;
-            align-items: baseline;
-            justify-content: space-between;
-            gap: 18px;
-            margin-bottom: 14px;
-            padding-top: 2px;
-        }
-        .vision-support-head span {
-            font-size: 11px;
-            font-weight: 650;
-            text-transform: uppercase;
-            letter-spacing: 0.14em;
-            color: rgba(255,253,246,0.72);
-            white-space: nowrap;
-        }
-        .vision-support-head p {
-            margin: 0;
-            max-width: 420px;
-            text-align: right;
-            font-size: 12px;
-            line-height: 1.35;
-            color: rgba(255,253,246,0.42);
-        }
-        .vision-reference-grid {
-            display: grid;
-            grid-template-columns: minmax(0, 1.42fr) minmax(340px, 0.78fr);
-            gap: 18px;
-            align-items: start;
-        }
-        .vision-kpi-card {
-            min-height: 318px !important;
-            padding: 26px !important;
-            background: rgba(24,24,27,0.6) !important;
-            border: 1px solid rgba(255,255,255,0.05) !important;
-            border-radius: 16px !important;
-            backdrop-filter: blur(20px) !important;
-            -webkit-backdrop-filter: blur(20px) !important;
-            box-shadow: 0 24px 48px -12px rgba(0,0,0,0.4) !important;
-            transition: border-color 0.3s cubic-bezier(0.16,1,0.3,1), transform 0.3s cubic-bezier(0.16,1,0.3,1) !important;
-            overflow: hidden !important;
-        }
-        .vision-kpi-card:hover {
-            border-color: rgba(255,255,255,0.12) !important;
-            transform: translateY(-2px) !important;
-        }
-        .vision-smart-card {
-            padding: 22px !important;
-            background: rgba(17,17,17,0.72) !important;
-        }
-        .vision-smart-card [id^="smartView"] > div[style*="grid-template-columns"] {
-            padding-top: 12px !important;
-            padding-bottom: 12px !important;
-        }
-        .vision-citation {
-            align-self: flex-end;
-            max-width: 520px;
-            margin: 2px 0 0 !important;
-            padding-top: 14px;
-            border-top: 1px solid rgba(255,253,246,0.07);
-            text-align: right;
-            color: rgba(255,253,246,0.42) !important;
-        }
-        .vision-cal-day-label {
-            font-size: 10.5px;
-            line-height: 14px;
-            height: 14px;
-            font-weight: 650;
-            color: rgba(255,253,246,0.30);
-            text-align: center;
-        }
-        .vision-cal-cell {
-            position: relative;
-            z-index: 1;
-            width: 100%;
-            height: 24px;
-            border-radius: 7px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            justify-self: center;
-            flex-direction: column;
-            gap: 2px;
-        }
-        .vision-cal-cell.has-data { cursor: pointer; }
-        .vision-cal-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: rgba(255,253,246,0.08);
-        }
-        .vision-cal-dot.active { background: rgba(255,253,246,0.58); }
-        .vision-cal-dot.result { width: 8px; height: 8px; background: rgba(238,68,8,0.86); box-shadow: 0 0 0 2px rgba(238,68,8,0.10); z-index: 2; }
-        .vision-cal-dot.today { box-shadow: 0 0 0 2px #111111, 0 0 0 3.5px rgba(255,253,246,0.50); }
-        .vision-cal-elapsed-band {
-            position: absolute;
-            height: 16px;
-            border-radius: 999px;
-            background: rgba(184,120,32,0.07);
-            border: 1px solid rgba(184,120,32,0.38);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        /* Popover */
-        .vision-cal-popover {
-            position: absolute;
-            right: -8px;
-            width: 260px;
-            top: calc(100% + 10px);
-            z-index: 120;
-            background: #171717;
-            border: 1px solid rgba(255,253,246,0.12);
-            border-radius: 10px;
-            padding: 14px;
-            box-shadow: 0 18px 42px rgba(0,0,0,0.42);
-            pointer-events: none;
-            display: none;
-        }
-        .vision-cal-popover.visible { display: block; }
-        .vision-cal-popover-hd { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
-        .vision-cal-type-badge { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; border-radius: 4px; padding: 2px 7px; }
-        .vision-cal-type-badge.result-badge { color: #EE4408; background: rgba(238,68,8,0.12); }
-        .vision-cal-type-badge.effort-badge { color: #FFFDF6; background: rgba(255,253,246,0.10); }
-        .vision-cal-popover-date { font-size: 11px; color: rgba(255,253,246,0.52); font-weight: 500; }
-        .vision-cal-popover-top { display: grid; grid-template-columns: 46px 1fr; gap: 6px; align-items: start; margin-bottom: 2px; }
-        .vision-cal-popover-hours { display: grid; grid-template-rows: repeat(4, 23px); color: rgba(255,253,246,0.42); font-size: 10.5px; font-family: 'JetBrains Mono', ui-monospace, monospace; align-items: start; }
-        .vision-cal-popover-schedule { position: relative; height: 92px; border-left: 1px solid rgba(255,253,246,0.08); background: repeating-linear-gradient(to bottom, transparent 0, transparent 22px, rgba(255,253,246,0.07) 23px); overflow: hidden; }
-        .vision-cal-popover-block { position: absolute; left: 10px; right: 0; top: 34px; min-height: 32px; border-radius: 7px; background: rgba(255,253,246,0.08); border-left: 3px solid #FFFDF6; padding: 6px 8px; }
-        .vision-cal-popover-block.result-block { border-left-color: #EE4408; }
-        .vision-cal-popover-value-line { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-width: 0; }
-        .vision-cal-popover-block-title { font-size: 12px; font-weight: 700; color: #FFFDF6; }
-        .vision-cal-popover-delta { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; min-height: 18px; padding: 2px 6px; border-radius: 5px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 10px; font-weight: 700; line-height: 1; }
-        .vision-cal-popover-block-sub { font-size: 9.5px; font-weight: 600; margin-bottom: 3px; }
-        .vision-cal-popover-block-meta { margin-top: 2px; font-size: 11px; color: rgba(255,253,246,0.58); }
-        .vision-cal-popover-note { margin-top: 10px; padding-top: 9px; border-top: 1px solid rgba(255,253,246,0.08); font-size: 11.5px; line-height: 1.45; color: rgba(255,253,246,0.68); }
-
-        @media (max-width: 900px) {
-            .vision-quick-grid {
-                grid-template-columns: 1fr;
-                margin-bottom: 22px;
-            }
-            .vision-calendar-card {
-                grid-template-columns: 1fr !important;
-                gap: 16px !important;
-                padding-left: 14px !important;
-                padding-right: 14px !important;
-                width: 100% !important;
-                max-width: 100% !important;
-                justify-self: stretch !important;
-            }
-            .vision-calendar-card > div:first-child {
-                max-width: none !important;
-                width: 100% !important;
-            }
-            .vision-support-head {
-                align-items: flex-start;
-                flex-direction: column;
-                gap: 6px;
-                margin-bottom: 12px;
-            }
-            .vision-support-head p {
-                max-width: none;
-                text-align: left;
-            }
-            .vision-reference-grid {
-                grid-template-columns: 1fr;
-            }
-            .vision-kpi-card,
-            .vision-smart-card {
-                padding: 20px !important;
-            }
-            .vision-citation {
-                align-self: stretch;
-                max-width: none;
-                text-align: left;
-            }
-        }
-
-        /* KPI chips — JSX faithful */
-        .kpi-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-        .kpi-chip { display: inline-flex; align-items: center; gap: 5px; min-height: 26px; padding: 4px 8px; border-radius: 6px; background: rgba(255,253,246,0.045); border: 1px solid rgba(255,253,246,0.08); color: rgba(255,253,246,0.72); font-size: 11.5px; font-weight: 600; white-space: nowrap; }
-
-        /* Vision KPI + SMART card overrides — match JSX exactly */
-        .db-row-kpi-smart { grid-template-columns: minmax(0,1.15fr) minmax(0,1fr) !important; gap: 18px !important; }
-        .db-view-pilotage .kpi-panel { background: #111111 !important; border: 1px solid rgba(255,255,255,0.08) !important; border-radius: 10px !important; padding: 24px !important; box-shadow: none !important; gap: 0 !important; min-height: 0 !important; }
-        .db-view-pilotage .kpi-panel::before, .db-view-pilotage .smart-panel::before { display: none; }
-        .db-view-pilotage .smart-panel { background: #111111 !important; border: 1px solid rgba(255,255,255,0.08) !important; border-radius: 10px !important; padding: 24px !important; box-shadow: none !important; }
-        .db-view-pilotage .kpi-panel-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; padding-bottom: 0; gap: 16px; }
-        .db-view-pilotage .kpi-panel-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: rgba(255,253,246,0.62); font-family: inherit; }
-        .db-view-pilotage .kpi-panel-desc { font-size: 15px; color: #FFFDF6; font-weight: 650; line-height: 1.3; max-width: 520px; white-space: normal; overflow: visible; text-overflow: unset; font-family: inherit; letter-spacing: 0; }
-        .db-view-pilotage .kpi-add-btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 14px; border-radius: 8px; background: #FFFDF6 !important; color: #080809 !important; border: none !important; font-size: 12.5px; font-weight: 600; height: auto; font-family: inherit; letter-spacing: 0; }
-        .db-view-pilotage .kpi-add-btn:hover { background: #FFFDF6 !important; color: #080809 !important; filter: brightness(0.95); }
-        .db-view-pilotage .kpi-chart-area { border-top: 1px solid rgba(255,253,246,0.06); padding: 4px 0 0 0; margin-top: 4px; height: auto; min-height: 200px; flex: 1; }
-        .db-view-pilotage .smart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-        .db-view-pilotage .smart-title { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,253,246,0.62); font-family: inherit; }
-        .db-view-pilotage .smart-edit-btn { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 6px 12px; border-radius: 7px; border: 1px solid rgba(255,253,246,0.14); background: transparent; color: #FFFDF6; font-size: 12px; font-weight: 500; letter-spacing: 0; font-family: inherit; }
-        .db-view-pilotage .smart-edit-btn:hover { background: rgba(255,253,246,0.06); border-color: rgba(255,253,246,0.22); color: #FFFDF6; }
-        .db-view-pilotage .smart-view { display: block; flex: none; }
-        .db-view-pilotage .smart-row { display: grid; grid-template-columns: 34px 1fr; gap: 14px; align-items: flex-start; padding: 14px 0; border-bottom: 1px solid rgba(255,253,246,0.07); }
-        .db-view-pilotage .smart-row:last-child { border-bottom: none; }
-        .db-view-pilotage .smart-letter { flex-shrink: 0; margin-top: 0; }
-        .db-view-pilotage .smart-letter-badge { width: 26px; height: 26px; background: rgba(255,253,246,0.06); border: 1px solid rgba(255,253,246,0.10); color: #FFFDF6; font-size: 11px; font-weight: 700; box-shadow: none; font-family: inherit; margin-top: 2px; }
-        .db-view-pilotage .smart-texts { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-        .db-view-pilotage .smart-sublabel { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,253,246,0.58); font-family: inherit; margin-bottom: 0; line-height: 1; }
-        .db-view-pilotage .smart-value { font-size: 13.5px; color: #FFFDF6; font-weight: 400; font-family: inherit; line-height: 1.45; letter-spacing: -0.005em; -webkit-line-clamp: unset; overflow: visible; display: block; }
-        body::before { display: none !important; }
-    </style>
 
     <!-- CUSTOM CALENDAR -->
-    <div id="dashCalPopup" style="position:fixed;z-index:99999;background:#1a1c22;border:1px solid rgba(255,253,246,0.14);border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,0.7);padding:14px;width:256px;user-select:none;display:none;"></div>
-    <style>
-        .m-date-chip { display:inline-flex;align-items:center;gap:7px;width:100%;padding:8px 12px;border-radius:8px;background:rgba(255,253,246,0.04);border:1px solid rgba(255,253,246,0.12);color:rgba(255,253,246,0.8);font-size:13px;font-weight:500;font-family:inherit;cursor:pointer;text-align:left;transition:background 120ms,border-color 120ms; }
-        .m-date-chip:hover { background:rgba(255,253,246,0.08);border-color:rgba(255,253,246,0.22);color:#FFFDF6; }
-        .m-date-chip svg { flex-shrink:0;opacity:0.6; }
-        .m-date-chip.has-value { color:rgba(255,253,246,0.9); }
-        #jalonKpiTimelineScroll::-webkit-scrollbar { width:3px; }
-        #jalonKpiTimelineScroll::-webkit-scrollbar-track { background:transparent; }
-        #jalonKpiTimelineScroll::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.1);border-radius:2px; }
-        #jalonKpiMeasureDate-btn.has-value { color:rgba(255,253,246,0.92) !important; }
-        #jalonKpiMeasureDate-btn.has-value svg { opacity:0.65 !important; }
-        #jalonKpiMeasureNote::placeholder { color:rgba(255,253,246,0.28);font-style:italic; }
-        #jalonKpiMeasureValue::placeholder { color:rgba(255,253,246,0.22); }
-        #jalonKpiMeasureValue:focus { border-color:rgba(255,253,246,0.22);box-shadow:none; }
-        #jalonKpiMeasureValueLabel { display:block; }
-        /* reuse cal-* classes from jalons if loaded, else define inline */
-        #dashCalPopup .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
-        #dashCalPopup .cal-nav{background:transparent;border:none;color:rgba(255,253,246,0.55);cursor:pointer;padding:4px 8px;border-radius:5px;font-size:16px;line-height:1;}
-        #dashCalPopup .cal-nav:hover{color:#FFFDF6;background:rgba(255,253,246,0.07);}
-        #dashCalPopup .cal-month-label{font-size:14px;font-weight:650;color:#FFFDF6;}
-        #dashCalPopup .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
-        #dashCalPopup .cal-dow{text-align:center;font-size:10px;font-weight:700;color:rgba(255,253,246,0.35);padding-bottom:6px;text-transform:uppercase;letter-spacing:0.06em;}
-        #dashCalPopup .cal-day{text-align:center;padding:5px 2px;font-size:13px;color:rgba(255,253,246,0.75);border-radius:5px;cursor:pointer;}
-        #dashCalPopup .cal-day:hover{background:rgba(255,253,246,0.09);color:#FFFDF6;}
-        #dashCalPopup .cal-day.today{color:#EE4408;font-weight:700;}
-        #dashCalPopup .cal-day.selected{background:#EE4408;color:#FFFDF6;font-weight:700;}
-        #dashCalPopup .cal-day.empty{cursor:default;}
-    </style>
+    <div id="dashCalPopup" class="dbx-inline-199"></div>
+
     <script>
     (function(){
         const MONTHS_FR=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
