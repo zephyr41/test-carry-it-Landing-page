@@ -11656,18 +11656,18 @@ body::before {
 .dashboard-navbar .db-nav-trigger {
     height: 36px !important;
     max-width: 280px !important;
-    padding: 0 12px !important;
-    border: 1px solid rgba(255,253,246,0.09) !important;
+    padding: 0 8px !important;
+    border: 0 !important;
     border-radius: var(--db-control-radius) !important;
-    background: rgba(255,253,246,0.035) !important;
+    background: transparent !important;
     color: var(--db-ink-soft) !important;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.035);
+    box-shadow: none !important;
 }
 
 .dashboard-navbar .db-nav-trigger:hover,
 .dashboard-navbar .db-nav-dropdown.open .db-nav-trigger {
-    background: rgba(255,253,246,0.06) !important;
-    border-color: rgba(255,253,246,0.16) !important;
+    background: rgba(255,253,246,0.055) !important;
+    border-color: transparent !important;
     color: var(--db-ink) !important;
 }
 
@@ -11699,15 +11699,15 @@ body::before {
     height: 36px !important;
     padding: 0 13px !important;
     border-radius: var(--db-control-radius) !important;
-    background: rgba(255,253,246,0.045) !important;
-    border-color: rgba(255,253,246,0.11) !important;
-    color: rgba(255,253,246,0.72) !important;
+    background: transparent !important;
+    border: 0 !important;
+    color: rgba(255,253,246,0.45) !important;
 }
 
 .db-sync-btn:hover {
-    background: rgba(255,253,246,0.075) !important;
-    border-color: rgba(255,253,246,0.20) !important;
-    color: var(--db-ink) !important;
+    background: rgba(255,253,246,0.055) !important;
+    border-color: transparent !important;
+    color: rgba(255,253,246,0.82) !important;
 }
 
 .dashboard-nav-tabs.db-main-tabs {
@@ -11735,9 +11735,9 @@ body::before {
 
 .dashboard-nav-tabs .db-main-tab.active {
     color: var(--db-ink) !important;
-    background: rgba(255,253,246,0.085) !important;
-    border-color: rgba(255,253,246,0.13) !important;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+    background: transparent !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
 }
 
 .dashboard-nav-tabs .db-main-tab-icon {
