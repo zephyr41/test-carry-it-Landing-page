@@ -12257,8 +12257,7 @@ body::before {
 .dbx-inline-195 { font-size:10px;color:rgba(255,253,246,0.4);margin-bottom:4px;letter-spacing:0.04em; }
 .dbx-inline-196 { font-size:15px;font-weight:700;color:#FFFDF6;line-height:1; }
 .dbx-inline-197 { font-size:11px;font-weight:500;color:rgba(255,253,246,0.5);margin-left:3px; }
-.dbx-inline-198 { font-size:16px;font-weight:450;color:rgba(255,253,246,0.25); }
-.da-card--white .dbx-inline-198 { color: #6b7280 !important; }
+
 .dbx-inline-199 { position:fixed;z-index:99999;background:#1a1c22;border:1px solid rgba(255,253,246,0.14);border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,0.7);padding:14px;width:256px;user-select:none;display:none; }
 /* -- Dashboard component support styles: end -- */
 
@@ -12338,10 +12337,10 @@ body {
 
 .da-card {
     min-width: 0;
-    min-height: 108px;
+    min-height: 88px;
     display: flex;
     flex-direction: column;
-    padding: var(--da-spacing-md);
+    padding: 12px 14px;
     border: 1px solid rgba(255, 255, 255, 0.085) !important;
     border-radius: var(--da-radius-card) !important;
     background: var(--da-bg-surface) !important;

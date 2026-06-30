@@ -5167,7 +5167,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             // Sync situation actuelle card with latest measure value
             const actualChip = document.getElementById(`kpiChipActuel-${i}`);
             if (actualChip && data.length > 0) {
-                const chipTarget = hasTarget ? `<span class="dbx-inline-198"> / ${escHtml(formatMetricValue(target))}</span>` : `<span class="dbx-inline-198"> / ${escHtml(targetLabel)}</span>`;
+                const chipTarget = hasTarget ? `<span class="da-metric-total"> / ${escHtml(formatMetricValue(target))}</span>` : `<span class="da-metric-total"> / ${escHtml(targetLabel)}</span>`;
                 actualChip.innerHTML = `${escHtml(formatMetricValue(currentValue))}${chipTarget}`;
             }
         }
