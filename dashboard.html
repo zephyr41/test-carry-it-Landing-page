@@ -1048,12 +1048,13 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             const deltaText = latestMeta.days === null
                 ? 'Aucune mesure'
                 : latestMeta.days === 0 ? "Aujourd'hui" : `il y a ${latestMeta.days}j`;
-            const cardBase = 'background:#141519;border:none;border-radius:12px;padding:24px;min-width:0;display:flex;flex-direction:column;gap:0';
+            const kpiAlertColor = latestMeta.days !== null && latestMeta.days > 14 ? '#FB923C' : 'rgba(255,253,246,0.32)';
+            const cardBase = 'background:#ffffff;border:none;border-radius:16px;padding:20px 24px;min-width:0;display:flex;flex-direction:column;gap:0;box-shadow:0 12px 32px rgba(255,255,255,0.05);transition:border-color 0.3s cubic-bezier(0.16,1,0.3,1),transform 0.3s cubic-bezier(0.16,1,0.3,1);overflow:hidden;color:#121214';
             return `
                 <div style="${cardBase}">
-                    <div style="font-size:11px;font-weight:500;color:rgba(255,253,246,0.4);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:0.01em;margin-bottom:12px">${escHtml(kpiDesc || 'KPI principal')}</div>
-                    <div style="font-size:28px;font-weight:650;color:#FFFDF6;line-height:1;letter-spacing:-0.03em;font-variant-numeric:tabular-nums" id="kpiChipActuel-${i}">${escHtml(formatMetricValue(kpiCurrent))} <span style="font-size:15px;font-weight:450;color:rgba(255,253,246,0.28)">/ ${escHtml(formatMetricValue(kpiTarget))}</span></div>
-                    ${buildKpiDeltaHtml(globalKpi, `<div style="display:flex;align-items:center;gap:5px;margin-top:10px"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 6h6" stroke="rgba(255,253,246,0.22)" stroke-width="1.8" stroke-linecap="round"/></svg><span style="font-size:11px;color:rgba(255,253,246,0.32)">${escHtml(deltaText)}</span></div>`)}
+                    <div style="font-size:11px;font-weight:500;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:0.01em;margin-bottom:10px">${escHtml(kpiDesc || 'KPI principal')}</div>
+                    <div style="font-size:42px;font-weight:700;color:#121214;line-height:1;letter-spacing:-0.04em;font-variant-numeric:tabular-nums" id="kpiChipActuel-${i}">${escHtml(formatMetricValue(kpiCurrent))}<span style="font-size:16px;font-weight:450;color:#9ca3af"> / ${escHtml(formatMetricValue(kpiTarget))}</span></div>
+                    ${buildKpiDeltaHtml(globalKpi, `<div style="display:flex;align-items:center;gap:5px;margin-top:10px"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 6h6" stroke="rgba(255,253,246,0.22)" stroke-width="1.8" stroke-linecap="round"/></svg><span style="font-size:11px;color:${kpiAlertColor}">${escHtml(deltaText)}</span></div>`)}
                 </div>`;
         }
 
@@ -1102,16 +1103,9 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                     <div>
                         ${buildSmartRowJSX('S', "L'Ambition", obj.specifique, 'specifique', true)}
                         ${buildSmartRowJSX('M', 'La Mesure', obj.mesurable, 'mesurable', false)}
-                        <div style="height:1px;background:rgba(255,253,246,0.07);margin:2px 0"></div>
-                        <button id="smartARToggle-${i}" type="button" onclick="toggleSmartAR(${i})" style="display:flex;align-items:center;justify-content:space-between;width:100%;padding:8px 0;background:none;border:none;color:rgba(255,253,246,0.35);font-size:10.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;font-family:inherit">
-                            <span>A · R</span>
-                            <svg class="smart-ar-arrow" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" style="transition:transform 0.18s;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
-                        </button>
-                        <div id="smartARRows-${i}" hidden>
-                            ${buildSmartRowJSX('A', 'Atteignable', obj.atteignable, 'atteignable', true)}
-                            ${buildSmartRowJSX('R', 'Réaliste', obj.realiste, 'realiste', false)}
-                        </div>
-                        ${buildSmartRowJSX('T', "L'Échéance", obj.temporel, 'temporel', false)}
+                        ${buildSmartRowJSX('A', 'Atteignable', obj.atteignable, 'atteignable', false)}
+                        ${buildSmartRowJSX('R', 'Réaliste', obj.realiste, 'realiste', false)}
+                        ${buildSmartRowJSX('T', "L'Échéance", formatDateJalonLong(obj.temporel) || obj.temporel, 'temporel', false)}
                     </div>
                     <form class="smart-edit" id="smartEdit-${i}" onsubmit="saveSmartEdit(event, ${i})">
                         ${buildSmartEditRow('S', "L'Ambition", `smartSpec-${i}`, obj.specifique)}
@@ -1163,13 +1157,13 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                         data-view="pilotage"
                         ${currentDashboardView === 'pilotage' ? '' : 'hidden'}>
                         <div class="db-section vision-section">
-                            <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px">
+                            <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px">
                                 ${buildVisionScorecard(obj, i, globalKpi, kpiDesc, kpiUnit, kpiTarget, kpiCurrent)}
                                 ${buildVisionJalonActifCard(obj, i)}
                             </div>
                             <div class="vision-secondary-grid">
                                 <!-- KPI CARD -->
-                                <div class="vision-kpi-card" id="kpiPanel-${i}" style="background:#141519;border:none;border-radius:12px;padding:24px;display:flex;flex-direction:column;min-width:0">
+                                <div class="vision-kpi-card" id="kpiPanel-${i}" style="display:flex;flex-direction:column;min-width:0">
                                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:16px">
                                         <span id="kpiDesc-${i}" style="font-size:12px;font-weight:500;color:rgba(255,253,246,0.4);letter-spacing:0.01em;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Évolution KPI</span>
                                         <button onclick="openAddMeasureModal(${i})" style="display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:6px;background:rgba(255,253,246,0.06);color:rgba(255,253,246,0.55);border:none;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0" onmouseover="this.style.background='rgba(255,253,246,0.1)'" onmouseout="this.style.background='rgba(255,253,246,0.06)'">
@@ -1177,7 +1171,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                                             Mesure
                                         </button>
                                     </div>
-                                    <div id="kpiWrap-${i}" style="flex:1;min-height:180px"></div>
+                                    <div id="kpiWrap-${i}" style="flex:1;min-height:360px"></div>
                                 </div>
                                 ${buildVisionSmartCompact(obj, i, globalKpi)}
                             </div>
@@ -1214,7 +1208,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             const sep = isFirst ? '' : '<div style="height:1px;background:rgba(255,253,246,0.05)"></div>';
             return `${sep}
                 <div style="display:grid;grid-template-columns:22px 1fr;gap:12px;align-items:baseline;padding:13px 0">
-                    <span style="font-size:10px;font-weight:700;color:rgba(255,253,246,0.25);font-family:inherit;letter-spacing:0.04em">${letter}</span>
+                    <span style="font-size:10px;font-weight:700;color:rgba(255,253,246,0.32);font-family:inherit;letter-spacing:0.04em">${letter}</span>
                     <span style="font-size:13px;color:rgba(255,253,246,0.7);line-height:1.5;letter-spacing:-0.005em" data-field="${fieldKey || ''}">${escHtml(value || '—')}</span>
                 </div>`;
         }
@@ -1246,7 +1240,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
         function buildVisionJalonActifCard(obj, i) {
             const { jalons, activeIdx } = getVisionJalonContext(obj, i);
             const total = jalons.length;
-            const cardBase = 'background:#141519;border:none;border-radius:12px;padding:16px 20px;min-width:0';
+            const cardBase = 'background:rgba(24,24,27,0.6);border:1px solid rgba(255,255,255,0.05);border-radius:16px;padding:16px 20px;min-width:0;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 24px 48px -12px rgba(0,0,0,0.4);transition:border-color 0.3s cubic-bezier(0.16,1,0.3,1),transform 0.3s cubic-bezier(0.16,1,0.3,1);overflow:hidden';
 
             if (!total) return `<div style="${cardBase};display:flex;align-items:center;justify-content:center;min-height:72px"><span style="font-size:11px;color:rgba(255,253,246,0.4)">Aucun jalon défini</span></div>`;
 
@@ -1284,13 +1278,13 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             const dots = jalons.map((j, idx) => {
                 const isDone = idx < activeIdx;
                 const isActive = idx === activeIdx;
-                const firstWord = escHtml((j.titre || j.title || '').split(' ')[0]);
+                const firstWord = escHtml(`J${idx + 1}`);
                 const check = isDone ? `<svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>` : '';
                 const dotStyle = isActive
                     ? 'width:16px;height:16px;border-radius:50%;background:#EE4408;border:none;box-shadow:0 0 0 3px rgba(238,68,8,0.18);display:flex;align-items:center;justify-content:center;color:transparent;font-size:10px;line-height:1'
                     : isDone
-                        ? 'width:16px;height:16px;border-radius:50%;background:#111111;border:1.5px solid rgba(255,255,255,0.22);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.6);font-size:10px;line-height:1'
-                        : 'width:16px;height:16px;border-radius:50%;background:#111111;border:1.5px solid rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;color:transparent;font-size:10px;line-height:1';
+                        ? 'width:16px;height:16px;border-radius:50%;background:#121214;border:1.5px solid rgba(255,255,255,0.22);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.6);font-size:10px;line-height:1'
+                        : 'width:16px;height:16px;border-radius:50%;background:#121214;border:1.5px solid rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;color:transparent;font-size:10px;line-height:1';
                 const labelColor = isDone ? 'rgba(255,253,246,0.50)' : isActive ? '#FFFDF6' : 'rgba(255,253,246,0.20)';
                 return `
                     <div style="grid-column:${idx+1};grid-row:1;display:flex;justify-content:center;position:relative;z-index:1">
@@ -1318,8 +1312,10 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             const lastMeasureLine = lastMeasureText ? `<div style="font-size:11px;font-weight:500;color:${lastMeasureColor};margin-top:6px">${escHtml(lastMeasureText)}</div>` : '';
             const card2 = `
                 <div style="${cardBase};display:flex;flex-direction:column">
-                    <div style="font-size:11px;font-weight:500;color:rgba(255,253,246,0.38);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:0.01em;margin-bottom:12px">Résultat</div>
-                    <div style="font-size:26px;font-weight:650;color:#FFFDF6;line-height:1;letter-spacing:-0.03em;font-variant-numeric:tabular-nums">${fmtKpi(resultValue, resultTarget, resultUnit)}</div>
+                    <div style="margin-bottom:12px">
+                        <div style="font-size:11px;font-weight:500;color:rgba(255,253,246,0.38);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:0.01em">${escHtml(resultLabel)}</div>
+                    </div>
+                    <div style="font-size:21px;font-weight:650;color:#FFFDF6;line-height:1;letter-spacing:-0.02em;font-variant-numeric:tabular-nums">${fmtKpi(resultValue, resultTarget, resultUnit)}</div>
                     ${lastMeasureLine}
                 </div>`;
 
@@ -1334,10 +1330,10 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             const effortDiffLine = effortDiff !== null && Number.isFinite(effortTarget) ? `<div style="font-size:11px;font-weight:600;color:rgba(255,253,246,0.82);margin-top:6px">${effortDiffSign}${escHtml(formatMetricValue(effortDiff))}${effortUnitShort ? ' ' + escHtml(effortUnitShort) : ''} / ${escHtml(formatMetricValue(effortTarget))}${effortUnitShort ? ' ' + escHtml(effortUnitShort) : ''}</div>` : '';
             const card3 = `
                 <div style="${cardBase};display:flex;flex-direction:column">
-                    <div style="font-size:11px;font-weight:500;color:rgba(255,253,246,0.38);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:0.01em;margin-bottom:12px">Effort</div>
-                    <div style="font-size:26px;font-weight:650;color:#FFFDF6;line-height:1;letter-spacing:-0.03em;font-variant-numeric:tabular-nums">${fmtKpi(effortValue, null, effortUnit)}</div>
+                    <div style="font-size:11px;font-weight:500;color:rgba(255,253,246,0.38);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:0.01em;margin-bottom:12px">${escHtml(effortLabel)}</div>
+                    <div style="font-size:21px;font-weight:650;color:#FFFDF6;line-height:1;letter-spacing:-0.02em;font-variant-numeric:tabular-nums">${fmtKpi(effortValue, effortTarget, effortUnitShort)}</div>
+                    ${!Number.isFinite(effortValue) ? `<div style="font-size:11px;color:rgba(255,253,246,0.28);margin-top:8px;line-height:1.4">KPI effort non défini sur ce jalon</div>` : ''}
                     ${effortMeasureLine}
-                    ${effortDiffLine}
                 </div>`;
 
             return `${card1}${card2}${card3}`;
@@ -1348,7 +1344,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
         // ──────────────────────────────────────────────────────────
         function buildVisionResultatEffortCard(obj, i) {
             const { activeJalon } = getVisionJalonContext(obj, i);
-            if (!activeJalon) return `<div style="background:#111111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:18px 20px;display:flex;align-items:center;justify-content:center;min-width:0"><span style="font-size:11px;color:rgba(255,253,246,0.3)">Aucun jalon actif</span></div>`;
+            if (!activeJalon) return `<div style="background:#1c1c22;border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:18px 20px;display:flex;align-items:center;justify-content:center;min-width:0"><span style="font-size:11px;color:rgba(255,253,246,0.3)">Aucun jalon actif</span></div>`;
 
             const lagging = getJalonKpiByType(activeJalon, 'lagging');
             const leading = getJalonKpiByType(activeJalon, 'leading');
@@ -1378,7 +1374,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                 : (Number.isFinite(effortValue) ? `${formatMetricValue(effortValue)}${effortUnit ? ' ' + effortUnit : ''}` : '—');
 
             return `
-                <div style="background:#111111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:18px 20px;display:flex;flex-direction:column;min-width:0">
+                <div style="background:#1c1c22;border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:18px 20px;display:flex;flex-direction:column;min-width:0;box-shadow:0 4px 20px rgba(0,0,0,0.2)">
                     <div style="padding-bottom:14px">
                         <div style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,253,246,0.38);margin-bottom:8px">${escHtml(resultLabel)}</div>
                         <div style="font-size:22px;font-weight:720;color:#FFFDF6;line-height:1;letter-spacing:-0.01em">${escHtml(resultText)}</div>
@@ -1584,7 +1580,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
 
             return `
                 <section class="vision-quick-card vision-calendar-card"
-                    style="background:#111111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;display:grid;grid-template-columns:minmax(220px,0.46fr) minmax(250px,0.8fr);column-gap:18px;align-items:center;justify-content:stretch;padding:16px 18px 16px 28px;overflow:visible;position:relative;z-index:2;width:100%;max-width:none;justify-self:stretch;min-height:86px;min-width:0"
+                    style="background:#1c1c22;border:1px solid rgba(255,255,255,0.08);border-radius:20px;display:grid;grid-template-columns:minmax(220px,0.46fr) minmax(250px,0.8fr);column-gap:18px;align-items:center;justify-content:stretch;padding:16px 18px 16px 28px;overflow:visible;position:relative;z-index:2;width:100%;max-width:none;justify-self:stretch;min-height:86px;min-width:0;box-shadow:0 4px 20px rgba(0,0,0,0.2)"
                     aria-label="Résultat et effort">
                     <div class="vision-stats-col" style="display:flex;flex-direction:column;gap:7px;min-width:0">
                         <div class="vision-stat-value-row" style="display:flex;align-items:baseline;gap:6px;min-width:0;flex-wrap:nowrap;white-space:nowrap">
@@ -5142,7 +5138,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
 
             // SVG dimensions (JSX exact)
             const W = 760, H = 200;
-            const padL = 38, padR = 24, padT = 12, padB = 26;
+            const padL = 18, padR = 24, padT = 12, padB = 26;
             const plotW = W - padL - padR;
             const plotH = H - padT - padB;
             const maxV = Math.max(...data.map(d => d.value), target, 10);
@@ -5157,24 +5153,25 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             const firstX = xFor(0, n);
             const firstY = yFor(data[0].value);
             const targetY = yFor(target);
-            const targetLine = '';
+            const targetLine = Number.isFinite(target) && Number.isFinite(targetY) ? `<line x1="${padL}" y1="${targetY}" x2="${W - padR}" y2="${targetY}" stroke="rgba(255,253,246,0.18)" stroke-width="1" stroke-dasharray="5 4"/><text x="${W - padR - 2}" y="${targetY - 5}" text-anchor="end" font-size="9.5" fill="rgba(255,253,246,0.4)" font-family="'Inter',system-ui,sans-serif" font-weight="500">Cible</text>` : '';
             const expectedLine = '';
             const linePoints = data.map((d, idx) => `${xFor(idx, n)},${yFor(d.value)}`).join(' ');
             const bottomY = padT + plotH;
             const areaPath = n >= 2 ? `M${data.map((d, idx) => `${xFor(idx,n)},${yFor(d.value)}`).join(' L')} L${xFor(n-1,n)},${bottomY} L${xFor(0,n)},${bottomY} Z` : '';
 
-            // Y-axis grid + labels
+            // Y-axis grid (no labels — value is in the KPI card above)
             const yGrid = Array.from({ length: yTicks + 1 }, (_, k) => {
-                const v = tickStep * k;
-                const y = yFor(v);
-                return `<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="rgba(255,253,246,0.06)" stroke-width="1"/>
-                        <text x="${padL - 8}" y="${y + 3}" text-anchor="end" font-size="10" fill="rgba(255,253,246,0.38)" font-family="'Inter',system-ui,sans-serif">${v}</text>`;
+                const y = yFor(tickStep * k);
+                return `<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="rgba(255,253,246,0.06)" stroke-width="1"/>`;
             }).join('');
 
-            // X-axis date labels
+            // X-axis date labels — deduplicate adjacent same-month labels
+            let prevXLabel = '';
             const xLabels = data.map((d, idx) => {
                 if (n > 6 && idx % 2 !== 0 && idx !== n - 1) return '';
-                const label = d.displayDate ? d.displayDate.slice(0, 5) : '';
+                const label = d.displayDate ? formatDateJalonCourt(d.displayDate).split(' ')[0] : '';
+                if (!label || label === prevXLabel) return '';
+                prevXLabel = label;
                 return `<text x="${xFor(idx, n)}" y="${H - 10}" text-anchor="middle" font-size="10" fill="rgba(255,253,246,0.38)" font-family="'Inter',system-ui,sans-serif">${label}</text>`;
             }).join('');
 
@@ -5191,7 +5188,8 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             }).join('');
 
             container.style.position = 'relative';
-            container.innerHTML = `<svg width="100%" height="200" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
+            const svgHeight = Math.max(container.clientHeight || 0, 300);
+            container.innerHTML = `<svg width="100%" height="${svgHeight}" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="display:block">
                 ${yGrid}
                 ${targetLine}
                 ${expectedLine}
@@ -5229,9 +5227,8 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             // Sync situation actuelle card with latest measure value
             const actualChip = document.getElementById(`kpiChipActuel-${i}`);
             if (actualChip && n > 0) {
-                const chipUnit = unit ? `<span style="font-size:17px;font-weight:450;color:rgba(255,253,246,0.55)"> ${unit}</span>` : '';
-                const chipTarget = target != null ? `<span style="font-size:15px;font-weight:450;color:rgba(255,253,246,0.28)"> / ${target}</span>` : '';
-                actualChip.innerHTML = `${data[n - 1].value}${chipUnit}${chipTarget}`;
+                const chipTarget = target != null ? `<span style="font-size:16px;font-weight:450;color:rgba(255,253,246,0.25)"> / ${escHtml(formatMetricValue(target))}</span>` : '';
+                actualChip.innerHTML = `${escHtml(formatMetricValue(data[n - 1].value))}${chipTarget}`;
             }
         }
 
@@ -5654,7 +5651,10 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
 
         function formatDateJalonCourt(dateStr) {
             if (!dateStr) return '';
-            const d = new Date(dateStr);
+            let d;
+            const dmyMatch = String(dateStr).match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})$/);
+            if (dmyMatch) d = new Date(+dmyMatch[3], +dmyMatch[2] - 1, +dmyMatch[1]);
+            else d = new Date(dateStr);
             if (isNaN(d)) return dateStr;
             const months = ['Jan','Fév','Mar','Avr','Mai','Juin','Juil','Août','Sep','Oct','Nov','Déc'];
             return `${months[d.getMonth()]} ${d.getFullYear()}`;
@@ -6338,16 +6338,28 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
         }
         .vision-secondary-grid {
             display: grid;
-            grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
-            gap: 12px;
-            align-items: stretch;
+            grid-template-columns: 3fr 1fr;
+            gap: 16px;
+            align-items: start;
+        }
+        .vision-smart-compact {
+            align-self: start;
         }
         .vision-panel {
             min-width: 0;
             padding: 22px 24px 16px;
-            background: #141519;
-            border: none;
-            border-radius: 12px;
+            background: rgba(24,24,27,0.6);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 16px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 24px 48px -12px rgba(0,0,0,0.4);
+            transition: border-color 0.3s cubic-bezier(0.16,1,0.3,1), transform 0.3s cubic-bezier(0.16,1,0.3,1);
+            overflow: hidden;
+        }
+        .vision-panel:hover {
+            border-color: rgba(255,255,255,0.12);
+            transform: translateY(-2px);
         }
         .vision-panel-head {
             display: flex;
@@ -6372,13 +6384,13 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             align-items: center;
             justify-content: center;
             min-height: 28px;
-            padding: 4px 10px;
+            padding: 4px 12px;
             border-radius: 6px;
-            border: none;
-            background: rgba(255,253,246,0.06);
-            color: rgba(255,253,246,0.55);
+            border: 1px solid rgba(255,253,246,0.1);
+            background: transparent;
+            color: rgba(255,253,246,0.5);
             font: inherit;
-            font-size: 11.5px;
+            font-size: 11px;
             font-weight: 600;
             cursor: pointer;
             white-space: nowrap;
@@ -6457,9 +6469,10 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             overflow: visible;
         }
         .vision-quick-card {
-            background: #111111;
+            background: #1c1c22;
             border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 10px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
             padding: 16px 18px;
             min-height: 128px;
             display: flex;
@@ -6508,7 +6521,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             width: 16px;
             height: 16px;
             border-radius: 50%;
-            background: #111111;
+            background: #121214;
             border: 1.5px solid rgba(255,255,255,0.12);
             display: flex;
             align-items: center;
@@ -6603,6 +6616,18 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
         .vision-kpi-card {
             min-height: 318px !important;
             padding: 26px !important;
+            background: rgba(24,24,27,0.6) !important;
+            border: 1px solid rgba(255,255,255,0.05) !important;
+            border-radius: 16px !important;
+            backdrop-filter: blur(20px) !important;
+            -webkit-backdrop-filter: blur(20px) !important;
+            box-shadow: 0 24px 48px -12px rgba(0,0,0,0.4) !important;
+            transition: border-color 0.3s cubic-bezier(0.16,1,0.3,1), transform 0.3s cubic-bezier(0.16,1,0.3,1) !important;
+            overflow: hidden !important;
+        }
+        .vision-kpi-card:hover {
+            border-color: rgba(255,255,255,0.12) !important;
+            transform: translateY(-2px) !important;
         }
         .vision-smart-card {
             padding: 22px !important;

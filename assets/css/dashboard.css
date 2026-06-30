@@ -6,7 +6,7 @@
 /* ── DASHBOARD PAGE ── */
 body {
     padding-top: var(--navbar-height, 72px);
-    background: #080b12;
+    background: #121214;
 }
 
 body::before {
