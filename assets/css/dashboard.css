@@ -553,6 +553,11 @@ body::before {
     align-items: start;
 }
 
+.smart-edit-stack {
+    display: grid;
+    gap: 8px;
+}
+
 .smart-edit-label {
     font-size: 12px;
     font-weight: 800;
@@ -12608,6 +12613,180 @@ body {
 .da-chart-body {
     flex: 1;
     min-height: 0;
+    position: relative;
+    display: flex;
+}
+
+.da-kpi-chart-shell {
+    position: relative;
+    flex: 1;
+    min-height: 300px;
+    border-top: 1px solid rgba(255, 255, 255, 0.055);
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.018), rgba(255,255,255,0) 42%),
+        radial-gradient(circle at 50% 100%, rgba(255,255,255,0.045), transparent 42%);
+}
+
+.da-kpi-chart {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 300px;
+}
+
+.da-kpi-edit-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.da-kpi-edit-point {
+    position: absolute;
+    z-index: 3;
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    border: 2px solid #0a0a0c;
+    border-radius: 999px;
+    background: #ffffff;
+    color: #0a0a0c;
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.44), 0 8px 22px rgba(0,0,0,0.42);
+    cursor: pointer;
+    pointer-events: auto;
+    transform: translate(-50%, -50%);
+}
+
+.da-kpi-edit-point:hover,
+.da-kpi-edit-point:focus-visible {
+    outline: none;
+    background: #f59e0b;
+    box-shadow: 0 0 0 4px rgba(245,158,11,0.22), 0 10px 24px rgba(0,0,0,0.48);
+}
+
+.da-kpi-edit-point span {
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 7px);
+    min-width: 22px;
+    padding: 3px 6px;
+    border-radius: 6px;
+    background: rgba(244,244,245,0.96);
+    color: #0a0a0c;
+    font-size: 10px;
+    font-weight: 750;
+    line-height: 1;
+    text-align: center;
+    transform: translateX(-50%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 120ms ease, transform 120ms ease;
+}
+
+.da-kpi-edit-point:hover span,
+.da-kpi-edit-point:focus-visible span {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-2px);
+}
+
+.da-kpi-grid {
+    stroke: rgba(255, 255, 255, 0.055);
+    stroke-width: 1;
+}
+
+.da-kpi-axis-text {
+    fill: rgba(244, 244, 245, 0.38);
+    font-family: var(--da-font-body);
+    font-size: 10px;
+    font-weight: 500;
+}
+
+.da-kpi-area {
+    fill: rgba(255, 255, 255, 0.045);
+}
+
+.da-kpi-line {
+    fill: none;
+    stroke: #ffffff;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.da-kpi-baseline {
+    stroke: rgba(255, 255, 255, 0.7);
+    stroke-width: 2;
+    stroke-linecap: round;
+}
+
+.da-kpi-target-line {
+    stroke: rgba(245, 158, 11, 0.7);
+    stroke-width: 1.2;
+    stroke-dasharray: 6 6;
+}
+
+.da-kpi-target-label {
+    fill: rgba(245, 158, 11, 0.9);
+    font-family: var(--da-font-body);
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.da-kpi-dot {
+    fill: #ffffff;
+}
+
+.da-kpi-dot--latest {
+    stroke: #0a0a0c;
+    stroke-width: 3;
+}
+
+.da-kpi-dot-hit {
+    cursor: default;
+}
+
+.da-kpi-state {
+    position: absolute;
+    left: 50%;
+    top: 42%;
+    width: min(360px, calc(100% - 48px));
+    transform: translate(-50%, -50%);
+    text-align: center;
+    pointer-events: none;
+}
+
+.da-kpi-state-title {
+    margin: 0 0 6px;
+    color: rgba(244, 244, 245, 0.82);
+    font-size: var(--da-text-sm);
+    font-weight: 650;
+}
+
+.da-kpi-state-copy {
+    margin: 0;
+    color: rgba(161, 161, 170, 0.82);
+    font-size: var(--da-text-xs);
+    line-height: 1.45;
+}
+
+.da-kpi-tooltip-date {
+    margin-bottom: 4px;
+    color: rgba(244, 244, 245, 0.48);
+    font-size: 10px;
+    letter-spacing: 0.04em;
+}
+
+.da-kpi-tooltip-value {
+    color: #f4f4f5;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.da-kpi-tooltip-unit {
+    margin-left: 3px;
+    color: rgba(244, 244, 245, 0.56);
+    font-size: 11px;
+    font-weight: 500;
 }
 
 .da-smart-panel {

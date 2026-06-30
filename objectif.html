@@ -526,8 +526,7 @@
         definition: "Un objectif spécifique dit exactement ce que tu veux réussir.",
         hint: "Ton objectif doit décrire un résultat précis. \"Améliorer mes finances\" n'est pas spécifique. \"5 000 € nets mensuels de revenus locatifs\" l'est. Plus c'est précis, plus tu sais quoi viser. C'est plus simple quand tu définis un seuil précis (un chiffre) ou un état précis (fait / pas fait).",
         fields: [
-          ["result", "Quel résultat concret veux-tu obtenir ?", "Ex : publier un livre, obtenir 3 biens locatifs, lancer une app payante, courir un marathon officiel"],
-          ["level", "Quel niveau exact rendra cet objectif réussi ?", "Ex : 5 000 € nets mensuels, 3 biens signés, 1 000 utilisateurs actifs, marathon terminé en moins de 4h"]
+          ["result", "Quel résultat concret veux-tu obtenir ?", "Ex : publier un livre, obtenir des biens locatifs, lancer une app payante, courir un marathon officiel"]
         ]
       },
       {
@@ -537,7 +536,8 @@
         definition: "Ce que tu vas suivre chaque mois pour voir ton avancée.",
         hint: "Un indicateur : un chiffre ou une preuve qui bouge. Il te dit si tu avances ou pas. Sans indicateur, tu travailles à l'aveugle. Le chiffre n'a pas besoin d'être parfait au départ, il doit juste exister.",
         fields: [
-          ["indicator", "Quel indicateur tu vas suivre chaque mois ?", "Ex : temps au km, chiffre d'affaires mensuel, utilisateurs actifs, biens visités"]
+          ["indicator", "Quel indicateur tu vas suivre chaque mois ?", "Ex : temps au km, chiffre d'affaires mensuel, utilisateurs actifs, biens visités"],
+          ["target", "Quel seuil rendra l'objectif atteint ?", "Ex : 1 000 clients payants, 5 000 € mensuels, 42 km, 3 biens signés"]
         ]
       },
       {
@@ -589,8 +589,8 @@
 
     const emptyForm = {
       titre: "",
-      specific: { result: "", level: "" },
-      measurable: { indicator: "" },
+      specific: { result: "" },
+      measurable: { indicator: "", target: "" },
       achievable: { resources: "", constraints: "" },
       relevant: { hours: "" },
       timebound: { deadline: "" },
@@ -605,6 +605,8 @@
         if (saved) {
           const parsed = JSON.parse(saved);
           if (!parsed.animated) parsed.animated = { vision: "" };
+          if (!parsed.measurable) parsed.measurable = { indicator: "", target: "" };
+          if (parsed.measurable.target === undefined) parsed.measurable.target = "";
           return parsed;
         }
       } catch {}
@@ -645,6 +647,27 @@
     function hasDateSignal(value) {
       const normalized = value.toLowerCase();
       return hasNumber(value) || dateSignals.some((signal) => normalized.includes(signal));
+    }
+
+    function parseMetricTarget(raw) {
+      const label = String(raw || "").replace(/\s+/g, " ").trim();
+      const match = label.match(/-?\d+(?:[\s.,]\d+)*/);
+      if (!match) return { value: null, unit: "", label };
+      const compact = match[0].replace(/\s/g, "");
+      const numericText = /^[+-]?\d{1,3}([.,]\d{3})+$/.test(compact)
+        ? compact.replace(/[.,]/g, "")
+        : compact.replace(",", ".");
+      const value = Number(numericText);
+      const unit = label
+        .replace(match[0], "")
+        .replace(/[=<>+~:]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+      return {
+        value: Number.isFinite(value) ? value : null,
+        unit,
+        label
+      };
     }
 
     function getValue(path) {
@@ -694,14 +717,14 @@
         ? new Date(rawDeadline).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })
         : "[échéance]";
       const result = form.specific.result || "[résultat concret]";
-      const level = form.specific.level || "[niveau de réussite]";
       const indicator = form.measurable.indicator || "[indicateur]";
+      const target = form.measurable.target || "[seuil]";
       const resources = form.achievable.resources || "[ce que j'ai déjà]";
       const constraints = form.achievable.constraints || "[ce qu'il me manque]";
       const hours = form.relevant.hours || "[heures/semaine]";
       const vision = form.animated?.vision;
 
-      let text = `D'ici ${deadline}, je veux ${result} jusqu'à atteindre ${level}.\nJe mesurerai mes progrès avec ${indicator}.\nJe peux déjà m'appuyer sur ${resources}.\nCe qu'il me faut pour démarrer : ${constraints}.\nJe peux y consacrer ${hours}.`;
+      let text = `D'ici ${deadline}, je veux ${result}.\nJe mesurerai mes progrès avec ${indicator}, avec un seuil de réussite à ${target}.\nJe peux déjà m'appuyer sur ${resources}.\nCe qu'il me faut pour démarrer : ${constraints}.\nJe peux y consacrer ${hours}.`;
       if (vision) text += `\nSi j'y arrive : ${vision}.`;
       return text;
     }
@@ -712,16 +735,16 @@
         ? new Date(rawDeadline).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })
         : "[échéance]";
       const result = form.specific.result || "[résultat concret]";
-      const level = form.specific.level || "[niveau de réussite]";
       const indicator = form.measurable.indicator || "[indicateur]";
+      const target = form.measurable.target || "[seuil]";
       const resources = form.achievable.resources || "[ce que j'ai déjà]";
       const constraints = form.achievable.constraints || "[ce qu'il me manque]";
       const hours = form.relevant.hours || "[heures/semaine]";
       const vision = form.animated?.vision;
 
       const lines = [
-        `D'ici ${escapeHtml(deadline)}, je veux ${escapeHtml(result)} jusqu'à atteindre ${escapeHtml(level)}.`,
-        `Je mesurerai mes progrès avec ${escapeHtml(indicator)}.`,
+        `D'ici ${escapeHtml(deadline)}, je veux ${escapeHtml(result)}.`,
+        `Je mesurerai mes progrès avec ${escapeHtml(indicator)}, avec un seuil de réussite à ${escapeHtml(target)}.`,
         `Je peux déjà m'appuyer sur ${escapeHtml(resources)}.`,
         `Ce qu'il me faut pour démarrer : ${escapeHtml(constraints)}.`,
         `Je peux y consacrer ${escapeHtml(hours)}.`
@@ -748,12 +771,13 @@
       const deadline = rawDeadline
         ? new Date(rawDeadline).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })
         : "";
-      const ambition = [form.specific.result, form.specific.level].filter(isFilled).join(" · ");
+      const ambition = form.specific.result;
+      const measure = [form.measurable.indicator, form.measurable.target ? `cible : ${form.measurable.target}` : ""].filter(isFilled).join(" · ");
       const attainable = [form.achievable.resources, form.achievable.constraints].filter(isFilled).join(" · ");
 
       const rows = [
         smartPreviewRow("S", "L'ambition", ambition, "Résultat précis à atteindre"),
-        smartPreviewRow("M", "La mesure", form.measurable.indicator, "Chiffre ou preuve observable"),
+        smartPreviewRow("M", "La mesure", measure, "Indicateur et seuil de réussite"),
         smartPreviewRow("A", "Atteignable", attainable, "Ressources et manques à regarder en face"),
         smartPreviewRow("R", "Réaliste", form.relevant.hours, "Temps réel que tu peux engager"),
         smartPreviewRow("T", "L'échéance", deadline, "Date limite")
@@ -821,7 +845,10 @@
       updateSectionStatuses();
       objectiveText.innerHTML = buildObjectivePreview();
       objectivePhrase.innerHTML = buildObjectiveHtml();
-      validateButton.disabled = !form.specific.result.trim();
+      const requiredComplete = sections
+        .filter((section) => !section.optional)
+        .every((section) => getSectionStatus(section).complete);
+      validateButton.disabled = !requiredComplete;
     }
 
     function render() {
@@ -858,13 +885,31 @@
 
     validateButton.addEventListener("click", () => {
       const specifique = form.specific.result || "";
-      const niveau = form.specific.level || "";
       const atteignable = [form.achievable.resources, form.achievable.constraints ? "manque : " + form.achievable.constraints : ""].filter(Boolean).join(" / ");
+      const metricTarget = parseMetricTarget(form.measurable.target);
       const smartObj = {
         titre: form.titre || "",
         specifique,
-        niveau,
+        niveau: metricTarget.label,
         mesurable: form.measurable.indicator,
+        kpiLabel: form.measurable.indicator,
+        kpiTarget: metricTarget.value,
+        kpiTargetRaw: metricTarget.label,
+        kpiTargetSource: "onboarding",
+        kpiUnit: metricTarget.unit,
+        globalKpi: {
+          label: form.measurable.indicator,
+          titre: form.measurable.indicator,
+          target: metricTarget.value,
+          cible: metricTarget.value,
+          targetLabel: metricTarget.label,
+          targetSource: "onboarding",
+          unit: metricTarget.unit,
+          unite: metricTarget.unit,
+          value: null,
+          valeur: null,
+          measures: []
+        },
         atteignable,
         realiste: form.relevant.hours,
         temporel: form.timebound.deadline ? form.timebound.deadline + 'T12:00:00' : ''
