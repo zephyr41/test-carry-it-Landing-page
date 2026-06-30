@@ -1146,15 +1146,36 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                 : latestMeta.days === 0 ? "Aujourd'hui" : `il y a ${latestMeta.days}j`;
             const staleClass = latestMeta.days === null ? 'is-muted' : latestMeta.days > 14 ? 'is-stale' : '';
             const rawTargetLabel = getGlobalKpiTargetLabel(obj);
+            const unit = cleanKpiUnit(kpiDesc, kpiUnit);
             const targetLabel = Number.isFinite(kpiTarget)
-                ? formatMetricValue(kpiTarget)
+                ? formatMetricWithUnit(kpiTarget, unit)
                 : (rawTargetLabel || 'cible à définir');
             return `
                 <article class="da-card da-card--white da-metric-card">
                     <div class="da-card-title">${escHtml(kpiDesc || 'KPI principal')}</div>
-                    <div id="kpiChipActuel-${i}" class="da-metric-large">${escHtml(formatMetricValue(kpiCurrent))}<span class="da-metric-total"> / ${escHtml(targetLabel)}</span></div>
+                    <div id="kpiChipActuel-${i}" class="da-metric-large">${escHtml(formatMetricWithUnit(kpiCurrent, unit))}<span class="da-metric-total"> / ${escHtml(targetLabel)}</span></div>
                     <div class="da-metric-subtitle ${staleClass}">— ${escHtml(deltaText)}</div>
                 </article>`;
+        }
+
+        function cleanKpiUnit(label = '', unit = '') {
+            const raw = String(unit || '').trim();
+            const source = `${raw} ${label || ''}`.toLowerCase();
+            if (/client/.test(source)) return 'clients';
+            if (/utilisateur|user/.test(source)) return 'utilisateurs';
+            if (/heure|hours?\b/.test(source)) return 'h';
+            if (/€|eur|revenu|chiffre/.test(source)) return '€';
+            if (/km|kilom/.test(source)) return 'km';
+            if (/bien/.test(source)) return 'biens';
+            if (/lead/.test(source)) return 'leads';
+            if (/vente/.test(source)) return 'ventes';
+            if (/^nb\b|nombre/i.test(raw)) return '';
+            return raw;
+        }
+
+        function formatMetricWithUnit(value, unit = '') {
+            const formatted = formatMetricValue(value);
+            return unit ? `${formatted} ${unit}` : formatted;
         }
 
         function buildVisionMilestonePanel(obj, i) {
@@ -1267,10 +1288,13 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                                 <!-- KPI CARD -->
                                 <section class="da-card da-panel da-chart-card" id="kpiPanel-${i}">
                                     <div class="da-panel-header">
-                                        <span id="kpiDesc-${i}" class="da-panel-title">Évolution KPI</span>
-                                        <button onclick="openAddMeasureModal(${i})" class="da-btn da-btn--ghost">
+                                        <div class="da-kpi-heading">
+                                            <span class="da-kpi-eyebrow">KPI global</span>
+                                            <span id="kpiDesc-${i}" class="da-panel-title">${escHtml(extractKPIDesc(kpiDesc) || kpiDesc || 'Mesure principale')}</span>
+                                        </div>
+                                        <button onclick="openAddMeasureModal(${i})" class="da-btn da-btn--primary">
                                             <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-                                            Mesure
+                                            Ajouter une mesure
                                         </button>
                                     </div>
                                     <div id="kpiWrap-${i}" class="da-chart-body"></div>
@@ -5070,6 +5094,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             const targetLabel = hasTarget ? formatMetricValue(target) : (getGlobalKpiTargetLabel(obj) || 'cible à définir');
             const targetDate = parseVisionTargetDate(obj);
             const targetDateLabel = formatVisionDate(targetDate);
+            const unit = cleanKpiUnit(globalKpi.label || globalKpi.titre || obj.mesurable || '', globalKpi.unit || globalKpi.unite || obj.kpiUnit || extractKPIUnit(obj.mesurable) || '');
 
             // Empty state
             if (measures.length === 0) {
@@ -5124,19 +5149,12 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
                 measureId: d.measureId,
                 displayDate: d.displayDate,
             }));
-            const allZero = data.every(d => d.value === 0);
-            const stateTitle = allZero ? 'Aucune progression mesurée' : '';
-            const stateCopy = allZero
-                ? (hasTarget ? `La cible est définie à ${targetLabel}. Ajoute une mesure supérieure à 0 pour voir la trajectoire.` : 'Ajoute un seuil dans SMART puis une mesure supérieure à 0 pour lire la trajectoire.')
-                : '';
-            const stateOverlay = allZero ? `<div class="da-kpi-state"><p class="da-kpi-state-title">${escHtml(stateTitle)}</p><p class="da-kpi-state-copy">${escHtml(stateCopy)}</p></div>` : '';
-            const unit = globalKpi.unit || globalKpi.unite || obj.kpiUnit || extractKPIUnit(obj.mesurable) || '';
+            const currentValue = data[data.length - 1]?.value ?? 0;
 
             container.innerHTML = `
                 <div class="da-kpi-chart-shell">
                     <div class="da-kpi-chart" id="kpiChartCanvas-${i}" aria-label="Évolution du KPI"></div>
                     <div class="da-kpi-edit-layer" id="kpiEditLayer-${i}" aria-label="Modifier les mesures KPI"></div>
-                    ${stateOverlay}
                 </div>`;
             renderLightweightKpiChart(i, chartData, {
                 target,
@@ -5150,7 +5168,7 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             const actualChip = document.getElementById(`kpiChipActuel-${i}`);
             if (actualChip && data.length > 0) {
                 const chipTarget = hasTarget ? `<span class="dbx-inline-198"> / ${escHtml(formatMetricValue(target))}</span>` : `<span class="dbx-inline-198"> / ${escHtml(targetLabel)}</span>`;
-                actualChip.innerHTML = `${escHtml(formatMetricValue(data[data.length - 1].value))}${chipTarget}`;
+                actualChip.innerHTML = `${escHtml(formatMetricValue(currentValue))}${chipTarget}`;
             }
         }
 
@@ -5248,11 +5266,11 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             if (meta.hasTarget) {
                 series.createPriceLine({
                     price: meta.target,
-                    color: '#f59e0b',
+                    color: 'rgba(244,244,245,0.42)',
                     lineWidth: 1,
                     lineStyle: LW.LineStyle?.Dashed ?? 2,
-                    axisLabelVisible: true,
-                    title: `Cible ${meta.targetLabel}`,
+                    axisLabelVisible: false,
+                    title: '',
                 });
             }
             chart.timeScale().fitContent();

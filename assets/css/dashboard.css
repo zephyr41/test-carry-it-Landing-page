@@ -12264,10 +12264,14 @@ body::before {
 /* -- Dashboard DA system: start -- */
 :root {
     --da-bg-main: #0a0a0c;
-    --da-bg-surface: rgba(24, 24, 27, 0.6);
+    --da-bg-surface: rgba(18, 18, 21, 0.82);
     --da-bg-surface-hover: rgba(39, 39, 42, 0.8);
     --da-color-primary: #ffffff;
     --da-color-primary-hover: #e5e7eb;
+    --da-accent: #f45a1f;
+    --da-accent-hover: #ff6a2e;
+    --da-accent-soft: rgba(244, 90, 31, 0.14);
+    --da-amber: #f59e0b;
     --da-text-main: #f4f4f5;
     --da-text-muted: #a1a1aa;
     --da-text-dark: #52525b;
@@ -12277,7 +12281,7 @@ body::before {
     --da-border-light: rgba(255, 255, 255, 0.05);
     --da-radius-card: 16px;
     --da-radius-sm: 6px;
-    --da-spacing-md: 20px;
+    --da-spacing-md: 18px;
     --da-spacing-sm: 12px;
     --da-p-scale: 0.94;
     --da-text-xs: calc(var(--da-p-scale) * 0.75rem);
@@ -12288,7 +12292,7 @@ body::before {
     --da-text-2xl: calc(var(--da-p-scale) * 2rem);
     --da-font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "Segoe UI", sans-serif;
     --da-font-body: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", sans-serif;
-    --da-shadow-card: 0 24px 48px -12px rgba(0, 0, 0, 0.4);
+    --da-shadow-card: 0 22px 54px -22px rgba(0, 0, 0, 0.72);
 }
 
 html.dark-mode,
@@ -12303,12 +12307,12 @@ body {
 
 .dashboard-section,
 .dashboard-section.active {
-    padding: 26px max(64px, 7vw) 72px !important;
+    padding: 28px clamp(32px, 8vw, 168px) 80px !important;
 }
 
 .dashboard-container {
-    width: min(1440px, 100%) !important;
-    max-width: 1440px !important;
+    width: min(1320px, 100%) !important;
+    max-width: 1320px !important;
     margin: 0 auto !important;
 }
 
@@ -12321,13 +12325,13 @@ body {
 .da-dashboard-grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: var(--da-spacing-md);
+    gap: 16px;
 }
 
 .da-dashboard-secondary-grid {
     display: grid;
-    grid-template-columns: minmax(0, 3fr) minmax(320px, 1fr);
-    gap: var(--da-spacing-md);
+    grid-template-columns: minmax(0, 2.15fr) minmax(330px, 0.85fr);
+    gap: 20px;
     align-items: stretch;
 }
 
@@ -12337,13 +12341,13 @@ body {
     display: flex;
     flex-direction: column;
     padding: var(--da-spacing-md);
-    border: 1px solid var(--da-border-light) !important;
+    border: 1px solid rgba(255, 255, 255, 0.075) !important;
     border-radius: var(--da-radius-card) !important;
     background: var(--da-bg-surface) !important;
     color: var(--da-text-main);
     box-shadow: var(--da-shadow-card) !important;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
     overflow: hidden;
     transition: border-color 300ms cubic-bezier(0.16, 1, 0.3, 1), transform 300ms cubic-bezier(0.16, 1, 0.3, 1), background-color 200ms ease;
 }
@@ -12407,6 +12411,10 @@ body {
     font-variant-numeric: tabular-nums;
 }
 
+.da-card--white .da-metric-large {
+    color: #111113 !important;
+}
+
 .da-metric-medium {
     margin-top: auto;
     color: var(--da-text-main);
@@ -12426,7 +12434,8 @@ body {
 }
 
 .da-card--white .da-metric-total {
-    color: #9ca3af;
+    color: #4b5563 !important;
+    font-weight: 520;
 }
 
 .da-metric-subtitle {
@@ -12570,10 +12579,26 @@ body {
     align-items: center;
     justify-content: space-between;
     gap: var(--da-spacing-sm);
-    margin-bottom: var(--da-spacing-sm);
-    padding-bottom: var(--da-spacing-sm);
-    border-bottom: 1px solid var(--da-border-light);
+    margin-bottom: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
     flex-shrink: 0;
+}
+
+.da-kpi-heading {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.da-kpi-eyebrow {
+    color: rgba(244,244,245,0.58);
+    font-size: var(--da-text-xs);
+    font-weight: 750;
+    line-height: 1;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
 }
 
 .da-btn {
@@ -12606,8 +12631,21 @@ body {
     background: var(--da-border-light);
 }
 
+.da-btn--primary {
+    border: 1px solid rgba(244, 90, 31, 0.42);
+    background: var(--da-accent);
+    color: #ffffff;
+    box-shadow: 0 12px 26px -16px rgba(244, 90, 31, 0.9);
+}
+
+.da-btn--primary:hover {
+    border-color: rgba(255, 255, 255, 0.16);
+    background: var(--da-accent-hover);
+}
+
 .da-chart-card {
-    min-height: 454px;
+    min-height: 560px;
+    padding: 22px !important;
 }
 
 .da-chart-body {
@@ -12615,23 +12653,28 @@ body {
     min-height: 0;
     position: relative;
     display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
 .da-kpi-chart-shell {
     position: relative;
     flex: 1;
-    min-height: 300px;
-    border-top: 1px solid rgba(255, 255, 255, 0.055);
+    min-height: 330px;
+    border: 0;
+    border-radius: 0;
+    overflow: hidden;
     background:
-        linear-gradient(180deg, rgba(255,255,255,0.018), rgba(255,255,255,0) 42%),
-        radial-gradient(circle at 50% 100%, rgba(255,255,255,0.045), transparent 42%);
+        linear-gradient(180deg, rgba(255,255,255,0.018), rgba(255,255,255,0) 46%),
+        radial-gradient(circle at 35% 115%, rgba(244,244,245,0.04), transparent 44%);
 }
 
 .da-kpi-chart {
     display: block;
     width: 100%;
     height: 100%;
-    min-height: 300px;
+    min-height: 330px;
+    padding: 8px 4px 0 0;
 }
 
 .da-kpi-edit-layer {
@@ -12643,14 +12686,14 @@ body {
 .da-kpi-edit-point {
     position: absolute;
     z-index: 3;
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
     padding: 0;
-    border: 2px solid #0a0a0c;
+    border: 2px solid #101114;
     border-radius: 999px;
-    background: #ffffff;
+    background: #f4f4f5;
     color: #0a0a0c;
-    box-shadow: 0 0 0 1px rgba(255,255,255,0.44), 0 8px 22px rgba(0,0,0,0.42);
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.62), 0 8px 22px rgba(0,0,0,0.42);
     cursor: pointer;
     pointer-events: auto;
     transform: translate(-50%, -50%);
@@ -12659,8 +12702,8 @@ body {
 .da-kpi-edit-point:hover,
 .da-kpi-edit-point:focus-visible {
     outline: none;
-    background: #f59e0b;
-    box-shadow: 0 0 0 4px rgba(245,158,11,0.22), 0 10px 24px rgba(0,0,0,0.48);
+    background: var(--da-accent);
+    box-shadow: 0 0 0 5px rgba(244,90,31,0.22), 0 10px 24px rgba(0,0,0,0.48);
 }
 
 .da-kpi-edit-point span {
@@ -12744,51 +12787,6 @@ body {
     cursor: default;
 }
 
-.da-kpi-state {
-    position: absolute;
-    left: 50%;
-    top: 42%;
-    width: min(360px, calc(100% - 48px));
-    transform: translate(-50%, -50%);
-    text-align: center;
-    pointer-events: none;
-}
-
-.da-kpi-state-title {
-    margin: 0 0 6px;
-    color: rgba(244, 244, 245, 0.82);
-    font-size: var(--da-text-sm);
-    font-weight: 650;
-}
-
-.da-kpi-state-copy {
-    margin: 0;
-    color: rgba(161, 161, 170, 0.82);
-    font-size: var(--da-text-xs);
-    line-height: 1.45;
-}
-
-.da-kpi-tooltip-date {
-    margin-bottom: 4px;
-    color: rgba(244, 244, 245, 0.48);
-    font-size: 10px;
-    letter-spacing: 0.04em;
-}
-
-.da-kpi-tooltip-value {
-    color: #f4f4f5;
-    font-size: 15px;
-    font-weight: 700;
-    line-height: 1;
-}
-
-.da-kpi-tooltip-unit {
-    margin-left: 3px;
-    color: rgba(244, 244, 245, 0.56);
-    font-size: 11px;
-    font-weight: 500;
-}
-
 .da-smart-panel {
     align-self: stretch;
 }
@@ -12845,6 +12843,10 @@ body {
     .da-dashboard-secondary-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+
+    .da-chart-card {
+        grid-column: 1 / -1;
+    }
 }
 
 @media (max-width: 760px) {
@@ -12861,6 +12863,16 @@ body {
     .da-card,
     .da-panel {
         padding: 16px !important;
+    }
+
+    .da-panel-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .da-kpi-chart-shell,
+    .da-kpi-chart {
+        min-height: 260px;
     }
 }
 
