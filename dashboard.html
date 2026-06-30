@@ -1048,13 +1048,13 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             const deltaText = latestMeta.days === null
                 ? 'Aucune mesure'
                 : latestMeta.days === 0 ? "Aujourd'hui" : `il y a ${latestMeta.days}j`;
-            const kpiAlertColor = latestMeta.days !== null && latestMeta.days > 14 ? '#FB923C' : 'rgba(255,253,246,0.32)';
+            const kpiAlertColor = latestMeta.days === null ? '#9ca3af' : latestMeta.days > 14 ? '#b45309' : '#6b7280';
             const cardBase = 'background:#ffffff;border:none;border-radius:16px;padding:20px 24px;min-width:0;display:flex;flex-direction:column;gap:0;box-shadow:0 12px 32px rgba(255,255,255,0.05);transition:border-color 0.3s cubic-bezier(0.16,1,0.3,1),transform 0.3s cubic-bezier(0.16,1,0.3,1);overflow:hidden;color:#121214';
             return `
                 <div style="${cardBase}">
                     <div style="font-size:11px;font-weight:500;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:0.01em;margin-bottom:10px">${escHtml(kpiDesc || 'KPI principal')}</div>
                     <div style="font-size:42px;font-weight:700;color:#121214;line-height:1;letter-spacing:-0.04em;font-variant-numeric:tabular-nums" id="kpiChipActuel-${i}">${escHtml(formatMetricValue(kpiCurrent))}<span style="font-size:16px;font-weight:450;color:#9ca3af"> / ${escHtml(formatMetricValue(kpiTarget))}</span></div>
-                    ${buildKpiDeltaHtml(globalKpi, `<div style="display:flex;align-items:center;gap:5px;margin-top:10px"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 6h6" stroke="rgba(255,253,246,0.22)" stroke-width="1.8" stroke-linecap="round"/></svg><span style="font-size:11px;color:${kpiAlertColor}">${escHtml(deltaText)}</span></div>`)}
+                    ${buildKpiDeltaHtml(globalKpi, `<div style="margin-top:10px"><span style="font-size:11px;font-weight:500;color:${kpiAlertColor}">— ${escHtml(deltaText)}</span></div>`)}
                 </div>`;
         }
 
@@ -1310,12 +1310,12 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             const lastMeasureDays = latestResultMeta.days;
             const lastMeasureColor = lastMeasureDays === null ? 'rgba(255,253,246,0.32)' : lastMeasureDays <= 7 ? 'rgba(255,253,246,0.32)' : lastMeasureDays <= 21 ? '#FB923C' : '#F87171';
             const lastMeasureLine = lastMeasureText ? `<div style="font-size:11px;font-weight:500;color:${lastMeasureColor};margin-top:6px">${escHtml(lastMeasureText)}</div>` : '';
+            const validationLine = validation ? `<div style="font-size:11px;color:rgba(255,253,246,0.35);line-height:1.4;margin-bottom:10px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical">${validation}</div>` : '';
             const card2 = `
                 <div style="${cardBase};display:flex;flex-direction:column">
-                    <div style="margin-bottom:12px">
-                        <div style="font-size:11px;font-weight:500;color:rgba(255,253,246,0.38);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:0.01em">${escHtml(resultLabel)}</div>
-                    </div>
-                    <div style="font-size:21px;font-weight:650;color:#FFFDF6;line-height:1;letter-spacing:-0.02em;font-variant-numeric:tabular-nums">${fmtKpi(resultValue, resultTarget, resultUnit)}</div>
+                    <div style="font-size:10px;font-weight:700;color:rgba(255,253,246,0.38);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px">${escHtml(resultLabel)}</div>
+                    ${validationLine}
+                    <div style="font-size:24px;font-weight:650;color:#FFFDF6;line-height:1;letter-spacing:-0.02em;font-variant-numeric:tabular-nums">${fmtKpi(resultValue, resultTarget, resultUnit)}</div>
                     ${lastMeasureLine}
                 </div>`;
 
@@ -1330,10 +1330,11 @@ let jalonKpiTimelineState = { startHour: 10, duration: 1 };
             const effortDiffLine = effortDiff !== null && Number.isFinite(effortTarget) ? `<div style="font-size:11px;font-weight:600;color:rgba(255,253,246,0.82);margin-top:6px">${effortDiffSign}${escHtml(formatMetricValue(effortDiff))}${effortUnitShort ? ' ' + escHtml(effortUnitShort) : ''} / ${escHtml(formatMetricValue(effortTarget))}${effortUnitShort ? ' ' + escHtml(effortUnitShort) : ''}</div>` : '';
             const card3 = `
                 <div style="${cardBase};display:flex;flex-direction:column">
-                    <div style="font-size:11px;font-weight:500;color:rgba(255,253,246,0.38);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:0.01em;margin-bottom:12px">${escHtml(effortLabel)}</div>
-                    <div style="font-size:21px;font-weight:650;color:#FFFDF6;line-height:1;letter-spacing:-0.02em;font-variant-numeric:tabular-nums">${fmtKpi(effortValue, effortTarget, effortUnitShort)}</div>
+                    <div style="font-size:10px;font-weight:700;color:rgba(255,253,246,0.38);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(effortLabel)}</div>
+                    <div style="font-size:24px;font-weight:650;color:#FFFDF6;line-height:1;letter-spacing:-0.02em;font-variant-numeric:tabular-nums">${fmtKpi(effortValue, effortTarget, effortUnitShort)}</div>
                     ${!Number.isFinite(effortValue) ? `<div style="font-size:11px;color:rgba(255,253,246,0.28);margin-top:8px;line-height:1.4">KPI effort non défini sur ce jalon</div>` : ''}
                     ${effortMeasureLine}
+                    ${effortDiffLine}
                 </div>`;
 
             return `${card1}${card2}${card3}`;
