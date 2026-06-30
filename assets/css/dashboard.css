@@ -12338,7 +12338,7 @@ body {
 
 .da-card {
     min-width: 0;
-    min-height: 132px;
+    min-height: 108px;
     display: flex;
     flex-direction: column;
     padding: var(--da-spacing-md);
