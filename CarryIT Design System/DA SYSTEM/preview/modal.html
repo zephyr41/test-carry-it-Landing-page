@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DA System — Modal</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="buttons.css">
+<link rel="stylesheet" href="inputs.css">
+<link rel="stylesheet" href="select.css">
+<link rel="stylesheet" href="modal.css">
+</head>
+<body>
+  <main class="modal-page">
+    <div class="type-label">Modal</div>
+    <h1 class="type-h1">Créer une tâche</h1>
+    <p class="modal-page__hint type-body-md">Contenu de page derrière le modal, assombri par le backdrop.</p>
+  </main>
+
+  <div class="ds-modal-backdrop">
+    <div class="ds-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <header class="ds-modal__header">
+        <div class="ds-modal__header-row">
+          <h2 id="modal-title" class="type-h2">Nouvelle tâche</h2>
+          <button type="button" class="ds-modal__close" aria-label="Fermer">
+            <svg class="ds-modal__close-icon" viewBox="0 0 16 16" aria-hidden="true">
+              <path d="M4 4L12 12M12 4L4 12" />
+            </svg>
+          </button>
+        </div>
+        <p class="ds-modal__subtitle type-body-sm">Ajoute une action liée à ton jalon actif.</p>
+      </header>
+
+      <div class="ds-modal__body">
+        <div class="input-group">
+          <label class="type-label" for="modal-title-input">Titre</label>
+          <input id="modal-title-input" class="ds-input" type="text" placeholder="Envoyer le premier message de prospection">
+        </div>
+
+        <div class="input-group">
+          <label class="type-label" for="modal-status-select">Statut</label>
+          <div class="ds-select-wrapper">
+            <select id="modal-status-select" class="ds-select">
+              <option>À faire</option>
+              <option>En cours</option>
+              <option>Terminé</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <footer class="ds-modal__footer">
+        <button type="button" class="ds-button ds-button--primary ds-button--sm">Créer</button>
+      </footer>
+    </div>
+  </div>
+</body>
+</html>

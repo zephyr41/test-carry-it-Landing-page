@@ -1,0 +1,120 @@
+.buttons-preview {
+  min-height: 100vh;
+  padding: var(--space-page-desktop);
+}
+
+.buttons-preview__shell {
+  max-width: 1040px;
+}
+
+.buttons-preview__header {
+  margin-bottom: var(--space-section-gap);
+}
+
+.buttons-stage {
+  display: grid;
+  gap: var(--space-section-gap);
+  padding: var(--container-padding);
+  background: var(--container-background);
+  border: var(--container-border);
+  border-radius: var(--container-radius);
+}
+
+.buttons-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-32);
+  align-items: center;
+}
+
+.ds-button {
+  min-height: var(--button-height-lg);
+  padding: 0 var(--button-padding-inline-lg);
+  border-radius: var(--button-radius-default);
+  font-family: var(--font-body);
+  font-size: var(--button-font-size);
+  line-height: var(--button-line-height);
+  font-weight: var(--button-font-weight);
+  letter-spacing: var(--letter-spacing-default);
+  cursor: pointer;
+  transition: var(--button-transition);
+}
+
+.ds-button:focus-visible {
+  outline: none;
+  border: var(--border-focus);
+}
+
+.ds-button:disabled {
+  opacity: var(--button-disabled-opacity);
+  cursor: not-allowed;
+  pointer-events: none;
+  transform: none;
+}
+
+.ds-button--primary {
+  color: var(--button-primary-text);
+  background: var(--button-primary-background);
+  border: var(--button-primary-border);
+}
+
+.ds-button--primary:hover:not(:disabled) {
+  background: var(--button-primary-background-hover);
+  transform: translateY(-1px);
+}
+
+.ds-button--primary:active:not(:disabled) {
+  background: var(--button-primary-background-active);
+  transform: translateY(0);
+}
+
+.ds-button--ghost {
+  color: var(--button-ghost-text);
+  background: var(--button-ghost-background);
+  border: var(--button-ghost-border);
+}
+
+.ds-button--ghost:hover:not(:disabled) {
+  background: var(--button-ghost-background-hover);
+  border: var(--button-ghost-border-hover);
+}
+
+.ds-button--ghost:active:not(:disabled) {
+  background: var(--button-ghost-background-active);
+}
+
+.ds-button--inverse {
+  color: var(--button-inverse-text);
+  background: var(--button-inverse-background);
+  border: var(--button-inverse-border);
+  border-radius: var(--button-radius-pill);
+}
+
+.ds-button--inverse:hover:not(:disabled) {
+  background: var(--button-inverse-background-hover);
+}
+
+.ds-button--inverse:active:not(:disabled) {
+  background: var(--button-inverse-background-active);
+}
+
+.ds-button--sm {
+  min-height: var(--button-height-sm);
+  padding: 0 var(--button-padding-inline-sm);
+}
+
+@media (max-width: 640px) {
+  .buttons-preview {
+    padding: var(--space-page-mobile);
+  }
+
+  .buttons-row {
+    gap: var(--space-element-gap);
+  }
+
+  .ds-button {
+    width: 100%;
+    min-height: var(--button-height-mobile);
+    padding: 0 var(--button-padding-inline-mobile);
+  }
+}

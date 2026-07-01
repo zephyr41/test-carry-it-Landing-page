@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DA System — Inputs</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="inputs.css">
+</head>
+<body>
+  <main class="inputs-preview">
+    <section class="inputs-preview__shell">
+      <header class="inputs-preview__header">
+        <div class="type-label">Inputs</div>
+        <h1 class="type-h1">Text</h1>
+      </header>
+
+      <section class="inputs-stage">
+        <div class="input-group">
+          <label class="type-label" for="input-default">Objectif SMART</label>
+          <input id="input-default" class="ds-input" type="text" placeholder="Atteindre 10k€ MRR d'ici 12 mois">
+        </div>
+
+        <div class="input-group">
+          <label class="type-label" for="input-filled">Objectif SMART</label>
+          <input id="input-filled" class="ds-input" type="text" value="Atteindre 10k€ MRR d'ici 12 mois">
+        </div>
+
+        <div class="input-group">
+          <label class="type-label" for="input-disabled">Objectif SMART</label>
+          <input id="input-disabled" class="ds-input" type="text" value="Verrouillé après validation" disabled>
+        </div>
+
+        <div class="input-group">
+          <label class="type-label" for="input-error">Objectif SMART</label>
+          <input id="input-error" class="ds-input ds-input--error" type="text" value="12k" aria-invalid="true" aria-describedby="input-error-msg">
+          <div id="input-error-msg" class="type-caption input-error-msg">La valeur cible doit être un nombre supérieur à l'actuel.</div>
+        </div>
+      </section>
+    </section>
+  </main>
+</body>
+</html>

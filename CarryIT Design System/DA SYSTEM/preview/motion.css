@@ -1,0 +1,86 @@
+.motion-preview {
+  min-height: 100vh;
+  padding: var(--space-page-desktop);
+  color: #F2F1EC;
+}
+
+.motion-preview__shell {
+  max-width: 640px;
+}
+
+.motion-preview__header {
+  margin-bottom: var(--space-section-gap);
+}
+
+.motion-sample {
+  display: grid;
+  gap: var(--space-element-gap);
+  padding: var(--space-card-padding);
+  background: var(--color-surface);
+  border: var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-none);
+  transition: var(--motion-transition-panel);
+}
+
+.motion-sample:hover,
+.motion-sample:focus-within {
+  border-color: var(--color-border-strong);
+  transform: translateY(-2px);
+}
+
+.motion-button {
+  width: fit-content;
+  padding: var(--space-8) var(--space-12);
+  color: #F2F1EC;
+  font: inherit;
+  background: transparent;
+  border: var(--border-subtle);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: var(--motion-transition-default);
+}
+
+.motion-button:hover,
+.motion-button:focus-visible {
+  border-color: var(--color-border-strong);
+}
+
+.motion-button:focus-visible {
+  outline: none;
+}
+
+.motion-progress {
+  height: var(--space-8);
+  overflow: hidden;
+  background: var(--color-background);
+  border: var(--border-subtle);
+  border-radius: var(--radius-full);
+}
+
+.motion-progress__bar {
+  width: 48%;
+  height: 100%;
+  background: #F2F1EC;
+  transform-origin: left center;
+  transition: var(--motion-transition-view);
+}
+
+.motion-sample:hover .motion-progress__bar,
+.motion-sample:focus-within .motion-progress__bar {
+  transform: scaleX(1.18);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motion-sample,
+  .motion-button,
+  .motion-progress__bar {
+    transition-duration: 1ms;
+  }
+}
+
+@media (max-width: 640px) {
+  .motion-preview {
+    padding: var(--space-page-mobile);
+  }
+}

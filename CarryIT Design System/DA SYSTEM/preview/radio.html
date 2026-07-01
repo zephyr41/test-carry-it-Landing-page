@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DA System — Radio</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="radio.css">
+</head>
+<body>
+  <main class="radio-preview">
+    <section class="radio-preview__shell">
+      <header class="radio-preview__header">
+        <div class="type-label">Radio</div>
+        <h1 class="type-h1">Choix unique</h1>
+      </header>
+
+      <section class="radio-stage">
+        <label class="ds-radio" for="radio-daily">
+          <span class="ds-radio__box">
+            <input type="radio" name="frequency" id="radio-daily" class="ds-radio__input" checked>
+            <span class="ds-radio__dot"></span>
+          </span>
+          <span class="type-body-md">Quotidien</span>
+        </label>
+
+        <label class="ds-radio" for="radio-weekly">
+          <span class="ds-radio__box">
+            <input type="radio" name="frequency" id="radio-weekly" class="ds-radio__input">
+            <span class="ds-radio__dot"></span>
+          </span>
+          <span class="type-body-md">Hebdomadaire</span>
+        </label>
+
+        <label class="ds-radio" for="radio-monthly">
+          <span class="ds-radio__box">
+            <input type="radio" name="frequency" id="radio-monthly" class="ds-radio__input">
+            <span class="ds-radio__dot"></span>
+          </span>
+          <span class="type-body-md">Mensuel</span>
+        </label>
+
+        <label class="ds-radio" for="radio-disabled">
+          <span class="ds-radio__box">
+            <input type="radio" name="frequency-locked" id="radio-disabled" class="ds-radio__input" disabled>
+            <span class="ds-radio__dot"></span>
+          </span>
+          <span class="type-body-md">Option verrouillée</span>
+        </label>
+      </section>
+    </section>
+  </main>
+</body>
+</html>

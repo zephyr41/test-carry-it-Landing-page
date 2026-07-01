@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DA System — Focus</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="focus.css">
+</head>
+<body>
+  <main class="focus-preview">
+    <section class="focus-preview__shell">
+      <header class="focus-preview__header">
+        <div class="type-label">Focus</div>
+        <h1 class="type-h1">Double ring</h1>
+      </header>
+
+      <div class="focus-grid">
+        <article class="focus-card">
+          <div class="type-h3">Button</div>
+          <button class="focus-button" type="button">Tester le focus</button>
+          <div class="type-caption">Tab pour voir l’état clavier.</div>
+        </article>
+
+        <article class="focus-card">
+          <div class="type-h3">Input</div>
+          <input class="focus-input" type="text" value="Objectif SMART">
+          <div class="type-caption">Focus visible sans orange.</div>
+        </article>
+
+        <article class="focus-card" tabindex="0">
+          <div class="type-h3">Container interactif</div>
+          <p class="type-body-md">Le ring indique l’élément actif au clavier.</p>
+          <div class="type-caption">--color-focus-border · rgba(255,253,246,0.72)</div>
+        </article>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

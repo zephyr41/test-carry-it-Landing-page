@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DA System — Toggle</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="toggle.css">
+</head>
+<body>
+  <main class="toggle-preview">
+    <section class="toggle-preview__shell">
+      <header class="toggle-preview__header">
+        <div class="type-label">Toggle</div>
+        <h1 class="type-h1">Réglage on/off</h1>
+      </header>
+
+      <section class="toggle-stage">
+        <label class="ds-toggle" for="toggle-off">
+          <span class="ds-toggle__track">
+            <input type="checkbox" id="toggle-off" class="ds-toggle__input">
+            <span class="ds-toggle__thumb"></span>
+          </span>
+          <span class="type-body-md">Rappel quotidien (désactivé)</span>
+        </label>
+
+        <label class="ds-toggle" for="toggle-on">
+          <span class="ds-toggle__track">
+            <input type="checkbox" id="toggle-on" class="ds-toggle__input" checked>
+            <span class="ds-toggle__thumb"></span>
+          </span>
+          <span class="type-body-md">Rappel quotidien (activé)</span>
+        </label>
+
+        <label class="ds-toggle" for="toggle-disabled">
+          <span class="ds-toggle__track">
+            <input type="checkbox" id="toggle-disabled" class="ds-toggle__input" disabled>
+            <span class="ds-toggle__thumb"></span>
+          </span>
+          <span class="type-body-md">Verrouillé</span>
+        </label>
+      </section>
+    </section>
+  </main>
+</body>
+</html>

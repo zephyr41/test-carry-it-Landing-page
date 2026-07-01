@@ -1,0 +1,96 @@
+.select-preview {
+  min-height: 100vh;
+  padding: var(--space-page-desktop);
+}
+
+.select-preview__shell {
+  max-width: 720px;
+}
+
+.select-preview__header {
+  margin-bottom: var(--space-section-gap);
+}
+
+.select-stage {
+  display: grid;
+  gap: var(--space-section-gap);
+  padding: var(--container-padding);
+  background: var(--container-background);
+  border: var(--container-border);
+  border-radius: var(--container-radius);
+}
+
+.input-group {
+  display: grid;
+  gap: var(--space-12);
+}
+
+.ds-select-wrapper {
+  position: relative;
+}
+
+.ds-select-wrapper::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: var(--input-padding-inline);
+  width: var(--space-8);
+  height: var(--space-8);
+  border-right: var(--border-width-default) solid var(--color-text-secondary);
+  border-bottom: var(--border-width-default) solid var(--color-text-secondary);
+  transform: translateY(-70%) rotate(45deg);
+  pointer-events: none;
+}
+
+.ds-select-wrapper:has(.ds-select:disabled)::after {
+  opacity: var(--button-disabled-opacity);
+}
+
+.ds-select {
+  width: 100%;
+  min-height: var(--input-height);
+  padding: 0 var(--space-32) 0 var(--input-padding-inline);
+  font-family: var(--font-body);
+  font-size: var(--input-font-size);
+  line-height: var(--input-line-height);
+  color: var(--input-text);
+  background: var(--input-background);
+  border: var(--input-border);
+  border-radius: var(--input-radius);
+  transition: var(--input-transition);
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  color-scheme: dark;
+}
+
+.ds-select option {
+  background: var(--input-background);
+  color: var(--input-text);
+}
+
+.ds-select:focus-visible {
+  outline: none;
+  border: var(--input-border-focus);
+}
+
+.ds-select:disabled {
+  color: var(--input-disabled-text);
+  background: var(--input-disabled-background);
+  border: var(--input-disabled-border);
+  cursor: not-allowed;
+}
+
+.ds-select--error {
+  border: var(--input-error-border);
+}
+
+.input-error-msg {
+  color: var(--input-error-text);
+}
+
+@media (max-width: 640px) {
+  .select-preview {
+    padding: var(--space-page-mobile);
+  }
+}

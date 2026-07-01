@@ -4,8 +4,8 @@
 ## 1. Architecture Globale (Type : Tactique)
 Le dashboard suit le principe de **Divulgation Progressive** et la **Pyramide Inversée**. L'interface est scindée en 3 vues distinctes (Top-rail navigation) pour forcer le focus et éviter la surcharge cognitive (Data-Ink ratio).
 
-*   **Onglet 1 : Vision** (Niveau Stratégique global)
-*   **Onglet 2 : Jalons** (Pont temporel / Architecture)
+*   **Onglet 1 : Vision** (Niveau vision long terme )
+*   **Onglet 2 : Jalons** (Niveau vision moyen terme)
 *   **Onglet 3 : Exécution** (Action quotidienne)
 
 ## 3. Flux de Données et Interactions
@@ -21,11 +21,13 @@ Cette section affiche la position actuelle de l’utilisateur.
 Elle doit permettre de comprendre immédiatement :
 * quel est l’objectif long terme ; (SMART)
 * quel est le KPI principal de l’objectif ; (Mesurable du smart)
-* quelle est la valeur actuelle ; (Ou j’en suis moi)
-* quelle est la valeur cible ; (le seuil a atteindre)
+* quelle est la valeur actuelle de l'objectif smart; (Ou j’en suis moi)
+* quelle est la valeur cible de l'objectif smart ; (le seuil a atteindre)
 * Ou j’en suis dans les jalons (jalons passé, jalon actif, jalon futur)
 * quel est le critère de validation du jalon actif ;
 * quel est le résultat actuel du jalon actif.
+* Quel est le résulat de l'effort du jalon actif 
+
 
 ### 2. Est-ce que j’avance réellement ?
 Cette section affiche la dynamique de progression.

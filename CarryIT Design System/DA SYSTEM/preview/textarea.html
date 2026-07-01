@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DA System — Textarea</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="textarea.css">
+</head>
+<body>
+  <main class="textarea-preview">
+    <section class="textarea-preview__shell">
+      <header class="textarea-preview__header">
+        <div class="type-label">Textarea</div>
+        <h1 class="type-h1">Multi-ligne</h1>
+      </header>
+
+      <section class="textarea-stage">
+        <div class="input-group">
+          <label class="type-label" for="textarea-default">Critère de validation du jalon</label>
+          <textarea id="textarea-default" class="ds-textarea" placeholder="Décris ce qui doit être vrai pour considérer ce jalon atteint."></textarea>
+        </div>
+
+        <div class="input-group">
+          <label class="type-label" for="textarea-filled">Critère de validation du jalon</label>
+          <textarea id="textarea-filled" class="ds-textarea">Avoir signé 5 clients payants en autonomie, sans intervention manuelle de ma part sur l'onboarding.</textarea>
+        </div>
+
+        <div class="input-group">
+          <label class="type-label" for="textarea-disabled">Critère de validation du jalon</label>
+          <textarea id="textarea-disabled" class="ds-textarea" disabled>Verrouillé après validation du jalon précédent.</textarea>
+        </div>
+
+        <div class="input-group">
+          <label class="type-label" for="textarea-error">Critère de validation du jalon</label>
+          <textarea id="textarea-error" class="ds-textarea ds-textarea--error" aria-invalid="true" aria-describedby="textarea-error-msg"></textarea>
+          <div id="textarea-error-msg" class="type-caption input-error-msg">Ce champ ne peut pas être vide.</div>
+        </div>
+      </section>
+    </section>
+  </main>
+</body>
+</html>

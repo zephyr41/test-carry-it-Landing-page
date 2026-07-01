@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DA System — Checkbox</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="checkbox.css">
+</head>
+<body>
+  <main class="checkbox-preview">
+    <section class="checkbox-preview__shell">
+      <header class="checkbox-preview__header">
+        <div class="type-label">Checkbox</div>
+        <h1 class="type-h1">Tâche To-Do</h1>
+      </header>
+
+      <section class="checkbox-stage">
+        <label class="ds-checkbox" for="checkbox-default">
+          <span class="ds-checkbox__box">
+            <input type="checkbox" id="checkbox-default" class="ds-checkbox__input">
+            <svg class="ds-checkbox__mark" viewBox="0 0 16 16" aria-hidden="true">
+              <path d="M3.5 8.5L6.5 11.5L12.5 4.5" />
+            </svg>
+          </span>
+          <span class="type-body-md">Envoyer le premier message de prospection</span>
+        </label>
+
+        <label class="ds-checkbox" for="checkbox-checked">
+          <span class="ds-checkbox__box">
+            <input type="checkbox" id="checkbox-checked" class="ds-checkbox__input" checked>
+            <svg class="ds-checkbox__mark" viewBox="0 0 16 16" aria-hidden="true">
+              <path d="M3.5 8.5L6.5 11.5L12.5 4.5" />
+            </svg>
+          </span>
+          <span class="type-body-md">Définir le critère de validation du jalon</span>
+        </label>
+
+        <label class="ds-checkbox" for="checkbox-disabled">
+          <span class="ds-checkbox__box">
+            <input type="checkbox" id="checkbox-disabled" class="ds-checkbox__input" disabled>
+            <svg class="ds-checkbox__mark" viewBox="0 0 16 16" aria-hidden="true">
+              <path d="M3.5 8.5L6.5 11.5L12.5 4.5" />
+            </svg>
+          </span>
+          <span class="type-body-md">Verrouillé après validation du jalon précédent</span>
+        </label>
+
+        <label class="ds-checkbox" for="checkbox-disabled-checked">
+          <span class="ds-checkbox__box">
+            <input type="checkbox" id="checkbox-disabled-checked" class="ds-checkbox__input" disabled checked>
+            <svg class="ds-checkbox__mark" viewBox="0 0 16 16" aria-hidden="true">
+              <path d="M3.5 8.5L6.5 11.5L12.5 4.5" />
+            </svg>
+          </span>
+          <span class="type-body-md">Déjà fait, verrouillé</span>
+        </label>
+
+        <label class="ds-checkbox" for="checkbox-round">
+          <span class="ds-checkbox__box ds-checkbox__box--round">
+            <input type="checkbox" id="checkbox-round" class="ds-checkbox__input ds-checkbox__input--round" checked>
+            <svg class="ds-checkbox__mark" viewBox="0 0 16 16" aria-hidden="true">
+              <path d="M3.5 8.5L6.5 11.5L12.5 4.5" />
+            </svg>
+          </span>
+          <span class="type-body-md">Variante ronde</span>
+        </label>
+      </section>
+    </section>
+  </main>
+</body>
+</html>

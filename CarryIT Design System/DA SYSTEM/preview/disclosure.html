@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DA System — Disclosure</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="disclosure.css">
+</head>
+<body>
+  <main class="disclosure-preview">
+    <section class="disclosure-preview__shell">
+      <header class="disclosure-preview__header">
+        <div class="type-label">Disclosure</div>
+        <h1 class="type-h1">Déplier / replier les sous-tâches</h1>
+      </header>
+
+      <section class="disclosure-stage">
+        <div class="disclosure-row">
+          <button type="button" class="ds-disclosure" aria-expanded="false" aria-controls="subtasks-collapsed">
+            <span class="ds-disclosure__icon"></span>
+          </button>
+          <span class="type-body-md">Signer 5 clients payants (replié)</span>
+        </div>
+
+        <div class="disclosure-row">
+          <button type="button" class="ds-disclosure" aria-expanded="true" aria-controls="subtasks-expanded">
+            <span class="ds-disclosure__icon"></span>
+          </button>
+          <span class="type-body-md">Signer 5 clients payants (déplié)</span>
+        </div>
+        <div class="disclosure-subrow">
+          <span class="type-body-sm">Trouver 5 prospects qualifiés</span>
+        </div>
+        <div class="disclosure-subrow">
+          <span class="type-body-sm">Rédiger le message type</span>
+        </div>
+      </section>
+    </section>
+  </main>
+</body>
+</html>

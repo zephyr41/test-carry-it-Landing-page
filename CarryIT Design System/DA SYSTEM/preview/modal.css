@@ -1,0 +1,104 @@
+.modal-page {
+  min-height: 100vh;
+  padding: var(--space-page-desktop);
+}
+
+.modal-page__hint {
+  max-width: 480px;
+  color: var(--color-text-secondary);
+}
+
+.ds-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-page-desktop);
+  background: var(--modal-backdrop);
+}
+
+.ds-modal {
+  width: 100%;
+  max-width: var(--modal-max-width);
+  display: grid;
+  gap: var(--modal-header-gap);
+  padding: var(--modal-padding-block) var(--modal-padding-inline);
+  background: var(--modal-background);
+  border: var(--modal-border);
+  border-radius: var(--modal-radius);
+  box-shadow: var(--modal-shadow);
+}
+
+.ds-modal__header {
+  display: grid;
+  gap: var(--space-4);
+  padding-bottom: var(--modal-header-gap);
+  border-bottom: var(--border-subtle);
+}
+
+.ds-modal__header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-12);
+}
+
+.ds-modal__subtitle {
+  color: var(--color-text-secondary);
+}
+
+.ds-modal__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--modal-close-size);
+  height: var(--modal-close-size);
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: var(--motion-transition-default);
+}
+
+.ds-modal__close-icon {
+  width: 50%;
+  height: 50%;
+}
+
+.ds-modal__close-icon path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+
+.ds-modal__close:hover {
+  color: var(--color-text-primary);
+}
+
+.ds-modal__close:focus-visible {
+  outline: none;
+  border: var(--input-border-focus);
+}
+
+.ds-modal__body {
+  display: grid;
+  gap: var(--space-element-gap);
+}
+
+.ds-modal__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-12);
+}
+
+
+@media (max-width: 640px) {
+  .modal-page,
+  .ds-modal-backdrop {
+    padding: var(--space-page-mobile);
+  }
+}

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DA System — Select</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="select.css">
+</head>
+<body>
+  <main class="select-preview">
+    <section class="select-preview__shell">
+      <header class="select-preview__header">
+        <div class="type-label">Select</div>
+        <h1 class="type-h1">Statut de la tâche</h1>
+      </header>
+
+      <section class="select-stage">
+        <div class="input-group">
+          <label class="type-label" for="select-default">Statut</label>
+          <div class="ds-select-wrapper">
+            <select id="select-default" class="ds-select">
+              <option value="" disabled selected>Choisir un statut</option>
+              <option>À faire</option>
+              <option>En cours</option>
+              <option>Terminé</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label class="type-label" for="select-filled">Statut</label>
+          <div class="ds-select-wrapper">
+            <select id="select-filled" class="ds-select">
+              <option>À faire</option>
+              <option selected>En cours</option>
+              <option>Terminé</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label class="type-label" for="select-disabled">Statut</label>
+          <div class="ds-select-wrapper">
+            <select id="select-disabled" class="ds-select" disabled>
+              <option selected>Verrouillé après validation</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label class="type-label" for="select-error">Statut</label>
+          <div class="ds-select-wrapper">
+            <select id="select-error" class="ds-select ds-select--error" aria-invalid="true" aria-describedby="select-error-msg">
+              <option value="" disabled selected>Choisir un statut</option>
+              <option>À faire</option>
+              <option>En cours</option>
+              <option>Terminé</option>
+            </select>
+          </div>
+          <div id="select-error-msg" class="type-caption input-error-msg">Un statut doit être sélectionné.</div>
+        </div>
+      </section>
+    </section>
+  </main>
+</body>
+</html>

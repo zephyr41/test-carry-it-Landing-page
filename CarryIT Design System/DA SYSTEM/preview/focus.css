@@ -1,0 +1,65 @@
+.focus-preview {
+  min-height: 100vh;
+  padding: var(--space-page-desktop);
+}
+
+.focus-preview__shell {
+  max-width: 720px;
+}
+
+.focus-preview__header {
+  margin-bottom: var(--space-section-gap);
+}
+
+.focus-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-element-gap);
+}
+
+.focus-card {
+  display: grid;
+  gap: var(--space-element-gap);
+  padding: var(--container-padding);
+  background: var(--container-background);
+  border: var(--container-border);
+  border-radius: var(--container-radius);
+}
+
+.focus-button,
+.focus-input {
+  min-height: 44px;
+  padding: var(--space-8) var(--space-12);
+  color: var(--color-text-primary);
+  font: inherit;
+  background: transparent;
+  border: var(--border-subtle);
+  border-radius: var(--radius-md);
+  transition: var(--motion-transition-default);
+}
+
+.focus-button {
+  width: fit-content;
+  cursor: pointer;
+}
+
+.focus-input {
+  width: 100%;
+}
+
+.focus-button:focus-visible,
+.focus-input:focus-visible,
+.focus-card:focus-visible {
+  outline: none;
+  border: var(--border-focus);
+}
+
+.focus-card[tabindex] {
+  cursor: default;
+}
+
+@media (max-width: 640px) {
+  .focus-preview {
+    padding: var(--space-page-mobile);
+  }
+}
