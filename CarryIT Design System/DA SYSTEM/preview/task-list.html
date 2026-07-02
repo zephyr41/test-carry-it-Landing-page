@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DA System — Task list imbriquée</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="badge.css">
+<link rel="stylesheet" href="checkbox.css">
+<link rel="stylesheet" href="disclosure.css">
+<link rel="stylesheet" href="empty-state.css">
+<link rel="stylesheet" href="table.css">
+<link rel="stylesheet" href="task-list.css">
+</head>
+<body>
+  <main class="table-preview">
+    <section class="table-preview__shell">
+      <header class="table-preview__header">
+        <div class="type-label">Task list imbriquée</div>
+        <h1 class="type-h1">Tâches et sous-tâches</h1>
+      </header>
+
+      <section class="table-stage task-list-stage">
+        <table class="ds-table ds-table--nested">
+          <thead>
+            <tr>
+              <th scope="col">
+                <span class="ds-table__status-heading">
+                  <span class="ds-badge ds-badge--muted">À faire</span>
+                </span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="ds-table__row--nested-group">
+              <td>
+                <div class="nested-group">
+                  <span class="disclosure-row nested-group__task">
+                    <span class="ds-row-grip" aria-hidden="true">⠿</span>
+                    <label class="ds-checkbox" for="task-prospection">
+                      <span class="ds-checkbox__box">
+                        <input type="checkbox" id="task-prospection" class="ds-checkbox__input" aria-label="Marquer la tâche comme terminée">
+                        <svg class="ds-checkbox__mark" viewBox="0 0 16 16" aria-hidden="true">
+                          <path d="M3.5 8.5L6.5 11.5L12.5 4.5" />
+                        </svg>
+                      </span>
+                    </label>
+                    <button type="button" class="ds-disclosure" aria-expanded="true" aria-label="Sous-tâches affichées">
+                      <span class="ds-disclosure__icon" aria-hidden="true">&nbsp;</span>
+                    </button>
+                    <span class="ds-row-copy">
+                      <span class="ds-row-title">Préparer la séquence de prospection</span>
+                      <span class="type-caption">0/2</span>
+                    </span>
+                    <span class="ds-row-actions">
+                      <button type="button" class="ds-row-action" aria-label="Options de la tâche">
+                        <span class="ds-row-action__dots" aria-hidden="true">⋯</span>
+                      </button>
+                      <button type="button" class="ds-row-action" aria-label="Supprimer la tâche">
+                        <svg class="ds-row-action__icon" viewBox="0 0 24 24" aria-hidden="true">
+                          <path d="M18 6 6 18M6 6l12 12" />
+                        </svg>
+                      </button>
+                    </span>
+                  </span>
+                  <div class="nested-group__subtasks">
+                    <div class="nested-group__subtask">
+                      <div class="disclosure-subrow">
+                        <span class="ds-row-grip" aria-hidden="true">⠿</span>
+                        <label class="ds-checkbox" for="subtask-prospects">
+                          <span class="ds-checkbox__box ds-checkbox__box--round">
+                            <input type="checkbox" id="subtask-prospects" class="ds-checkbox__input ds-checkbox__input--round">
+                            <svg class="ds-checkbox__mark" viewBox="0 0 16 16" aria-hidden="true">
+                              <path d="M3.5 8.5L6.5 11.5L12.5 4.5" />
+                            </svg>
+                          </span>
+                          <span class="type-body-sm ds-row-title">Lister 30 prospects qualifiés</span>
+                        </label>
+                        <span class="ds-row-actions">
+                          <button type="button" class="ds-row-action" aria-label="Options de la sous-tâche">
+                            <span class="ds-row-action__dots" aria-hidden="true">⋯</span>
+                          </button>
+                          <button type="button" class="ds-row-action" aria-label="Supprimer la sous-tâche">
+                            <svg class="ds-row-action__icon" viewBox="0 0 24 24" aria-hidden="true">
+                              <path d="M18 6 6 18M6 6l12 12" />
+                            </svg>
+                          </button>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="nested-group__subtask">
+                      <div class="disclosure-subrow">
+                        <span class="ds-row-grip" aria-hidden="true">⠿</span>
+                        <label class="ds-checkbox" for="subtask-message">
+                          <span class="ds-checkbox__box ds-checkbox__box--round">
+                            <input type="checkbox" id="subtask-message" class="ds-checkbox__input ds-checkbox__input--round">
+                            <svg class="ds-checkbox__mark" viewBox="0 0 16 16" aria-hidden="true">
+                              <path d="M3.5 8.5L6.5 11.5L12.5 4.5" />
+                            </svg>
+                          </span>
+                          <span class="type-body-sm ds-row-title">Écrire le message court</span>
+                        </label>
+                        <span class="ds-row-actions">
+                          <button type="button" class="ds-row-action" aria-label="Options de la sous-tâche">
+                            <span class="ds-row-action__dots" aria-hidden="true">⋯</span>
+                          </button>
+                          <button type="button" class="ds-row-action" aria-label="Supprimer la sous-tâche">
+                            <svg class="ds-row-action__icon" viewBox="0 0 24 24" aria-hidden="true">
+                              <path d="M18 6 6 18M6 6l12 12" />
+                            </svg>
+                          </button>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="nested-group__subtask nested-group__subtask--action">
+                      <div class="disclosure-subrow">
+                        <button type="button" class="ds-empty-inline">
+                          <span class="ds-empty-inline__icon" aria-hidden="true">+</span>
+                          <span>Ajouter une sous-tâche...</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr class="ds-table__row--nested-group">
+              <td>
+                <div class="nested-group">
+                  <span class="disclosure-row nested-group__task">
+                    <span class="ds-row-grip" aria-hidden="true">⠿</span>
+                    <label class="ds-checkbox" for="task-kpi">
+                      <span class="ds-checkbox__box">
+                        <input type="checkbox" id="task-kpi" class="ds-checkbox__input" aria-label="Marquer la tâche comme terminée">
+                        <svg class="ds-checkbox__mark" viewBox="0 0 16 16" aria-hidden="true">
+                          <path d="M3.5 8.5L6.5 11.5L12.5 4.5" />
+                        </svg>
+                      </span>
+                    </label>
+                    <button type="button" class="ds-disclosure" aria-expanded="true" aria-label="Sous-tâches affichées">
+                      <span class="ds-disclosure__icon" aria-hidden="true">&nbsp;</span>
+                    </button>
+                    <span class="ds-row-copy">
+                      <span class="ds-row-title">Mesurer le retour du jalon actif</span>
+                      <span class="type-caption">0/2</span>
+                    </span>
+                    <span class="ds-row-actions">
+                      <button type="button" class="ds-row-action" aria-label="Options de la tâche">
+                        <span class="ds-row-action__dots" aria-hidden="true">⋯</span>
+                      </button>
+                      <button type="button" class="ds-row-action" aria-label="Supprimer la tâche">
+                        <svg class="ds-row-action__icon" viewBox="0 0 24 24" aria-hidden="true">
+                          <path d="M18 6 6 18M6 6l12 12" />
+                        </svg>
+                      </button>
+                    </span>
+                  </span>
+                  <div class="nested-group__subtasks">
+                    <div class="nested-group__subtask">
+                      <div class="disclosure-subrow">
+                        <span class="ds-row-grip" aria-hidden="true">⠿</span>
+                        <label class="ds-checkbox" for="subtask-kpi">
+                          <span class="ds-checkbox__box ds-checkbox__box--round">
+                            <input type="checkbox" id="subtask-kpi" class="ds-checkbox__input ds-checkbox__input--round">
+                            <svg class="ds-checkbox__mark" viewBox="0 0 16 16" aria-hidden="true">
+                              <path d="M3.5 8.5L6.5 11.5L12.5 4.5" />
+                            </svg>
+                          </span>
+                          <span class="type-body-sm ds-row-title">Reporter la valeur KPI actuelle</span>
+                        </label>
+                        <span class="ds-row-actions">
+                          <button type="button" class="ds-row-action" aria-label="Options de la sous-tâche">
+                            <span class="ds-row-action__dots" aria-hidden="true">⋯</span>
+                          </button>
+                          <button type="button" class="ds-row-action" aria-label="Supprimer la sous-tâche">
+                            <svg class="ds-row-action__icon" viewBox="0 0 24 24" aria-hidden="true">
+                              <path d="M18 6 6 18M6 6l12 12" />
+                            </svg>
+                          </button>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="nested-group__subtask">
+                      <div class="disclosure-subrow">
+                        <span class="ds-row-grip" aria-hidden="true">⠿</span>
+                        <label class="ds-checkbox" for="subtask-kpi-second">
+                          <span class="ds-checkbox__box ds-checkbox__box--round">
+                            <input type="checkbox" id="subtask-kpi-second" class="ds-checkbox__input ds-checkbox__input--round">
+                            <svg class="ds-checkbox__mark" viewBox="0 0 16 16" aria-hidden="true">
+                              <path d="M3.5 8.5L6.5 11.5L12.5 4.5" />
+                            </svg>
+                          </span>
+                          <span class="type-body-sm ds-row-title">Planifier le suivi mensuel</span>
+                        </label>
+                        <span class="ds-row-actions">
+                          <button type="button" class="ds-row-action" aria-label="Options de la sous-tâche">
+                            <span class="ds-row-action__dots" aria-hidden="true">⋯</span>
+                          </button>
+                          <button type="button" class="ds-row-action" aria-label="Supprimer la sous-tâche">
+                            <svg class="ds-row-action__icon" viewBox="0 0 24 24" aria-hidden="true">
+                              <path d="M18 6 6 18M6 6l12 12" />
+                            </svg>
+                          </button>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="nested-group__subtask nested-group__subtask--action">
+                      <div class="disclosure-subrow">
+                        <button type="button" class="ds-empty-inline">
+                          <span class="ds-empty-inline__icon" aria-hidden="true">+</span>
+                          <span>Ajouter une sous-tâche...</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr class="ds-table__row--inline-action">
+              <td>
+                <span class="disclosure-row nested-group__add-task">
+                  <button type="button" class="ds-empty-inline">
+                    <span class="ds-empty-inline__icon" aria-hidden="true">+</span>
+                    <span>Ajouter une tâche...</span>
+                  </button>
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </section>
+  </main>
+</body>
+</html>

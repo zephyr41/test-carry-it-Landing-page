@@ -568,6 +568,16 @@ Le fichier `tokens.css` complet fait ~350 lignes de tokens + les classes utilita
 </table>
 ```
 
+### Task list imbriquée
+
+1. **Rôle** : afficher une tâche parente et ses sous-tâches décalées.
+2. **Nature** : pattern métier/composite, pas composant Table de base. Il s'appuie sur `.ds-table` pour le rythme de lignes et les séparateurs, mais ses règles vivent dans `task-list.css`.
+3. **Anatomie** : compose `.ds-table ds-table--nested`, `.ds-badge`, `.ds-disclosure`, `.ds-checkbox` et `.ds-empty-inline`. Le header utilise un label de statut existant (`À faire`), pas un libellé générique `Tâche`. Les sous-tâches utilisent la variante ronde existante du Checkbox. Les lignes tâche/sous-tâche exposent au hover/focus une poignée de déplacement, une action options (`⋯`) et une action supprimer (`×`). La ligne d'action inline utilise `.ds-table__row--inline-action` pour ne pas afficher de séparateur bas.
+4. **Séparation CSS** : `table.css` reste strictement générique. Tout ce qui est `.nested-group__*`, `.ds-row-*`, `.ds-table--nested`, `.task-list-stage` appartient à `task-list.css`.
+5. **Tokens** : aucun token dédié. Utilise uniquement les tokens existants de Table, Checkbox, Disclosure, Empty inline, spacing et texte.
+6. **Règles d'état** : tâche repliée = ligne normale avec `border-bottom`. Tâche dépliée = ligne parent + zone sous-tâches. La dernière sous-ligne/action ferme le groupe. Ne jamais créer de double trait entre deux tâches : le `border-bottom` d'une tâche repliée sert aussi de séparation avec la tâche suivante.
+7. **Preview** : `preview/task-list.html`
+
 ### Toast
 
 1. **Rôle** : notifier temporairement d'un résultat d'action (confirmation, erreur).
@@ -631,7 +641,7 @@ Le fichier `tokens.css` complet fait ~350 lignes de tokens + les classes utilita
    - **Ligne inline** (`.ds-empty-inline`) : icône "+" + texte "Ajouter…", sans carte ni icône décorative. Pour une liste déjà existante mais vide (ex: to-do list) — reproduit exactement le pattern `+ Ajouter une action…` de `dashboard.html` (`.add-task-ghost-btn`).
 3. **Variantes** : bloc centré avec ou sans bouton d'action (ex: "Aucune donnée dans le graphique" n'a pas de CTA — rien à cliquer, c'est une conséquence d'un autre état vide, pas une action propre).
 4. **États** : aucun état interactif propre au bloc centré (juste affiché) ; la ligne inline a hover/focus-visible comme un bouton normal.
-5. **Tokens** : `--empty-state-icon-size/color/gap/padding-block/max-width`, `--empty-inline-height/gap/text-color/text-color-hover`.
+5. **Tokens** : `--empty-state-icon-size/color/gap/padding-block/max-width`, `--empty-inline-height/gap/text-color/text-color-hover`. `--empty-inline-height` reste dense (`--space-24`) : c'est une action inline de liste, pas un bouton.
 6. **Règles d'usage** : ne jamais illustrer avec une mascotte ou une séquence de célébration (Principe 1). Icône neutre et dimmée (`--color-text-muted`), jamais decorative/colorée. Un terme technique (ex "KPI") s'explique via le déclencheur Tooltip, pas via une phrase supplémentaire collée dans la description (alourdit la lecture).
 7. **Erreurs à éviter** : ne pas réutiliser le bloc centré pour une liste qui a juste besoin d'un point d'entrée discret (ex to-do list) — dans ce cas la ligne inline est la bonne forme, pas une grosse carte avec icône. Ne pas dupliquer l'explication d'un terme en dur dans le texte si un Tooltip existe déjà pour ça.
 8. **Exemple** :

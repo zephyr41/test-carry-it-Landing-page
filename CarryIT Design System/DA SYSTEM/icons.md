@@ -25,6 +25,11 @@ Règle : `fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejo
 - **Stroke** : `2.5` (nouveau — pas encore de token, à ajouter)
 - **Décision (2026-07-02)** : variante C (bold, 2.5) retenue parmi 3 candidates.
 
+## Options de ligne / Plus d'actions ✅ TRANCHÉ
+
+- **Source retenue** : caractère `⋯` déjà utilisé en production par `row-action`.
+- **Usage** : action secondaire de ligne (ouvrir le détail / menu d'actions), visible uniquement au hover/focus dans les listes denses.
+
 ## Corbeille / Supprimer ✅ TRANCHÉ
 
 - **viewBox** : `0 0 24 24`
