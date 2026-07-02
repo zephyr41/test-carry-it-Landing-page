@@ -40,14 +40,17 @@
 }
 
 .ds-progress__fill {
+  width: 100%;
   height: 100%;
   background: var(--progress-fill-background);
   border-radius: var(--progress-radius);
+  transform: scaleX(0);
+  transform-origin: left center;
   transition: var(--progress-transition);
 }
 
-.ds-progress__fill--17 { width: 17%; }
-.ds-progress__fill--100 { width: 100%; }
+.ds-progress__fill--17 { transform: scaleX(0.17); }
+.ds-progress__fill--100 { transform: scaleX(1); }
 
 @media (max-width: 640px) {
   .progress-preview {

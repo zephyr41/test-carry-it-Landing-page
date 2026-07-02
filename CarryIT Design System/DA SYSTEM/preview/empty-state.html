@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DA System — Empty state</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="buttons.css">
+<link rel="stylesheet" href="tooltip.css">
+<link rel="stylesheet" href="empty-state.css">
+</head>
+<body>
+  <main class="empty-preview">
+    <section class="empty-preview__shell">
+      <header class="empty-preview__header">
+        <div class="type-label">Empty state</div>
+        <h1 class="type-h1">États vides</h1>
+      </header>
+
+      <div class="empty-preview__group">
+        <div class="empty-preview__group-label type-label">Aucune tâche (liste, inline)</div>
+        <section class="empty-stage">
+          <button type="button" class="ds-empty-inline">
+            <span class="ds-empty-inline__icon" aria-hidden="true">+</span>
+            <span>Ajouter une action...</span>
+          </button>
+        </section>
+      </div>
+
+      <div class="empty-preview__group">
+        <div class="empty-preview__group-label type-label">Aucun KPI enregistré</div>
+        <section class="empty-stage">
+          <div class="ds-empty-state">
+            <svg class="ds-empty-state__icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 19V5M4 19h16M9 16V9M14 16V7M19 16v-4" />
+            </svg>
+            <h3 class="type-h3 ds-empty-state__title">
+              <span>Aucun KPI enregistré</span>
+              <span class="ds-tooltip-wrapper">
+                <button type="button" class="ds-tooltip-trigger" aria-label="Qu'est-ce qu'un KPI ?">
+                  <svg class="ds-tooltip-trigger-icon" viewBox="0 0 16 16" aria-hidden="true">
+                    <circle cx="8" cy="8" r="6.5" />
+                    <path d="M6.2 6.3a1.8 1.8 0 0 1 3.5.6c0 1.2-1.8 1.8-1.8 1.8" />
+                    <path d="M8 11h.01" />
+                  </svg>
+                </button>
+                <span class="ds-tooltip" role="tooltip">Un KPI est un indicateur mesurable suivi pour évaluer la progression vers un objectif.</span>
+              </span>
+            </h3>
+            <p class="ds-empty-state__description type-body-md">Ajoute une première mesure pour suivre ta progression.</p>
+            <button type="button" class="ds-button ds-button--inverse ds-button--sm ds-empty-state__action">Ajouter une mesure</button>
+          </div>
+        </section>
+      </div>
+
+      <div class="empty-preview__group">
+        <div class="empty-preview__group-label type-label">Aucune donnée dans le graphique</div>
+        <section class="empty-stage">
+          <div class="ds-empty-state">
+            <svg class="ds-empty-state__icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 19V5M4 19h16M9 16V9M14 16V7M19 16v-4" />
+            </svg>
+            <h3 class="type-h3">Aucune donnée enregistrée</h3>
+            <p class="ds-empty-state__description type-body-md">Le graphique s'affichera dès la première mesure enregistrée.</p>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

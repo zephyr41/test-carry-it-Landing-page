@@ -1,0 +1,101 @@
+.empty-preview {
+  min-height: 100vh;
+  padding: var(--space-page-desktop);
+}
+
+.empty-preview__shell {
+  max-width: 480px;
+}
+
+.empty-preview__header {
+  margin-bottom: var(--space-section-gap);
+}
+
+.empty-stage {
+  padding: var(--container-padding);
+  background: var(--container-background);
+  border: var(--container-border);
+  border-radius: var(--container-radius);
+}
+
+.ds-empty-state {
+  display: grid;
+  justify-items: center;
+  gap: var(--empty-state-gap);
+  max-width: var(--empty-state-max-width);
+  margin-inline: auto;
+  padding-block: var(--empty-state-padding-block);
+  text-align: center;
+}
+
+.ds-empty-state__icon {
+  width: var(--empty-state-icon-size);
+  height: var(--empty-state-icon-size);
+  color: var(--empty-state-icon-color);
+  margin-bottom: var(--space-8);
+}
+
+.ds-empty-state__icon path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: var(--icon-stroke-width-bold);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ds-empty-state__description {
+  color: var(--color-text-secondary);
+}
+
+.ds-empty-state__title {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.ds-empty-state__action {
+  margin-top: var(--space-8);
+}
+
+.empty-preview__group {
+  margin-bottom: var(--space-section-gap);
+}
+
+.empty-preview__group-label {
+  margin-bottom: var(--space-8);
+}
+
+.ds-empty-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--empty-inline-gap);
+  min-height: var(--empty-inline-height);
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: var(--empty-inline-text-color);
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  cursor: pointer;
+  transition: var(--motion-transition-default);
+}
+
+.ds-empty-inline:hover {
+  color: var(--empty-inline-text-color-hover);
+}
+
+.ds-empty-inline:focus-visible {
+  outline: var(--border-focus);
+  outline-offset: var(--space-4);
+}
+
+.ds-empty-inline__icon {
+  font-size: var(--type-body-lg-size);
+  line-height: 1;
+}
+
+@media (max-width: 640px) {
+  .empty-preview {
+    padding: var(--space-page-mobile);
+  }
+}

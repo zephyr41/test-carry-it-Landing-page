@@ -53,6 +53,13 @@ Règle : `fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejo
 - **Stroke** : `--icon-stroke-width`
 - **Usage** : `toast.html` (variant erreur)
 
+## Aide / Question (déclencheur Tooltip)
+
+- **viewBox** : `0 0 16 16`
+- **Path** : `<circle cx="8" cy="8" r="6.5" /><path d="M6.2 6.3a1.8 1.8 0 0 1 3.5.6c0 1.2-1.8 1.8-1.8 1.8" /><path d="M8 11h.01" />`
+- **Stroke** : `--icon-stroke-width`
+- **Usage** : déclencheur générique du composant Tooltip (`.ds-tooltip-trigger`) — utilisé partout où un terme a besoin d'une définition (ex: "KPI" dans Empty state).
+
 ## Chevron bas ✅ TRANCHÉ
 
 - **viewBox** : `0 0 20 20`
@@ -94,7 +101,7 @@ Stroke fixe à `--icon-stroke-width-bold` (2) — ne pas harmoniser avec le rest
 
 Extrait de `dashboard.html`, `index.html`, `jalon.html`, `jalons-edit.html`, `jalons.html`, `objectif-intro.html`, `objectif.html`. **Constat** : forte incohérence de poids/tailles dans la prod actuelle — 4 variantes de chevron, 3 variantes de croix fermer, 3 variantes de plus, 3 variantes de corbeille. Ce catalogue documente l'existant tel quel ; l'harmonisation (choisir UNE variante par intention) est un chantier à part, pas fait ici.
 
-### Calendrier
+### Calendrier ✅ TRANCHÉ (variante unique)
 
 - **viewBox** : `0 0 24 24`, stroke-width prod : `2`
 - **Path** : `<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>`
@@ -118,13 +125,13 @@ Extrait de `dashboard.html`, `index.html`, `jalon.html`, `jalons-edit.html`, `ja
 - **Path** : `M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6` + `M10 11v6M14 11v6M9 6V4h6v2`
 - **Usage** : `dashboard.html`
 
-### Rafraîchir / Synchroniser
+### Rafraîchir / Synchroniser ✅ TRANCHÉ (variante unique)
 
 - **viewBox** : `0 0 24 24`, stroke-width prod : `2`
 - **Path** : `M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15`
 - **Usage** : `dashboard.html` (bouton "Synchroniser")
 
-### Presse-papier / Clipboard
+### Presse-papier / Clipboard ✅ TRANCHÉ (variante unique)
 
 - **viewBox** : `0 0 24 24`, stroke-width prod : `1.5`
 - **Path** : `M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2`
@@ -142,13 +149,13 @@ Extrait de `dashboard.html`, `index.html`, `jalon.html`, `jalons-edit.html`, `ja
 - **Path** : `M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z`
 - **Usage** : `dashboard.html`
 
-### Liste (vue liste, à puces)
+### Liste (vue liste, à puces) ✅ TRANCHÉ (variante unique)
 
 - **viewBox** : `0 0 24 24`, stroke-width prod : `2`
 - **Path** : `M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01`
 - **Usage** : `dashboard.html`
 
-### Kanban (vue colonnes)
+### Kanban (vue colonnes) ✅ TRANCHÉ (variante unique)
 
 - **viewBox** : `0 0 24 24`, stroke-width prod : `2`
 - **Path** : `M4 5h6v14H4zM14 5h6v8h-6zM14 17h6v2h-6z`
@@ -257,7 +264,7 @@ Extrait de `dashboard.html`, `index.html`, `jalon.html`, `jalons-edit.html`, `ja
 - **Path** : `M8 1.5L10.5 4L4 10.5H1.5V8L8 1.5Z`
 - **Usage** : `dashboard.html`
 
-### Utilisateur / Personne
+### Utilisateur / Personne ✅ TRANCHÉ (variante unique)
 
 - **viewBox** : `0 0 24 24`, stroke-width prod : `1.5`
 - **Path** : `M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z`

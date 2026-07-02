@@ -44,15 +44,6 @@
   color: var(--color-success);
 }
 
-.status-card--warning {
-  color: var(--color-warning);
-}
-
-.status-card--warning .status-title,
-.status-card--warning .status-text {
-  color: var(--color-warning);
-}
-
 .status-meta {
   color: var(--color-text-muted);
 }

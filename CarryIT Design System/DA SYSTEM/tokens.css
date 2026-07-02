@@ -19,7 +19,6 @@
   --color-orange-primary-border: rgba(255, 253, 246, 0.16);
   --color-red-400: #F87171;
   --color-green-400: #4ADE80;
-  --color-yellow-400: #FBBF24;
 
   /* Semantic color tokens */
   --color-background: var(--color-neutral-950);
@@ -39,7 +38,6 @@
   --color-accent-primary-border: var(--color-orange-primary-border);
   --color-danger: var(--color-red-400);
   --color-success: var(--color-green-400);
-  --color-warning: var(--color-yellow-400);
   --color-focus-border: rgba(255, 253, 246, 0.72);
 
   /* Primitive font tokens */
@@ -293,6 +291,9 @@
   --tooltip-max-width: 220px;
   --tooltip-arrow-size: 6px;
   --tooltip-gap: var(--space-8);
+  --tooltip-trigger-size: var(--space-16);
+  --tooltip-trigger-color: var(--color-text-muted);
+  --tooltip-trigger-color-hover: var(--color-text-secondary);
 
   /* Component tokens: Tabs */
   --tabs-gap: var(--space-32);
@@ -317,7 +318,7 @@
   --progress-radius: var(--radius-full);
   --progress-track-background: var(--color-surface-raised);
   --progress-fill-background: var(--color-text-primary);
-  --progress-transition: width var(--motion-duration-slow) var(--motion-ease-out);
+  --progress-transition: transform var(--motion-duration-slow) var(--motion-ease-out);
 
   /* Component tokens: Table */
   --table-header-text: var(--color-text-secondary);
@@ -344,11 +345,32 @@
   --toast-success-accent: var(--border-width-default) solid var(--color-success);
   --toast-success-icon-color: var(--color-success);
 
+  /* Component tokens: Empty state */
+  --empty-state-icon-size: var(--space-48);
+  --empty-state-icon-color: var(--color-text-muted);
+  --empty-state-gap: var(--space-12);
+  --empty-state-padding-block: var(--space-64);
+  --empty-state-max-width: 360px;
+
+  /* Component tokens: Empty state — inline (liste vide) */
+  --empty-inline-height: var(--space-48);
+  --empty-inline-gap: var(--space-12);
+  --empty-inline-text-color: var(--color-text-muted);
+  --empty-inline-text-color-hover: var(--color-text-secondary);
+
   /* Component tokens: Disclosure */
   --disclosure-size: var(--space-24);
   --disclosure-icon-color: var(--color-text-secondary);
   --disclosure-triangle-width: var(--space-4);
   --disclosure-triangle-height: 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-duration-fast: 1ms;
+    --motion-duration-base: 1ms;
+    --motion-duration-slow: 1ms;
+  }
 }
 
 *,
