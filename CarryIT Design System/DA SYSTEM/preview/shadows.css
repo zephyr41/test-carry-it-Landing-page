@@ -1,7 +1,7 @@
 .shadows-preview {
   min-height: 100vh;
   padding: var(--space-page-desktop);
-  color: #F2F1EC;
+  color: var(--color-text-primary);
 }
 
 .shadows-preview__shell {

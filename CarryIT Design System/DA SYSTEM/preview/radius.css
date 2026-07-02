@@ -1,7 +1,7 @@
 .radius-preview {
   min-height: 100vh;
   padding: var(--space-page-desktop);
-  color: #F2F1EC;
+  color: var(--color-text-primary);
 }
 
 .radius-preview__shell {
@@ -27,7 +27,7 @@
   width: 72px;
   height: 72px;
   background: var(--color-surface);
-  border: 1px solid var(--color-border-subtle);
+  border: var(--border-subtle);
 }
 
 .radius-box--sm {
@@ -53,7 +53,7 @@
 }
 
 .radius-meta {
-  color: #909095;
+  color: var(--color-text-secondary);
 }
 
 @media (max-width: 640px) {

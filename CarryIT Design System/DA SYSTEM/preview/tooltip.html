@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DA System — Tooltip</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="buttons.css">
+<link rel="stylesheet" href="tooltip.css">
+</head>
+<body>
+  <main class="tooltip-preview">
+    <section class="tooltip-preview__shell">
+      <header class="tooltip-preview__header">
+        <div class="type-label">Tooltip</div>
+        <h1 class="type-h1">Info contextuelle</h1>
+      </header>
+
+      <section class="tooltip-stage">
+        <span class="ds-tooltip-wrapper ds-tooltip-wrapper--demo">
+          <button type="button" class="ds-button ds-button--ghost ds-button--sm">Critère de validation</button>
+          <span class="ds-tooltip" role="tooltip">Toujours visible (démo)</span>
+        </span>
+
+        <span class="ds-tooltip-wrapper">
+          <button type="button" class="ds-button ds-button--ghost ds-button--sm">Survole-moi</button>
+          <span class="ds-tooltip" role="tooltip">Apparaît au survol ou au focus clavier</span>
+        </span>
+      </section>
+    </section>
+  </main>
+</body>
+</html>

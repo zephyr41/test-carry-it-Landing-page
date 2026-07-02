@@ -55,9 +55,9 @@
 .ds-disclosure__icon {
   width: 0;
   height: 0;
-  border-left: 4px solid transparent;
-  border-right: 4px solid transparent;
-  border-top: 6px solid var(--disclosure-icon-color);
+  border-left: var(--disclosure-triangle-width) solid transparent;
+  border-right: var(--disclosure-triangle-width) solid transparent;
+  border-top: var(--disclosure-triangle-height) solid var(--disclosure-icon-color);
   transform: rotate(-90deg);
   transition: transform var(--motion-duration-fast) var(--motion-ease-out);
 }

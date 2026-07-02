@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DA System — Toast</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="toast.css">
+</head>
+<body>
+  <main class="toast-preview">
+    <section class="toast-preview__shell">
+      <header class="toast-preview__header">
+        <div class="type-label">Toast</div>
+        <h1 class="type-h1">Notification temporaire</h1>
+      </header>
+
+      <section class="toast-stage">
+        <div class="ds-toast" role="status">
+          <svg class="ds-toast__icon" viewBox="0 0 16 16" aria-hidden="true">
+            <path d="M3.5 8.5L6.5 11.5L12.5 4.5" />
+          </svg>
+          <p class="ds-toast__message type-body-sm">Tâche créée avec succès.</p>
+          <button type="button" class="ds-toast__close" aria-label="Fermer">
+            <svg class="ds-toast__close-icon" viewBox="0 0 16 16" aria-hidden="true">
+              <path d="M4 4L12 12M12 4L4 12" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="ds-toast ds-toast--error" role="alert">
+          <svg class="ds-toast__icon" viewBox="0 0 16 16" aria-hidden="true">
+            <circle cx="8" cy="8" r="6.5" />
+            <path d="M8 5.2V8.8M8 11.2h.01" />
+          </svg>
+          <p class="ds-toast__message type-body-sm">Impossible d'enregistrer la tâche. Réessaie.</p>
+          <button type="button" class="ds-toast__close" aria-label="Fermer">
+            <svg class="ds-toast__close-icon" viewBox="0 0 16 16" aria-hidden="true">
+              <path d="M4 4L12 12M12 4L4 12" />
+            </svg>
+          </button>
+        </div>
+      </section>
+    </section>
+  </main>
+</body>
+</html>

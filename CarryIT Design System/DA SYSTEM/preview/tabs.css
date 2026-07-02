@@ -1,0 +1,119 @@
+.tabs-preview {
+  min-height: 100vh;
+  padding: var(--space-page-desktop);
+}
+
+.tabs-preview__shell {
+  max-width: 720px;
+}
+
+.tabs-preview__header {
+  margin-bottom: var(--space-section-gap);
+}
+
+.tabs-preview__header--secondary {
+  margin-top: var(--space-section-gap);
+}
+
+.tabs-stage {
+  display: grid;
+  gap: var(--space-element-gap);
+  padding: var(--container-padding);
+  background: var(--container-background);
+  border: var(--container-border);
+  border-radius: var(--container-radius);
+}
+
+/* Primary nav tabs (icon + label) — placé nu dans la navbar, pas dans une carte */
+.ds-tabs {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tabs-gap);
+}
+
+.ds-tabs__tab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding-block: var(--tabs-padding-block);
+  background: transparent;
+  border: none;
+  color: var(--tabs-text);
+  font-family: var(--font-body);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: var(--motion-transition-default);
+}
+
+.ds-tabs__tab:hover {
+  color: var(--tabs-text-active);
+}
+
+.ds-tabs__tab:focus-visible {
+  outline: var(--border-focus);
+  outline-offset: var(--space-4);
+}
+
+.ds-tabs__tab.is-active {
+  color: var(--tabs-text-active);
+  font-weight: var(--font-weight-bold);
+}
+
+.ds-tabs__icon {
+  width: var(--tabs-icon-size);
+  height: var(--tabs-icon-size);
+  flex-shrink: 0;
+}
+
+.ds-tabs__icon path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: var(--icon-stroke-width-bold);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Segmented tabs (view switch) */
+.ds-tabs-segmented {
+  display: inline-flex;
+  justify-self: start;
+  gap: var(--tabs-segmented-gap);
+  padding: var(--tabs-segmented-padding);
+  background: var(--tabs-segmented-background);
+  border-radius: var(--tabs-segmented-radius);
+}
+
+.ds-tabs-segmented__tab {
+  padding: var(--tabs-segmented-tab-padding-block) var(--tabs-segmented-tab-padding-inline);
+  background: transparent;
+  border: none;
+  border-radius: var(--tabs-segmented-tab-radius);
+  color: var(--tabs-text);
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: var(--motion-transition-default);
+}
+
+.ds-tabs-segmented__tab:hover {
+  color: var(--tabs-text-active);
+}
+
+.ds-tabs-segmented__tab:focus-visible {
+  outline: var(--border-focus);
+  outline-offset: 2px;
+}
+
+.ds-tabs-segmented__tab.is-active {
+  background: var(--tabs-segmented-active-background);
+  color: var(--tabs-segmented-active-text);
+  font-weight: var(--font-weight-bold);
+}
+
+@media (max-width: 640px) {
+  .tabs-preview {
+    padding: var(--space-page-mobile);
+  }
+}

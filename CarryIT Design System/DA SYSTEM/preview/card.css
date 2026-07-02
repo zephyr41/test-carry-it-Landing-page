@@ -1,7 +1,7 @@
 .card-preview {
   min-height: 100vh;
   padding: var(--space-page-desktop);
-  color: #F2F1EC;
+  color: var(--color-text-primary);
 }
 
 .card-preview__shell {
@@ -35,7 +35,7 @@
 }
 
 .ds-card__meta {
-  color: #909095;
+  color: var(--color-text-secondary);
 }
 
 @media (max-width: 640px) {

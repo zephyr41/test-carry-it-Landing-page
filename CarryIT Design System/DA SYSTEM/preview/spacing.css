@@ -1,7 +1,7 @@
 .spacing-preview {
   min-height: 100vh;
   padding: var(--space-page-desktop);
-  color: #F2F1EC;
+  color: var(--color-text-primary);
 }
 
 .spacing-preview__shell {
@@ -25,12 +25,12 @@
 }
 
 .spacing-row__meta {
-  color: #909095;
+  color: var(--color-text-secondary);
 }
 
 .spacing-bar {
   height: var(--space-12);
-  background: #F2F1EC;
+  background: var(--color-text-primary);
 }
 
 .spacing-bar--4 {
@@ -74,11 +74,11 @@
 .spacing-card {
   padding: var(--space-card-padding);
   background: var(--color-surface);
-  border: 1px solid var(--color-border-subtle);
+  border: var(--border-subtle);
 }
 
 .spacing-card--compact {
-  padding: var(--space-card-padding-compact);
+  padding: var(--space-16);
 }
 
 @media (max-width: 640px) {

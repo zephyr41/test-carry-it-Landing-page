@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DA System — Progress bar</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="progress.css">
+</head>
+<body>
+  <main class="progress-preview">
+    <section class="progress-preview__shell">
+      <header class="progress-preview__header">
+        <div class="type-label">Progress bar</div>
+        <h1 class="type-h1">Avancement du jalon</h1>
+      </header>
+
+      <section class="progress-stage">
+        <div class="progress-group">
+          <div class="progress-group__label">
+            <span class="type-label">Trouver 5 prospects qualifiés</span>
+            <span class="type-caption">1 / 6</span>
+          </div>
+          <div class="ds-progress" role="progressbar" aria-valuenow="17" aria-valuemin="0" aria-valuemax="100">
+            <div class="ds-progress__fill ds-progress__fill--17"></div>
+          </div>
+        </div>
+
+        <div class="progress-group">
+          <div class="progress-group__label">
+            <span class="type-label">MVP en production</span>
+            <span class="type-caption">6 / 6</span>
+          </div>
+          <div class="ds-progress" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+            <div class="ds-progress__fill ds-progress__fill--100"></div>
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
+</body>
+</html>

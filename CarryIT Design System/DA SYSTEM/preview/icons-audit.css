@@ -1,0 +1,69 @@
+.icons-audit-preview {
+  min-height: 100vh;
+  padding: var(--space-page-desktop);
+  color: var(--color-text-primary);
+}
+
+.icons-audit-preview__shell {
+  max-width: 860px;
+}
+
+.icons-audit-preview__header {
+  margin-bottom: var(--space-section-gap);
+}
+
+.icons-audit-preview__hint {
+  color: var(--color-text-secondary);
+  max-width: 62ch;
+}
+
+.icons-audit-group {
+  margin-bottom: var(--space-section-gap);
+}
+
+.icons-audit-group__title {
+  margin-bottom: var(--space-12);
+}
+
+.icons-audit-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-element-gap);
+}
+
+.icons-audit-card {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-8);
+  width: 120px;
+  padding: var(--space-16);
+  background: var(--container-background);
+  border: var(--container-border);
+  border-radius: var(--container-radius);
+  text-align: center;
+}
+
+.icons-audit-card__icon {
+  width: var(--space-24);
+  height: var(--space-24);
+  color: var(--color-text-primary);
+}
+
+.icons-audit-card__icon path,
+.icons-audit-card__icon circle,
+.icons-audit-card__icon rect {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.icons-audit-card__label {
+  color: var(--color-text-secondary);
+}
+
+@media (max-width: 640px) {
+  .icons-audit-preview {
+    padding: var(--space-page-mobile);
+  }
+}

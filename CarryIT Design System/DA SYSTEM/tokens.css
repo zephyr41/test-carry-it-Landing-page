@@ -119,6 +119,7 @@
 
   /* Primitive shadow tokens */
   --shadow-none: none;
+  --shadow-sm: 0 4px 12px -4px rgba(0, 0, 0, 0.45);
   --shadow-lg: 0 24px 48px -16px rgba(0, 0, 0, 0.55);
 
   /* Primitive motion tokens */
@@ -226,6 +227,8 @@
   --checkbox-checked-border: var(--border-width-default) solid var(--color-text-primary);
   --checkbox-mark-color: var(--color-background);
   --checkbox-mark-stroke-width: 2.5;
+  --icon-stroke-width: 1.5;
+  --icon-stroke-width-bold: 2;
   --checkbox-transition: var(--input-transition);
   --checkbox-radius-round: var(--radius-full);
   --checkbox-size-round: 14px;
@@ -274,12 +277,78 @@
   --modal-padding-block: calc(var(--space-32) + var(--space-8));
   --modal-header-gap: var(--space-24);
   --modal-shadow: var(--shadow-lg);
-  --modal-max-width: 560px;
+  --modal-max-width: 480px;
   --modal-close-size: var(--space-32);
+
+  /* Component tokens: Tooltip */
+  --tooltip-background: var(--color-surface-raised);
+  --tooltip-text: var(--color-text-primary);
+  --tooltip-border: var(--border-subtle);
+  --tooltip-radius: var(--radius-sm);
+  --tooltip-padding-inline: var(--space-8);
+  --tooltip-padding-block: var(--space-4);
+  --tooltip-font-size: var(--type-caption-size);
+  --tooltip-line-height: var(--type-caption-line);
+  --tooltip-shadow: var(--shadow-sm);
+  --tooltip-max-width: 220px;
+  --tooltip-arrow-size: 6px;
+  --tooltip-gap: var(--space-8);
+
+  /* Component tokens: Tabs */
+  --tabs-gap: var(--space-32);
+  --tabs-padding-block: var(--space-12);
+  --tabs-text: var(--color-text-secondary);
+  --tabs-text-active: var(--color-text-primary);
+  --tabs-icon-size: var(--space-16);
+
+  /* Component tokens: Tabs — segmented */
+  --tabs-segmented-padding: var(--space-4);
+  --tabs-segmented-gap: var(--space-4);
+  --tabs-segmented-background: var(--color-surface-raised);
+  --tabs-segmented-radius: var(--radius-md);
+  --tabs-segmented-tab-radius: var(--radius-sm);
+  --tabs-segmented-tab-padding-inline: var(--space-16);
+  --tabs-segmented-tab-padding-block: var(--space-8);
+  --tabs-segmented-active-background: var(--color-text-primary);
+  --tabs-segmented-active-text: var(--color-background);
+
+  /* Component tokens: Progress bar */
+  --progress-height: var(--space-8);
+  --progress-radius: var(--radius-full);
+  --progress-track-background: var(--color-surface-raised);
+  --progress-fill-background: var(--color-text-primary);
+  --progress-transition: width var(--motion-duration-slow) var(--motion-ease-out);
+
+  /* Component tokens: Table */
+  --table-header-text: var(--color-text-secondary);
+  --table-header-font-size: var(--type-data-label-size);
+  --table-header-font-weight: var(--font-weight-bold);
+  --table-cell-padding-block: var(--space-12);
+  --table-cell-padding-inline: var(--space-16);
+  --table-row-border: var(--border-subtle);
+  --table-row-hover-background: var(--color-surface-raised);
+  --table-cell-text: var(--color-text-primary);
+
+  /* Component tokens: Toast */
+  --toast-background: var(--container-background);
+  --toast-border: var(--border-subtle);
+  --toast-radius: var(--radius-md);
+  --toast-padding: var(--space-16);
+  --toast-gap: var(--space-12);
+  --toast-shadow: var(--shadow-lg);
+  --toast-max-width: 360px;
+  --toast-icon-size: var(--space-16);
+  --toast-close-size: var(--space-24);
+  --toast-error-accent: var(--border-width-default) solid var(--color-danger);
+  --toast-error-icon-color: var(--color-danger);
+  --toast-success-accent: var(--border-width-default) solid var(--color-success);
+  --toast-success-icon-color: var(--color-success);
 
   /* Component tokens: Disclosure */
   --disclosure-size: var(--space-24);
   --disclosure-icon-color: var(--color-text-secondary);
+  --disclosure-triangle-width: var(--space-4);
+  --disclosure-triangle-height: 6px;
 }
 
 *,

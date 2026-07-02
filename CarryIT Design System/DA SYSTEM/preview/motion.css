@@ -1,7 +1,7 @@
 .motion-preview {
   min-height: 100vh;
   padding: var(--space-page-desktop);
-  color: #F2F1EC;
+  color: var(--color-text-primary);
 }
 
 .motion-preview__shell {
@@ -32,7 +32,7 @@
 .motion-button {
   width: fit-content;
   padding: var(--space-8) var(--space-12);
-  color: #F2F1EC;
+  color: var(--color-text-primary);
   font: inherit;
   background: transparent;
   border: var(--border-subtle);
@@ -61,7 +61,7 @@
 .motion-progress__bar {
   width: 48%;
   height: 100%;
-  background: #F2F1EC;
+  background: var(--color-text-primary);
   transform-origin: left center;
   transition: var(--motion-transition-view);
 }

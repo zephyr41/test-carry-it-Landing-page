@@ -71,7 +71,7 @@
 .ds-modal__close-icon path {
   fill: none;
   stroke: currentColor;
-  stroke-width: 1.5;
+  stroke-width: var(--icon-stroke-width);
   stroke-linecap: round;
 }
 

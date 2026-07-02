@@ -1,7 +1,7 @@
 .borders-preview {
   min-height: 100vh;
   padding: var(--space-page-desktop);
-  color: #F2F1EC;
+  color: var(--color-text-primary);
 }
 
 .borders-preview__shell {
@@ -35,7 +35,7 @@
 }
 
 .border-card__meta {
-  color: #909095;
+  color: var(--color-text-secondary);
 }
 
 .border-divider {

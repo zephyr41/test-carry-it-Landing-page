@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DA System — Table</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="badge.css">
+<link rel="stylesheet" href="table.css">
+</head>
+<body>
+  <main class="table-preview">
+    <section class="table-preview__shell">
+      <header class="table-preview__header">
+        <div class="type-label">Table</div>
+        <h1 class="type-h1">Tâches</h1>
+      </header>
+
+      <section class="table-stage">
+        <table class="ds-table">
+          <thead>
+            <tr>
+              <th scope="col">Tâche</th>
+              <th scope="col">Statut</th>
+              <th scope="col">Échéance</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Envoyer le premier message de prospection</td>
+              <td><span class="ds-badge">À faire</span></td>
+              <td>3 juillet</td>
+            </tr>
+            <tr>
+              <td>Définir le critère de validation du jalon</td>
+              <td><span class="ds-badge ds-badge--active">En cours</span></td>
+              <td>5 juillet</td>
+            </tr>
+            <tr>
+              <td>Rédiger le message type</td>
+              <td><span class="ds-badge ds-badge--muted">Terminé</span></td>
+              <td>1 juillet</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </section>
+  </main>
+</body>
+</html>

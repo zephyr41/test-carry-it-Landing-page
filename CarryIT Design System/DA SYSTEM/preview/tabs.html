@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DA System — Tabs</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="tabs.css">
+</head>
+<body>
+  <main class="tabs-preview">
+    <section class="tabs-preview__shell">
+      <header class="tabs-preview__header">
+        <div class="type-label">Tabs</div>
+        <h1 class="type-h1">Navigation principale</h1>
+      </header>
+
+      <section class="tabs-stage">
+        <nav class="ds-tabs" role="tablist" aria-label="Navigation principale">
+          <button class="ds-tabs__tab is-active" role="tab" aria-selected="true">
+            <svg class="ds-tabs__icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 19V5M4 19h16M9 16V9M14 16V7M19 16v-4" />
+            </svg>
+            <span>Vision</span>
+          </button>
+          <button class="ds-tabs__tab" role="tab" aria-selected="false">
+            <svg class="ds-tabs__icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 21V5m0 0l14 5L4 15" />
+            </svg>
+            <span>Jalons</span>
+          </button>
+          <button class="ds-tabs__tab" role="tab" aria-selected="false">
+            <svg class="ds-tabs__icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M9 11l3 3L22 4" />
+              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+            </svg>
+            <span>Exécution</span>
+          </button>
+        </nav>
+      </section>
+
+      <header class="tabs-preview__header tabs-preview__header--secondary">
+        <div class="type-label">Tabs — segmented</div>
+        <h1 class="type-h2">Liste ↔ Kanban</h1>
+      </header>
+
+      <section class="tabs-stage">
+        <div class="ds-tabs-segmented" role="tablist" aria-label="Affichage des tâches">
+          <button class="ds-tabs-segmented__tab is-active" role="tab" aria-selected="true">Liste</button>
+          <button class="ds-tabs-segmented__tab" role="tab" aria-selected="false">Kanban</button>
+        </div>
+      </section>
+    </section>
+  </main>
+</body>
+</html>

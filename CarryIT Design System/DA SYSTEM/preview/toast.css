@@ -1,0 +1,114 @@
+.toast-preview {
+  min-height: 100vh;
+  padding: var(--space-page-desktop);
+}
+
+.toast-preview__shell {
+  max-width: 720px;
+}
+
+.toast-preview__header {
+  margin-bottom: var(--space-section-gap);
+}
+
+.toast-stage {
+  display: grid;
+  gap: var(--space-element-gap);
+  padding: var(--container-padding);
+  background: var(--container-background);
+  border: var(--container-border);
+  border-radius: var(--container-radius);
+}
+
+.ds-toast {
+  display: flex;
+  align-items: center;
+  gap: var(--toast-gap);
+  max-width: var(--toast-max-width);
+  padding: var(--toast-padding);
+  background: var(--toast-background);
+  border: var(--toast-border);
+  border-radius: var(--toast-radius);
+  box-shadow: var(--toast-shadow);
+}
+
+.ds-toast--error {
+  border-left: var(--toast-error-accent);
+}
+
+.ds-toast--success {
+  border-left: var(--toast-success-accent);
+}
+
+.ds-toast--success .ds-toast__icon {
+  color: var(--toast-success-icon-color);
+}
+
+.ds-toast__icon {
+  width: var(--toast-icon-size);
+  height: var(--toast-icon-size);
+  flex-shrink: 0;
+  color: var(--color-text-secondary);
+}
+
+.ds-toast--error .ds-toast__icon {
+  color: var(--toast-error-icon-color);
+}
+
+.ds-toast__icon path,
+.ds-toast__icon circle {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: var(--icon-stroke-width);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ds-toast__message {
+  flex: 1;
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+.ds-toast__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--toast-close-size);
+  height: var(--toast-close-size);
+  flex-shrink: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: var(--motion-transition-default);
+}
+
+.ds-toast__close:hover {
+  color: var(--color-text-primary);
+}
+
+.ds-toast__close:focus-visible {
+  outline: none;
+  border: var(--input-border-focus);
+}
+
+.ds-toast__close-icon {
+  width: 50%;
+  height: 50%;
+}
+
+.ds-toast__close-icon path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: var(--icon-stroke-width);
+  stroke-linecap: round;
+}
+
+@media (max-width: 640px) {
+  .toast-preview {
+    padding: var(--space-page-mobile);
+  }
+}
