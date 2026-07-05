@@ -19,6 +19,7 @@
   --color-orange-primary-border: rgba(255, 253, 246, 0.16);
   --color-red-400: #F87171;
   --color-green-400: #4ADE80;
+  --color-amber-400: #EBB04E;
 
   /* Semantic color tokens */
   --color-background: var(--color-neutral-950);
@@ -38,6 +39,8 @@
   --color-accent-primary-border: var(--color-orange-primary-border);
   --color-danger: var(--color-red-400);
   --color-success: var(--color-green-400);
+  /* warning = état "à traiter" (mesure en retard), distinct de l'orange accent (CTA) et du danger (erreur) */
+  --color-warning: var(--color-amber-400);
   --color-focus-border: rgba(255, 253, 246, 0.72);
 
   /* Primitive font tokens */
@@ -507,6 +510,63 @@
   --scheduler-resize-hit-extend: var(--space-12); /* étend la zone tactile du resize vers le haut → 24px (WCAG 2.5.8 AA) sans grossir le grip visuel */
   --scheduler-resize-handle-color: color-mix(in srgb, var(--color-text-primary) 18%, transparent);
   --scheduler-transition: var(--motion-transition-default);
+
+  /* Component tokens: KPI card (composant métier — mesure effort/résultat d'un jalon) */
+  /* Padding = standard carte du système (--card-padding = 24), PAS une valeur bespoke */
+  --kpi-card-padding: var(--card-padding);
+  /* gap entre cartes = objets détachés → aligné sur le padding, pas plus serré */
+  --kpi-card-grid-gap: var(--space-24);
+  /* gap de BASE = intra-groupe serré (titre↔fraîcheur = une unité). Les ruptures
+     inter-groupes sont posées en margin explicite (rythme groupé, pas uniforme). */
+  --kpi-card-gap: var(--space-4);
+  /* rupture titre-cluster → valeur (nouveau bloc « mesure ») */
+  --kpi-card-metric-gap: var(--space-24);
+  /* respiration valeur → barre */
+  --kpi-card-bar-gap: var(--space-12);
+  /* respiration head (label + actions) → titre */
+  --kpi-card-title-gap: var(--space-16);
+  /* séparation du groupe valeur sous le cluster identité (2 groupes distincts) */
+  --kpi-card-value-gap: var(--space-24);
+  --kpi-card-eyebrow-color: var(--color-text-muted);
+  --kpi-card-type-icon-color: var(--color-text-muted);
+  /* Fraîcheur neutre = muted (2 pôles : titre blanc vs contexte muted). L'importance vient de l'état stale (ambre), pas d'un gris intermédiaire */
+  --kpi-card-meta-color: var(--color-text-muted);
+  /* Mesure en retard (> 1 période sans mesure) : couleur d'état, seul point de couleur de la carte */
+  --kpi-card-meta-stale-color: var(--color-warning);
+  --kpi-card-value-size: var(--type-data-value-size); /* 36px — seule emphase du KPI (Principe 2 : taille, pas couleur) */
+  --kpi-card-value-weight: var(--font-weight-heavy);
+  --kpi-card-unit-color: var(--color-text-secondary);
+  --kpi-card-target-color: var(--color-text-muted);
+  --kpi-card-title-color: var(--color-text-secondary);
+  /* delta (écart à la cible) = signal mis en avant sur l'effort → blanc, pas muted */
+  --kpi-card-delta-color: var(--color-text-primary);
+  --kpi-card-summary-gap: var(--space-8);
+  /* Variante COMPACTE (vue long terme / résumé) : padding SOUS le standard (24) + rythme resserré */
+  --kpi-card-summary-padding: var(--space-16);
+  --kpi-card-summary-title-gap: var(--space-12);
+  --kpi-card-summary-metric-gap: var(--space-16);
+  --kpi-card-empty-copy-color: var(--color-text-secondary);
+  --kpi-card-define-border: var(--border-width-default) dashed var(--color-border-strong);
+  --kpi-card-define-color: var(--color-text-secondary);
+  --kpi-card-define-color-hover: var(--color-text-primary);
+
+  /* Component tokens: Jalon card (composant métier — jalon actif + statut + avancement) */
+  --jalon-card-padding: var(--space-24);
+  --jalon-card-gap: var(--space-16);
+  --jalon-card-meta-color: var(--color-text-muted);
+  --jalon-card-date-color: var(--color-text-secondary);
+  --jalon-card-cta-color: var(--color-text-secondary);
+  --jalon-card-cta-color-hover: var(--color-text-primary);
+  /* Statuts : distingués par contraste/label, pas par l'accent orange (réservé CTA) */
+  --jalon-status-active-dot: var(--color-accent-primary);
+  --jalon-status-active-text: var(--color-text-primary);
+  --jalon-status-done-dot: var(--color-text-muted);
+  --jalon-status-done-text: var(--color-text-secondary);
+  --jalon-status-upcoming-dot: var(--color-border-strong);
+  --jalon-status-upcoming-text: var(--color-text-muted);
+  --jalon-status-pill-background: var(--color-surface-raised);
+  --jalon-status-pill-radius: var(--radius-full);
+  --jalon-status-dot-size: var(--space-8);
 }
 
 @media (prefers-reduced-motion: reduce) {

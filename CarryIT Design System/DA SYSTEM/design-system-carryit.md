@@ -818,10 +818,53 @@ Premier assemblage propre à un écran CarryIT (distinct des composants de base/
 6. **Accessibilité** : `role="dialog"` + `aria-modal` + `aria-labelledby`. Focus-trap JS (Tab reste dans le dialog, Maj+Tab wrap, Échap retire le focus) dans `effort-modal.js`. Scheduler opérable au clavier (cf. §Scheduler). Contraste des labels muted vérifié à 5.88:1 (> AA). Ouverture/fermeture réelle = câblage produit (non couvert ici).
 7. **Preview** : `preview/effort-modal.html` (+ `.css` + `.js`).
 
+### KPI card ("Effort / Résultat d'un jalon")
+
+Construit 2026-07-05. Porté depuis `renderJalonKpiCardV2` de `dashboard.html`.
+
+1. **Rôle** : afficher une mesure de jalon — soit l'**effort** (l'action mesurable qu'on répète), soit le **résultat** (la preuve mesurable que le jalon est atteint). Deux KPI max par jalon.
+2. **Une seule structure, deux contextes** (convergé Nils 2026-07-05, réf = son mockup — monochrome, aligné) :
+   - **Structure unique** `.ds-kpi-card` — layout `flex column` :
+     `head` (eyebrow `type-data-label` à gauche [+ `.ds-kpi-card__head-actions` à droite en vue jalon : bouton « Ajouter » `ds-button--subtle ds-button--xs` puis crayon d'édition `.ds-row-action` 16px]) → **titre** (`type-body-lg` semibold) → **fraîcheur** (`.ds-kpi-card__meta`) → `.ds-kpi-card__metric` = **valeur hero** (`51`, 36px/800 blanc) + **cible en gris** (`.ds-kpi-card__target`, `/ 15 h`, `type-h3` muted) [+ **delta pill** `ds-badge` à droite sur l'effort] → **Progress bar** pleine largeur dessous.
+   - **Rythme GROUPÉ (clé du rendu premium, décidé Nils 2026-07-05 après diagnostic mesuré)** : le problème « pas premium » venait d'un **espacement uniforme** (tout à 12px → aucun groupe). Fix : `gap:0` sur la carte + **marges explicites par relation** — head→titre `--kpi-card-title-gap` (16), titre→fraîcheur `--space-4` (serré, = une unité identité), fraîcheur→valeur `--kpi-card-metric-gap` (24, rupture inter-groupe), valeur→barre `--kpi-card-bar-gap` (12). Grille `align-items:start` → chaque carte hugge son contenu (**pas de bottom-anchor** : il produisait un void quand les titres différaient, ou un écart trop serré quand ils étaient égaux — jamais la bonne valeur). Diagnostic : `tokens.css` n'était pas cassé (tous les atomes présents), il manquait l'**application d'une hiérarchie d'espacement**.
+   - **Deux variantes = même structure, densité différente** : **Vue jalon (interactive)** = padding **standard système** `--kpi-card-padding` → `--card-padding` (24, PAS une valeur bespoke), header actions + Progress bar. **Vue long terme (résumé, lecture seule)** `.ds-kpi-card--summary` = **compacte** : padding `--kpi-card-summary-padding` **16** (sous le standard), rythme resserré (`--kpi-card-summary-title-gap` 12 / `--kpi-card-summary-metric-gap` 16), **sans** header-actions **ni** barre. Titre `type-body-lg` dans les deux. (Hauteur ~159 vs ~217.)
+   - **Espacement externe** : gap entre cartes `--kpi-card-grid-gap` (24) = **aligné au padding** (une carte est un objet détaché ; le gap ne doit jamais être < au rythme interne, sinon les cartes se collent — bug corrigé : gap était à 12 vs padding 24). Marges latérales : tout flush au padding (eyebrow/titre/valeur/barre alignés à gauche, barre symétrique). **Audit** : tous les `margin`/`padding`/`gap` = tokens, zéro valeur en dur.
+   - **Hiérarchie / emphase** : héros unique = **la valeur** (36px/800 blanc), cible **démotée en gris** (`type-h3` muted) → contraste net dans le même groupe. Titre `type-body-lg` semibold blanc = ancre de lecture. Fraîcheur `muted`. 2 pôles blanc / muted, pas de gris intermédiaire.
+   - **Différenciation effort/résultat** : par le **libellé eyebrow** + le **delta pill** (l'effort au-dessus de son seuil affiche `+36H/15H`, le résultat non), PAS par une icône de type ni par une couleur (essayées puis retirées — Nils : trop d'infos / carte monochrome).
+   - **Fraîcheur monochrome** : les DEUX cartes affichent « Mis à jour il y a Xj · {frequency} » en **gris muted** — pas d'ambre sur le résultat en retard (l'ambre `--color-warning`/`.ds-kpi-card__meta--stale` essayé puis retiré : Nils veut les deux fraîcheurs identiques). Carte strictement monochrome.
+
+**Modèle de données KPI (source : backup produit, `carryit_v1_jalons[].kpis[]`)** — l'affichage ne fabrique rien, tout vient de l'objet KPI :
+- `type` : `leading` → Effort / `lagging` → Résultat
+- `titre` (= `label`) : nom du KPI (l'action à répéter / la preuve) → **titre** démoté
+- `value` (= `valeur`) : valeur courante, calculée depuis `measures[]` selon `mode` (Cumulatif = somme/`total`, Instantané = dernière mesure) → **valeur** hero
+- `target` (= `cible`) : cible → **`/ target`**
+- `unit` (= `unite`) : unité LONGUE user-définie (ex. « H/entre chaque test ») — ne jamais inventer ni découper
+- `unitShort` : unité **courte**. Affichage = **valeur (blanc) + cible en gris `/ cible unitShort`** : `51` + `/ 15 h`, `5` + `/ 15 testeurs`. La valeur seule est le héros ; `/ cible unitShort` est démoté (`.ds-kpi-card__target`, `type-h3` muted). `unitShort` : défaut **dérivé** `unit.split(/[\s\/]/)[0]` ; **override** si dérivation moche (« Beta testeur » → override « testeurs »). Sens complet dans le **titre**.
+- `frequency` (= `frequence`) : période (« Hebdomadaire »…) → affichée + sert au calcul « en retard »
+- `measures[]` (`{date, value, delta, total}`) : la plus récente `date` → « Mis à jour il y a Xj · {frequency} », toujours en gris muted (pas d'ambre)
+- **Delta = pill de dépassement (`ds-badge`), effort uniquement.** Contenu **`+36H/15H`** = `dépassement / seuil` (`+36` = `valeur − cible`, `15` = `cible`/seuil). Affiché seulement si `valeur > cible`, poussé à droite de la ligne valeur. Monochrome (badge = bordure subtle + texte secondary). Le résultat n'a pas de delta (sous son seuil). *Rationale anti-vanity (ADN CarryIT)* : on ne met en avant que le **franchissement du seuil**, pas l'activité brute (« +5h cette semaine » = vanity, « occupé » ≠ « avance »).
+3. **Nature** : composant métier. Classes propres `.ds-kpi-card*` dans `kpi-card.css` ; réutilise **Progress bar / Badge (delta pill) / Button / row-action / tokens type**. `badge.css` doit être lié dans la preview.
+4. **Tokens** : `--kpi-card-*` — padding = `--card-padding` (standard, 24), grid-gap (24), **rythme groupé** (`--kpi-card-title-gap` 16 / `--kpi-card-metric-gap` 24 / `--kpi-card-bar-gap` 12 ; intra-groupe `--space-4`), variante compacte (`--kpi-card-summary-padding` 16 / summary-title-gap 12 / summary-metric-gap 16), couleurs eyebrow/meta/title/unit/target, valeur, define. Aucun nouvel accent couleur ; la pill réutilise les tokens `--badge-*`.
+5. **Règles d'usage (Principe 2)** : la **valeur** est l'emphase (héros, 36px/800 blanc), la **cible démotée en gris**. Seul signal secondaire : le **delta pill** de dépassement (monochrome, poids/bordure — pas couleur). Carte strictement monochrome (pas d'ambre, pas de barre colorée : remplissage `--color-text-primary` blanc). Jamais de couleur d'accent pour distinguer effort vs résultat (le teal `#5BAEC9` de la prod : **écarté**) — distinction par eyebrow + delta. Bouton d'action **`subtle` `xs`** dans le header à droite (pas `ghost` ni `primary` orange).
+6. **Accessibilité** : Progress bar `role="progressbar"` + aria-value. Boutons édition/action avec `aria-label`. Icônes `aria-hidden`, `stroke-width` par token.
+7. **Preview** : `preview/kpi-card.html` (+ `.css`). Vue jalon (effort rempli avec delta pill + barre / résultat / effort à définir) + Vue long terme (mêmes cartes en lecture seule, sans barre).
+
+### Jalon card ("Jalon actif / statut")
+
+Construit 2026-07-05. Porté depuis `db-active-jalon-card` + `buildJalonDetailCard` de `dashboard.html`.
+
+1. **Rôle** : représenter un jalon dans son état (en cours / terminé / à venir) avec son avancement de tâches et l'accès au détail.
+2. **Composition** : head (méta `Jalon n/N · Mois n` + statut pill `.ds-jalon-status`) / titre + date / avancement des tâches (label + count + Progress bar) / CTA "Voir le jalon →".
+3. **Nature** : composant métier. Classes propres `.ds-jalon-card*` / `.ds-jalon-status*` dans `jalon-card.css` ; réutilise Progress bar / tokens.
+4. **Tokens** : `--jalon-card-*` et `--jalon-status-*` (dot + texte par statut). Seul le statut **actif** utilise l'orange (`--color-accent-primary`) sur son dot — c'est le jalon-action du moment, usage conforme Principe 2. Terminé/à venir = contraste neutre (muted / border-strong).
+5. **Règles d'usage** : le statut se lit au **contraste + label + couleur du dot**, jamais à un fond de carte coloré. Card entière cliquable (`cursor:pointer`, `tabindex="0"`, `aria-label` décrivant statut + titre).
+6. **Accessibilité** : Progress bar `role="progressbar"` + aria-value. `aria-label` sur l'article (statut lisible sans la couleur seule). Focus visible via `border-active`.
+7. **Preview** : `preview/jalon-card.html` (+ `.css`). 3 états : actif, terminé, à venir.
+
 ## À venir
 
 Sections non commencées (décisions produit pas encore prises, nécessitent une session dédiée) :
-- **5. Composants métier** — Effort modal fait (2026-07-04, cf. section "Composants métier"). Reste : Task row complet (checkbox + texte + statut + actions), Jalon card, KPI card. Distinct des composants de base ci-dessus (voir clarification donnée à Nils en session : composant de base = brique atomique réutilisable partout, composant métier = assemblage propre à un écran CarryIT).
+- **5. Composants métier** — Effort modal (2026-07-04), KPI card (2026-07-05), Jalon card (2026-07-05) faits, cf. section "Composants métier". Task row : déjà couvert par `task-list.html`/`task-list.css` (§6 "Task list imbriquée" — checkbox + grip + disclosure + titre + count + actions ⋯/supprimer, tâche ET sous-tâche). Reste éventuel : une carte de tâche « standalone » hors tableau si un écran le demande, pas nécessaire tant que la task list couvre le besoin. Distinct des composants de base ci-dessus (composant de base = brique atomique réutilisable partout, composant métier = assemblage propre à un écran CarryIT).
 - **6. Patterns** — création/modification/suppression/confirmation/filtre/recherche/tableau vide/chargement/erreur/onboarding/dashboard/détail.
 - **7. Templates d'écran** — Dashboard principal, page de détail, formulaire de création/édition. Dépend de la grille/largeurs de page réelles du produit, pas encore définies (cf. §4.3, largeurs de shell actuelles sont des valeurs de preview, pas des tokens produit — à faire au moment de construire les Templates, pas avant).
 - **8. Data visualisation** — Chart fait (2026-07-02), Calendar fait (2026-07-02), Calendar heatmap fait (2026-07-02). Reste : delta/tendance/historique en composants autonomes (actuellement seulement intégrés dans le popover Calendar heatmap), absence de donnée.

@@ -1,0 +1,236 @@
+.kpi-card-preview {
+  min-height: 100vh;
+  padding: var(--space-page-desktop);
+  color: var(--color-text-primary);
+}
+
+.kpi-card-preview__shell {
+  max-width: 960px;
+}
+
+.kpi-card-preview__header {
+  margin-bottom: var(--space-section-gap);
+}
+
+.kpi-card-section + .kpi-card-section {
+  margin-top: var(--space-section-gap);
+}
+
+.kpi-card-section__label {
+  margin-bottom: var(--space-16);
+  color: var(--color-text-secondary);
+}
+
+.kpi-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(440px, 1fr));
+  gap: var(--kpi-card-grid-gap);
+  align-items: start; /* chaque carte hugge son contenu → aucun void, hauteurs propres */
+}
+
+/* ── Card shell ─────────────────────────────────────────────── */
+/* Rythme GROUPÉ : gap de base nul, chaque rupture est posée en margin explicite
+   (intra-groupe serré titre↔fraîcheur, ruptures inter-groupes larges). */
+.ds-kpi-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: var(--kpi-card-padding);
+  background: var(--card-background);
+  border: var(--card-border);
+  border-radius: var(--card-radius);
+  transition: var(--card-transition);
+}
+
+.ds-kpi-card:hover,
+.ds-kpi-card:focus-within {
+  border: var(--card-border-active);
+}
+
+/* ── Header : eyebrow (gauche) + actions (droite : Ajouter + édition) ─── */
+.ds-kpi-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-8);
+}
+
+.ds-kpi-card__head-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+.ds-kpi-card__eyebrow {
+  color: var(--kpi-card-eyebrow-color);
+}
+
+/* Crayon d'édition : 16px (sinon défaut viewBox 24 = trop gros) */
+.ds-kpi-card__icon {
+  width: var(--space-16);
+  height: var(--space-16);
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: var(--icon-stroke-width);
+}
+
+/* Titre = ancre de lecture. Rupture depuis le head (label + actions). Max 2 lignes.
+   Fraîcheur COLLÉE dessous (groupe identité). */
+.ds-kpi-card__title {
+  margin-top: var(--kpi-card-title-gap);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  font-weight: var(--font-weight-semibold);
+}
+
+/* Fraîcheur = sous-titre du titre → serrée (space-4), même groupe. */
+.ds-kpi-card__meta {
+  margin-top: var(--space-4);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
+  white-space: nowrap;
+  color: var(--kpi-card-meta-color);
+}
+
+/* Mesure en retard → couleur d'état (ambre). Seul point de couleur, fonctionnel. */
+.ds-kpi-card__meta--stale {
+  color: var(--kpi-card-meta-stale-color);
+}
+
+.ds-kpi-card__meta-icon {
+  width: var(--space-12);
+  height: var(--space-12);
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: var(--icon-stroke-width);
+}
+
+/* ── Metric : nouveau bloc « mesure » → rupture nette depuis le cluster identité
+   (margin-top large). La valeur est la seule emphase (Principe 2). ── */
+.ds-kpi-card__metric {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+  margin-top: var(--kpi-card-metric-gap);
+}
+
+.ds-kpi-card__value {
+  font-size: var(--kpi-card-value-size);
+  line-height: var(--type-data-value-line);
+  font-weight: var(--kpi-card-value-weight);
+  color: var(--color-text-primary);
+}
+
+.ds-kpi-card__unit {
+  color: var(--kpi-card-unit-color);
+}
+
+.ds-kpi-card__target {
+  color: var(--kpi-card-target-color);
+}
+
+/* Barre = même bloc que la valeur, respiration courte dessous. */
+.ds-kpi-card .ds-progress {
+  margin-top: var(--kpi-card-bar-gap);
+}
+
+/* ── Action (bouton discret ds-button--subtle, dans le header à droite) ── */
+.ds-kpi-card__action {
+  flex-shrink: 0;
+  gap: var(--space-4);
+  padding-inline: 0;
+}
+
+.ds-kpi-card__action-icon {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: var(--icon-stroke-width-bold);
+  width: var(--space-16);
+  height: var(--space-16);
+}
+
+/* Delta = pill de dépassement (badge monochrome `ds-badge`), poussée à droite
+   de la ligne valeur, centrée verticalement sur elle. */
+.ds-kpi-card__delta {
+  margin-left: auto;
+  align-self: center;
+  flex-shrink: 0;
+}
+
+/* ── Variante COMPACTE (vue long terme — lecture seule, brève) ──
+   Padding + rythme resserrés → carte plus dense qu'en vue jalon. */
+.ds-kpi-card--summary {
+  gap: 0;
+  padding: var(--kpi-card-summary-padding);
+}
+
+.ds-kpi-card--summary .ds-kpi-card__title {
+  margin-top: var(--kpi-card-summary-title-gap);
+}
+
+.ds-kpi-card--summary .ds-kpi-card__metric {
+  margin-top: var(--kpi-card-summary-metric-gap);
+}
+
+/* ── Empty / define state ───────────────────────────────────── */
+.ds-kpi-card__empty-copy {
+  margin-top: var(--kpi-card-title-gap);
+  color: var(--kpi-card-empty-copy-color);
+}
+
+.ds-kpi-card__define {
+  margin-top: var(--kpi-card-metric-gap);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+  justify-content: center;
+  padding: var(--space-16);
+  color: var(--kpi-card-define-color);
+  background: transparent;
+  border: var(--kpi-card-define-border);
+  border-radius: var(--card-radius);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: var(--motion-transition-default);
+}
+
+.ds-kpi-card__define:hover,
+.ds-kpi-card__define:focus-visible {
+  color: var(--kpi-card-define-color-hover);
+  border-color: var(--color-text-secondary);
+}
+
+.ds-kpi-card__define:focus-visible {
+  outline: var(--border-focus);
+  outline-offset: var(--space-4);
+}
+
+.ds-kpi-card__define-icon {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: var(--icon-stroke-width-bold);
+  width: var(--space-16);
+  height: var(--space-16);
+}
+
+/* Largeur de remplissage des barres de démo (même pattern que --17/--100 lib) */
+.ds-progress__fill--33 { transform: scaleX(0.33); }
+
+@media (max-width: 640px) {
+  .kpi-card-preview {
+    padding: var(--space-page-mobile);
+  }
+}
