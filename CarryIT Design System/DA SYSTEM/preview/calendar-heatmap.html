@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DA System — Calendar heatmap</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="calendar-heatmap.css">
+</head>
+<body>
+  <main class="heatmap-preview">
+    <section class="heatmap-preview__shell">
+      <header class="heatmap-preview__header">
+        <div class="type-label">Component tokens</div>
+        <h1 class="type-h1">Calendar heatmap</h1>
+      </header>
+
+      <article class="ds-heatmap-card">
+        <div class="ds-heatmap-stats">
+          <div class="ds-heatmap-stat-row">
+            <span class="type-label">Résultat</span>
+          </div>
+          <div class="ds-heatmap-stat-row">
+            <span class="ds-heatmap-stat-value">5</span>
+            <span class="ds-heatmap-stat-target">/ 15 Beta testeur</span>
+          </div>
+          <div class="ds-heatmap-stat-row">
+            <span class="ds-heatmap-stat-value">0</span>
+            <span class="ds-heatmap-stat-target">/ 15 H/entre chaque test</span>
+          </div>
+        </div>
+
+        <div class="ds-heatmap-panel">
+          <div class="ds-heatmap-grid" id="dsHeatmapGrid" aria-label="Suivi hebdomadaire effort/résultat"></div>
+          <div class="ds-heatmap-popover" id="dsHeatmapPopover"></div>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script src="calendar-heatmap.js"></script>
+</body>
+</html>

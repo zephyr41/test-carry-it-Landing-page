@@ -42,6 +42,7 @@
 
   /* Primitive font tokens */
   --font-body: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", monospace;
 
   /* Primitive type size tokens */
   --type-display-size: 2.5rem;
@@ -159,15 +160,22 @@
   /* Component tokens: Button */
   --button-height-lg: var(--space-64);
   --button-height-sm: var(--space-48);
+  --button-height-xs: var(--space-24);
   --button-height-mobile: var(--space-48);
   --button-padding-inline-lg: var(--space-32);
   --button-padding-inline-sm: var(--space-16);
+  --button-padding-inline-xs: var(--space-8);
   --button-padding-inline-mobile: var(--space-24);
   --button-radius-default: var(--radius-xl);
   --button-radius-pill: var(--radius-full);
   --button-font-size: var(--type-body-lg-size);
+  --button-font-size-xs: var(--type-label-size);
   --button-line-height: var(--type-body-lg-line);
   --button-font-weight: var(--font-weight-bold);
+  --button-font-weight-xs: var(--font-weight-medium);
+  --button-gap: var(--space-8);
+  --button-gap-xs: var(--space-4);
+  --button-icon-size-xs: var(--space-12);
   --button-transition: var(--motion-transition-default);
 
   --button-primary-background: var(--color-accent-primary);
@@ -188,6 +196,13 @@
   --button-inverse-background-active: #BFBDBA;
   --button-inverse-text: var(--color-background);
   --button-inverse-border: var(--border-width-default) solid var(--color-text-primary);
+
+  --button-subtle-background: transparent;
+  --button-subtle-background-hover: var(--button-ghost-background-hover);
+  --button-subtle-background-active: var(--button-ghost-background-active);
+  --button-subtle-text: var(--color-text-muted);
+  --button-subtle-text-hover: var(--color-text-secondary);
+  --button-subtle-border: none;
 
   --button-disabled-opacity: 0.3;
 
@@ -363,6 +378,135 @@
   --disclosure-icon-color: var(--color-text-secondary);
   --disclosure-triangle-width: var(--space-4);
   --disclosure-triangle-height: 6px;
+
+  /* Component tokens: Chart */
+  --chart-header-border: var(--border-subtle);
+  --chart-header-gap: var(--space-12);
+  --chart-heading-gap: var(--space-8);
+  --chart-shell-min-height: 300px;
+  --chart-axis-font-size: var(--type-caption-size);
+  --chart-grid-line: var(--color-border-subtle);
+  --chart-axis-text: var(--color-text-muted);
+  --chart-line-color: var(--color-text-primary);
+  --chart-area-top: color-mix(in srgb, var(--color-text-primary) 18%, transparent);
+  --chart-area-bottom: color-mix(in srgb, var(--color-text-primary) 2%, transparent);
+  --chart-target-line: color-mix(in srgb, var(--color-text-primary) 42%, transparent);
+  --chart-crosshair-line: color-mix(in srgb, var(--color-text-primary) 16%, transparent);
+  --chart-last-value-bg: var(--color-text-primary);
+  --chart-last-value-text: var(--color-background);
+  --chart-line-width: 2;
+  --chart-target-line-width: 1;
+  --chart-crosshair-width: 1;
+  --chart-point-radius: 3;
+  --chart-marker-radius: 4;
+  --chart-scale-margin: 0.02;
+
+  /* Component tokens: Calendar (skins @calendarjs/ce via its --lm-* custom properties) */
+  --calendar-background: var(--container-background);
+  --calendar-border: var(--container-border);
+  --calendar-radius: var(--container-radius);
+  --calendar-shadow: var(--shadow-lg);
+  --calendar-padding: var(--space-16);
+  --calendar-max-width: 320px;
+  --calendar-dow-color: var(--color-text-muted);
+  --calendar-day-color: var(--color-text-primary);
+  --calendar-day-hover-background: var(--button-ghost-background-hover);
+  --calendar-day-selected-background: var(--color-accent-primary);
+  --calendar-day-selected-text: var(--color-text-primary);
+
+  /* Component tokens: Calendar heatmap (tracker dots + popover) */
+  --heatmap-day-label-color: var(--color-text-muted);
+  --heatmap-cell-size: var(--space-24);
+  --heatmap-cell-radius: var(--radius-sm);
+  --heatmap-dot-size: 6px;
+  --heatmap-dot-size-result: 8px;
+  --heatmap-dot-color: color-mix(in srgb, var(--color-text-primary) 8%, transparent);
+  --heatmap-dot-color-active: color-mix(in srgb, var(--color-text-primary) 58%, transparent);
+  --heatmap-dot-color-result: var(--color-accent-primary);
+  --heatmap-dot-ring-result: 0 0 0 2px color-mix(in srgb, var(--color-accent-primary) 10%, transparent);
+  --heatmap-dot-ring-today: 0 0 0 2px var(--color-surface), 0 0 0 3.5px color-mix(in srgb, var(--color-text-primary) 50%, transparent);
+  --heatmap-band-background: color-mix(in srgb, var(--color-text-primary) 4%, transparent);
+  --heatmap-band-border: var(--border-width-default) solid var(--color-border-strong);
+  --heatmap-popover-width: 260px;
+  --heatmap-popover-background: var(--container-background);
+  --heatmap-popover-border: var(--border-subtle);
+  --heatmap-popover-radius: var(--radius-md);
+  --heatmap-popover-shadow: var(--shadow-lg);
+  --heatmap-popover-padding: var(--space-16);
+  --heatmap-badge-result-color: var(--color-accent-primary);
+  --heatmap-badge-result-background: color-mix(in srgb, var(--color-accent-primary) 12%, transparent);
+  --heatmap-badge-effort-color: var(--color-text-primary);
+  --heatmap-badge-effort-background: color-mix(in srgb, var(--color-text-primary) 10%, transparent);
+  --heatmap-schedule-block-background: color-mix(in srgb, var(--color-text-primary) 8%, transparent);
+  --heatmap-schedule-block-border-effort: var(--color-text-primary);
+  --heatmap-schedule-block-border-result: var(--color-accent-primary);
+  --heatmap-hour-track-line: color-mix(in srgb, var(--color-text-primary) 7%, transparent);
+  --heatmap-delta-background: color-mix(in srgb, var(--color-text-primary) 9%, transparent);
+  --heatmap-delta-background-result: color-mix(in srgb, var(--color-accent-primary) 12%, transparent);
+
+  /* Component tokens: Timeline (rail + dots, séquence de jalons) */
+  --timeline-rail-offset: 80px;
+  --timeline-item-gap: 64px;
+  --timeline-card-gap: var(--space-32);
+  --timeline-line-width: 3px;
+  --timeline-line-gradient: linear-gradient(180deg,
+    var(--color-accent-primary) 0%,
+    color-mix(in srgb, var(--color-accent-primary) 60%, transparent) 40%,
+    color-mix(in srgb, var(--color-accent-primary) 30%, transparent) 70%,
+    var(--color-border-subtle) 100%);
+  --timeline-line-glow: 0 0 15px color-mix(in srgb, var(--color-accent-primary) 35%, transparent);
+  --timeline-dot-size: 14px;
+  --timeline-dot-background: var(--color-background);
+  --timeline-dot-border: 3px solid var(--color-accent-primary);
+  --timeline-dot-ring: 0 0 0 6px var(--color-background);
+  --timeline-dot-final-background: var(--color-accent-primary);
+  --timeline-dot-final-border-color: var(--color-text-primary);
+  --timeline-dot-final-glow: 0 0 15px var(--color-accent-primary), 0 0 0 6px var(--color-background);
+  --timeline-rail-year-color: var(--color-accent-primary);
+  --timeline-rail-month-color: var(--color-text-secondary);
+  --timeline-connector-gradient: linear-gradient(90deg, var(--color-accent-primary) 0%, var(--color-border-subtle) 100%);
+  --timeline-tag-color: var(--color-text-secondary);
+  --timeline-tag-final-color: var(--color-accent-primary);
+  --timeline-tag-final-background: color-mix(in srgb, var(--color-accent-primary) 8%, transparent);
+  --timeline-tag-final-border: var(--border-width-default) solid color-mix(in srgb, var(--color-accent-primary) 35%, transparent);
+
+  /* Component tokens: Input number (champ numérique + steppers ↑↓) */
+  --input-number-value-size: var(--type-h3-size);
+  --input-number-value-line: var(--type-h3-line);
+  --input-number-value-weight: var(--font-weight-semibold);
+  --input-number-stepper-width: var(--space-32);
+  --input-number-stepper-color: var(--color-text-secondary);
+  --input-number-stepper-color-hover: var(--color-text-primary);
+  --input-number-stepper-background-hover: var(--button-ghost-background-hover);
+  --input-number-stepper-border: var(--border-subtle);
+
+  /* Component tokens: Scheduler (QUAND — track horaire + bloc effort/résultat draggable) */
+  --scheduler-hour-height: calc(var(--space-48) + var(--space-8)); /* 56px, hors échelle 4/8 pure → composé de tokens */
+  --scheduler-viewport-height: calc(var(--scheduler-hour-height) * 4); /* fenêtre scroll ~4h visibles */
+  --scheduler-scrollbar-size: var(--space-8);
+  --scheduler-scrollbar-thumb: color-mix(in srgb, var(--color-text-primary) 18%, transparent);
+  --scheduler-scrollbar-thumb-hover: color-mix(in srgb, var(--color-text-primary) 32%, transparent);
+  --scheduler-edge-fade: var(--space-48); /* hauteur du fondu haut/bas du viewport (dégradé long et doux, évite l'effet "barre" et les labels coupés net au bord du scroll) */
+  --scheduler-hour-label-width: calc(var(--space-32) + var(--space-8)); /* 40px, colonne heures */
+  --scheduler-hour-label-color: var(--color-text-muted);
+  --scheduler-hour-label-font: var(--font-mono);
+  --scheduler-hour-line: var(--color-border-subtle);
+  --scheduler-summary-color: var(--color-text-muted);
+  --scheduler-summary-font: var(--font-mono);
+  --scheduler-nav-color: var(--color-text-muted);
+  --scheduler-nav-color-hover: var(--color-text-secondary);
+  --scheduler-block-inset-left: var(--space-48);
+  --scheduler-block-inset-right: var(--space-8);
+  --scheduler-block-background: color-mix(in srgb, var(--color-text-primary) 8%, transparent);
+  --scheduler-block-border: 3px solid var(--color-text-primary);
+  --scheduler-block-radius: var(--radius-sm);
+  --scheduler-block-padding: var(--space-8);
+  --scheduler-block-eyebrow-color: var(--color-text-muted);
+  --scheduler-block-value-color: var(--color-text-primary);
+  --scheduler-resize-handle-height: var(--space-12);
+  --scheduler-resize-hit-extend: var(--space-12); /* étend la zone tactile du resize vers le haut → 24px (WCAG 2.5.8 AA) sans grossir le grip visuel */
+  --scheduler-resize-handle-color: color-mix(in srgb, var(--color-text-primary) 18%, transparent);
+  --scheduler-transition: var(--motion-transition-default);
 }
 
 @media (prefers-reduced-motion: reduce) {

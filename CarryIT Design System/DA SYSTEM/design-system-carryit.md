@@ -202,7 +202,6 @@ Preview : `preview/colors-neutrals.html`
 |---|---|---|
 | `color.danger` | `#F87171` | erreur input/textarea/select (bordure + texte message), accent Toast erreur |
 | `color.success` | `#4ADE80` | accent Toast succès uniquement — pas utilisé sur les métriques (Q6/Principe 1, pas de vert "bonne perf") |
-| `color.warning` | `#FBBF24` | token défini, **pas encore utilisé** par un composant construit |
 
 **Focus (verrouillé) :**
 
@@ -278,7 +277,7 @@ Sémantiques :
 
 Rappel (§4.1) : width 1px partout, `border.subtle` = décoratif (pas de seuil de contraste requis), `border.strong` = limite fonctionnelle (satisfait WCAG 1.4.11, ≈4.24:1 vs surface). `border.focus` (`rgba(255,253,246,0.72)`) suit la même logique que `border.strong` mais dédié à l'état focus.
 
-Usage réel observé : `border-subtle` est le défaut sur quasi tous les composants interactifs au repos (Input, Select, Textarea, Checkbox, Radio, Toggle, Card, Badge, Table cellules). `border-strong` **n'est utilisé nulle part** dans les composants construits à ce jour — la décision Modal (qui devait l'utiliser pour l'élévation) est finalement passée à `border-subtle` + `shadow-lg` après retour Nils ("bordure trop dure/visible"). `border-strong` reste défini mais actuellement orphelin — à surveiller (Principe 7 : token sans usage réel).
+Usage réel observé : `border-subtle` est le défaut sur quasi tous les composants interactifs au repos (Input, Select, Textarea, Checkbox, Radio, Toggle, Card, Badge, Table cellules). `border-strong` a **un seul usage** : la Card au hover/focus-within (`--card-border-active` → `--container-border-active` → `--border-strong`, cf. §4.1 et §6 Card). Il avait été prévu pour l'élévation du Modal, mais celui-ci est finalement passé à `border-subtle` + `shadow-lg` après retour Nils ("bordure trop dure/visible") — d'où son usage réduit à ce seul composant.
 
 ### 4.6 Shadows
 
@@ -316,25 +315,29 @@ Le système utilise 3 niveaux, tous dans `tokens.css` :
 
 Règle observée dans le code : certains tokens composants pointent vers d'autres tokens composants plutôt que vers un sémantique — ex `--card-background: var(--container-background)` (Card hérite de Container), `--checkbox-background: var(--input-background)` (Checkbox hérite d'Input). C'est volontaire : ça évite de dupliquer une décision de valeur à plusieurs endroits.
 
-Le fichier `tokens.css` complet fait ~350 lignes de tokens + les classes utilitaires `.type-*`. Il n'est pas recopié ici in extenso pour éviter la duplication/désync (déjà le problème qu'on vient de rattraper) — se référer directement au fichier, c'est la source de vérité unique.
+Le fichier `tokens.css` complet fait ~470 lignes de tokens + les classes utilitaires `.type-*`. Il n'est pas recopié ici in extenso pour éviter la duplication/désync (déjà le problème qu'on vient de rattraper) — se référer directement au fichier, c'est la source de vérité unique.
 
 ## 6. Composants de base
 
-16 composants construits à ce jour. `Disclosure` n'était pas prévu dans le gabarit initial (`00-prompt-design-system.md`) — ajouté pour un besoin réel identifié pendant la construction (déplier/replier des sous-tâches).
+18 composants de base construits à ce jour : les 16 du gabarit initial (`00-prompt-design-system.md`) + `Disclosure` et `Input number`, non prévus au départ, ajoutés pour des besoins réels identifiés pendant la construction (déplier/replier des sous-tâches ; saisie numérique avec steppers).
 
 ### Button
 
 1. **Rôle** : déclencher une action (CTA marketing ou action produit). Seul élément autorisé à porter la couleur d'accent orange (Principe 2).
-2. **Anatomie** : élément `<button>` unique, pas de sous-structure (pas d'icône dans la version actuelle sauf composition manuelle).
-3. **Variantes** : `.ds-button--primary` (orange plein), `.ds-button--ghost` (contour neutre), `.ds-button--inverse` (blanc plein, pill), `.ds-button--sm` (taille compacte, se combine avec les 3 variantes de couleur).
-4. **États** : default, hover (`:hover:not(:disabled)`, translateY -1px sur primary), active, focus-visible (bordure), disabled (`opacity: 0.3`, `pointer-events: none`, couleur de variante conservée). Pas de loading, pas d'error.
-5. **Tokens** : `--button-height-lg/sm/mobile`, `--button-padding-inline-lg/sm/mobile`, `--button-radius-default/pill`, `--button-font-size/line-height/weight`, `--button-{primary,ghost,inverse}-{background,text,border}` (+ variantes hover/active), `--button-disabled-opacity`.
-6. **Règles d'usage** : orange (`primary`) réservé à UNE seule action par écran/contexte, celle qui est vraiment le CTA. `ghost`/`inverse` pour tout le reste.
-7. **Erreurs à éviter** : ne pas mettre deux boutons `primary` côte à côte (dilue le sens de l'orange). Ne pas réécraser la couleur en disabled (testé, rejeté par Nils).
+2. **Anatomie** : élément `<button>` unique (`display: inline-flex; align-items: center; gap: --button-gap`), icône SVG optionnelle en composition manuelle (pas de sous-structure imposée).
+3. **Variantes** : `.ds-button--primary` (orange plein), `.ds-button--ghost` (contour neutre), `.ds-button--inverse` (blanc plein, pill), `.ds-button--subtle` (texte muted, zéro bordure/fond — trigger tertiaire discret dans un contexte dense, ex header de Chart). Tailles : `.ds-button--sm` (compacte), `.ds-button--xs` (inline, 24px, texte `type-label` — pour `subtle` uniquement, jamais sur `primary`/`ghost`/`inverse`). Toutes les tailles se combinent avec les 4 variantes de couleur.
+4. **États** : default, hover (`:hover:not(:disabled)`, translateY -1px sur primary, éclaircissement texte sur subtle), active, focus-visible (bordure), disabled (`opacity: 0.3`, `pointer-events: none`, couleur de variante conservée). Pas de loading, pas d'error.
+5. **Tokens** : `--button-height-lg/sm/xs/mobile`, `--button-padding-inline-lg/sm/xs/mobile`, `--button-radius-default/pill`, `--button-font-size/line-height/weight` (+ `-xs`), `--button-gap/-xs`, `--button-icon-size-xs`, `--button-{primary,ghost,inverse,subtle}-{background,text,border}` (+ variantes hover/active), `--button-disabled-opacity`.
+6. **Règles d'usage** : orange (`primary`) réservé à UNE seule action par écran/contexte, celle qui est vraiment le CTA. `ghost`/`inverse` pour les actions secondaires avec affordance visible (form/modal). `subtle` uniquement pour un trigger tertiaire inline qui ne doit pas rivaliser visuellement avec le contenu (ex "+ Ajouter une mesure" dans un header de graphique) — jamais pour une action qui a besoin d'être vue comme un bouton.
+7. **Erreurs à éviter** : ne pas mettre deux boutons `primary` côte à côte (dilue le sens de l'orange). Ne pas réécraser la couleur en disabled (testé, rejeté par Nils). Ne pas utiliser `subtle` pour une action qui a besoin d'affordance claire — dans ce cas `ghost`.
 8. **Exemple** :
 ```html
 <button class="ds-button ds-button--primary" type="button">Structurer mon ambition.</button>
 <button class="ds-button ds-button--ghost ds-button--sm" type="button">Annuler</button>
+<button class="ds-button ds-button--subtle ds-button--xs" type="button">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+  Ajouter une mesure
+</button>
 ```
 
 ### Input
@@ -667,17 +670,165 @@ Le fichier `tokens.css` complet fait ~350 lignes de tokens + les classes utilita
 </button>
 ```
 
+### Input number
+
+1. **Rôle** : saisie d'une valeur numérique (quantité d'un effort/résultat KPI) avec incrément/décrément rapide via steppers. Ajouté hors gabarit initial, pour le besoin réel du modal "Ajouter un effort".
+2. **Anatomie** : `.ds-input-number` (conteneur bordé, porte la bordure) > `<input type="number">` (`.ds-input-number__field`, spinners natifs masqués) + `.ds-input-number__steppers` (deux `<button>` ↑/↓ empilés, chevrons SVG).
+3. **Variantes** : aucune.
+4. **États** : default, focus-within (bordure focus portée par le **conteneur**, pas l'input — le champ est `border:none` pour éviter la double bordure), hover/focus-visible sur un stepper. Error non câblé dans le preview (réutiliserait `--input-error-*` comme Input).
+5. **Tokens** : hérite `--input-background/border/border-focus/radius/text/placeholder/height/padding-inline` + propres `--input-number-value-size/line/weight` (valeur affichée en `type-h3`, plus grosse qu'un input texte) et `--input-number-stepper-width/color/color-hover/background-hover/border`.
+6. **Règles d'usage** : spinners natifs masqués (`appearance:none` + `::-webkit-*-spin-button`) et remplacés par les steppers custom pour un rendu cohérent cross-navigateur. Le clamp bas (jamais < 0) est posé en JS, pas via l'attribut `min` seul. La bordure focus vit sur `.ds-input-number:focus-within`, jamais sur l'`<input>` interne.
+7. **Erreurs à éviter** : ne pas laisser les spinners natifs (rendu incohérent Chrome/Firefox). Ne pas mettre de bordure sur l'input interne (conteneur seulement, sinon double trait).
+8. **Exemple** :
+```html
+<div class="ds-input-number">
+  <input class="ds-input-number__field" type="number" min="0" step="any" placeholder="0">
+  <div class="ds-input-number__steppers">
+    <button type="button" class="ds-input-number__step" data-step="1" aria-label="Augmenter">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor"><path d="M4 10l4-4 4 4"/></svg>
+    </button>
+    <button type="button" class="ds-input-number__step" data-step="-1" aria-label="Diminuer">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor"><path d="M4 6l4 4 4-4"/></svg>
+    </button>
+  </div>
+</div>
+```
+
+## 8. Data visualisation
+
+Distinct des 18 composants de base (§6) : ces composants affichent des séries de données réelles plutôt qu'un état statique. Premier élément construit : Chart (2026-07-02).
+
+### Chart
+
+1. **Rôle** : visualiser l'évolution d'un KPI dans le temps (ex "Nombre de clients payants" mois par mois). Répond à "dynamique", pas juste "position" (cf. Principe 5/§3, hiérarchie position > dynamique > détails).
+2. **Anatomie** : `.ds-chart-card` (carte, mêmes tokens que Card) > `.ds-chart-header` (`.ds-chart-heading` = eyebrow `type-label` + titre `type-h2`, + bouton `.ds-button--subtle.ds-button--xs` "Ajouter une mesure") > `.ds-chart-shell` contenant le canvas de rendu (`lightweight-charts`, chargé en CDN — seul composant du DA System à dépendre d'une lib JS externe, tous les autres sont CSS/HTML statiques).
+3. **Variantes** : aucune à ce jour — une seule forme (area chart avec ligne cible en pointillés).
+4. **États** : hover affiche le crosshair + la valeur au point survolé. Dernière valeur toujours visible via un badge (`lastValueVisible`). Pas encore d'état vide dédié — cf. §6 Empty state point 2, "Aucune donnée dans le graphique" est prévu comme conséquence, pas encore câblé sur Chart.
+5. **Tokens** : `--chart-header-gap/heading-gap/shell-min-height/axis-font-size`, `--chart-grid-line/axis-text/line-color/area-top/area-bottom/target-line/crosshair-line/crosshair-width/last-value-bg/last-value-text`, `--chart-line-width/target-line-width/point-radius/marker-radius/scale-margin`. Toutes les couleurs sont composées via `color-mix()` à partir des tokens neutres existants (`--color-text-primary` etc.) — zéro hex ajouté.
+6. **Règles d'usage** : titre de carte = `type-h2` (même niveau que le titre de Modal, cf. §4.2 — pas `type-h3`, qui n'est assigné à aucun composant construit). Le bouton d'action du header est toujours `subtle`/`xs`, jamais `ghost` — il ne doit pas rivaliser visuellement avec les données (cf. §6 Button règle 6). Ligne cible toujours en pointillés discrets (`color-mix` 42% de `--color-text-primary`), jamais en couleur sémantique (même règle que Progress bar/Badge, zéro vert/rouge). Watermark de la lib désactivé (`attributionLogo: false`).
+7. **Erreurs à éviter** : ne pas coder de valeurs numériques en dur dans le JS (fontSize, lineWidth, radius, scaleMargins) — tout doit être lu depuis `tokens.css` via `getComputedStyle` au runtime (seul moyen de garder une lib JS externe alignée sur le système de tokens CSS). Ne pas laisser `fitContent()` seul pour le cadrage temporel — utiliser `setVisibleRange` sur les timestamps exacts des données.
+8. **Exemple** :
+```html
+<article class="ds-chart-card">
+  <div class="ds-chart-header">
+    <div class="ds-chart-heading">
+      <span class="type-label ds-chart-eyebrow">KPI global</span>
+      <span class="type-h2 ds-chart-title">Nombre de client payant</span>
+    </div>
+    <button type="button" class="ds-button ds-button--subtle ds-button--xs ds-chart-add-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+      Ajouter une mesure
+    </button>
+  </div>
+  <div class="ds-chart-shell">
+    <div id="dsChartCanvas" class="ds-chart-canvas" aria-label="Évolution du KPI"></div>
+  </div>
+</article>
+```
+*(rendu via `chart.js` : lecture des tokens CSS au runtime, `LightweightCharts.createChart` avec `AreaSeries` + `createPriceLine` pour la cible.)*
+
+### Calendar
+
+1. **Rôle** : sélectionner une date (ex date d'une mesure KPI, date d'un jalon). Composant piloté par lib externe, contrairement à la logique "tout construit main" des composants de base.
+2. **Anatomie** : `.ds-calendar-wrap` (carte, mêmes tokens que Card) > `<div id="...">` monté par `@calendarjs/ce` (composant `Calendar`, type `inline`). Le HTML interne (grille, nav, jours) est généré par la lib, pas par nous.
+3. **Variantes** : aucune à ce jour. La lib supporte `range`/`time`/`picker` mais seul `inline` (mois statique) est câblé.
+4. **États** : jour survolé (hover), jour sélectionné (fond orange plein), navigation mois précédent/suivant via **‹ ›** — la lib rend ces flèches en icônes Material verticales ↑/↓ (`expand_less`/`expand_more`), remplacées en CSS par `‹` (précédent) / `›` (suivant) via `::before` (ligature masquée par `font-size:0`), cohérent avec la date-nav du modal effort et l'attente utilisateur (changer de mois = horizontal, pas vertical). Le `<link>` Google Material Icons a été retiré de `calendar.html`, devenu inutile. Le titre "Mois" et "Année" (`button[data-view="months"]`/`[data-view="years"]`) ouvre un sélecteur mois/année, mais la lib ne donnait aucune affordance : ils reçoivent un **chip `surface-raised`** au repos (comme les champs interactifs du système : surface-raised = surface tappable) + hover, pour signaler qu'ils sont cliquables. Pas de chevron : il suggérerait à tort une liste déroulante alors que le clic ouvre un sélecteur en grille (mois/année). Pas de désactivation/plage invalide câblée.
+5. **Tokens** : `--calendar-background/border/radius/shadow/padding/max-width`, `--calendar-dow-color/day-color/day-hover-background/day-selected-background/day-selected-text`. Ces tokens alimentent les `--lm-*` custom properties exposées par la lib (`--lm-main-color`, `--lm-font-color`, etc.) — la lib ne connaît pas nos tokens directement, `calendar.css` fait le pont.
+6. **Règles d'usage** : locale FR posée via `calendarjs.setDictionary()` (pas de prop `locale` native dans la lib), semaine commence lundi (`startingDay: 1`), footer "Update" désactivé (`footer: false`) — un jour cliqué doit suffire, pas de confirmation supplémentaire qui alourdit le geste. **Aucun jour surligné au chargement** : la lib auto-sélectionne toujours "aujourd'hui" et n'expose aucune option pour le désactiver (`value:null` sélectionne quand même today) — `calendar.js` strip donc la sélection par défaut au montage ET après chaque nav de mois (via `MutationObserver`), jusqu'au premier clic réel de l'utilisateur (flag `userPicked` → observer déconnecté, sélection normale ensuite).
+7. **Erreurs à éviter** : `--calendar-max-width` doit être ≥ à la largeur intrinsèque de la grille lib (7 colonnes fixes de 38px = 266px + padding lib 8px×2 + notre padding 16px×2 + bordure ≈ 316px). Sous ce seuil (280px au départ), les colonnes de droite débordaient hors de la carte — bug de marge trouvé en mesurant les cellules au navigateur, pas visible à l'œil au premier abord. Fixé à 320px. La lib style le jour sélectionné via `.lm-calendar-content>div[data-selected=true]` (spécificité CSS `0,2,1`) avec une couleur figée (`#eee`), **pas** couverte par ses propres `--lm-*` custom properties — un override `.ds-calendar-wrap [data-selected="true"]` seul ne suffit pas (spécificité `0,2,0`, perd la bataille). Il faut égaler/dépasser leur sélecteur exact. Vérifié en confirmant le rendu réel dans un navigateur, pas en supposant que les custom properties couvrent tout.
+8. **Exemple** :
+```html
+<div class="ds-calendar-wrap">
+  <div id="dsCalendar"></div>
+</div>
+```
+*(rendu via `calendar.js` : `Calendar(el, { type: 'inline', startingDay: 1, footer: false })`, CDN `@calendarjs/ce` + `lemonadejs`.)*
+
+### Calendar heatmap
+
+1. **Rôle** : visualiser en un coup d'œil la cadence effort/résultat sur 4 semaines (28 jours), avec détail horaire au survol d'un jour renseigné. Composant métier au sens strict (couplé aux données KPI leading/lagging), mais classé ici car c'est un pattern de data visualisation réutilisable — porté depuis `dashboard/template.html` (`.vision-cal-grid` + `.vision-cal-popover`, déjà en prod et fonctionnel, contrairement au Calendar mois qui lui était cassé).
+2. **Anatomie** : `.ds-heatmap-card` (carte) > `.ds-heatmap-stats` (résumé résultat/effort en tokens `type-label`/valeur) + `.ds-heatmap-panel` (`.ds-heatmap-grid` = 7 jours × 4 semaines de `.ds-heatmap-cell`/`.ds-heatmap-dot`, + `.ds-heatmap-popover` positionné en absolu, affiché au hover).
+3. **Variantes de dot** : vide (`--heatmap-dot-color`, quasi invisible), actif générique (`--heatmap-dot-color-active`), résultat (`--heatmap-dot-color-result` = accent orange, taille plus grande + halo), aujourd'hui (anneau `--heatmap-dot-ring-today`). Un jour peut cumuler actif + aujourd'hui.
+4. **États** : hover sur une cellule avec données → popover (badge type + date + bande horaire + bloc positionné selon l'heure réelle + badge delta vs mesure précédente + note optionnelle). Hover sur cellule vide → popover minimal "Aucun enregistrement". `mouseleave` de la grille entière ferme le popover.
+5. **Tokens** : `--heatmap-day-label-color/cell-size/cell-radius`, `--heatmap-dot-*` (color/color-active/color-result/size/size-result/ring-result/ring-today), `--heatmap-band-*` (voir point 6), `--heatmap-popover-*` (width/background/border/radius/shadow/padding), `--heatmap-badge-*` et `--heatmap-delta-*` (result/effort), `--heatmap-schedule-block-*`, `--heatmap-hour-track-line`. Nouveau primitif ajouté : `--font-mono` (`"JetBrains Mono"`) — nécessaire pour les heures/deltas façon "données chiffrées", absent du système avant ce composant.
+6. **Décision de design** : la prod utilise une bande "période écoulée" en ambre (`#B87820`), une 2e couleur de marque. **Neutralisée** dans le DA System (`--heatmap-band-border: var(--color-border-strong)`, pas de couleur) pour respecter le Principe 2 (un seul accent, un seul sens) — décision explicite de Nils, pas un oubli.
+7. **Erreurs à éviter** : ne pas repositionner le popover en JS avec des coordonnées calculées en dur — il reste ancré (`right:-8px; top:calc(100% + gap)`) en CSS pur, la lib de tokens gère l'espacement. Ne jamais colorer un dot "effort" en rouge/vert selon performance (même règle que Progress bar/Badge/Chart) — seul le dot "résultat" porte l'accent orange, et uniquement parce que c'est LE type de mesure, pas un jugement de valeur.
+8. **Exemple** :
+```html
+<div class="ds-heatmap-panel">
+  <div class="ds-heatmap-grid" id="dsHeatmapGrid"></div>
+  <div class="ds-heatmap-popover" id="dsHeatmapPopover"></div>
+</div>
+```
+*(rendu via `calendar-heatmap.js` : génère 28 cellules statiques depuis un objet de données démo indexé par date ISO, construit le HTML du popover au `mouseenter` de chaque cellule `.ds-heatmap-cell--has-data`.)*
+
+### Timeline
+
+1. **Rôle** : visualiser une séquence de jalons dans le temps (rail vertical + dots), du plus ancien au plus récent, avec le jalon final (objectif SMART) visuellement distinct. Porté depuis `jalons.html` (`.timeline-list`/`.timeline-line`/`.timeline-item`/`.dot`), déjà en prod et fonctionnel.
+2. **Anatomie** : `.ds-timeline` (conteneur, `--timeline-rail-offset` fixe l'espace réservé à la colonne date) > `.ds-timeline-line` (rail, position absolue) + N × `.ds-timeline-item` (`.ds-timeline-rail-date` = année/mois alignés à droite, `.ds-timeline-dot` positionné sur le rail, `.ds-timeline-card` = carte connectée au dot via un connecteur horizontal en `::before`).
+3. **Variantes** : `.ds-timeline-dot--final` + `.ds-timeline-tag--final` pour le dernier jalon (objectif SMART) — rempli plein orange, bordure blanche, glow plus fort, tag encadré au lieu de texte nu. Les jalons intermédiaires ont un dot creux (fond = `--color-background`, bordure orange 3px).
+4. **États** : aucun état interactif dans cette version (affichage seul). En prod (`jalons.html`), chaque carte est un formulaire éditable complet (titre/description/KPI) — volontairement simplifié ici en carte de lecture (titre + description + date), le formulaire d'édition est un composant métier séparé, pas le pattern "rail+dots" lui-même.
+5. **Tokens** : `--timeline-rail-offset/item-gap/card-gap`, `--timeline-line-width/gradient/glow`, `--timeline-dot-size/background/border/ring` (+ variantes `-final-*`), `--timeline-rail-year-color/rail-month-color`, `--timeline-connector-gradient`, `--timeline-tag-color` (+ variantes `-final-*`).
+6. **Règles d'usage** : le rail dégrade toujours de l'orange plein (haut, jalon le plus proche) vers `--color-border-subtle` (bas) — la lecture visuelle "je me rapproche du présent" ne doit jamais s'inverser. Un seul dot `--final` par timeline (l'objectif, pas "le dernier jalon dans le temps" si l'ordre change).
+7. **Erreurs à éviter** : ne pas répéter le rail-offset en dur dans plusieurs règles — tout part du token `--timeline-rail-offset`, y compris le calcul de position du dot (`calc(var(--timeline-rail-offset) + 1.5px)`). Sur mobile, la colonne date est masquée et le rail réduit à 0 plutôt que comprimé illisible (cf. media query).
+8. **Exemple** :
+```html
+<div class="ds-timeline">
+  <div class="ds-timeline-line"></div>
+  <div class="ds-timeline-item">
+    <div class="ds-timeline-rail-date">
+      <span class="ds-timeline-rail-year">2026</span>
+      <span class="ds-timeline-rail-month">Avr</span>
+    </div>
+    <div class="ds-timeline-dot"></div>
+    <article class="ds-timeline-card">
+      <div class="ds-timeline-card-top">
+        <span class="ds-timeline-tag">Jalon 1 / 3</span>
+        <span class="ds-timeline-date-chip">12 avr. 2026</span>
+      </div>
+      <h3 class="type-h3 ds-timeline-card-title">Cadrage produit finalisé</h3>
+      <p class="type-body-md ds-timeline-card-desc">3 documentations techniques sont faites.</p>
+    </article>
+  </div>
+</div>
+```
+
+### Scheduler (QUAND)
+
+1. **Rôle** : positionner un créneau horaire (effort ou résultat) sur une journée en le glissant/redimensionnant sur un rail vertical d'heures. Répond au "QUAND" d'une mesure KPI. Porté depuis `dashboard.html` (`#jalonKpiTimeline`), déjà en prod et fonctionnel.
+2. **Anatomie** : `.ds-scheduler` > `.ds-scheduler__head` (label `type-data-label` "Quand" + `.ds-scheduler__summary` mono) + `.ds-scheduler__viewport` (fenêtre scrollable) > `.ds-scheduler__track` (`.ds-scheduler__hours` = N lignes heure, + `.ds-scheduler__block` positionné en absolu = créneau, avec `.ds-scheduler__resize` en poignée basse).
+3. **Variantes** : le bloc porte un libellé de type ("Effort" / "Résultat" selon le contexte métier) — une seule forme visuelle.
+4. **États** : bloc au repos (`grab`), en drag (`grabbing`), resize par la poignée basse, focus-visible (bloc = `role="slider"`). Auto-scroll du viewport quand le pointeur atteint un bord pendant le drag. Souris, tactile **et clavier** : le bloc est un `role="slider"` focusable (`aria-valuemin/max/now/valuetext`), ↑↓ déplacent de 15 min, Maj+↑↓ ajustent la durée, Home/End cadrent sur les bornes ; le créneau est annoncé via `aria-valuetext` + un summary `aria-live="polite"`. La poignée resize garde un grip visuel de 12px mais une **zone tactile de 24px** (`::before` transparent, WCAG 2.5.8 AA), token `--scheduler-resize-hit-extend`.
+5. **Tokens** : `--scheduler-hour-height` (`calc(--space-48 + --space-8)` = 56px, composé de tokens car hors échelle 4/8 pure), `--scheduler-viewport-height` (`= hour-height × 4`, ~4h visibles sans scroll — arbitré entre lisibilité et hauteur totale du modal), `--scheduler-hour-label-width/color/font`, `--scheduler-hour-line`, `--scheduler-summary-color/font`, `--scheduler-block-inset-left/right/background/border/radius/padding/eyebrow-color/value-color`, `--scheduler-resize-handle-height/color`, `--scheduler-scrollbar-size/thumb/thumb-hover` (scrollbar du viewport stylé thin + tokenisé, sinon la scrollbar native blanche cassait le thème sombre), `--scheduler-edge-fade` (`--space-48` : le viewport porte un `mask-image` linear-gradient haut/bas de cette hauteur, dégradé long et doux pour éviter l'effet "barre" — les labels d'heure s'estompent progressivement au bord du scroll au lieu d'être coupés net ; le `#000` du masque est l'alpha structurel du mask, pas une couleur de design), `--scheduler-nav-color/color-hover` (partagés avec la nav date du modal).
+6. **Règles d'usage** : `--scheduler-hour-height` est **lu au runtime depuis le DOM** en JS (`offsetHeight` d'une ligne d'heure) — jamais de `56` codé en dur dans le JS (même principe que Chart qui lit ses tokens via `getComputedStyle`). Snap au quart d'heure (0.25). La plage horaire (6→23) est une **config comportementale JS** (donnée), pas un token de style. `top`/`height` du bloc sont posés dynamiquement en px calculés (comme Progress bar pose son `scaleX` en prod).
+7. **Erreurs à éviter** : ne pas coder la hauteur d'heure en dur dans le JS (désync avec le token CSS). Ne jamais colorer le bloc effort en vert/rouge selon "performance" (même règle que Chart/Progress/Badge) — le bloc porte l'accent neutre `text-primary`.
+8. **Preview** : `preview/effort-modal.html` (intégré dans le modal "Ajouter un effort", cf. Composants métier ci-dessous).
+
+## Composants métier
+
+Premier assemblage propre à un écran CarryIT (distinct des composants de base/data viz réutilisables). Construit 2026-07-04.
+
+### Effort modal ("Ajouter un effort")
+
+1. **Rôle** : saisir une mesure de KPI (effort ou résultat) — quand, combien, note. Porté depuis le modal `jalonKpiMeasureModal` de `dashboard.html`.
+2. **Composition** : Modal (`.ds-modal` shell + header + footer) + navigation date (`.ds-date-nav`, ‹ jour ›, destinée à ouvrir un Calendar) + Scheduler QUAND + Input number (Quantité) + Textarea (Note) + Buttons (Annuler `ghost` / Enregistrer `inverse`).
+3. **Nature** : pattern métier, pas composant de base. Ses seules classes propres (`.ds-effort-modal*`, `.ds-date-nav*`) vivent dans `effort-modal.css` ; tout le reste réutilise tokens/composants existants.
+4. **Tokens** : aucun token de couleur/taille nouveau au niveau modal — réutilise Modal / Input number / Scheduler / Textarea / Button. `.ds-date-nav` réutilise `--scheduler-nav-*`.
+5. **Règles d'usage** : footer = 2 boutons (Annuler + Enregistrer) car c'est un formulaire (pas de `×`, donc "Annuler" n'est pas redondant, cf. règle Modal §6). Le bouton d'action est `inverse` (blanc), **pas** `primary` (orange) — l'orange reste réservé au CTA marketing/action unique, pas à un submit de formulaire dense (Principe 2).
+6. **Accessibilité** : `role="dialog"` + `aria-modal` + `aria-labelledby`. Focus-trap JS (Tab reste dans le dialog, Maj+Tab wrap, Échap retire le focus) dans `effort-modal.js`. Scheduler opérable au clavier (cf. §Scheduler). Contraste des labels muted vérifié à 5.88:1 (> AA). Ouverture/fermeture réelle = câblage produit (non couvert ici).
+7. **Preview** : `preview/effort-modal.html` (+ `.css` + `.js`).
+
 ## À venir
 
 Sections non commencées (décisions produit pas encore prises, nécessitent une session dédiée) :
-- **5. Composants métier** — Task row complet (checkbox + texte + statut + actions), Jalon card, KPI card. Distinct des composants de base ci-dessus (voir clarification donnée à Nils en session : composant de base = brique atomique réutilisable partout, composant métier = assemblage propre à un écran CarryIT).
+- **5. Composants métier** — Effort modal fait (2026-07-04, cf. section "Composants métier"). Reste : Task row complet (checkbox + texte + statut + actions), Jalon card, KPI card. Distinct des composants de base ci-dessus (voir clarification donnée à Nils en session : composant de base = brique atomique réutilisable partout, composant métier = assemblage propre à un écran CarryIT).
 - **6. Patterns** — création/modification/suppression/confirmation/filtre/recherche/tableau vide/chargement/erreur/onboarding/dashboard/détail.
 - **7. Templates d'écran** — Dashboard principal, page de détail, formulaire de création/édition. Dépend de la grille/largeurs de page réelles du produit, pas encore définies (cf. §4.3, largeurs de shell actuelles sont des valeurs de preview, pas des tokens produit — à faire au moment de construire les Templates, pas avant).
-- **8. Data visualisation** — graphique/chart (backlog #1), calendrier/timeline (backlog #2), delta, tendance, historique, absence de donnée.
+- **8. Data visualisation** — Chart fait (2026-07-02), Calendar fait (2026-07-02), Calendar heatmap fait (2026-07-02). Reste : delta/tendance/historique en composants autonomes (actuellement seulement intégrés dans le popover Calendar heatmap), absence de donnée.
 - **9. Accessibilité (règles globales consolidées)** — chaque composant a ses règles listées ci-dessus, mais pas de section transverse dédiée (tailles cliquables minimales, navigation clavier globale, aria patterns communs).
 - **10. Documentation** — modèle de doc réutilisable pour les futurs composants.
 - **11. Gouvernance** — convention de nommage, quand créer vs réutiliser, gestion des exceptions, versionning.
 
 **Les 16 composants de base officiels du gabarit §4 sont tous construits (Empty state fait le 2026-07-02).**
 
-Backlog restant (voir tasks du projet) : Chart/Graphique KPI, Calendrier/Timeline horaire, Timeline rail+dots (séquence de jalons), Table lignes imbriquées (sous-tâches). Harmonisation des icônes de production : terminée (cf. `icons.md`, toutes les intentions avec variantes concurrentes tranchées : Chevron/Fermer/Plus/Corbeille/Édition/Retour, + les intentions à variante unique validées : Calendrier/Rafraîchir/Presse-papier/Kanban/Liste/Utilisateur).
+Backlog restant (voir tasks du projet) : Chart/Graphique KPI fait (2026-07-02). Table lignes imbriquées (sous-tâches) fait — construit directement dans `task-list.css/html` (§6 "Task list imbriquée") plutôt que dans des fichiers `nested-table.*` séparés (ceux-ci sont restés vides puis ont été abandonnés). Calendrier fait (2026-07-02, deux formes : `calendar.html` sélection de date via `@calendarjs/ce`, `calendar-heatmap.html` tracker effort/résultat porté depuis `dashboard/template.html`). Timeline rail+dots fait (2026-07-02, `timeline.html`, porté depuis `jalons.html`). Scheduler horaire (`QUAND`, bloc draggable/resize, souris+tactile) fait (2026-07-04, porté depuis `dashboard.html#jalonKpiTimeline`, intégré dans `effort-modal.html`). Harmonisation des icônes de production : terminée (cf. `icons.md`, toutes les intentions avec variantes concurrentes tranchées : Chevron/Fermer/Plus/Corbeille/Édition/Retour, + les intentions à variante unique validées : Calendrier/Rafraîchir/Presse-papier/Kanban/Liste/Utilisateur).

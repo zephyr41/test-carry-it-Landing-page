@@ -1,0 +1,102 @@
+.calendar-preview {
+  min-height: 100vh;
+  padding: var(--space-page-desktop);
+  color: var(--color-text-primary);
+}
+
+.calendar-preview__shell {
+  max-width: 750px;
+}
+
+.calendar-preview__header {
+  margin-bottom: var(--space-section-gap);
+}
+
+/* CalendarJS (@calendarjs/ce) theming — map lib's --lm-* custom properties
+   to our tokens.css. Zero visual value hardcoded here, only var() refs. */
+.ds-calendar-wrap {
+  display: inline-block;
+  max-width: var(--calendar-max-width);
+  padding: var(--calendar-padding);
+  background: var(--calendar-background);
+  border: var(--calendar-border);
+  border-radius: var(--calendar-radius);
+  box-shadow: var(--calendar-shadow);
+
+  --lm-background-color: var(--calendar-background);
+  --lm-background-color-header: var(--calendar-background);
+  --lm-background-color-active: var(--calendar-day-hover-background);
+  --lm-background-color-highlight: var(--calendar-day-selected-background);
+  --lm-border-color: var(--color-border-subtle);
+  --lm-border-color-light: var(--color-border-subtle);
+  --lm-border-color-highlight: var(--color-accent-primary);
+  --lm-border-outline: var(--color-focus-border);
+  --lm-font-color: var(--calendar-day-color);
+  --lm-font-grayout: var(--calendar-dow-color);
+  --lm-main-color: var(--color-accent-primary);
+  --lm-main-color-alpha: color-mix(in srgb, var(--color-accent-primary) 16%, transparent);
+  --lm-main-color-deep: var(--color-accent-hover);
+  --lm-schedule-background: var(--calendar-background);
+  --lm-schedule-color: var(--calendar-day-color);
+}
+
+/* Lib styles the selected day via .lm-calendar-content>div[data-selected=true]
+   with a color not covered by its own --lm-* custom properties (specificity
+   0,2,1) — match/exceed that specificity to override with our tokens. */
+.ds-calendar-wrap .lm-calendar-content > div[data-selected="true"] {
+  background: var(--calendar-day-selected-background);
+  color: var(--calendar-day-selected-text);
+}
+
+/* Nav buttons (prev/next month) ship a hardcoded light bg + black glyph in the
+   lib's style.min.css, not covered by --lm-* — override with our tokens only. */
+.ds-calendar-wrap .lm-calendar-icon {
+  background: transparent;
+  color: var(--color-text-secondary);
+}
+.ds-calendar-wrap .lm-calendar-icon:hover {
+  background: var(--calendar-day-hover-background);
+  color: var(--color-text-primary);
+}
+
+/* La lib rend les flèches de nav en icônes Material ↑/↓ (ligatures "expand_less"
+   /"expand_more") — contre-intuitif pour changer de mois. On masque la ligature
+   et on affiche ‹ (mois précédent) / › (mois suivant), cohérent avec la date-nav
+   du modal effort et l'attente utilisateur. Supprime aussi la dépendance Material Icons. */
+.ds-calendar-wrap .lm-calendar-navigation button {
+  font-size: 0;
+}
+.ds-calendar-wrap .lm-calendar-navigation button::before {
+  font-family: var(--font-body);
+  font-size: var(--type-h2-size);
+  line-height: 1;
+}
+.ds-calendar-wrap .lm-calendar-navigation button:first-child::before {
+  content: "‹";
+}
+.ds-calendar-wrap .lm-calendar-navigation button:last-child::before {
+  content: "›";
+}
+
+/* "Juin" et "2026" sont cliquables (ouvrent le sélecteur mois / année en grille) mais
+   la lib ne donne aucune affordance. Chip surface-raised au repos → lit comme un contrôle
+   tappable (cohérent avec les champs interactifs du système), sans le chevron qui, lui,
+   suggérerait à tort une liste déroulante. */
+.ds-calendar-wrap .lm-calendar-labels button {
+  padding: var(--space-4) var(--space-8);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-raised);
+  transition: var(--motion-transition-default);
+}
+.ds-calendar-wrap .lm-calendar-labels button:hover {
+  background: var(--calendar-day-hover-background);
+}
+.ds-calendar-wrap .lm-calendar-labels button:focus-visible {
+  outline: var(--border-focus);
+}
+
+@media (max-width: 640px) {
+  .calendar-preview {
+    padding: var(--space-page-mobile);
+  }
+}

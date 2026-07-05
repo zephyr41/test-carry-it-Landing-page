@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DA System — Chart</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="buttons.css">
+<link rel="stylesheet" href="chart.css">
+</head>
+<body>
+  <main class="chart-preview">
+    <section class="chart-preview__shell">
+      <header class="chart-preview__header">
+        <div class="type-label">Component tokens</div>
+        <h1 class="type-h1">Chart</h1>
+      </header>
+
+      <article class="ds-chart-card">
+        <div class="ds-chart-header">
+          <div class="ds-chart-heading">
+            <span class="type-label ds-chart-eyebrow">KPI global</span>
+            <span class="type-h2 ds-chart-title">Nombre de client payant</span>
+          </div>
+          <button type="button" class="ds-button ds-button--subtle ds-button--xs ds-chart-add-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+            </svg>
+            Ajouter une mesure
+          </button>
+        </div>
+        <div class="ds-chart-shell">
+          <div id="dsChartCanvas" class="ds-chart-canvas" aria-label="Évolution du KPI — nombre de clients payants"></div>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+  <script src="chart.js"></script>
+</body>
+</html>

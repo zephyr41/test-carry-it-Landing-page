@@ -28,6 +28,9 @@
 }
 
 .ds-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--button-gap);
   min-height: var(--button-height-lg);
   padding: 0 var(--button-padding-inline-lg);
   border-radius: var(--button-radius-default);
@@ -98,9 +101,38 @@
   background: var(--button-inverse-background-active);
 }
 
+.ds-button--subtle {
+  color: var(--button-subtle-text);
+  background: var(--button-subtle-background);
+  border: var(--button-subtle-border);
+}
+
+.ds-button--subtle:hover:not(:disabled) {
+  color: var(--button-subtle-text-hover);
+  background: var(--button-subtle-background-hover);
+}
+
+.ds-button--subtle:active:not(:disabled) {
+  background: var(--button-subtle-background-active);
+}
+
 .ds-button--sm {
   min-height: var(--button-height-sm);
   padding: 0 var(--button-padding-inline-sm);
+}
+
+.ds-button--xs {
+  min-height: var(--button-height-xs);
+  padding: 0 var(--button-padding-inline-xs);
+  gap: var(--button-gap-xs);
+  font-size: var(--button-font-size-xs);
+  font-weight: var(--button-font-weight-xs);
+  border-radius: var(--radius-sm);
+}
+
+.ds-button--xs svg {
+  width: var(--button-icon-size-xs);
+  height: var(--button-icon-size-xs);
 }
 
 @media (max-width: 640px) {

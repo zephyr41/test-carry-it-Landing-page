@@ -1,0 +1,346 @@
+/* Effort modal — composant métier : assemble Modal + date nav + Scheduler + Input number.
+   Zéro valeur en dur : tout référence tokens.css. */
+
+.ds-effort-modal {
+  max-height: calc(100vh - var(--space-64));
+  overflow-y: auto;
+}
+
+.ds-effort-modal__context {
+  color: var(--color-text-muted);
+}
+
+.ds-effort-modal__form {
+  display: grid;
+  gap: var(--space-24);
+}
+
+/* Note : textarea sans surface (se fond dans le modal), séparée par un trait haut. */
+.ds-field--note {
+  padding-top: var(--space-12);
+  border-top: var(--border-subtle);
+}
+
+.ds-effort-modal__note {
+  min-height: calc(var(--input-height));
+}
+
+/* ---- Champs génériques ---- */
+.ds-field {
+  display: grid;
+  gap: var(--space-8);
+}
+
+/* ---- Navigation date (‹ 4 Juil. 2026 ›) ---- */
+.ds-date-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+.ds-date-nav__arrow {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4) var(--space-8);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--scheduler-nav-color);
+  font-family: var(--font-body);
+  font-size: var(--type-h2-size);
+  line-height: 1;
+  cursor: pointer;
+  transition: var(--scheduler-transition);
+}
+
+.ds-date-nav__current {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-8);
+  padding: var(--space-4) 0;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+  font-size: var(--input-font-size);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: var(--scheduler-transition);
+}
+
+.ds-date-nav__icon {
+  width: var(--tabs-icon-size);
+  height: var(--tabs-icon-size);
+  stroke-width: var(--icon-stroke-width);
+  opacity: 0.55;
+  flex-shrink: 0;
+}
+
+.ds-date-nav__arrow:hover {
+  color: var(--scheduler-nav-color-hover);
+}
+
+.ds-date-nav__arrow:focus-visible,
+.ds-date-nav__current:focus-visible {
+  outline: none;
+  border: var(--input-border-focus);
+}
+
+/* ---- Scheduler horaire (QUAND) ---- */
+.ds-scheduler {
+  display: grid;
+  gap: var(--space-8);
+}
+
+.ds-scheduler__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-12);
+}
+
+.ds-scheduler__summary {
+  font-family: var(--scheduler-summary-font);
+  font-size: var(--type-data-label-size);
+  color: var(--scheduler-summary-color);
+}
+
+.ds-scheduler__hint {
+  margin-top: var(--space-8);
+  color: var(--color-text-muted);
+}
+
+.ds-scheduler__viewport {
+  height: var(--scheduler-viewport-height);
+  overflow-y: auto;
+  user-select: none;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scheduler-scrollbar-thumb) transparent;
+  /* Fondu haut/bas : les heures s'estompent au bord du scroll au lieu d'être coupées net. */
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 var(--scheduler-edge-fade),
+    #000 calc(100% - var(--scheduler-edge-fade)),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 var(--scheduler-edge-fade),
+    #000 calc(100% - var(--scheduler-edge-fade)),
+    transparent 100%
+  );
+}
+
+.ds-scheduler__viewport::-webkit-scrollbar {
+  width: var(--scheduler-scrollbar-size);
+}
+
+.ds-scheduler__viewport::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.ds-scheduler__viewport::-webkit-scrollbar-thumb {
+  background: var(--scheduler-scrollbar-thumb);
+  border-radius: var(--radius-full);
+}
+
+.ds-scheduler__viewport::-webkit-scrollbar-thumb:hover {
+  background: var(--scheduler-scrollbar-thumb-hover);
+}
+
+.ds-scheduler__track {
+  position: relative;
+}
+
+/* Colonne d'heures : 1 ligne par heure, hauteur = --scheduler-hour-height. */
+.ds-scheduler__hours > div {
+  display: flex;
+  align-items: flex-start;
+  height: var(--scheduler-hour-height);
+}
+
+.ds-scheduler__hour-label {
+  width: var(--scheduler-hour-label-width);
+  flex-shrink: 0;
+  padding-right: var(--space-8);
+  text-align: right;
+  font-family: var(--scheduler-hour-label-font);
+  font-size: var(--type-data-label-size);
+  color: var(--scheduler-hour-label-color);
+  line-height: 1;
+  transform: translateY(-50%);
+}
+
+.ds-scheduler__hour-line {
+  flex: 1;
+  border-top: var(--border-width-default) solid var(--scheduler-hour-line);
+}
+
+/* Bloc effort/résultat draggable + resize. top/height posés en JS (px calculés). */
+.ds-scheduler__block {
+  position: absolute;
+  left: var(--scheduler-block-inset-left);
+  right: var(--scheduler-block-inset-right);
+  overflow: hidden;
+  background: var(--scheduler-block-background);
+  border-left: var(--scheduler-block-border);
+  border-radius: var(--scheduler-block-radius);
+  cursor: grab;
+  z-index: 2;
+}
+
+.ds-scheduler__block:active {
+  cursor: grabbing;
+}
+
+.ds-scheduler__block:focus-visible {
+  outline: var(--border-focus);
+  outline-offset: var(--space-4);
+}
+
+.ds-scheduler__block-body {
+  padding: var(--space-8);
+}
+
+.ds-scheduler__block-eyebrow {
+  display: block;
+  margin-bottom: var(--space-4);
+  font-size: var(--type-data-label-size);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  color: var(--scheduler-block-eyebrow-color);
+}
+
+.ds-scheduler__block-value {
+  font-size: var(--type-body-sm-size);
+  font-weight: var(--font-weight-bold);
+  color: var(--scheduler-block-value-color);
+}
+
+.ds-scheduler__resize {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--scheduler-resize-handle-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: ns-resize;
+}
+
+/* Étend la zone tactile du resize vers le haut (≥24px, WCAG 2.5.8 AA) sans
+   changer le grip visuel — transparent, ne recouvre que le bas du bloc. */
+.ds-scheduler__resize::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: calc(-1 * var(--scheduler-resize-hit-extend));
+}
+
+.ds-scheduler__resize-grip {
+  width: var(--space-24);
+  height: var(--border-width-default);
+  border-radius: var(--radius-full);
+  background: var(--scheduler-resize-handle-color);
+}
+
+/* ---- Input number (champ + steppers ↑↓) ---- */
+.ds-input-number {
+  display: flex;
+  align-items: stretch;
+  background: var(--input-background);
+  border: var(--input-border);
+  border-radius: var(--input-radius);
+  overflow: hidden;
+  transition: var(--input-transition);
+}
+
+.ds-input-number:focus-within {
+  border: var(--input-border-focus);
+}
+
+.ds-input-number__field {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0 var(--input-padding-inline);
+  color: var(--input-text);
+  font-family: var(--font-body);
+  font-size: var(--input-number-value-size);
+  line-height: var(--input-number-value-line);
+  font-weight: var(--input-number-value-weight);
+  height: var(--input-height);
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+  appearance: none;
+}
+
+.ds-input-number__field::-webkit-outer-spin-button,
+.ds-input-number__field::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.ds-input-number__field::placeholder {
+  color: var(--input-placeholder);
+}
+
+.ds-input-number__steppers {
+  display: flex;
+  flex-direction: column;
+  width: var(--input-number-stepper-width);
+  border-left: var(--input-number-stepper-border);
+}
+
+.ds-input-number__step {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--input-number-stepper-color);
+  cursor: pointer;
+  transition: var(--input-transition);
+}
+
+.ds-input-number__step + .ds-input-number__step {
+  border-top: var(--input-number-stepper-border);
+}
+
+.ds-input-number__step svg {
+  width: var(--space-12);
+  height: var(--space-12);
+  stroke-width: var(--icon-stroke-width-bold);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ds-input-number__step:hover {
+  background: var(--input-number-stepper-background-hover);
+  color: var(--input-number-stepper-color-hover);
+}
+
+.ds-input-number__step:focus-visible {
+  outline: none;
+  background: var(--input-number-stepper-background-hover);
+  color: var(--input-number-stepper-color-hover);
+}
+
+@media (max-width: 640px) {
+  .ds-effort-modal {
+    max-height: calc(100vh - var(--space-24));
+  }
+}
