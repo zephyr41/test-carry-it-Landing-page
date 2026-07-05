@@ -28,6 +28,12 @@
   align-items: start; /* chaque carte hugge son contenu → aucun void, hauteurs propres */
 }
 
+/* Grille compacte (vue long terme) : cartes ~2x moins larges, colonnes fixes
+   étroites alignées à gauche (tuiles denses, pas d'étirement pleine largeur). */
+.kpi-card-grid--compact {
+  grid-template-columns: repeat(auto-fill, var(--kpi-card-summary-min-width));
+}
+
 /* ── Card shell ─────────────────────────────────────────────── */
 /* Rythme GROUPÉ : gap de base nul, chaque rupture est posée en margin explicite
    (intra-groupe serré titre↔fraîcheur, ruptures inter-groupes larges). */
@@ -76,15 +82,14 @@
   stroke-width: var(--icon-stroke-width);
 }
 
-/* Titre = ancre de lecture. Rupture depuis le head (label + actions). Max 2 lignes.
-   Fraîcheur COLLÉE dessous (groupe identité). */
+/* Titre = ancre de lecture (poids/taille/couleur = classe type-h3, non overridé).
+   Rupture depuis le head. Max 2 lignes. Fraîcheur COLLÉE dessous (groupe identité). */
 .ds-kpi-card__title {
   margin-top: var(--kpi-card-title-gap);
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   overflow: hidden;
-  font-weight: var(--font-weight-semibold);
 }
 
 /* Fraîcheur = sous-titre du titre → serrée (space-4), même groupe. */
@@ -149,6 +154,23 @@
   padding-inline: 0;
 }
 
+/* Cibles tactiles : zone de hit étendue à 44px de haut (confort tactile) sans
+   grossir le visuel ni empiéter horizontalement (pas de chevauchement dans le head). */
+.ds-kpi-card__action,
+.ds-kpi-card .ds-row-action {
+  position: relative;
+}
+
+.ds-kpi-card__action::after,
+.ds-kpi-card .ds-row-action::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  min-height: var(--space-44, 44px);
+}
+
 .ds-kpi-card__action-icon {
   fill: none;
   stroke: currentColor;
@@ -165,6 +187,7 @@
   margin-left: auto;
   align-self: center;
   flex-shrink: 0;
+  text-transform: none; /* pill lisible « +36 H au-delà », pas de MAJUSCULES badge */
 }
 
 /* ── Variante COMPACTE (vue long terme — lecture seule, brève) ──
@@ -174,17 +197,29 @@
   padding: var(--kpi-card-summary-padding);
 }
 
+/* Compact : titre = nom du KPI en BLANC (medium) → tranche nettement sur les
+   métadonnées grises (eyebrow/fraîcheur/cible), sinon tous les gris se confondent.
+   Réserve 2 lignes (min-height) → toutes les tuiles ont la MÊME hauteur, quelle
+   que soit la longueur du titre (grille régulière). */
 .ds-kpi-card--summary .ds-kpi-card__title {
   margin-top: var(--kpi-card-summary-title-gap);
+  min-height: 2lh;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
 }
 
 .ds-kpi-card--summary .ds-kpi-card__metric {
   margin-top: var(--kpi-card-summary-metric-gap);
 }
 
+.ds-kpi-card--summary .ds-kpi-card__value {
+  font-size: var(--kpi-card-summary-value-size);
+}
+
 /* ── Empty / define state ───────────────────────────────────── */
 .ds-kpi-card__empty-copy {
   margin-top: var(--kpi-card-title-gap);
+  min-height: 2lh; /* réserve 2 lignes → cartes « à définir » de même hauteur */
   color: var(--kpi-card-empty-copy-color);
 }
 
@@ -228,6 +263,23 @@
 
 /* Largeur de remplissage des barres de démo (même pattern que --17/--100 lib) */
 .ds-progress__fill--33 { transform: scaleX(0.33); }
+
+/* Dépassement : barre PLEINE (0→valeur) + tick vertical au seuil → « rempli,
+   seuil ici, dépassé » (bien plus lisible qu'un fade lu comme « reste à faire »). */
+.ds-kpi-card .ds-progress {
+  position: relative;
+}
+
+.ds-kpi-card__bar-tick {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: var(--border-width-strong, 2px);
+  background: var(--color-background); /* sombre → visible sur le remplissage blanc */
+  transform: translateX(-50%);
+}
+
+.ds-kpi-card__bar-tick--29 { left: 29%; } /* seuil 15 / valeur 51 */
 
 @media (max-width: 640px) {
   .kpi-card-preview {

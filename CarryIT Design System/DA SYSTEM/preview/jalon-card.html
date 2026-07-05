@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DA System — Jalon card</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="progress.css">
+<link rel="stylesheet" href="jalon-card.css">
+</head>
+<body>
+  <main class="jalon-card-preview">
+    <section class="jalon-card-preview__shell">
+      <header class="jalon-card-preview__header">
+        <div class="type-label">Composant métier</div>
+        <h1 class="type-h1">Jalon card</h1>
+        <p class="type-body-md">Un jalon dans son état — en cours, terminé ou à venir. Le statut se lit au contraste et au label, pas à un fond coloré ; l'orange reste réservé au jalon actif (l'action du moment).</p>
+      </header>
+
+      <div class="jalon-card-grid">
+
+        <!-- ACTIF -->
+        <article class="ds-jalon-card" tabindex="0" aria-label="Jalon en cours — Premiers 10 clients payants">
+          <div class="ds-jalon-card__head">
+            <span class="ds-jalon-card__meta type-data-label">Jalon 3 / 6 · Mois 3</span>
+            <span class="ds-jalon-status ds-jalon-status--active">
+              <span class="ds-jalon-status__dot" aria-hidden="true"></span>
+              En cours
+            </span>
+          </div>
+          <div class="ds-jalon-card__body">
+            <span class="type-h3">Premiers 10 clients payants</span>
+            <span class="ds-jalon-card__date type-caption">Échéance : 30 sept. 2026</span>
+          </div>
+          <div class="ds-jalon-card__progress">
+            <div class="ds-jalon-card__progress-label">
+              <span class="type-label">Avancement des tâches</span>
+              <span class="ds-jalon-card__progress-count type-caption">3 / 8</span>
+            </div>
+            <div class="ds-progress" role="progressbar" aria-valuenow="38" aria-valuemin="0" aria-valuemax="100">
+              <div class="ds-progress__fill ds-progress__fill--38"></div>
+            </div>
+          </div>
+          <span class="ds-jalon-card__cta">
+            Voir le jalon
+            <svg class="ds-jalon-card__cta-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+          </span>
+        </article>
+
+        <!-- TERMINÉ -->
+        <article class="ds-jalon-card" tabindex="0" aria-label="Jalon terminé — Cadrer l'offre et le prix">
+          <div class="ds-jalon-card__head">
+            <span class="ds-jalon-card__meta type-data-label">Jalon 2 / 6 · Mois 2</span>
+            <span class="ds-jalon-status ds-jalon-status--done">
+              <span class="ds-jalon-status__dot" aria-hidden="true"></span>
+              Terminé
+            </span>
+          </div>
+          <div class="ds-jalon-card__body">
+            <span class="type-h3">Cadrer l'offre et le prix</span>
+            <span class="ds-jalon-card__date type-caption">Validé le 31 août 2026</span>
+          </div>
+          <div class="ds-jalon-card__progress">
+            <div class="ds-jalon-card__progress-label">
+              <span class="type-label">Avancement des tâches</span>
+              <span class="ds-jalon-card__progress-count type-caption">5 / 5</span>
+            </div>
+            <div class="ds-progress" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+              <div class="ds-progress__fill ds-progress__fill--100"></div>
+            </div>
+          </div>
+          <span class="ds-jalon-card__cta">
+            Voir le jalon
+            <svg class="ds-jalon-card__cta-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+          </span>
+        </article>
+
+        <!-- À VENIR -->
+        <article class="ds-jalon-card" tabindex="0" aria-label="Jalon à venir — 30 clients et premier salarié">
+          <div class="ds-jalon-card__head">
+            <span class="ds-jalon-card__meta type-data-label">Jalon 4 / 6 · Mois 5</span>
+            <span class="ds-jalon-status ds-jalon-status--upcoming">
+              <span class="ds-jalon-status__dot" aria-hidden="true"></span>
+              À venir
+            </span>
+          </div>
+          <div class="ds-jalon-card__body">
+            <span class="type-h3">30 clients et premier salarié</span>
+            <span class="ds-jalon-card__date type-caption">Échéance : 30 nov. 2026</span>
+          </div>
+          <div class="ds-jalon-card__progress">
+            <div class="ds-jalon-card__progress-label">
+              <span class="type-label">Avancement des tâches</span>
+              <span class="ds-jalon-card__progress-count type-caption">0 / 6</span>
+            </div>
+            <div class="ds-progress" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+              <div class="ds-progress__fill"></div>
+            </div>
+          </div>
+          <span class="ds-jalon-card__cta">
+            Voir le jalon
+            <svg class="ds-jalon-card__cta-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+          </span>
+        </article>
+
+      </div>
+    </section>
+  </main>
+</body>
+</html>
