@@ -223,7 +223,9 @@ Note : les boutons désactivés n'utilisent PAS ces tokens — ils gardent la co
 
 **Font principale :** Inter (Google Fonts, poids 400/500/600/700/800 chargés).
 **Fallback :** `system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`.
-**Letter-spacing :** `0` partout (`--letter-spacing-default`) — pas de tracking custom.
+**Letter-spacing :** défaut `0` (`--letter-spacing-default`). **Deux exceptions ajoutées (passe premium 2026-07-06)** — le tracking par défaut à 0 aplatissait les micro-labels et les grands chiffres :
+- `--letter-spacing-label` (`0.06em`) sur les **micro-labels MAJUSCULES** (eyebrows `type-data-label`, en-têtes de colonnes) → espacés = raffinés (sinon "AI-flat").
+- `--letter-spacing-tight` (`-0.02em`) sur les **grands chiffres / valeurs** (valeur KPI, display) → resserre la masse (feel data premium).
 
 | Token | Taille | Line-height | Weight | Usage |
 |---|---|---|---|---|
@@ -283,8 +285,8 @@ Usage réel observé : `border-subtle` est le défaut sur quasi tous les composa
 
 | Token | Valeur CSS | Usage | Condition |
 |---|---|---|---|
-| `shadow.none` | `none` | Card/Container par défaut | élévation par bordure + fond, pas d'ombre (Principe 4) |
-| `shadow.sm` | `0 4px 12px -4px rgba(0,0,0,0.45)` | Tooltip | élément flottant léger, ombre discrète |
+| `shadow.none` | `none` | Container / carte de base | pas d'ombre (élévation par bordure) |
+| `shadow.sm` | `0 4px 12px -4px rgba(0,0,0,0.45)` | Tooltip **+ carte définie** (`--card-shadow-defined`, combiné à un filet interne haut) | ombre discrète — détache la carte du fond near-black (fonctionnel, pas déco, cf. §6 Card) |
 | `shadow.lg` | `0 24px 48px -16px rgba(0,0,0,0.55)` | Modal, Toast | élément flottant au-dessus de contenu arbitraire (pas juste une carte), besoin d'une élévation forte pour se détacher |
 
 Règle d'usage : élévation = `shadow` + `border` (jamais un fond différent, sauf Input/Select/Textarea qui utilisent `--color-surface-raised` pour une raison différente : se détacher visuellement de la carte derrière, pas une histoire d'élévation/superposition). Pour Modal spécifiquement, la version initiale utilisait `border-strong` (règle stricte du doc), changée en `border-subtle` après test visuel réel — le doc suivait la théorie, le rendu réel a tranché autrement.
@@ -541,9 +543,10 @@ Le fichier `tokens.css` complet fait ~470 lignes de tokens + les classes utilita
 2. **Anatomie** : `<article class="ds-card">`ou `<div>`, contenu libre.
 3. **Variantes** : aucune — un seul niveau de surface (Principe 7 : `surface.elevated`/`surface.muted` retirés faute de besoin réel).
 4. **États** : default, hover/focus-within (`border-strong` — seul usage restant de ce token dans tout le système).
-5. **Tokens** : `--card-background/border/border-active/radius/padding/shadow/transition` — tous hérités 1:1 de `--container-*`.
-6. **Règles d'usage** : Card = alias direct de Container, pas de token propre distinct. Si un futur besoin (ex carte cliquable vs carte statique) apparaît, ajouter les tokens à ce moment (Principe 7).
-7. **Erreurs à éviter** : ne pas dupliquer les valeurs de Container dans Card — toujours référencer `var(--container-*)`.
+5. **Tokens** : `--card-background/border/border-active/radius/padding/shadow/transition` (hérités 1:1 de `--container-*`) **+ carte définie (2026-07-06)** : `--card-border-defined` (arête blanc 10% via `color-mix`, un cran au-dessus du 7% décoratif) et `--card-shadow-defined` (`shadow-sm` + filet lumineux interne haut 5%). Dérivés de l'encre (`color-mix` sur `--color-text-primary`), zéro hex ajouté.
+6. **Carte DÉFINIE (passe premium 2026-07-06)** : le défaut `--card-border` (7%) + `shadow:none` rendait les cartes **plates** — elles ne se détachaient pas du fond near-black (`#0A0A0B`), diagnostic mesuré = "pas premium". Fix = **arête 10% + filet + ombre douce** (`--card-border-defined` / `--card-shadow-defined`). La définition est **fonctionnelle** (lisibilité/détachement, même logique que l'obligation de border §4.1), **pas décorative** — reste dans Principe 4 (ombre discrète, pas de glow coloré). Appliqué en token **système partagé** sur : kpi-card, chart, timeline, jalon-card. Hover = `border-active` (`border-strong`) inchangé.
+7. **Règles d'usage** : Card = alias de Container pour les valeurs de base. La carte de contenu premium utilise `--card-border-defined` + `--card-shadow-defined` (partagés, jamais redéfinis par composant). Si un futur besoin (ex carte cliquable vs statique) apparaît, ajouter les tokens à ce moment (Principe 7).
+8. **Erreurs à éviter** : ne pas dupliquer les valeurs de Container dans Card — toujours référencer `var(--container-*)` / `var(--card-*)`. Ne pas recréer un `border`/`shadow` de carte en dur dans un composant : passer par `--card-border-defined` / `--card-shadow-defined`.
 8. **Exemple** :
 ```html
 <article class="ds-card">
@@ -701,18 +704,18 @@ Distinct des 18 composants de base (§6) : ces composants affichent des séries 
 ### Chart
 
 1. **Rôle** : visualiser l'évolution d'un KPI dans le temps (ex "Nombre de clients payants" mois par mois). Répond à "dynamique", pas juste "position" (cf. Principe 5/§3, hiérarchie position > dynamique > détails).
-2. **Anatomie** : `.ds-chart-card` (carte, mêmes tokens que Card) > `.ds-chart-header` (`.ds-chart-heading` = eyebrow `type-label` + titre `type-h2`, + bouton `.ds-button--subtle.ds-button--xs` "Ajouter une mesure") > `.ds-chart-shell` contenant le canvas de rendu (`lightweight-charts`, chargé en CDN — seul composant du DA System à dépendre d'une lib JS externe, tous les autres sont CSS/HTML statiques).
+2. **Anatomie** : `.ds-chart-card` (**carte définie**, `--card-border-defined`) > `.ds-chart-header` (`.ds-chart-heading` = eyebrow `type-data-label` **tracké** `--letter-spacing-label` [était `type-label` sans tracking — aligné aux autres eyebrows 2026-07-06] + titre `type-h2`, + bouton `.ds-button--subtle.ds-button--xs` "Ajouter une mesure") > `.ds-chart-shell` contenant le canvas de rendu (`lightweight-charts`, chargé en CDN — seul composant du DA System à dépendre d'une lib JS externe, tous les autres sont CSS/HTML statiques).
 3. **Variantes** : aucune à ce jour — une seule forme (area chart avec ligne cible en pointillés).
-4. **États** : hover affiche le crosshair + la valeur au point survolé. Dernière valeur toujours visible via un badge (`lastValueVisible`). Pas encore d'état vide dédié — cf. §6 Empty state point 2, "Aucune donnée dans le graphique" est prévu comme conséquence, pas encore câblé sur Chart.
+4. **États** : hover affiche le crosshair + la valeur au point survolé. **`lastValueVisible: false` (2026-07-06)** — le badge de dernière valeur **chevauchait les labels d'axe** (collision visuelle), retiré ; la valeur courante se lit au point d'extrémité + au survol. Pas encore d'état vide dédié — cf. §6 Empty state point 2, "Aucune donnée dans le graphique" est prévu comme conséquence, pas encore câblé sur Chart.
 5. **Tokens** : `--chart-header-gap/heading-gap/shell-min-height/axis-font-size`, `--chart-grid-line/axis-text/line-color/area-top/area-bottom/target-line/crosshair-line/crosshair-width/last-value-bg/last-value-text`, `--chart-line-width/target-line-width/point-radius/marker-radius/scale-margin`. Toutes les couleurs sont composées via `color-mix()` à partir des tokens neutres existants (`--color-text-primary` etc.) — zéro hex ajouté.
-6. **Règles d'usage** : titre de carte = `type-h2` (même niveau que le titre de Modal, cf. §4.2 — pas `type-h3`, qui n'est assigné à aucun composant construit). Le bouton d'action du header est toujours `subtle`/`xs`, jamais `ghost` — il ne doit pas rivaliser visuellement avec les données (cf. §6 Button règle 6). Ligne cible toujours en pointillés discrets (`color-mix` 42% de `--color-text-primary`), jamais en couleur sémantique (même règle que Progress bar/Badge, zéro vert/rouge). Watermark de la lib désactivé (`attributionLogo: false`).
+6. **Règles d'usage** : titre de carte = `type-h2` (même niveau que le titre de Modal, cf. §4.2 — pas `type-h3`, qui n'est assigné à aucun composant construit). Le bouton d'action du header est toujours `subtle`/`xs`, jamais `ghost` — il ne doit pas rivaliser visuellement avec les données (cf. §6 Button règle 6). Ligne cible toujours en pointillés discrets (`color-mix` 42% de `--color-text-primary`), jamais en couleur sémantique (même règle que Progress bar/Badge, zéro vert/rouge). Watermark de la lib désactivé (`attributionLogo: false`). **Axe (2026-07-06)** : borné `min: 0` — un count n'est jamais négatif (l'ancien `-20` était un artefact de scaling) — et `max = cible + ~10%` (`autoscaleInfoProvider`), pour montrer le chemin vers la cible sans le désert du haut.
 7. **Erreurs à éviter** : ne pas coder de valeurs numériques en dur dans le JS (fontSize, lineWidth, radius, scaleMargins) — tout doit être lu depuis `tokens.css` via `getComputedStyle` au runtime (seul moyen de garder une lib JS externe alignée sur le système de tokens CSS). Ne pas laisser `fitContent()` seul pour le cadrage temporel — utiliser `setVisibleRange` sur les timestamps exacts des données.
 8. **Exemple** :
 ```html
 <article class="ds-chart-card">
   <div class="ds-chart-header">
     <div class="ds-chart-heading">
-      <span class="type-label ds-chart-eyebrow">KPI global</span>
+      <span class="type-data-label ds-chart-eyebrow">KPI global</span>
       <span class="type-h2 ds-chart-title">Nombre de client payant</span>
     </div>
     <button type="button" class="ds-button ds-button--subtle ds-button--xs ds-chart-add-btn">
@@ -768,7 +771,7 @@ Distinct des 18 composants de base (§6) : ces composants affichent des séries 
 2. **Anatomie** : `.ds-timeline` (conteneur, `--timeline-rail-offset` fixe l'espace réservé à la colonne date) > `.ds-timeline-line` (rail, position absolue) + N × `.ds-timeline-item` (`.ds-timeline-rail-date` = année/mois alignés à droite, `.ds-timeline-dot` positionné sur le rail, `.ds-timeline-card` = carte connectée au dot via un connecteur horizontal en `::before`).
 3. **Variantes** : `.ds-timeline-dot--final` + `.ds-timeline-tag--final` pour le dernier jalon (objectif SMART) — rempli plein orange, bordure blanche, glow plus fort, tag encadré au lieu de texte nu. Les jalons intermédiaires ont un dot creux (fond = `--color-background`, bordure orange 3px).
 4. **États** : aucun état interactif dans cette version (affichage seul). En prod (`jalons.html`), chaque carte est un formulaire éditable complet (titre/description/KPI) — volontairement simplifié ici en carte de lecture (titre + description + date), le formulaire d'édition est un composant métier séparé, pas le pattern "rail+dots" lui-même.
-5. **Tokens** : `--timeline-rail-offset/item-gap/card-gap`, `--timeline-line-width/gradient/glow`, `--timeline-dot-size/background/border/ring` (+ variantes `-final-*`), `--timeline-rail-year-color/rail-month-color`, `--timeline-connector-gradient`, `--timeline-tag-color` (+ variantes `-final-*`).
+5. **Tokens** : `--timeline-rail-offset/item-gap/card-gap`, `--timeline-line-width/gradient/glow`, `--timeline-dot-size/background/border/ring` (+ variantes `-final-*`), `--timeline-rail-year-color/rail-month-color`, `--timeline-connector-gradient`, `--timeline-tag-color` (+ variantes `-final-*`). **Passe premium (2026-07-06)** : `.ds-timeline-card` utilise la **carte définie** partagée (`--card-border-defined` / `--card-shadow-defined`) ; `.ds-timeline-tag` tracké via `--letter-spacing-label`. Le distinctif (rail/dots/connecteur/badge orange `--final`) inchangé — c'est le composant qui utilise le mieux l'accent (roadmap vers l'objectif).
 6. **Règles d'usage** : le rail dégrade toujours de l'orange plein (haut, jalon le plus proche) vers `--color-border-subtle` (bas) — la lecture visuelle "je me rapproche du présent" ne doit jamais s'inverser. Un seul dot `--final` par timeline (l'objectif, pas "le dernier jalon dans le temps" si l'ordre change).
 7. **Erreurs à éviter** : ne pas répéter le rail-offset en dur dans plusieurs règles — tout part du token `--timeline-rail-offset`, y compris le calcul de position du dot (`calc(var(--timeline-rail-offset) + 1.5px)`). Sur mobile, la colonne date est masquée et le rail réduit à 0 plutôt que comprimé illisible (cf. media query).
 8. **Exemple** :
@@ -822,6 +825,15 @@ Premier assemblage propre à un écran CarryIT (distinct des composants de base/
 
 Construit 2026-07-05. Porté depuis `renderJalonKpiCardV2` de `dashboard.html`.
 
+> **⚠️ MISE À JOUR — migration premium (2026-07-06, REMPLACE les décisions ci-dessous marquées).** Passe premium (exploration `kpi-card-v2` validée par Nils puis migrée). Ce qui change :
+> - **Delta = texte INLINE quiet** (`--kpi-card-delta-color` = **secondary**), collé après la cible avec un séparateur `·` : effort `+36 h au-delà`, résultat `10 restants`. **PLUS de pill `ds-badge`** (elle flottait à droite = créait un désert horizontal). `badge.css` **délié**. → remplace le point "delta pill" partout ci-dessous.
+> - **Barre = SEULEMENT sur les KPI "vers une cible"** (résultat, remplissage partiel). L'**effort dépassé n'a PLUS de barre** : la barre pleine + tick + label "seuil" rendait la carte trop haute ET personne ne comprenait "dépassé" — le delta `au-delà` suffit. → remplace "barre en dépassement pleine+tick" et le bottom-anchor.
+> - **Carte DÉFINIE** : `--card-border-defined` + `--card-shadow-defined` (cf. §6 Card) — plus le border 7% plat.
+> - **Valeur = 40px** (`--type-display-size`, bold, tabulaire, tracking `--letter-spacing-tight`) — plus 36. **Largeur carte voulue 360–400** (`--kpi-card-min/max-width`), plus 440-520 : carte dense, pas étirée au conteneur.
+> - **Eyebrow tracké** `--letter-spacing-label`. **Résumé** : tuiles **240px** (plus 280).
+> - **Police = Inter partout.** Un mono-signature pour les chiffres a été **testé et REJETÉ** par Nils ("on doit utiliser INTER"). Finding `overused-font` marqué intentionnel (impeccable `ignore-value`).
+> - **Conservé** : bouton "Ajouter" `ds-button--subtle` + crayon (head), monochrome strict, ne pas fabriquer les données. Méthode : Playwright crop HD + styles/positions mesurés avant de juger.
+
 1. **Rôle** : afficher une mesure de jalon — soit l'**effort** (l'action mesurable qu'on répète), soit le **résultat** (la preuve mesurable que le jalon est atteint). Deux KPI max par jalon.
 2. **Une seule structure, deux contextes** (convergé Nils 2026-07-05, réf = son mockup — monochrome, aligné) :
    - **Structure unique** `.ds-kpi-card` — layout `flex column` :
@@ -858,7 +870,7 @@ Construit 2026-07-05. Porté depuis `db-active-jalon-card` + `buildJalonDetailCa
 
 1. **Rôle** : représenter un jalon dans son état (en cours / terminé / à venir) avec son avancement de tâches et l'accès au détail.
 2. **Composition** : head (méta `Jalon n/N · Mois n` + statut pill `.ds-jalon-status`) / titre + date / avancement des tâches (label + count + Progress bar) / CTA "Voir le jalon →".
-3. **Nature** : composant métier. Classes propres `.ds-jalon-card*` / `.ds-jalon-status*` dans `jalon-card.css` ; réutilise Progress bar / tokens.
+3. **Nature** : composant métier. Classes propres `.ds-jalon-card*` / `.ds-jalon-status*` dans `jalon-card.css` ; réutilise Progress bar / tokens. **Passe premium (2026-07-06)** : **carte définie** (`--card-border-defined` / `--card-shadow-defined`), meta/eyebrow tracké via `--letter-spacing-label`. Statut (label + dot, orange réservé à l'actif) inchangé.
 4. **Tokens** : `--jalon-card-*` et `--jalon-status-*` (dot + texte par statut). Seul le statut **actif** utilise l'orange (`--color-accent-primary`) sur son dot — c'est le jalon-action du moment, usage conforme Principe 2. Terminé/à venir = contraste neutre (muted / border-strong).
 5. **Règles d'usage** : le statut se lit au **contraste + label + couleur du dot**, jamais à un fond de carte coloré. Card entière cliquable (`cursor:pointer`, `tabindex="0"`, `aria-label` décrivant statut + titre).
 6. **Accessibilité** : Progress bar `role="progressbar"` + aria-value. `aria-label` sur l'article (statut lisible sans la couleur seule). Focus visible via `border-active`.
@@ -869,12 +881,14 @@ Construit 2026-07-05. Porté depuis `db-active-jalon-card` + `buildJalonDetailCa
 Construit 2026-07-05. Extrait le « delta/tendance/historique » de §8 en composant autonome (auparavant seulement dans le popover du Calendar heatmap).
 
 1. **Rôle** : lecture **discrète** de l'historique d'un KPI — chaque mesure saisie (`measures[]`) = une ligne. Complémentaire du **Chart** (courbe continue de l'évolution) : le Chart montre la tendance visuelle, l'history donne les valeurs exactes et le pas-à-pas. Répond à l'action produit « Avoir accès à son historique de KPI » (KPI.md §7).
-2. **Anatomie** : `.ds-kpi-history` (carte, tokens Card) > `.ds-kpi-history__head` (eyebrow `type-data-label` « Historique · {fréquence} » + titre KPI `type-h3`) > `.ds-kpi-history__list` (`<ol>`, récent en haut) > `.ds-kpi-history__row` (grille `date-fixe | valeur (1fr) | delta`).
-3. **Ligne** : `date` (`type-body-sm` muted, colonne fixe `--kpi-history-date-width` → valeurs alignées) · `valeur` (`type-body-md`, nombre blanc + unité muted) · `delta` (caret ▲/▼ `--icon-stroke-width-bold` + magnitude signée `+6` / `−8`, poussé à droite). 1re mesure → `.ds-kpi-history__delta--none` « — première mesure ». Séparateur `--border-subtle` entre lignes (limite fonctionnelle), pas au-dessus de la 1re.
-4. **Delta = direction, jamais jugement** : le caret donne le sens (hausse/baisse), **monochrome** — aucune couleur bon/mauvais (même règle que Progress/Badge/Chart/heatmap). On mappe `measures[].delta`, on ne recalcule/n'invente rien.
-5. **Nature** : composant métier. Classes propres `.ds-kpi-history*` dans `kpi-history.css` ; réutilise tokens Card + classes `type-*` + système d'icônes. Tokens `--kpi-history-*` (padding = `--card-padding`, head-gap, row-padding-block, col-gap, date-width, couleurs date/value/unit/delta/delta-none, row-border).
-6. **Accessibilité** : `<ol>` (ordre chronologique sémantique), carets `aria-hidden` (le signe `+6`/`−8` porte l'info). Contraste muted vérifié 5.87:1 (> AA).
-7. **Preview** : `preview/kpi-history.html` (+ `.css`). 5 mesures montrant ▲ / ▼ / — (première).
+> **⚠️ REFONTE PREMIUM (2026-07-06).** Passé de la lecture "date│valeur│delta caret ▲▼" à un **relevé éditable** (longue itération avec Nils, réf visuelle = table "ACTIVITY"). Les points 2–7 décrivent la version COURANTE.
+
+2. **Anatomie** : `.ds-kpi-history` (**carte définie**, `--card-border-defined`) > `.ds-kpi-history__head` (eyebrow `type-data-label` « Historique · {fréquence} » + titre `type-h3`) > **en-têtes** `.ds-kpi-history__cols` (`DATE` · `VALEUR`, séparés par **`border-strong`** qui pose le tableau) > `.ds-kpi-history__list` (`<ol>`, récent en haut) > `.ds-kpi-history__row` (relevé : `.ds-kpi-history__main` [date · valeur droite · actions] + `.ds-kpi-history__note` pleine largeur dessous).
+3. **Ligne = relevé** : `date` (leading, gauche, blanc medium, colonne fixe `--kpi-history-date-width` 7rem) ··· `valeur` **poussée à droite** (`type-body-md` bold, `tabular-nums` = colonne vertébrale scannable) + unité muted. Bornée aux deux bords → **plus de désert horizontal**. **Note** en dessous, **pleine largeur alignée au bord gauche** (annotation de la mesure, même texte que le popover heatmap), visible si présente — jamais dans une sous-colonne (elle flotterait au milieu). **Plus de delta** (le Chart porte la tendance).
+4. **Actions au survol** (gouttière droite, révélées au hover/focus de la ligne) : ✎ **éditer** · 🗑 **supprimer**. **Édition inline = effort modal RÉUTILISÉ, pré-rempli** (date · bloc de travail/scheduler · valeur · note), footer **Annuler / Enregistrer** — le supprimer vit sur la ligne (🗑), pas dans le modal (pas de redondance). **Une seule porte d'édition = la même que la création** (l'édition reflète la création).
+5. **Nature** : composant métier. Classes `.ds-kpi-history*` dans `kpi-history.css` + `kpi-history.js` (toggle édition, format date FR). Réutilise **carte définie + effort modal** + `type-*`. Tokens `--kpi-history-*` (padding = `--card-padding`, head-gap, cols-gap, row-padding-block, col-gap, `date-width` 7rem, `date-color` **primary**, note-color/note-gap, unit-color, value-input-width, row-border). Monochrome, token-pur.
+6. **Accessibilité** : `<ol>` (ordre chronologique), actions `aria-label`, modal d'édition `role="dialog"`. Contraste muted vérifié > AA.
+7. **Preview** : `preview/kpi-history.html` (+ `.css` + `.js`). 5 mesures, une ligne en édition + le modal. Diagnostic **mesuré au Playwright** (crop HD + positions) : c'est en comparant `value_right_edge` vs `card_right_edge` qu'on a identifié le désert de 369px qui tuait le premium.
 
 ## À venir
 

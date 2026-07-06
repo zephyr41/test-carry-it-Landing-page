@@ -94,7 +94,7 @@
       bottomColor: tokens.areaBottom,
       lineWidth: tokens.lineWidth,
       priceLineVisible: false,
-      lastValueVisible: true,
+      lastValueVisible: false,
       crosshairMarkerVisible: true,
       crosshairMarkerRadius: tokens.markerRadius,
       crosshairMarkerBorderColor: tokens.lastValueBg,
@@ -103,8 +103,10 @@
       pointMarkersRadius: tokens.pointRadius,
       priceFormat: { type: 'price', precision: 0, minMove: 1 },
       autoscaleInfoProvider: function () {
+        // Bornes = 0 (un count n'est jamais négatif) → cible + marge (≈ +10%).
+        // Montre le chemin vers la cible (100) sans le désert du haut ni le -20 faux.
         return {
-          priceRange: { minValue: -20, maxValue: 120 },
+          priceRange: { minValue: 0, maxValue: Math.ceil((target * 1.1) / 10) * 10 },
           margins: { above: 0, below: 0 },
         };
       },

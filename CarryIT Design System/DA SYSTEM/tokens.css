@@ -161,6 +161,10 @@
   --card-padding: var(--container-padding);
   --card-shadow: var(--container-shadow);
   --card-transition: var(--container-transition);
+  /* Carte DÉFINIE (partagé kpi-card + chart + …) : arête 10% + filet lumineux haut
+     + ombre douce → se détache du fond. Dérivé de l'encre (color-mix), zéro valeur en dur. */
+  --card-border-defined: var(--border-width-default) solid color-mix(in srgb, var(--color-text-primary) 10%, transparent);
+  --card-shadow-defined: var(--shadow-sm), inset 0 var(--border-width-default) 0 color-mix(in srgb, var(--color-text-primary) 5%, transparent);
 
   /* Component tokens: Button */
   --button-height-lg: var(--space-64);
@@ -522,9 +526,9 @@
      écran large (pas de stretch full-width qui lit « admin panel »). */
   --kpi-card-min-width: 360px;
   --kpi-card-max-width: 400px;
-  /* Carte DÉFINIE (migration v2) : arête 10% + filet lumineux haut + ombre douce → se détache du fond. */
-  --kpi-card-border-defined: var(--border-width-default) solid color-mix(in srgb, var(--color-text-primary) 10%, transparent);
-  --kpi-card-shadow: var(--shadow-sm), inset 0 var(--border-width-default) 0 color-mix(in srgb, var(--color-text-primary) 5%, transparent);
+  /* Carte définie = token système partagé (voir --card-border-defined). */
+  --kpi-card-border-defined: var(--card-border-defined);
+  --kpi-card-shadow: var(--card-shadow-defined);
   /* gap de BASE = intra-groupe serré (titre↔fraîcheur = une unité). Les ruptures
      inter-groupes sont posées en margin explicite (rythme groupé, pas uniforme). */
   --kpi-card-gap: var(--space-4);

@@ -17,9 +17,9 @@
   flex-direction: column;
   padding: var(--card-padding);
   background: var(--card-background);
-  border: var(--card-border);
+  border: var(--card-border-defined);
   border-radius: var(--card-radius);
-  box-shadow: var(--card-shadow);
+  box-shadow: var(--card-shadow-defined);
 }
 
 .ds-chart-header {
@@ -37,7 +37,8 @@
 }
 
 .ds-chart-eyebrow {
-  text-transform: none;
+  letter-spacing: var(--letter-spacing-label); /* micro-label majuscule tracké (cohérence eyebrows DS) */
+  color: var(--color-text-muted);
 }
 
 .ds-chart-title {

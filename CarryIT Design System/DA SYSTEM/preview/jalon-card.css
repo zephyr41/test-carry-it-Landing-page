@@ -26,8 +26,9 @@
   align-content: start;
   padding: var(--jalon-card-padding);
   background: var(--card-background);
-  border: var(--card-border);
+  border: var(--card-border-defined);
   border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow-defined);
   transition: var(--card-transition);
   cursor: pointer;
 }
@@ -48,6 +49,7 @@
 
 .ds-jalon-card__meta {
   color: var(--jalon-card-meta-color);
+  letter-spacing: var(--letter-spacing-label); /* micro-label majuscule tracké (cohérence eyebrows DS) */
 }
 
 /* ── Statut pill ────────────────────────────────────────────── */
