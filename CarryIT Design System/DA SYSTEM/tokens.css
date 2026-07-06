@@ -564,7 +564,7 @@
   --kpi-card-summary-title-gap: var(--space-8);
   --kpi-card-summary-metric-gap: var(--space-8);
   --kpi-card-summary-value-size: var(--type-h1-size); /* 28px vs 36 en vue jalon */
-  --kpi-card-summary-min-width: 280px; /* étroit vs jalon (min 440), tuile de liste */
+  --kpi-card-summary-min-width: 240px; /* tuile résumé plus étroite (plus « longue » en proportion), vs jalon 360-400 */
   --kpi-card-empty-copy-color: var(--color-text-secondary);
   --kpi-card-define-border: var(--border-width-default) dashed var(--color-border-strong);
   --kpi-card-define-color: var(--color-text-secondary);
