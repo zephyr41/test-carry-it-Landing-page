@@ -12,6 +12,14 @@
   margin-bottom: var(--space-section-gap);
 }
 
+.chart-preview__group:not(:last-child) {
+  margin-bottom: var(--space-section-gap);
+}
+
+.chart-preview__group-label {
+  margin-bottom: var(--space-8);
+}
+
 .ds-chart-card {
   display: flex;
   flex-direction: column;
@@ -57,6 +65,11 @@
   position: relative;
   min-height: var(--chart-shell-min-height);
   margin-top: var(--space-32);
+}
+
+.ds-chart-shell--empty {
+  display: grid;
+  place-items: center;
 }
 
 .ds-chart-canvas {

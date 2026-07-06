@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="textarea.css">
 <link rel="stylesheet" href="modal.css">
 <link rel="stylesheet" href="effort-modal.css">
+<link rel="stylesheet" href="empty-state.css">
 <link rel="stylesheet" href="kpi-history.css">
 </head>
 <body>
@@ -20,7 +21,9 @@
         <p class="type-body-md">L'historique d'un KPI en relevé : <strong>date (gauche) · valeur (droite)</strong>, note pleine largeur dessous (icône = annotation de la mesure). Actions <strong>modifier · supprimer</strong> au survol. Monochrome.</p>
       </header>
 
-      <article class="ds-kpi-history">
+      <div class="kpi-history-preview__group">
+        <div class="kpi-history-preview__group-label type-label">Avec relevés</div>
+        <article class="ds-kpi-history">
         <header class="ds-kpi-history__head">
           <span class="ds-kpi-history__eyebrow type-data-label">Historique · Hebdo</span>
           <h2 class="ds-kpi-history__title type-h3">Temps moyen entre chaque test</h2>
@@ -111,7 +114,27 @@
             </div>
           </li>
         </ol>
-      </article>
+        </article>
+      </div>
+
+      <div class="kpi-history-preview__group">
+        <div class="kpi-history-preview__group-label type-label">État vide (aucun relevé)</div>
+        <article class="ds-kpi-history">
+          <header class="ds-kpi-history__head">
+            <span class="ds-kpi-history__eyebrow type-data-label">Historique · Hebdo</span>
+            <h2 class="ds-kpi-history__title type-h3">Temps moyen entre chaque test</h2>
+          </header>
+
+          <div class="ds-empty-state ds-kpi-history__empty">
+            <svg class="ds-empty-state__icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 19V5M4 19h16M9 16V9M14 16V7M19 16v-4" />
+            </svg>
+            <h3 class="type-h3 ds-empty-state__title">Aucune mesure enregistrée</h3>
+            <p class="ds-empty-state__description type-body-md">Ajoute une première mesure pour démarrer le suivi de ce KPI.</p>
+            <button type="button" class="ds-button ds-button--inverse ds-button--sm ds-empty-state__action">Ajouter une mesure</button>
+          </div>
+        </article>
+      </div>
     </section>
   </main>
 

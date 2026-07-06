@@ -6,6 +6,7 @@
 <title>DA System — Chart</title>
 <link rel="stylesheet" href="../tokens.css">
 <link rel="stylesheet" href="buttons.css">
+<link rel="stylesheet" href="empty-state.css">
 <link rel="stylesheet" href="chart.css">
 </head>
 <body>
@@ -16,23 +17,53 @@
         <h1 class="type-h1">Chart</h1>
       </header>
 
-      <article class="ds-chart-card">
-        <div class="ds-chart-header">
-          <div class="ds-chart-heading">
-            <span class="type-data-label ds-chart-eyebrow">KPI global</span>
-            <span class="type-h2 ds-chart-title">Nombre de client payant</span>
+      <div class="chart-preview__group">
+        <div class="chart-preview__group-label type-label">Avec données</div>
+        <article class="ds-chart-card">
+          <div class="ds-chart-header">
+            <div class="ds-chart-heading">
+              <span class="type-data-label ds-chart-eyebrow">KPI global</span>
+              <span class="type-h2 ds-chart-title">Nombre de client payant</span>
+            </div>
+            <button type="button" class="ds-button ds-button--subtle ds-button--xs ds-chart-add-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+              </svg>
+              Ajouter une mesure
+            </button>
           </div>
-          <button type="button" class="ds-button ds-button--subtle ds-button--xs ds-chart-add-btn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
-            </svg>
-            Ajouter une mesure
-          </button>
-        </div>
-        <div class="ds-chart-shell">
-          <div id="dsChartCanvas" class="ds-chart-canvas" aria-label="Évolution du KPI — nombre de clients payants"></div>
-        </div>
-      </article>
+          <div class="ds-chart-shell">
+            <div id="dsChartCanvas" class="ds-chart-canvas" aria-label="Évolution du KPI — nombre de clients payants"></div>
+          </div>
+        </article>
+      </div>
+
+      <div class="chart-preview__group">
+        <div class="chart-preview__group-label type-label">État vide (aucune mesure)</div>
+        <article class="ds-chart-card">
+          <div class="ds-chart-header">
+            <div class="ds-chart-heading">
+              <span class="type-data-label ds-chart-eyebrow">KPI global</span>
+              <span class="type-h2 ds-chart-title">Nombre de client payant</span>
+            </div>
+            <button type="button" class="ds-button ds-button--subtle ds-button--xs ds-chart-add-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+              </svg>
+              Ajouter une mesure
+            </button>
+          </div>
+          <div class="ds-chart-shell ds-chart-shell--empty">
+            <div class="ds-empty-state">
+              <svg class="ds-empty-state__icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 19V5M4 19h16M9 16V9M14 16V7M19 16v-4" />
+              </svg>
+              <h3 class="type-h3 ds-empty-state__title">Aucune donnée enregistrée</h3>
+              <p class="ds-empty-state__description type-body-md">Le graphique s'affichera dès la première mesure enregistrée.</p>
+            </div>
+          </div>
+        </article>
+      </div>
     </section>
   </main>
 

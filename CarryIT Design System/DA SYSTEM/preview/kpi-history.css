@@ -12,6 +12,19 @@
   margin-bottom: var(--space-section-gap);
 }
 
+.kpi-history-preview__group:not(:last-child) {
+  margin-bottom: var(--space-section-gap);
+}
+
+.kpi-history-preview__group-label {
+  margin-bottom: var(--space-8);
+}
+
+/* État vide : séparé du head, même rythme que les colonnes. */
+.ds-kpi-history__empty {
+  margin-top: var(--kpi-history-head-gap);
+}
+
 /* ── Panneau ─────────────────────────────────────────────────── */
 .ds-kpi-history {
   padding: var(--kpi-history-padding);
