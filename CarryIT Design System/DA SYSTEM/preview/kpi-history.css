@@ -1,0 +1,191 @@
+.kpi-history-preview {
+  min-height: 100vh;
+  padding: var(--space-page-desktop);
+  color: var(--color-text-primary);
+}
+
+.kpi-history-preview__shell {
+  max-width: 520px; /* largeur de contenu resserrée (value-col flex remplit) → plus de vide */
+}
+
+.kpi-history-preview__header {
+  margin-bottom: var(--space-section-gap);
+}
+
+/* ── Panneau ─────────────────────────────────────────────────── */
+.ds-kpi-history {
+  padding: var(--kpi-history-padding);
+  background: var(--card-background);
+  border: var(--card-border);
+  border-radius: var(--card-radius);
+}
+
+.ds-kpi-history__head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.ds-kpi-history__eyebrow {
+  color: var(--color-text-muted);
+  letter-spacing: var(--letter-spacing-label);
+}
+
+/* Titre = héros de l'en-tête : resserré (feel premium), tranche sur l'overline. */
+.ds-kpi-history__title {
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+/* ── En-têtes : Date (gauche) · Valeur (droite). Séparateur fort. ── */
+.ds-kpi-history__cols {
+  display: flex;
+  align-items: baseline;
+  gap: var(--kpi-history-col-gap);
+  margin-top: var(--kpi-history-head-gap);
+  padding-bottom: var(--kpi-history-cols-gap);
+  border-bottom: var(--border-strong);
+  color: var(--kpi-history-header-color);
+  letter-spacing: var(--letter-spacing-label);
+}
+
+.ds-kpi-history__cols > :first-child {
+  flex: 1; /* Date pousse Valeur à droite */
+}
+
+/* Spacer : aligne le libellé VALEUR sur le bord droit des valeurs (gouttière actions). */
+.ds-kpi-history__cols > :last-child {
+  width: var(--kpi-history-actions-gutter);
+  flex-shrink: 0;
+}
+
+/* ── Liste des mesures ───────────────────────────────────────── */
+.ds-kpi-history__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Ligne = ligne principale (date gauche · valeur droite) + note PLEINE LARGEUR dessous. */
+.ds-kpi-history__row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kpi-history-note-gap);
+  padding-block: var(--kpi-history-row-padding-block);
+  border-bottom: var(--kpi-history-row-border);
+}
+
+/* Ligne principale : relevé — label date à gauche, valeur à droite. */
+.ds-kpi-history__main {
+  display: flex;
+  align-items: baseline;
+  gap: var(--kpi-history-col-gap);
+}
+
+.ds-kpi-history__date {
+  flex: 1;
+  color: var(--kpi-history-date-color);
+  font-weight: var(--kpi-history-date-weight);
+}
+
+/* Valeur = poussée à droite, seul élément blanc bold, tabulaire → colonne scannable. */
+.ds-kpi-history__value {
+  flex-shrink: 0;
+  color: var(--kpi-history-value-color);
+  font-weight: var(--kpi-history-value-weight);
+  font-variant-numeric: tabular-nums;
+}
+
+.ds-kpi-history__unit {
+  color: var(--kpi-history-unit-color);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Note = PLEINE LARGEUR, alignée au bord gauche de la ligne (sous le relevé) →
+   sa position (pleine largeur, bord gauche) suffit à la signaler, sans icône. */
+.ds-kpi-history__note {
+  margin: 0;
+  color: var(--kpi-history-note-color);
+}
+
+/* ── Actions : dans la ligne principale, gouttière fixe à droite, révélées au survol ── */
+.ds-kpi-history__actions {
+  flex-shrink: 0;
+  align-self: center;
+  width: var(--kpi-history-actions-gutter);
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-4);
+  opacity: 0;
+  transition: opacity var(--motion-duration-fast) var(--motion-ease-out);
+}
+
+.ds-kpi-history__row:hover .ds-kpi-history__actions,
+.ds-kpi-history__row:focus-within .ds-kpi-history__actions {
+  opacity: 1;
+}
+
+.ds-kpi-history__action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-32);
+  height: var(--space-32);
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--kpi-history-action-color);
+  cursor: pointer;
+  transition: var(--motion-transition-default);
+}
+
+.ds-kpi-history__action svg {
+  width: var(--space-16);
+  height: var(--space-16);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: var(--icon-stroke-width);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ds-kpi-history__action:hover,
+.ds-kpi-history__action:focus-visible {
+  color: var(--color-text-primary);
+  background: var(--button-ghost-background-hover);
+  outline: none;
+}
+
+.ds-kpi-history__delete:hover,
+.ds-kpi-history__delete:focus-visible {
+  color: var(--color-danger);
+}
+
+/* ── Édition = effort modal réutilisé, pré-rempli ────────────────
+   Masqué sans display:none → le scheduler mesure sa hauteur au chargement. */
+.ds-kpi-history-modal.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Footer à deux pôles : Supprimer (destructif) à gauche, Enregistrer à droite. */
+.ds-kpi-history-modal__footer {
+  justify-content: space-between;
+}
+
+.ds-kpi-history-modal__delete {
+  color: var(--color-danger);
+}
+
+.ds-kpi-history-modal__delete:hover,
+.ds-kpi-history-modal__delete:focus-visible {
+  color: var(--color-danger);
+  border-color: var(--color-danger);
+}
+
+@media (max-width: 640px) {
+  .kpi-history-preview {
+    padding: var(--space-page-mobile);
+  }
+}

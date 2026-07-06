@@ -864,13 +864,25 @@ Construit 2026-07-05. Porté depuis `db-active-jalon-card` + `buildJalonDetailCa
 6. **Accessibilité** : Progress bar `role="progressbar"` + aria-value. `aria-label` sur l'article (statut lisible sans la couleur seule). Focus visible via `border-active`.
 7. **Preview** : `preview/jalon-card.html` (+ `.css`). 3 états : actif, terminé, à venir.
 
+### KPI history ("Historique des mesures d'un KPI")
+
+Construit 2026-07-05. Extrait le « delta/tendance/historique » de §8 en composant autonome (auparavant seulement dans le popover du Calendar heatmap).
+
+1. **Rôle** : lecture **discrète** de l'historique d'un KPI — chaque mesure saisie (`measures[]`) = une ligne. Complémentaire du **Chart** (courbe continue de l'évolution) : le Chart montre la tendance visuelle, l'history donne les valeurs exactes et le pas-à-pas. Répond à l'action produit « Avoir accès à son historique de KPI » (KPI.md §7).
+2. **Anatomie** : `.ds-kpi-history` (carte, tokens Card) > `.ds-kpi-history__head` (eyebrow `type-data-label` « Historique · {fréquence} » + titre KPI `type-h3`) > `.ds-kpi-history__list` (`<ol>`, récent en haut) > `.ds-kpi-history__row` (grille `date-fixe | valeur (1fr) | delta`).
+3. **Ligne** : `date` (`type-body-sm` muted, colonne fixe `--kpi-history-date-width` → valeurs alignées) · `valeur` (`type-body-md`, nombre blanc + unité muted) · `delta` (caret ▲/▼ `--icon-stroke-width-bold` + magnitude signée `+6` / `−8`, poussé à droite). 1re mesure → `.ds-kpi-history__delta--none` « — première mesure ». Séparateur `--border-subtle` entre lignes (limite fonctionnelle), pas au-dessus de la 1re.
+4. **Delta = direction, jamais jugement** : le caret donne le sens (hausse/baisse), **monochrome** — aucune couleur bon/mauvais (même règle que Progress/Badge/Chart/heatmap). On mappe `measures[].delta`, on ne recalcule/n'invente rien.
+5. **Nature** : composant métier. Classes propres `.ds-kpi-history*` dans `kpi-history.css` ; réutilise tokens Card + classes `type-*` + système d'icônes. Tokens `--kpi-history-*` (padding = `--card-padding`, head-gap, row-padding-block, col-gap, date-width, couleurs date/value/unit/delta/delta-none, row-border).
+6. **Accessibilité** : `<ol>` (ordre chronologique sémantique), carets `aria-hidden` (le signe `+6`/`−8` porte l'info). Contraste muted vérifié 5.87:1 (> AA).
+7. **Preview** : `preview/kpi-history.html` (+ `.css`). 5 mesures montrant ▲ / ▼ / — (première).
+
 ## À venir
 
 Sections non commencées (décisions produit pas encore prises, nécessitent une session dédiée) :
 - **5. Composants métier** — Effort modal (2026-07-04), KPI card (2026-07-05), Jalon card (2026-07-05) faits, cf. section "Composants métier". Task row : déjà couvert par `task-list.html`/`task-list.css` (§6 "Task list imbriquée" — checkbox + grip + disclosure + titre + count + actions ⋯/supprimer, tâche ET sous-tâche). Reste éventuel : une carte de tâche « standalone » hors tableau si un écran le demande, pas nécessaire tant que la task list couvre le besoin. Distinct des composants de base ci-dessus (composant de base = brique atomique réutilisable partout, composant métier = assemblage propre à un écran CarryIT).
 - **6. Patterns** — création/modification/suppression/confirmation/filtre/recherche/tableau vide/chargement/erreur/onboarding/dashboard/détail.
 - **7. Templates d'écran** — Dashboard principal, page de détail, formulaire de création/édition. Dépend de la grille/largeurs de page réelles du produit, pas encore définies (cf. §4.3, largeurs de shell actuelles sont des valeurs de preview, pas des tokens produit — à faire au moment de construire les Templates, pas avant).
-- **8. Data visualisation** — Chart fait (2026-07-02), Calendar fait (2026-07-02), Calendar heatmap fait (2026-07-02). Reste : delta/tendance/historique en composants autonomes (actuellement seulement intégrés dans le popover Calendar heatmap), absence de donnée.
+- **8. Data visualisation** — Chart fait (2026-07-02), Calendar fait (2026-07-02), Calendar heatmap fait (2026-07-02), **KPI history fait (2026-07-05)** — historique/delta des `measures[]` en composant autonome (cf. section « KPI history »). Reste : absence de donnée (état vide) sur Chart/history, et un badge tendance/delta réutilisable hors contexte carte si un écran le demande.
 - **9. Accessibilité (règles globales consolidées)** — chaque composant a ses règles listées ci-dessus, mais pas de section transverse dédiée (tailles cliquables minimales, navigation clavier globale, aria patterns communs).
 - **10. Documentation** — modèle de doc réutilisable pour les futurs composants.
 - **11. Gouvernance** — convention de nommage, quand créer vs réutiliser, gestion des exceptions, versionning.

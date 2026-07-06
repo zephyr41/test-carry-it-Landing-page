@@ -82,6 +82,8 @@
 
   /* Primitive letter spacing tokens */
   --letter-spacing-default: 0;
+  --letter-spacing-tight: -0.02em; /* grands chiffres / display : resserre la masse (feel data premium) */
+  --letter-spacing-label: 0.06em;  /* micro-labels MAJUSCULES : espacés = refined (overline, en-têtes) */
 
   /* Primitive spacing tokens */
   --space-4: 4px;
@@ -516,6 +518,10 @@
   --kpi-card-padding: var(--card-padding);
   /* gap entre cartes = objets détachés → aligné sur le padding, pas plus serré */
   --kpi-card-grid-gap: var(--space-24);
+  /* Largeur carte (vue jalon) : plancher lisible → plafond → proportion stable en
+     écran large (pas de stretch full-width qui lit « admin panel »). */
+  --kpi-card-min-width: 440px;
+  --kpi-card-max-width: 520px;
   /* gap de BASE = intra-groupe serré (titre↔fraîcheur = une unité). Les ruptures
      inter-groupes sont posées en margin explicite (rythme groupé, pas uniforme). */
   --kpi-card-gap: var(--space-4);
@@ -533,11 +539,19 @@
   --kpi-card-meta-color: var(--color-text-muted);
   /* Mesure en retard (> 1 période sans mesure) : couleur d'état, seul point de couleur de la carte */
   --kpi-card-meta-stale-color: var(--color-warning);
-  --kpi-card-value-size: var(--type-data-value-size); /* 36px — seule emphase du KPI (Principe 2 : taille, pas couleur) */
-  --kpi-card-value-weight: var(--font-weight-heavy);
+  --kpi-card-value-size: var(--type-display-size); /* 40px — seule emphase du KPI (Principe 2 : taille, pas couleur). Écrase le titre (ratio ~2.5x). */
+  --kpi-card-value-line: var(--type-display-line); /* accompagne la taille display (évite le clipping) */
+  /* 700 serré, PAS 800 : à cette taille le heavy lit « chunky ». Le poids vient du tracking négatif + taille, pas du fat. */
+  --kpi-card-value-weight: var(--font-weight-bold);
+  --kpi-card-value-tracking: var(--letter-spacing-tight);
   --kpi-card-unit-color: var(--color-text-secondary);
   --kpi-card-target-color: var(--color-text-muted);
   --kpi-card-title-color: var(--color-text-secondary);
+  /* Titre = ANCRE de lecture : blanc + medium (pas semibold) → lisible mais recule
+     nettement sous la valeur (hiérarchie 2 niveaux nets, pas de gris intermédiaire). */
+  --kpi-card-title-size: var(--type-body-lg-size);
+  --kpi-card-title-line: var(--type-body-lg-line);
+  --kpi-card-title-weight: var(--font-weight-medium);
   /* delta (écart à la cible) = signal mis en avant sur l'effort → blanc, pas muted */
   --kpi-card-delta-color: var(--color-text-primary);
   --kpi-card-summary-gap: var(--space-8);
@@ -574,6 +588,27 @@
   --jalon-status-pill-background: var(--color-surface-raised);
   --jalon-status-pill-radius: var(--radius-full);
   --jalon-status-dot-size: var(--space-8);
+
+  /* Component tokens: KPI history (composant métier — tableau épuré des mesures, réf « Activity ») */
+  --kpi-history-padding: var(--card-padding);          /* padding du panneau (24) */
+  --kpi-history-head-gap: var(--space-24);             /* titre → en-têtes de colonnes */
+  --kpi-history-cols-gap: var(--space-12);             /* en-têtes → 1re ligne */
+  --kpi-history-row-padding-block: var(--space-16);    /* lignes aérées (feel premium) */
+  --kpi-history-col-gap: var(--space-24);              /* date ↔ valeur ↔ actions (généreux) */
+  --kpi-history-date-width: 7rem;                      /* colonne date fixe → proportion décidée, valeur collée après (pas de désert) */
+  --kpi-history-date-color: var(--color-text-primary);   /* date = blanche mais PLUS PETITE (body-sm) → hiérarchie par la taille, pas par un gris fantôme */
+  --kpi-history-date-weight: var(--font-weight-medium);
+  --kpi-history-value-color: var(--color-text-primary);/* valeur = emphase (blanc bold, monochrome) */
+  --kpi-history-value-weight: var(--font-weight-bold);
+  --kpi-history-unit-color: var(--color-text-muted);
+  --kpi-history-note-color: var(--color-text-secondary);/* note lisible mais en retrait */
+  --kpi-history-note-gap: var(--space-4);              /* valeur → note (même mesure) */
+  --kpi-history-header-color: var(--color-text-muted); /* en-têtes de colonnes = label discret */
+  --kpi-history-action-color: var(--color-text-secondary); /* ✎/🗑 visibles au survol (pas muted) */
+  --kpi-history-pair-gap: var(--space-12);             /* écart date ↔ valeur (paire serrée à gauche) */
+  --kpi-history-value-input-width: 4.5rem;             /* champ valeur en édition */
+  --kpi-history-actions-gutter: calc(var(--space-32) * 2 + var(--space-4)); /* gouttière fixe trailing (2 icônes) → bord droit de la valeur constant */
+  --kpi-history-row-border: var(--border-subtle);      /* trait fin pleine largeur entre mesures */
 }
 
 @media (prefers-reduced-motion: reduce) {

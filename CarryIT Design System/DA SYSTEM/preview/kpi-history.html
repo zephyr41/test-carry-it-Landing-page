@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DA System — KPI history</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="buttons.css">
+<link rel="stylesheet" href="textarea.css">
+<link rel="stylesheet" href="modal.css">
+<link rel="stylesheet" href="effort-modal.css">
+<link rel="stylesheet" href="kpi-history.css">
+</head>
+<body>
+  <main class="kpi-history-preview">
+    <section class="kpi-history-preview__shell">
+      <header class="kpi-history-preview__header">
+        <div class="type-label">Composant métier</div>
+        <h1 class="type-h1">KPI history</h1>
+        <p class="type-body-md">L'historique d'un KPI en relevé : <strong>date (gauche) · valeur (droite)</strong>, note pleine largeur dessous (icône = annotation de la mesure). Actions <strong>modifier · supprimer</strong> au survol. Monochrome.</p>
+      </header>
+
+      <article class="ds-kpi-history">
+        <header class="ds-kpi-history__head">
+          <span class="ds-kpi-history__eyebrow type-data-label">Historique · Hebdo</span>
+          <h2 class="ds-kpi-history__title type-h3">Temps moyen entre chaque test</h2>
+        </header>
+
+        <div class="ds-kpi-history__cols">
+          <span class="type-data-label">Date</span>
+          <span class="type-data-label ds-kpi-history__col--value">Valeur</span>
+          <span aria-hidden="true"></span>
+        </div>
+
+        <ol class="ds-kpi-history__list">
+          <li class="ds-kpi-history__row" data-unit="h" data-iso="2026-09-12" data-value="51" data-note="Tri des retours, ajustement du message de recrutement.">
+            <div class="ds-kpi-history__main">
+              <span class="ds-kpi-history__date type-body-sm">12 sept</span>
+              <span class="ds-kpi-history__value type-body-md">51 <span class="ds-kpi-history__unit">h</span></span>
+              <div class="ds-kpi-history__actions">
+                <button type="button" class="ds-kpi-history__action ds-kpi-history__edit-btn" aria-label="Modifier la mesure">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
+                </button>
+                <button type="button" class="ds-kpi-history__action ds-kpi-history__delete" aria-label="Supprimer la mesure">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2m2 0v12a2 2 0 01-2 2H8a2 2 0 01-2-2V7" /></svg>
+                </button>
+              </div>
+            </div>
+            <p class="ds-kpi-history__note type-body-sm">Tri des retours, ajustement du message de recrutement.</p>
+          </li>
+
+          <li class="ds-kpi-history__row" data-unit="h" data-iso="2026-09-05" data-value="45" data-note="Deux tests annulés, semaine chargée côté job.">
+            <div class="ds-kpi-history__main">
+              <span class="ds-kpi-history__date type-body-sm">5 sept</span>
+              <span class="ds-kpi-history__value type-body-md">45 <span class="ds-kpi-history__unit">h</span></span>
+              <div class="ds-kpi-history__actions">
+                <button type="button" class="ds-kpi-history__action ds-kpi-history__edit-btn" aria-label="Modifier la mesure">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
+                </button>
+                <button type="button" class="ds-kpi-history__action ds-kpi-history__delete" aria-label="Supprimer la mesure">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2m2 0v12a2 2 0 01-2 2H8a2 2 0 01-2-2V7" /></svg>
+                </button>
+              </div>
+            </div>
+            <p class="ds-kpi-history__note type-body-sm">Deux tests annulés, semaine chargée côté job.</p>
+          </li>
+
+          <li class="ds-kpi-history__row" data-unit="h" data-iso="2026-08-29" data-value="53" data-note="Première vague de testeurs bêta contactée.">
+            <div class="ds-kpi-history__main">
+              <span class="ds-kpi-history__date type-body-sm">29 août</span>
+              <span class="ds-kpi-history__value type-body-md">53 <span class="ds-kpi-history__unit">h</span></span>
+              <div class="ds-kpi-history__actions">
+                <button type="button" class="ds-kpi-history__action ds-kpi-history__edit-btn" aria-label="Modifier la mesure">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
+                </button>
+                <button type="button" class="ds-kpi-history__action ds-kpi-history__delete" aria-label="Supprimer la mesure">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2m2 0v12a2 2 0 01-2 2H8a2 2 0 01-2-2V7" /></svg>
+                </button>
+              </div>
+            </div>
+            <p class="ds-kpi-history__note type-body-sm">Première vague de testeurs bêta contactée.</p>
+          </li>
+
+          <li class="ds-kpi-history__row" data-unit="h" data-iso="2026-08-22" data-value="48" data-note="">
+            <div class="ds-kpi-history__main">
+              <span class="ds-kpi-history__date type-body-sm">22 août</span>
+              <span class="ds-kpi-history__value type-body-md">48 <span class="ds-kpi-history__unit">h</span></span>
+              <div class="ds-kpi-history__actions">
+                <button type="button" class="ds-kpi-history__action ds-kpi-history__edit-btn" aria-label="Modifier la mesure">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
+                </button>
+                <button type="button" class="ds-kpi-history__action ds-kpi-history__delete" aria-label="Supprimer la mesure">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2m2 0v12a2 2 0 01-2 2H8a2 2 0 01-2-2V7" /></svg>
+                </button>
+              </div>
+            </div>
+          </li>
+
+          <li class="ds-kpi-history__row" data-unit="h" data-iso="2026-08-15" data-value="36" data-note="">
+            <div class="ds-kpi-history__main">
+              <span class="ds-kpi-history__date type-body-sm">15 août</span>
+              <span class="ds-kpi-history__value type-body-md">36 <span class="ds-kpi-history__unit">h</span></span>
+              <div class="ds-kpi-history__actions">
+                <button type="button" class="ds-kpi-history__action ds-kpi-history__edit-btn" aria-label="Modifier la mesure">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
+                </button>
+                <button type="button" class="ds-kpi-history__action ds-kpi-history__delete" aria-label="Supprimer la mesure">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2m2 0v12a2 2 0 01-2 2H8a2 2 0 01-2-2V7" /></svg>
+                </button>
+              </div>
+            </div>
+          </li>
+        </ol>
+      </article>
+    </section>
+  </main>
+
+  <!-- Édition = effort modal réutilisé, pré-rempli. Masqué (opacity/pointer-events, pas display:none :
+       le scheduler mesure sa hauteur au chargement). Révélé au clic ✎. -->
+  <div class="ds-modal-backdrop ds-kpi-history-modal is-hidden" id="measureModal">
+    <div class="ds-modal ds-effort-modal" role="dialog" aria-modal="true" aria-labelledby="measure-title">
+      <header class="ds-modal__header">
+        <div class="ds-modal__header-row">
+          <h2 id="measure-title" class="type-h2">Modifier la mesure</h2>
+          <button type="button" class="ds-modal__close" id="measureClose" aria-label="Fermer">
+            <svg class="ds-modal__close-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4L12 12M12 4L4 12" /></svg>
+          </button>
+        </div>
+        <p class="ds-modal__subtitle type-body-sm">Temps moyen entre chaque test · Hebdo</p>
+      </header>
+
+      <form class="ds-effort-modal__form" onsubmit="return false">
+        <!-- Navigation date -->
+        <div class="ds-date-nav">
+          <button type="button" class="ds-date-nav__arrow" data-date-step="-1" aria-label="Jour précédent">‹</button>
+          <button type="button" class="ds-date-nav__current" id="effortDateCurrent">
+            <svg class="ds-date-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
+            </svg>
+            <span id="effortDateLabel">4 Juil. 2026</span>
+          </button>
+          <button type="button" class="ds-date-nav__arrow" data-date-step="1" aria-label="Jour suivant">›</button>
+        </div>
+
+        <!-- Bloc de travail (scheduler QUAND) -->
+        <div class="ds-scheduler">
+          <div class="ds-scheduler__head">
+            <span class="type-data-label" id="schedLabel">Bloc de travail</span>
+            <span class="ds-scheduler__summary" id="schedSummary" aria-live="polite">15:00 → 16:00 · 1h</span>
+          </div>
+          <div class="ds-scheduler__viewport" id="schedViewport">
+            <div class="ds-scheduler__track" id="schedTrack">
+              <div class="ds-scheduler__hours" id="schedHours" aria-hidden="true"></div>
+              <div class="ds-scheduler__block" id="schedBlock"
+                   role="slider" tabindex="0"
+                   aria-labelledby="schedLabel"
+                   aria-valuemin="6" aria-valuemax="23" aria-valuenow="15"
+                   aria-valuetext="15:00 à 16:00, durée 1h"
+                   aria-describedby="schedHint">
+                <div class="ds-scheduler__block-body">
+                  <span class="ds-scheduler__block-eyebrow">Effort</span>
+                  <span class="ds-scheduler__block-value" id="schedBlockLabel">15:00 → 16:00 · 1h</span>
+                </div>
+                <div class="ds-scheduler__resize" id="schedResize" aria-hidden="true">
+                  <div class="ds-scheduler__resize-grip"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="ds-scheduler__hint type-caption" id="schedHint">Flèches ↑↓ pour déplacer, Maj+↑↓ pour ajuster la durée.</p>
+        </div>
+
+        <!-- Valeur (input number) -->
+        <div class="ds-field">
+          <label class="type-data-label" for="effortQty">Valeur (h/entre chaque test)</label>
+          <div class="ds-input-number">
+            <input class="ds-input-number__field" id="effortQty" type="number" min="0" step="any" placeholder="0">
+            <div class="ds-input-number__steppers">
+              <button type="button" class="ds-input-number__step" data-step="1" aria-label="Augmenter">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" aria-hidden="true"><path d="M4 10l4-4 4 4"/></svg>
+              </button>
+              <button type="button" class="ds-input-number__step" data-step="-1" aria-label="Diminuer">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Note -->
+        <div class="ds-field ds-field--note">
+          <label class="type-data-label" for="effortNote">Note</label>
+          <textarea class="ds-textarea ds-effort-modal__note" id="effortNote" rows="2" placeholder="Conditions, qualité, points notables..."></textarea>
+        </div>
+
+        <footer class="ds-modal__footer">
+          <button type="button" class="ds-button ds-button--ghost ds-button--sm" id="measureCancel">Annuler</button>
+          <button type="submit" class="ds-button ds-button--inverse ds-button--sm" id="measureSave">Enregistrer</button>
+        </footer>
+      </form>
+    </div>
+  </div>
+
+  <script src="effort-modal.js"></script>
+  <script src="kpi-history.js"></script>
+</body>
+</html>

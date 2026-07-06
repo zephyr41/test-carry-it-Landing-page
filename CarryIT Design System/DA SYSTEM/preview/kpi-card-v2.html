@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DA System — KPI card v2 (exploration premium)</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="kpi-card-v2.css">
+</head>
+<body>
+  <main class="kv2-preview">
+    <section class="kv2-shell">
+      <header class="kv2-preview__header">
+        <div class="type-label">Exploration premium</div>
+        <h1 class="type-h1">KPI card v2</h1>
+        <p class="type-body-md">Carte définie (arête + filet + ombre douce), eyebrow tracké, <strong>delta collé à la valeur</strong> (plus de pill flottant), barre refinée, rythme groupé. Monochrome. À comparer à <code>kpi-card.html</code>.</p>
+      </header>
+
+      <section class="kv2-section">
+        <h2 class="kv2-section-label type-data-label">Vue jalon · moyen terme (interactive)</h2>
+        <div class="kv2-jalon-grid">
+
+      <!-- EFFORT (dépassé) -->
+      <article class="kv2-card">
+        <div class="kv2-head">
+          <span class="kv2-eyebrow">Effort</span>
+          <div class="kv2-actions">
+            <button type="button" class="kv2-action" aria-label="Ajouter un effort">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+            </button>
+            <button type="button" class="kv2-action" aria-label="Modifier l'effort">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
+            </button>
+          </div>
+        </div>
+        <span class="kv2-title">Temps moyen entre chaque test</span>
+        <div class="kv2-metric">
+          <span class="kv2-value">51</span>
+          <span class="kv2-target">/ 15 h</span>
+          <span class="kv2-sep">·</span>
+          <span class="kv2-delta">+36 h au-delà</span>
+        </div>
+        <span class="kv2-meta">Mis à jour il y a 3j · Hebdo</span>
+      </article>
+
+      <!-- RÉSULTAT (en cours) -->
+      <article class="kv2-card">
+        <div class="kv2-head">
+          <span class="kv2-eyebrow">Résultat</span>
+          <div class="kv2-actions">
+            <button type="button" class="kv2-action" aria-label="Ajouter un résultat">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+            </button>
+            <button type="button" class="kv2-action" aria-label="Modifier le résultat">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
+            </button>
+          </div>
+        </div>
+        <span class="kv2-title">Tests utilisateurs sur la V0 (bout en bout)</span>
+        <div class="kv2-metric">
+          <span class="kv2-value">5</span>
+          <span class="kv2-target">/ 15 testeurs</span>
+          <span class="kv2-sep">·</span>
+          <span class="kv2-delta">10 restants</span>
+        </div>
+        <div class="kv2-bar" role="progressbar" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100" aria-valuetext="5 testeurs sur 15">
+          <div class="kv2-bar__track">
+            <div class="kv2-bar__fill kv2-bar__fill--33"></div>
+          </div>
+        </div>
+        <span class="kv2-meta">Mis à jour il y a 27j · Hebdo</span>
+      </article>
+        </div>
+      </section>
+
+      <section class="kv2-section">
+        <h2 class="kv2-section-label type-data-label">Vue long terme · résumé (lecture seule)</h2>
+        <div class="kv2-summary-grid">
+          <article class="kv2-card kv2-card--summary">
+            <span class="kv2-eyebrow">Effort</span>
+            <span class="kv2-title">Temps moyen entre chaque test</span>
+            <div class="kv2-metric">
+              <span class="kv2-value">51</span>
+              <span class="kv2-target">/ 15 h</span>
+            </div>
+            <span class="kv2-meta">il y a 3j · Hebdo</span>
+          </article>
+          <article class="kv2-card kv2-card--summary">
+            <span class="kv2-eyebrow">Résultat</span>
+            <span class="kv2-title">Tests utilisateurs sur la V0</span>
+            <div class="kv2-metric">
+              <span class="kv2-value">5</span>
+              <span class="kv2-target">/ 15 testeurs</span>
+            </div>
+            <span class="kv2-meta">il y a 27j · Hebdo</span>
+          </article>
+        </div>
+      </section>
+    </section>
+  </main>
+</body>
+</html>

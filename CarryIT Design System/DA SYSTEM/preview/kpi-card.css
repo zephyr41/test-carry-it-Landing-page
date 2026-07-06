@@ -23,7 +23,7 @@
 
 .kpi-card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(440px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(var(--kpi-card-min-width), var(--kpi-card-max-width)));
   gap: var(--kpi-card-grid-gap);
   align-items: start; /* chaque carte hugge son contenu → aucun void, hauteurs propres */
 }
@@ -86,6 +86,10 @@
    Rupture depuis le head. Max 2 lignes. Fraîcheur COLLÉE dessous (groupe identité). */
 .ds-kpi-card__title {
   margin-top: var(--kpi-card-title-gap);
+  font-size: var(--kpi-card-title-size);
+  line-height: var(--kpi-card-title-line);
+  font-weight: var(--kpi-card-title-weight);
+  color: var(--color-text-primary);
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
@@ -129,8 +133,10 @@
 
 .ds-kpi-card__value {
   font-size: var(--kpi-card-value-size);
-  line-height: var(--type-data-value-line);
+  line-height: var(--kpi-card-value-line);
   font-weight: var(--kpi-card-value-weight);
+  letter-spacing: var(--kpi-card-value-tracking);
+  font-variant-numeric: tabular-nums;
   color: var(--color-text-primary);
 }
 
@@ -204,6 +210,8 @@
 .ds-kpi-card--summary .ds-kpi-card__title {
   margin-top: var(--kpi-card-summary-title-gap);
   min-height: 2lh;
+  font-size: var(--type-body-md-size); /* tuile dense : reste 14px, n'hérite pas du 16px vue jalon */
+  line-height: var(--type-body-md-line);
   font-weight: var(--font-weight-medium);
   color: var(--color-text-primary);
 }
