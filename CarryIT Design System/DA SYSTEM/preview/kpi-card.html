@@ -7,7 +7,6 @@
 <link rel="stylesheet" href="../tokens.css">
 <link rel="stylesheet" href="buttons.css">
 <link rel="stylesheet" href="progress.css">
-<link rel="stylesheet" href="badge.css">
 <link rel="stylesheet" href="task-list.css">
 <link rel="stylesheet" href="kpi-card.css">
 </head>
@@ -17,7 +16,7 @@
       <header class="kpi-card-preview__header">
         <div class="type-label">Composant métier</div>
         <h1 class="type-h1">KPI card</h1>
-        <p class="type-body-md">Deux vues, même carte. <strong>Rythme groupé</strong> : eyebrow + titre + fraîcheur serrés (une unité), puis rupture nette (24px) vers la <strong>valeur héros</strong> (36px) + cible en gris + delta pill ; barre dessous. Pas d'espacement uniforme. Vue jalon = édition + saisie, vue long terme = lecture seule. Monochrome, 0 déco.</p>
+        <p class="type-body-md">Deux vues, même carte. Carte <strong>définie</strong> (arête + filet + ombre). <strong>Valeur héros</strong> (40) + cible grise + <strong>delta inline quiet</strong> (plus de pill flottante). Barre <strong>seulement sur les KPI vers une cible</strong> (résultat) — l'effort dépassé s'en passe, le delta « au-delà » suffit. Vue jalon = édition, vue long terme = résumé. Monochrome.</p>
       </header>
 
       <!-- ────────────────────────────────────────────────────── -->
@@ -48,13 +47,10 @@
             <div class="ds-kpi-card__metric">
               <span class="ds-kpi-card__value">51</span>
               <span class="ds-kpi-card__target type-body-lg">/ 15 h</span>
-              <span class="ds-badge ds-kpi-card__delta">+36 H au-delà</span>
+              <span class="ds-kpi-card__sep">·</span>
+              <span class="ds-kpi-card__delta">+36 h au-delà</span>
             </div>
             <span class="ds-kpi-card__meta type-body-sm">Mis à jour il y a 3j · Hebdo</span>
-            <div class="ds-progress" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" aria-valuetext="51 h, seuil 15 h dépassé">
-              <div class="ds-progress__fill ds-progress__fill--100"></div>
-              <span class="ds-kpi-card__bar-tick ds-kpi-card__bar-tick--29" aria-hidden="true"></span>
-            </div>
           </article>
 
           <!-- RÉSULTAT -->
@@ -77,7 +73,8 @@
             <div class="ds-kpi-card__metric">
               <span class="ds-kpi-card__value">5</span>
               <span class="ds-kpi-card__target type-body-lg">/ 15 testeurs</span>
-              <span class="ds-badge ds-kpi-card__delta">10 restants</span>
+              <span class="ds-kpi-card__sep">·</span>
+              <span class="ds-kpi-card__delta">10 restants</span>
             </div>
             <span class="ds-kpi-card__meta type-body-sm">Mis à jour il y a 27j · Hebdo</span>
             <div class="ds-progress" role="progressbar" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100" aria-valuetext="5 testeurs sur 15">

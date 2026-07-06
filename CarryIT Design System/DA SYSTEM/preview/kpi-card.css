@@ -43,8 +43,9 @@
   gap: 0;
   padding: var(--kpi-card-padding);
   background: var(--card-background);
-  border: var(--card-border);
+  border: var(--kpi-card-border-defined);
   border-radius: var(--card-radius);
+  box-shadow: var(--kpi-card-shadow);
   transition: var(--card-transition);
 }
 
@@ -69,6 +70,7 @@
 
 .ds-kpi-card__eyebrow {
   color: var(--kpi-card-eyebrow-color);
+  letter-spacing: var(--letter-spacing-label); /* micro-label majuscule espacé = raffiné (cohérence système) */
 }
 
 /* Crayon d'édition : 16px (sinon défaut viewBox 24 = trop gros) */
@@ -187,13 +189,17 @@
   height: var(--space-16);
 }
 
-/* Delta = pill de dépassement (badge monochrome `ds-badge`), poussée à droite
-   de la ligne valeur, centrée verticalement sur elle. */
+/* Delta = texte QUIET inline, collé après la cible (migration v2 : plus de pill
+   flottante à droite = plus de désert). Il décrit la valeur → il vit à côté d'elle. */
 .ds-kpi-card__delta {
-  margin-left: auto;
-  align-self: center;
-  flex-shrink: 0;
-  text-transform: none; /* pill lisible « +36 H au-delà », pas de MAJUSCULES badge */
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-line);
+  color: var(--kpi-card-delta-color);
+}
+
+/* Séparateur « · » entre cible et delta. */
+.ds-kpi-card__sep {
+  color: var(--color-text-muted);
 }
 
 /* ── Variante COMPACTE (vue long terme — lecture seule, brève) ──

@@ -520,8 +520,11 @@
   --kpi-card-grid-gap: var(--space-24);
   /* Largeur carte (vue jalon) : plancher lisible → plafond → proportion stable en
      écran large (pas de stretch full-width qui lit « admin panel »). */
-  --kpi-card-min-width: 440px;
-  --kpi-card-max-width: 520px;
+  --kpi-card-min-width: 360px;
+  --kpi-card-max-width: 400px;
+  /* Carte DÉFINIE (migration v2) : arête 10% + filet lumineux haut + ombre douce → se détache du fond. */
+  --kpi-card-border-defined: var(--border-width-default) solid color-mix(in srgb, var(--color-text-primary) 10%, transparent);
+  --kpi-card-shadow: var(--shadow-sm), inset 0 var(--border-width-default) 0 color-mix(in srgb, var(--color-text-primary) 5%, transparent);
   /* gap de BASE = intra-groupe serré (titre↔fraîcheur = une unité). Les ruptures
      inter-groupes sont posées en margin explicite (rythme groupé, pas uniforme). */
   --kpi-card-gap: var(--space-4);
@@ -552,8 +555,8 @@
   --kpi-card-title-size: var(--type-body-lg-size);
   --kpi-card-title-line: var(--type-body-lg-line);
   --kpi-card-title-weight: var(--font-weight-medium);
-  /* delta (écart à la cible) = signal mis en avant sur l'effort → blanc, pas muted */
-  --kpi-card-delta-color: var(--color-text-primary);
+  /* delta = signal quiet INLINE après la cible (migration v2 : plus de pill blanche flottante) */
+  --kpi-card-delta-color: var(--color-text-secondary);
   --kpi-card-summary-gap: var(--space-8);
   /* Variante COMPACTE (vue long terme / résumé) : carte 2x moins LARGE que le jalon,
      hauteur confortable (le tassement vertical était une erreur). */
