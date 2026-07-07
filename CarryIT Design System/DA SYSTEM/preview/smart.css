@@ -105,8 +105,8 @@
   color: var(--smart-text-muted-color);
 }
 
-/* Justification (A/R) réduite à 2 lignes ; le texte complet s'ouvre dans un Modal
-   (la carte ne grandit ni ne scrolle JAMAIS). */
+/* Justification (A/R) réduite à 2 lignes ; dépliée inline au clic sur « Voir plus »
+   (accordéon — la carte grandit, la page peut scroller : comportement standard/premium). */
 .ds-smart__text--clamp {
   display: -webkit-box;
   -webkit-line-clamp: var(--smart-clamp-lines);
@@ -114,7 +114,13 @@
   overflow: hidden;
 }
 
-/* Affordance « Voir plus » — injectée par JS seulement si le texte déborde ; ouvre le Modal. */
+.ds-smart__text--clamp.is-expanded {
+  display: block;
+  -webkit-line-clamp: unset;
+  overflow: visible;
+}
+
+/* Affordance « Voir plus / moins » + chevron — injectée par JS seulement si le texte déborde. */
 .ds-smart__more {
   display: inline-flex;
   align-items: center;
@@ -145,16 +151,11 @@
 .ds-smart__more-icon {
   width: var(--smart-more-icon-size);
   height: var(--smart-more-icon-size);
+  transition: transform var(--motion-duration-fast) var(--motion-ease-out);
 }
 
-/* Le backdrop du Modal est en display:flex → `hidden` doit gagner pour le masquer. */
-.ds-modal-backdrop[hidden] {
-  display: none;
-}
-
-/* Corps du modal SMART : texte complet lisible (le modal gère son propre scroll si extrême). */
-.ds-smart-modal__text {
-  color: var(--color-text-secondary);
+.ds-smart__more[aria-expanded="true"] .ds-smart__more-icon {
+  transform: rotate(180deg);
 }
 
 @media (max-width: 640px) {

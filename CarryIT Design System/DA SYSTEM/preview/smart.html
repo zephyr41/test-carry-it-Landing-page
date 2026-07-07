@@ -6,7 +6,6 @@
 <title>DA System — SMART card</title>
 <link rel="stylesheet" href="../tokens.css">
 <link rel="stylesheet" href="buttons.css">
-<link rel="stylesheet" href="modal.css">
 <link rel="stylesheet" href="smart.css">
 </head>
 <body>
@@ -69,26 +68,6 @@
       </article>
     </section>
   </main>
-
-  <!-- Modal « texte complet » : la carte ne bouge jamais, le détail s'ouvre ici. -->
-  <div class="ds-modal-backdrop" data-smart-modal hidden>
-    <div class="ds-modal" role="dialog" aria-modal="true" aria-labelledby="smart-modal-title">
-      <header class="ds-modal__header">
-        <div class="ds-modal__header-row">
-          <h2 id="smart-modal-title" class="type-h2" data-smart-modal-title></h2>
-          <button type="button" class="ds-modal__close" aria-label="Fermer" data-smart-modal-close>
-            <svg class="ds-modal__close-icon" viewBox="0 0 16 16" aria-hidden="true">
-              <path d="M4 4L12 12M12 4L4 12" />
-            </svg>
-          </button>
-        </div>
-      </header>
-      <div class="ds-modal__body">
-        <p class="ds-smart-modal__text type-body-md" data-smart-modal-text></p>
-      </div>
-    </div>
-  </div>
-
   <script src="smart.js"></script>
 </body>
 </html>
