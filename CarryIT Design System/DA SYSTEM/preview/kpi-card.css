@@ -236,6 +236,11 @@
   margin-top: var(--kpi-card-summary-metric-gap);
 }
 
+/* Filet resserré en vue dashboard (24px autour d'un 1px = trop d'air ici). */
+.ds-kpi-card--summary .ds-kpi-card__divider {
+  margin-block: var(--kpi-card-summary-divider-gap);
+}
+
 .ds-kpi-card--summary .ds-kpi-card__value {
   font-size: var(--kpi-card-summary-value-size);
 }

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DA System — Dashboard (long terme)</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="buttons.css">
+<link rel="stylesheet" href="progress.css">
+<link rel="stylesheet" href="task-list.css">
+<link rel="stylesheet" href="delta.css">
+<link rel="stylesheet" href="kpi-card.css">
+<link rel="stylesheet" href="tabs.css">
+<link rel="stylesheet" href="timeline.css">
+<link rel="stylesheet" href="empty-state.css">
+<link rel="stylesheet" href="chart.css">
+<link rel="stylesheet" href="smart.css">
+<link rel="stylesheet" href="grid.css">
+<link rel="stylesheet" href="navbar.css">
+<link rel="stylesheet" href="dashboard-final.css">
+</head>
+<body>
+  <main class="dashboard-final">
+
+    <!-- Barre d'application (composant ds-navbar) : marque + projet + menus + onglets -->
+    <nav class="ds-navbar" aria-label="Barre principale">
+      <div class="ds-navbar__inner">
+
+        <!-- Étage haut -->
+        <div class="ds-navbar__top">
+          <div class="ds-navbar__left">
+            <a class="ds-navbar__brand" href="#" aria-label="CarryIT — accueil">
+              <span class="ds-navbar__brand-mark" aria-hidden="true">C</span>
+              <span class="ds-navbar__brand-name type-data-label">CARRY IT</span>
+            </a>
+            <span class="ds-navbar__sep" aria-hidden="true">/</span>
+            <button type="button" class="ds-navbar__project type-body-sm">
+              <span>Carry It</span>
+              <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5L7 8.5L10 5.5"/></svg>
+            </button>
+          </div>
+          <div class="ds-navbar__right">
+            <button type="button" class="ds-button ds-button--subtle ds-button--xs">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+              Synchroniser
+            </button>
+            <button type="button" class="ds-navbar__user" aria-label="Menu utilisateur">
+              <span class="ds-navbar__user-avatar" aria-hidden="true">N</span>
+              <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5L7 8.5L10 5.5"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Étage bas : onglets de vue -->
+        <div class="ds-navbar__tabs">
+          <nav class="ds-tabs" role="tablist" aria-label="Vues du dashboard">
+            <button class="ds-tabs__tab is-active" role="tab" aria-selected="true">
+              <svg class="ds-tabs__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5M4 19h16M9 16V9M14 16V7M19 16v-4" /></svg>
+              <span>Long terme</span>
+            </button>
+            <button class="ds-tabs__tab" role="tab" aria-selected="false">
+              <svg class="ds-tabs__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V5m0 0l14 5L4 15" /></svg>
+              <span>Moyen terme</span>
+            </button>
+            <button class="ds-tabs__tab" role="tab" aria-selected="false">
+              <svg class="ds-tabs__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 11l3 3L22 4" /><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" /></svg>
+              <span>To-do</span>
+            </button>
+          </nav>
+        </div>
+
+      </div>
+    </nav>
+
+    <div class="dashboard-final__page">
+
+      <!-- Ligne des 4 cartes -->
+      <section class="ds-grid dashboard-final__kpi-row">
+
+        <!-- 1 · KPI du SMART (blanc) -->
+        <article class="ds-col-3 ds-kpi-card ds-kpi-card--summary ds-kpi-card--hero">
+          <div class="ds-kpi-card__labels">
+            <span class="ds-kpi-card__eyebrow type-data-label">KPI de l'objectif</span>
+            <span class="ds-kpi-card__name type-body-sm">Nombre de clients payants</span>
+          </div>
+          <div class="ds-kpi-card__metric">
+            <span class="ds-kpi-card__value">128</span>
+            <span class="ds-kpi-card__target type-body-md">/ 1000</span>
+          </div>
+          <hr class="ds-kpi-card__divider">
+          <div class="ds-kpi-card__footer">
+            <span class="type-body-sm ds-delta">872 restants</span>
+            <span class="ds-kpi-card__meta type-body-sm">Il y a 2j</span>
+          </div>
+        </article>
+
+        <!-- 2 · Jalon actif (stepper — carte du bas de timeline.html, rendue par timeline.js) -->
+        <article class="ds-col-3 ds-jalon-active" data-jalon-active hidden>
+          <span class="ds-jalon-active__eyebrow type-data-label" data-active-eyebrow></span>
+          <h3 class="ds-jalon-active__title type-h2" data-active-title></h3>
+          <ol class="ds-jalon-active__steps" data-active-steps></ol>
+        </article>
+
+        <!-- 3 · KPI résultat -->
+        <article class="ds-col-3 ds-kpi-card ds-kpi-card--summary">
+          <div class="ds-kpi-card__labels">
+            <span class="ds-kpi-card__eyebrow type-data-label">Effort</span>
+            <span class="ds-kpi-card__name type-body-sm">Tests utilisateurs sur la V0</span>
+          </div>
+          <div class="ds-kpi-card__metric">
+            <span class="ds-kpi-card__value">5</span>
+            <span class="ds-kpi-card__target type-body-md">/ 15 testeurs</span>
+          </div>
+          <hr class="ds-kpi-card__divider">
+          <div class="ds-kpi-card__footer">
+            <span class="type-body-sm ds-delta">10 restants</span>
+            <span class="ds-kpi-card__meta type-body-sm">Il y a 27j</span>
+          </div>
+        </article>
+
+        <!-- 4 · KPI résultat -->
+        <article class="ds-col-3 ds-kpi-card ds-kpi-card--summary">
+          <div class="ds-kpi-card__labels">
+            <span class="ds-kpi-card__eyebrow type-data-label">Résultat</span>
+            <span class="ds-kpi-card__name type-body-sm">Documentations techniques</span>
+          </div>
+          <div class="ds-kpi-card__metric">
+            <span class="ds-kpi-card__value">3</span>
+            <span class="ds-kpi-card__target type-body-md">/ 3 documents</span>
+          </div>
+          <hr class="ds-kpi-card__divider">
+          <div class="ds-kpi-card__footer">
+            <span class="type-body-sm ds-delta">Objectif atteint</span>
+            <span class="ds-kpi-card__meta type-body-sm">Il y a 12j</span>
+          </div>
+        </article>
+
+      </section>
+
+      <!-- Rangée du bas : graphique (gauche) + SMART (droite) -->
+      <section class="ds-grid dashboard-final__bottom-row">
+
+        <!-- Graphique KPI -->
+        <article class="ds-col-8 ds-chart-card">
+          <div class="ds-chart-header">
+            <div class="ds-chart-heading">
+              <span class="type-data-label ds-chart-eyebrow">KPI global</span>
+              <span class="type-h2 ds-chart-title">Nombre de clients payants</span>
+            </div>
+            <button type="button" class="ds-button ds-button--subtle ds-button--xs ds-chart-add-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+              Ajouter une mesure
+            </button>
+          </div>
+          <div class="ds-chart-shell">
+            <div id="dsChartCanvas" class="ds-chart-canvas" aria-label="Évolution du KPI — nombre de clients payants"></div>
+          </div>
+        </article>
+
+        <!-- SMART card -->
+        <article class="ds-col-4 ds-smart">
+          <header class="ds-smart__head">
+            <span class="ds-smart__label type-data-label">SMART</span>
+            <button type="button" class="ds-button ds-button--subtle ds-button--xs">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+              </svg>
+              Modifier
+            </button>
+          </header>
+          <ol class="ds-smart__list">
+            <li class="ds-smart__row">
+              <span class="ds-smart__letter">S</span>
+              <div class="ds-smart__body">
+                <span class="ds-smart__dimension type-data-label">Spécifique</span>
+                <p class="ds-smart__text ds-smart__text--lead type-body-md">Atteindre 1000 client mensuel sur Carry it qui paye 8e par mois</p>
+              </div>
+            </li>
+            <li class="ds-smart__row">
+              <span class="ds-smart__letter">M</span>
+              <div class="ds-smart__body">
+                <span class="ds-smart__dimension type-data-label">Mesurable</span>
+                <p class="ds-smart__text ds-smart__text--fact type-body-sm">[Nb Clients] Nombre de client payant · cible : 1000</p>
+              </div>
+            </li>
+            <li class="ds-smart__row">
+              <span class="ds-smart__letter">A</span>
+              <div class="ds-smart__body">
+                <span class="ds-smart__dimension type-data-label">Atteignable</span>
+                <p class="ds-smart__text ds-smart__text--muted ds-smart__text--clamp type-body-sm">Objectif atteignable en mettant en place une stratégie d'acquisition progressive : 50 clients en 2025, 300 en mars 2026, 1000 en septembre 2026, via marketing organique, partenariats et automatisation du funnel d'inscription.</p>
+              </div>
+            </li>
+            <li class="ds-smart__row">
+              <span class="ds-smart__letter">R</span>
+              <div class="ds-smart__body">
+                <span class="ds-smart__dimension type-data-label">Réaliste</span>
+                <p class="ds-smart__text ds-smart__text--muted ds-smart__text--clamp type-body-sm">Objectif ambitieux mais cohérent avec une période de 22 mois : phase bêta (3-4 mois), lancement (T2 2026), puis montée progressive jusqu'à 1000 abonnés. Le marché du développement personnel et de la productivité SaaS permet ce type de traction avec un bon positionnement et des coûts faibles d'acquisition.</p>
+              </div>
+            </li>
+            <li class="ds-smart__row">
+              <span class="ds-smart__letter">T</span>
+              <div class="ds-smart__body">
+                <span class="ds-smart__dimension type-data-label">Temporel</span>
+                <p class="ds-smart__text ds-smart__text--fact type-body-sm">23 septembre 2026</p>
+              </div>
+            </li>
+          </ol>
+        </article>
+
+      </section>
+
+    </div>
+
+    <!-- Source timeline masquée : présente pour que timeline.js rende le stepper « Jalon actif » ci-dessus. -->
+    <article class="ds-timeline dashboard-final__timeline-source" aria-hidden="true">
+      <header class="ds-timeline__head">
+        <span class="type-data-label">Jalons</span>
+        <span class="ds-timeline__count type-data-label" data-timeline-count>—</span>
+      </header>
+      <ol class="ds-timeline__list" data-timeline-list></ol>
+    </article>
+  </main>
+
+  <script src="timeline.js"></script>
+  <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+  <script src="chart.js"></script>
+  <script src="smart.js"></script>
+</body>
+</html>

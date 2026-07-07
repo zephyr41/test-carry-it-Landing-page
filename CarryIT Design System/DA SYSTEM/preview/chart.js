@@ -32,15 +32,17 @@
 
     var tokens = readTokens(el);
 
+    // Placeholder cohérent avec le hero (128/1000) : cumul de clients payants,
+    // dernier point = 128. En prod ces données sont dynamiques (même source que le hero).
     var data = [
-      { time: '2026-01-01', value: 8 },
-      { time: '2026-02-01', value: 14 },
-      { time: '2026-03-01', value: 18 },
-      { time: '2026-04-01', value: 26 },
-      { time: '2026-05-01', value: 32 },
-      { time: '2026-06-01', value: 48 },
+      { time: '2026-01-01', value: 22 },
+      { time: '2026-02-01', value: 40 },
+      { time: '2026-03-01', value: 63 },
+      { time: '2026-04-01', value: 85 },
+      { time: '2026-05-01', value: 104 },
+      { time: '2026-06-01', value: 128 },
     ];
-    var target = 100;
+    var target = 1000; // l'objectif. L'axe monte jusqu'ici → la courbe montre la VRAIE distance, sans flatter.
 
     var chart = LW.createChart(el, {
       width: el.clientWidth,
@@ -103,10 +105,11 @@
       pointMarkersRadius: tokens.pointRadius,
       priceFormat: { type: 'price', precision: 0, minMove: 1 },
       autoscaleInfoProvider: function () {
-        // Bornes = 0 (un count n'est jamais négatif) → cible + marge (≈ +10%).
-        // Montre le chemin vers la cible (100) sans le désert du haut ni le -20 faux.
+        // Bornes = 0 → l'OBJECTIF (1000). L'axe monte jusqu'à la cible, donc la courbe
+        // se lit à sa vraie hauteur (128/1000 ≈ 12%). Pas de flatterie : le graphe montre
+        // la taille réelle de la montagne, pas un élan trompeur qui remplit la frame.
         return {
-          priceRange: { minValue: 0, maxValue: Math.ceil((target * 1.1) / 10) * 10 },
+          priceRange: { minValue: 0, maxValue: target },
           margins: { above: 0, below: 0 },
         };
       },
@@ -118,14 +121,8 @@
 
     series.setData(data);
 
-    series.createPriceLine({
-      price: target,
-      color: tokens.targetLine,
-      lineWidth: tokens.targetLineWidth,
-      lineStyle: (LW.LineStyle && LW.LineStyle.Dashed) || 2,
-      axisLabelVisible: false,
-      title: '',
-    });
+    // Pas de ligne cible : l'axe scale sur la trajectoire → la courbe montre l'élan.
+    // La cible (1000) vit sur la carte hero, pas ici (une seule source de vérité).
 
     chart.timeScale().setVisibleRange({ from: data[0].time, to: data[data.length - 1].time });
   }

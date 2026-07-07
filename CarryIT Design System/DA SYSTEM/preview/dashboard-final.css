@@ -1,0 +1,88 @@
+.dashboard-final {
+  min-height: 100vh;
+  color: var(--color-text-primary);
+}
+
+/* La barre d'application vit dans le composant .ds-navbar (navbar.css). */
+
+/* ── Carte 1 (KPI objectif) en BLANC : hero KPI, seule carte inversée ── */
+.ds-kpi-card--hero {
+  background: var(--color-text-primary);   /* blanc */
+}
+
+.ds-kpi-card--hero .ds-kpi-card__eyebrow,
+.ds-kpi-card--hero .ds-kpi-card__value,
+.ds-kpi-card--hero .ds-kpi-card__target,
+.ds-kpi-card--hero .ds-kpi-card__meta {
+  color: var(--color-surface);   /* texte sombre sur fond blanc */
+}
+
+.ds-kpi-card--hero .ds-kpi-card__divider {
+  border-color: color-mix(in srgb, var(--color-surface) 15%, transparent);
+}
+
+.ds-kpi-card--hero .ds-delta {
+  color: var(--color-surface);
+  background: color-mix(in srgb, var(--color-surface) 8%, transparent);
+}
+
+/* Conteneur de page : largeur max + centré (la grille). */
+.dashboard-final__page {
+  max-width: var(--grid-max-width);
+  margin-inline: auto;
+  padding-inline: var(--grid-page-padding);
+  padding-block: var(--space-48) var(--grid-page-padding);   /* haut aéré → la grille démarre plus bas */
+  display: flex;
+  flex-direction: column;
+  gap: var(--grid-gutter);
+}
+
+/* Barre de navigation (tabs). */
+.dashboard-final__nav {
+  display: flex;
+}
+
+/* ── Ligne des 4 cartes : sur la grille DS (.ds-grid) — chaque carte = span 3 (4×3=12). ── */
+
+/* Les cartes réutilisées : pas de marge propre (l'espacement vient de la grille). */
+.dashboard-final__kpi-row > * {
+  margin: 0;
+  width: auto;            /* neutralise la largeur fixe des composants → la colonne de grille pilote */
+}
+
+/* La carte « Jalon actif » n'a pas de marge haute ici (elle vit dans une grille, pas sous une timeline). */
+.dashboard-final .ds-jalon-active {
+  margin-top: 0;
+}
+
+/* Timeline (liste) masquée : présente pour que timeline.js rende le stepper, mais pas affichée ici. */
+.dashboard-final__timeline-source {
+  display: none;
+}
+
+/* ── Rangée du bas : sur la grille DS — graphique span 8 + SMART span 4. ── */
+
+/* Les composants ont une largeur propre : on la neutralise, la colonne de grille pilote. */
+.dashboard-final__bottom-row > * {
+  width: auto;
+  max-width: none;
+}
+
+/* Le graphique remplit la hauteur de sa colonne. */
+.dashboard-final__bottom-row .ds-chart-card {
+  height: 100%;
+}
+
+/* Reflow responsive — le span est une décision de vue. Breakpoints alignés sur la grille DS. */
+@media (max-width: 1024px) {
+  /* Grille à 8 col : KPI 2 par ligne (span 4), rangée du bas empilée pleine largeur. */
+  .dashboard-final__kpi-row > * { grid-column: span 4; }
+  .dashboard-final__bottom-row > * { grid-column: 1 / -1; }
+}
+
+@media (max-width: 600px) {
+  /* Grille à 4 col : tout en pleine largeur + marge de page resserrée. */
+  .dashboard-final__page,
+  .ds-navbar__inner { padding-inline: var(--grid-page-padding-mobile); }
+  .dashboard-final__kpi-row > * { grid-column: 1 / -1; }
+}
