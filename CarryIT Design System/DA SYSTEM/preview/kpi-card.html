@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="buttons.css">
 <link rel="stylesheet" href="progress.css">
 <link rel="stylesheet" href="task-list.css">
+<link rel="stylesheet" href="delta.css">
 <link rel="stylesheet" href="kpi-card.css">
 </head>
 <body>
@@ -16,7 +17,7 @@
       <header class="kpi-card-preview__header">
         <div class="type-label">Composant métier</div>
         <h1 class="type-h1">KPI card</h1>
-        <p class="type-body-md">Deux vues, même carte. Carte <strong>définie</strong> (arête + filet + ombre). <strong>Valeur héros</strong> (40) + cible grise + <strong>delta inline quiet</strong> (plus de pill flottante). Barre <strong>seulement sur les KPI vers une cible</strong> (résultat) — l'effort dépassé s'en passe, le delta « au-delà » suffit. Vue jalon = édition, vue long terme = résumé. Monochrome.</p>
+        <p class="type-body-md">Deux vues, même carte. Carte <strong>définie</strong> (arête + filet + ombre). <strong>Valeur héros</strong> (40) + cible grise + <strong>delta en chip</strong> (composant partagé <code>.ds-delta</code>, fond surélevé monochrome). <strong>Taille fixe + filet + delta pinné au pied</strong>, air symétrique autour du filet (le nombre ne le touche pas). Action quotidienne <strong>« Ajouter » (bouton ghost, flush au bord droit)</strong>, crayon d'édition à sa gauche. Vue jalon = édition, vue long terme = résumé. Monochrome.</p>
       </header>
 
       <!-- ────────────────────────────────────────────────────── -->
@@ -30,55 +31,60 @@
           <!-- EFFORT -->
           <article class="ds-kpi-card">
             <div class="ds-kpi-card__head">
-              <span class="ds-kpi-card__eyebrow type-data-label">Effort</span>
+              <div class="ds-kpi-card__labels">
+                <span class="ds-kpi-card__eyebrow type-data-label">Effort</span>
+                <span class="ds-kpi-card__name type-body-sm">Temps moyen entre chaque test</span>
+              </div>
               <div class="ds-kpi-card__head-actions">
-                <button type="button" class="ds-button ds-button--subtle ds-button--xs ds-kpi-card__action">
-                  <svg class="ds-kpi-card__action-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16m8-8H4" /></svg>
-                  Ajouter un effort
-                </button>
                 <button type="button" class="ds-row-action" aria-label="Modifier l'effort">
                   <svg class="ds-kpi-card__icon" viewBox="0 0 24 24" aria-hidden="true">
                     <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
                   </svg>
                 </button>
+                <button type="button" class="ds-button ds-button--ghost ds-button--xs ds-kpi-card__action">
+                  <svg class="ds-kpi-card__action-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16m8-8H4" /></svg>
+                  Ajouter un effort
+                </button>
               </div>
             </div>
-            <span class="ds-kpi-card__title type-body-lg">Temps moyen entre chaque test</span>
             <div class="ds-kpi-card__metric">
               <span class="ds-kpi-card__value">51</span>
-              <span class="ds-kpi-card__target type-body-lg">/ 15 h</span>
-              <span class="ds-kpi-card__sep">·</span>
-              <span class="ds-kpi-card__delta">+36 h au-delà</span>
+              <span class="ds-kpi-card__target type-body-md">/ 15 h</span>
             </div>
-            <span class="ds-kpi-card__meta type-body-sm">Mis à jour il y a 3j · Hebdo</span>
+            <hr class="ds-kpi-card__divider">
+            <div class="ds-kpi-card__footer">
+              <span class="type-body-sm ds-delta">+36 h au-delà</span>
+              <span class="ds-kpi-card__meta type-body-sm">Il y a 3j · Hebdo</span>
+            </div>
           </article>
 
           <!-- RÉSULTAT -->
           <article class="ds-kpi-card">
             <div class="ds-kpi-card__head">
-              <span class="ds-kpi-card__eyebrow type-data-label">Résultat</span>
+              <div class="ds-kpi-card__labels">
+                <span class="ds-kpi-card__eyebrow type-data-label">Résultat</span>
+                <span class="ds-kpi-card__name type-body-sm">Tests utilisateurs sur la V0 (Bout en bout)</span>
+              </div>
               <div class="ds-kpi-card__head-actions">
-                <button type="button" class="ds-button ds-button--subtle ds-button--xs ds-kpi-card__action">
-                  <svg class="ds-kpi-card__action-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16m8-8H4" /></svg>
-                  Ajouter un résultat
-                </button>
                 <button type="button" class="ds-row-action" aria-label="Modifier le résultat">
                   <svg class="ds-kpi-card__icon" viewBox="0 0 24 24" aria-hidden="true">
                     <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
                   </svg>
                 </button>
+                <button type="button" class="ds-button ds-button--ghost ds-button--xs ds-kpi-card__action">
+                  <svg class="ds-kpi-card__action-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16m8-8H4" /></svg>
+                  Ajouter un résultat
+                </button>
               </div>
             </div>
-            <span class="ds-kpi-card__title type-body-lg">Tests utilisateurs sur la V0 (Bout en bout)</span>
             <div class="ds-kpi-card__metric">
               <span class="ds-kpi-card__value">5</span>
-              <span class="ds-kpi-card__target type-body-lg">/ 15 testeurs</span>
-              <span class="ds-kpi-card__sep">·</span>
-              <span class="ds-kpi-card__delta">10 restants</span>
+              <span class="ds-kpi-card__target type-body-md">/ 15 testeurs</span>
             </div>
-            <span class="ds-kpi-card__meta type-body-sm">Mis à jour il y a 27j · Hebdo</span>
-            <div class="ds-progress" role="progressbar" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100" aria-valuetext="5 testeurs sur 15">
-              <div class="ds-progress__fill ds-progress__fill--33"></div>
+            <hr class="ds-kpi-card__divider">
+            <div class="ds-kpi-card__footer">
+              <span class="type-body-sm ds-delta">10 restants</span>
+              <span class="ds-kpi-card__meta type-body-sm">Il y a 27j · Hebdo</span>
             </div>
           </article>
 
@@ -119,24 +125,36 @@
 
           <!-- EFFORT -->
           <article class="ds-kpi-card ds-kpi-card--summary">
-            <span class="ds-kpi-card__eyebrow type-data-label">Effort</span>
-            <span class="ds-kpi-card__title type-body-md">Temps moyen entre chaque test</span>
+            <div class="ds-kpi-card__labels">
+              <span class="ds-kpi-card__eyebrow type-data-label">Effort</span>
+              <span class="ds-kpi-card__name type-body-sm">Temps moyen entre chaque test</span>
+            </div>
             <div class="ds-kpi-card__metric">
               <span class="ds-kpi-card__value">51</span>
               <span class="ds-kpi-card__target type-body-md">/ 15 h</span>
             </div>
-            <span class="ds-kpi-card__meta type-body-sm">Mis à jour il y a 3j · Hebdo</span>
+            <hr class="ds-kpi-card__divider">
+            <div class="ds-kpi-card__footer">
+              <span class="type-body-sm ds-delta">+36 h au-delà</span>
+              <span class="ds-kpi-card__meta type-body-sm">Il y a 3j</span>
+            </div>
           </article>
 
           <!-- RÉSULTAT -->
           <article class="ds-kpi-card ds-kpi-card--summary">
-            <span class="ds-kpi-card__eyebrow type-data-label">Résultat</span>
-            <span class="ds-kpi-card__title type-body-md">Tests utilisateurs sur la V0 (Bout en bout)</span>
+            <div class="ds-kpi-card__labels">
+              <span class="ds-kpi-card__eyebrow type-data-label">Résultat</span>
+              <span class="ds-kpi-card__name type-body-sm">Tests utilisateurs sur la V0 (Bout en bout)</span>
+            </div>
             <div class="ds-kpi-card__metric">
               <span class="ds-kpi-card__value">5</span>
               <span class="ds-kpi-card__target type-body-md">/ 15 testeurs</span>
             </div>
-            <span class="ds-kpi-card__meta type-body-sm">Mis à jour il y a 27j · Hebdo</span>
+            <hr class="ds-kpi-card__divider">
+            <div class="ds-kpi-card__footer">
+              <span class="type-body-sm ds-delta">10 restants</span>
+              <span class="ds-kpi-card__meta type-body-sm">Il y a 27j</span>
+            </div>
           </article>
 
         </div>

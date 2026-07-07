@@ -23,15 +23,15 @@
 
 .kpi-card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(var(--kpi-card-min-width), var(--kpi-card-max-width)));
+  grid-template-columns: repeat(auto-fill, var(--kpi-card-width));
   gap: var(--kpi-card-grid-gap);
-  align-items: start; /* chaque carte hugge son contenu → aucun void, hauteurs propres */
+  align-items: start; /* toutes les cartes = même taille fixe → grille régulière premium */
 }
 
 /* Grille compacte (vue long terme) : cartes ~2x moins larges, colonnes fixes
    étroites alignées à gauche (tuiles denses, pas d'étirement pleine largeur). */
 .kpi-card-grid--compact {
-  grid-template-columns: repeat(auto-fill, var(--kpi-card-summary-min-width));
+  grid-template-columns: repeat(auto-fill, var(--kpi-card-summary-width));
 }
 
 /* ── Card shell ─────────────────────────────────────────────── */
@@ -41,6 +41,8 @@
   display: flex;
   flex-direction: column;
   gap: 0;
+  width: var(--kpi-card-width);
+  min-height: var(--kpi-card-min-height);
   padding: var(--kpi-card-padding);
   background: var(--card-background);
   border: var(--kpi-card-border-defined);
@@ -57,7 +59,7 @@
 /* ── Header : eyebrow (gauche) + actions (droite : Ajouter + édition) ─── */
 .ds-kpi-card__head {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: var(--space-8);
 }
@@ -84,28 +86,38 @@
   stroke-width: var(--icon-stroke-width);
 }
 
-/* Titre = ancre de lecture (poids/taille/couleur = classe type-h3, non overridé).
-   Rupture depuis le head. Max 2 lignes. Fraîcheur COLLÉE dessous (groupe identité). */
-.ds-kpi-card__title {
-  margin-top: var(--kpi-card-title-gap);
-  font-size: var(--kpi-card-title-size);
-  line-height: var(--kpi-card-title-line);
-  font-weight: var(--kpi-card-title-weight);
-  color: var(--color-text-primary);
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  overflow: hidden;
+/* Labels = type (eyebrow) + nom du KPI, empilés serrés en haut à gauche. */
+.ds-kpi-card__labels {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  flex: 1;
+  min-width: 0; /* autorise l'ellipsis du nom → le head ne déborde jamais */
 }
 
-/* Fraîcheur = sous-titre du titre → serrée (space-4), même groupe. */
-.ds-kpi-card__meta {
-  margin-top: var(--space-4);
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-4);
+/* Nom du KPI = identifiant, UNE ligne (ellipsis) → toutes les cartes s'alignent. */
+.ds-kpi-card__name {
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-medium);
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Fraîcheur = contexte du pied (droite du footer), gris muted, une ligne.
+   Delta = valeur DYNAMIQUE (longueur variable) → le chip ne rétrécit jamais (info
+   prioritaire), c'est la fraîcheur qui tronque si la place manque. */
+.ds-kpi-card__meta {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: right;
   color: var(--kpi-card-meta-color);
+}
+
+.ds-kpi-card__footer .ds-delta {
+  flex-shrink: 0;
 }
 
 /* Mesure en retard → couleur d'état (ambre). Seul point de couleur, fonctionnel. */
@@ -150,16 +162,27 @@
   color: var(--kpi-card-target-color);
 }
 
-/* Barre = même bloc que la valeur, respiration courte dessous. */
-.ds-kpi-card .ds-progress {
-  margin-top: var(--kpi-card-bar-gap);
+/* ── Filet : coupe le héros (nombre) du pied. Espace SYMÉTRIQUE au-dessus/en-dessous
+   (le nombre ne doit pas toucher le filet). Contenu uniforme → cartes de même hauteur
+   sans forçage. ── */
+.ds-kpi-card__divider {
+  margin-block: var(--kpi-card-divider-gap);
+  border: 0;
+  border-top: var(--border-subtle);
 }
 
-/* ── Action (bouton discret ds-button--subtle, dans le header à droite) ── */
+/* ── Pied : delta (gauche, place FIXE) · contexte fraîcheur (droite). ── */
+.ds-kpi-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-12);
+}
+
+/* ── Action = bouton défini `ds-button--ghost --xs`, flush au bord droit (même marge
+   que le texte à gauche). Ne rétrécit pas (le nom absorbe via ellipsis). ── */
 .ds-kpi-card__action {
   flex-shrink: 0;
-  gap: var(--space-4);
-  padding-inline: 0;
 }
 
 /* Cibles tactiles : zone de hit étendue à 44px de haut (confort tactile) sans
@@ -189,23 +212,15 @@
   height: var(--space-16);
 }
 
-/* Delta = texte QUIET inline, collé après la cible (migration v2 : plus de pill
-   flottante à droite = plus de désert). Il décrit la valeur → il vit à côté d'elle. */
-.ds-kpi-card__delta {
-  font-size: var(--type-body-sm-size);
-  line-height: var(--type-body-sm-line);
-  color: var(--kpi-card-delta-color);
-}
-
-/* Séparateur « · » entre cible et delta. */
-.ds-kpi-card__sep {
-  color: var(--color-text-muted);
-}
+/* Delta = composant partagé .ds-delta (écart-à-cible inline quiet, cf. delta.css).
+   Migré hors de la KPI card pour être réutilisable sur d'autres écrans. */
 
 /* ── Variante COMPACTE (vue long terme — lecture seule, brève) ──
    Padding + rythme resserrés → carte plus dense qu'en vue jalon. */
 .ds-kpi-card--summary {
   gap: 0;
+  width: var(--kpi-card-summary-width);
+  min-height: var(--kpi-card-summary-min-height);
   padding: var(--kpi-card-summary-padding);
 }
 
@@ -213,13 +228,8 @@
    métadonnées grises (eyebrow/fraîcheur/cible), sinon tous les gris se confondent.
    Réserve 2 lignes (min-height) → toutes les tuiles ont la MÊME hauteur, quelle
    que soit la longueur du titre (grille régulière). */
-.ds-kpi-card--summary .ds-kpi-card__title {
-  margin-top: var(--kpi-card-summary-title-gap);
-  min-height: 2lh;
-  font-size: var(--type-body-md-size); /* tuile dense : reste 14px, n'hérite pas du 16px vue jalon */
-  line-height: var(--type-body-md-line);
-  font-weight: var(--font-weight-medium);
-  color: var(--color-text-primary);
+.ds-kpi-card--summary .ds-kpi-card__name {
+  color: var(--color-text-primary); /* nom en blanc → tranche sur les gris de la tuile dense */
 }
 
 .ds-kpi-card--summary .ds-kpi-card__metric {
