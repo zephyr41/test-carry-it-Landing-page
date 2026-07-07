@@ -453,31 +453,51 @@
   --heatmap-delta-background: color-mix(in srgb, var(--color-text-primary) 9%, transparent);
   --heatmap-delta-background-result: color-mix(in srgb, var(--color-accent-primary) 12%, transparent);
 
-  /* Component tokens: Timeline (rail + dots, séquence de jalons) */
-  --timeline-rail-offset: 80px;
-  --timeline-item-gap: 64px;
-  --timeline-card-gap: var(--space-32);
-  --timeline-line-width: 3px;
-  --timeline-line-gradient: linear-gradient(180deg,
-    var(--color-accent-primary) 0%,
-    color-mix(in srgb, var(--color-accent-primary) 60%, transparent) 40%,
-    color-mix(in srgb, var(--color-accent-primary) 30%, transparent) 70%,
-    var(--color-border-subtle) 100%);
-  --timeline-line-glow: 0 0 15px color-mix(in srgb, var(--color-accent-primary) 35%, transparent);
-  --timeline-dot-size: 14px;
-  --timeline-dot-background: var(--color-background);
-  --timeline-dot-border: 3px solid var(--color-accent-primary);
-  --timeline-dot-ring: 0 0 0 6px var(--color-background);
-  --timeline-dot-final-background: var(--color-accent-primary);
-  --timeline-dot-final-border-color: var(--color-text-primary);
-  --timeline-dot-final-glow: 0 0 15px var(--color-accent-primary), 0 0 0 6px var(--color-background);
-  --timeline-rail-year-color: var(--color-accent-primary);
-  --timeline-rail-month-color: var(--color-text-secondary);
-  --timeline-connector-gradient: linear-gradient(90deg, var(--color-accent-primary) 0%, var(--color-border-subtle) 100%);
-  --timeline-tag-color: var(--color-text-secondary);
-  --timeline-tag-final-color: var(--color-accent-primary);
-  --timeline-tag-final-background: color-mix(in srgb, var(--color-accent-primary) 8%, transparent);
-  --timeline-tag-final-border: var(--border-width-default) solid color-mix(in srgb, var(--color-accent-primary) 35%, transparent);
+  /* Component tokens: Timeline (liste de jalons dans un panneau — rail année/mois + cercles) */
+  --timeline-padding: var(--card-padding);
+  --timeline-head-gap: var(--space-16);         /* head → filet → liste */
+  --timeline-row-gap: var(--space-24);          /* respiration entre jalons (aéré) */
+  --timeline-list-height: 24.75rem;             /* hauteur FIXE = ~5 jalons content-driven (aéré) → carte constante ; scroll au-delà */
+  --timeline-date-width: 2.25rem;               /* colonne année/mois (gauche) : juste la largeur de « 2026 » */
+  --timeline-col-gap: var(--space-16);          /* date · cercle · contenu (resserré → date rattachée à sa rangée) */
+  --timeline-content-gap: var(--space-4);       /* titre · sous-ligne (groupe serré) */
+  /* Rail + cercles */
+  --timeline-line-color: color-mix(in srgb, var(--color-text-primary) 12%, transparent);          /* segment futur = faible */
+  --timeline-line-done-color: color-mix(in srgb, var(--color-text-primary) 38%, transparent);     /* segment parcouru (jusqu'au courant) = clair → lit la progression */
+  --timeline-line-width: 2px;
+  --timeline-dot-size: var(--space-16);                          /* pastille compacte = plus net/pro */
+  --timeline-dot-ring-width: 1.5px;
+  --timeline-dot-ring-color: color-mix(in srgb, var(--color-text-muted) 60%, transparent);      /* futur = anneau gris muted (jamais blanc = pas fait) */
+  --timeline-dot-fill: var(--card-background);                   /* futur = fond opaque = masque le connecteur (pas de trait qui traverse) */
+  --timeline-dot-done-background: var(--color-text-primary);     /* jalon atteint = disque blanc plein */
+  /* Textes */
+  --timeline-year-color: var(--color-text-muted);
+  --timeline-year-done-color: var(--color-text-primary);         /* année blanche sur l'atteint */
+  --timeline-month-color: var(--color-text-muted);
+  --timeline-jalon-color: var(--color-text-muted);
+  /* Dot courant (double-dot : centre plein + anneau concentrique) */
+  --timeline-dot-size-current: 1rem;                             /* = base ; distinction via l'anneau, pas la taille */
+  --timeline-dot-current-ring-gap: 2px;                          /* gap fond entre centre et anneau */
+  --timeline-dot-current-ring-spread: 3.5px;                     /* épaisseur cumulée de l'anneau extérieur (fin) */
+  /* Coche « validé » creusée */
+  --timeline-check-width: 0.1875rem;
+  --timeline-check-height: 0.375rem;
+  --timeline-check-stroke: var(--timeline-dot-ring-width);       /* cohérent avec l'anneau (1.5px) */
+  --timeline-check-inset-top: 46%;                               /* centrage optique de la coche */
+  /* Scroll + fondu + interaction */
+  --timeline-shell-max-width: 340px;
+  --timeline-fade-size: var(--space-16);                         /* hauteur du fondu haut/bas au scroll */
+  --timeline-mask-visible: #000;                                 /* couleur opaque du masque (fonctionnel) */
+  --timeline-scrollbar-width: 6px;
+  --timeline-scrollbar-thumb: color-mix(in srgb, var(--color-text-primary) 20%, transparent);
+  --timeline-transition: background-color var(--motion-duration-fast) var(--motion-ease-out);
+
+  /* Component tokens: Carte « Jalon actif » (stepper horizontal J1→Jn, réutilise les dots timeline) */
+  --jalon-active-margin-top: var(--space-24);                    /* écart sous la timeline */
+  --jalon-active-padding: var(--card-padding);
+  --jalon-active-eyebrow-gap: var(--space-4);                    /* eyebrow → titre */
+  --jalon-active-title-gap: var(--space-24);                     /* titre → stepper */
+  --jalon-active-step-gap: var(--space-8);                       /* dot → label */
 
   /* Component tokens: Input number (champ numérique + steppers ↑↓) */
   --input-number-value-size: var(--type-h3-size);
@@ -517,15 +537,30 @@
   --scheduler-resize-handle-color: color-mix(in srgb, var(--color-text-primary) 18%, transparent);
   --scheduler-transition: var(--motion-transition-default);
 
+  /* Component tokens: Delta (écart-à-cible — «+36 h au-delà», «10 restants») */
+  /* Chip monochrome qui ACCROCHE l'œil : fond surélevé + texte primary (pop sans orange —
+     orange = action only). Réutilise le chrome du Badge (padding/radius). Pas de flèche/
+     couleur sémantique (distance à la cible, pas une tendance : le Chart porte la tendance). */
+  --delta-background: var(--color-surface-raised);
+  --delta-color: var(--color-text-primary);
+  --delta-padding-block: var(--badge-padding-block);
+  --delta-padding-inline: var(--badge-padding-inline);
+  --delta-radius: var(--badge-radius);
+  --delta-font-weight: var(--font-weight-semibold);
+
   /* Component tokens: KPI card (composant métier — mesure effort/résultat d'un jalon) */
   /* Padding = standard carte du système (--card-padding = 24), PAS une valeur bespoke */
   --kpi-card-padding: var(--card-padding);
   /* gap entre cartes = objets détachés → aligné sur le padding, pas plus serré */
   --kpi-card-grid-gap: var(--space-24);
-  /* Largeur carte (vue jalon) : plancher lisible → plafond → proportion stable en
-     écran large (pas de stretch full-width qui lit « admin panel »). */
-  --kpi-card-min-width: 360px;
-  --kpi-card-max-width: 400px;
+  /* Taille FIXE (vue jalon) : toutes les cartes identiques → grille régulière = premium.
+     Hauteur mini réservée pour que le filet + delta soient à la MÊME hauteur partout. */
+  --kpi-card-width: 360px;
+  --kpi-card-min-height: 190px;
+  /* air SYMÉTRIQUE autour du filet (nombre ne touche pas le filet = clé du premium) */
+  --kpi-card-divider-gap: var(--space-24);
+  /* filet → pied (delta + contexte) — conservé pour compat, = divider-gap */
+  --kpi-card-footer-gap: var(--space-16);
   /* Carte définie = token système partagé (voir --card-border-defined). */
   --kpi-card-border-defined: var(--card-border-defined);
   --kpi-card-shadow: var(--card-shadow-defined);
@@ -559,16 +594,16 @@
   --kpi-card-title-size: var(--type-body-lg-size);
   --kpi-card-title-line: var(--type-body-lg-line);
   --kpi-card-title-weight: var(--font-weight-medium);
-  /* delta = signal quiet INLINE après la cible (migration v2 : plus de pill blanche flottante) */
-  --kpi-card-delta-color: var(--color-text-secondary);
+  /* delta = composant partagé .ds-delta (écart-à-cible inline quiet, cf. tokens Delta plus haut) */
   --kpi-card-summary-gap: var(--space-8);
   /* Variante COMPACTE (vue long terme / résumé) : carte 2x moins LARGE que le jalon,
      hauteur confortable (le tassement vertical était une erreur). */
   --kpi-card-summary-padding: var(--space-16);
   --kpi-card-summary-title-gap: var(--space-8);
   --kpi-card-summary-metric-gap: var(--space-8);
-  --kpi-card-summary-value-size: var(--type-h1-size); /* 28px vs 36 en vue jalon */
-  --kpi-card-summary-min-width: 240px; /* tuile résumé plus étroite (plus « longue » en proportion), vs jalon 360-400 */
+  --kpi-card-summary-value-size: var(--type-h1-size); /* 28px vs 40 en vue jalon */
+  --kpi-card-summary-width: 260px; /* tuile résumé fixe, plus étroite que le jalon (360) */
+  --kpi-card-summary-min-height: 150px;
   --kpi-card-empty-copy-color: var(--color-text-secondary);
   --kpi-card-define-border: var(--border-width-default) dashed var(--color-border-strong);
   --kpi-card-define-color: var(--color-text-secondary);

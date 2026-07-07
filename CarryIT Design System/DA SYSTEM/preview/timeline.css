@@ -5,165 +5,346 @@
 }
 
 .timeline-preview__shell {
-  max-width: 750px;
+  max-width: var(--timeline-shell-max-width); /* panneau étroit (liste de jalons dans une colonne) */
 }
 
 .timeline-preview__header {
   margin-bottom: var(--space-section-gap);
 }
 
+/* ── Panneau ─────────────────────────────────────────────────── */
 .ds-timeline {
-  position: relative;
-  width: 100%;
-  padding-right: var(--space-32);
-  display: flex;
-  flex-direction: column;
-}
-
-.ds-timeline-line {
-  position: absolute;
-  left: var(--timeline-rail-offset);
-  top: var(--space-32);
-  bottom: 0;
-  width: var(--timeline-line-width);
-  background: var(--timeline-line-gradient);
-  border-radius: var(--radius-xs);
-  box-shadow: var(--timeline-line-glow);
-  z-index: 0;
-}
-
-.ds-timeline-item {
-  display: flex;
-  position: relative;
-  z-index: 1;
-}
-
-.ds-timeline-item:not(:last-child) {
-  margin-bottom: var(--timeline-item-gap);
-}
-
-.ds-timeline-rail-date {
-  width: var(--timeline-rail-offset);
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  padding-right: var(--space-16);
-  padding-top: var(--space-16);
-  text-align: right;
-}
-
-.ds-timeline-rail-year {
-  font-size: var(--type-body-sm-size);
-  font-weight: var(--font-weight-bold);
-  color: var(--timeline-rail-year-color);
-  margin-bottom: var(--space-4);
-  letter-spacing: 0.02em;
-}
-
-.ds-timeline-rail-month {
-  font-size: var(--type-caption-size);
-  font-weight: var(--font-weight-semibold);
-  color: var(--timeline-rail-month-color);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.ds-timeline-dot {
-  position: absolute;
-  left: calc(var(--timeline-rail-offset) + 1.5px);
-  top: var(--space-24);
-  transform: translateX(-50%);
-  width: var(--timeline-dot-size);
-  height: var(--timeline-dot-size);
-  background: var(--timeline-dot-background);
-  border: var(--timeline-dot-border);
-  border-radius: var(--radius-full);
-  box-shadow: var(--timeline-dot-ring);
-  z-index: 2;
-}
-
-.ds-timeline-dot--final {
-  background: var(--timeline-dot-final-background);
-  border-color: var(--timeline-dot-final-border-color);
-  box-shadow: var(--timeline-dot-final-glow);
-}
-
-.ds-timeline-card {
-  flex: 1;
-  position: relative;
-  margin-left: var(--timeline-card-gap);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-element-gap);
-  padding: var(--card-padding);
+  padding: var(--timeline-padding);
   background: var(--card-background);
   border: var(--card-border-defined);
   border-radius: var(--card-radius);
   box-shadow: var(--card-shadow-defined);
 }
 
-.ds-timeline-card::before {
-  content: '';
-  position: absolute;
-  left: calc(var(--timeline-card-gap) * -1);
-  top: var(--space-32);
-  width: var(--timeline-card-gap);
-  height: 2px;
-  background: var(--timeline-connector-gradient);
-}
-
-.ds-timeline-card-top {
+.ds-timeline__head {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
   gap: var(--space-8);
-}
-
-.ds-timeline-tag {
-  font-size: var(--type-caption-size);
-  font-weight: var(--font-weight-bold);
+  padding-bottom: var(--timeline-head-gap);
+  margin-bottom: var(--timeline-head-gap);
+  border-bottom: var(--border-subtle);
+  color: var(--color-text-muted);
   letter-spacing: var(--letter-spacing-label);
-  text-transform: uppercase;
-  color: var(--timeline-tag-color);
 }
 
-.ds-timeline-tag--final {
-  color: var(--timeline-tag-final-color);
-  background: var(--timeline-tag-final-background);
-  border: var(--timeline-tag-final-border);
-  border-radius: var(--radius-xs);
-  padding: 2px var(--space-8);
+/* ── Liste : scrollable dans la carte, fondu léger aux bords ──── */
+.ds-timeline__list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--timeline-row-gap);
+  height: var(--timeline-list-height);   /* hauteur fixe → carte de dimensions constantes */
+  overflow-y: auto;
+  /* padding + marge négative égales : la surbrillance des rangées (marge -12)
+     reste contenue, et la barre de scroll respire, sans décaler l'alignement. */
+  padding-inline: var(--space-12);
+  padding-block: var(--space-8);   /* contient le débord vertical (padding/marge négative) des rangées → pas de faux scroll */
+  margin-inline: calc(var(--space-12) * -1);
+  margin-block: 0;
 }
 
-.ds-timeline-date-chip {
+/* effet « génie » discret : fondu haut/bas UNIQUEMENT quand la liste scrolle. */
+.ds-timeline__list.is-scrollable {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, var(--timeline-mask-visible) var(--timeline-fade-size), var(--timeline-mask-visible) calc(100% - var(--timeline-fade-size)), transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, var(--timeline-mask-visible) var(--timeline-fade-size), var(--timeline-mask-visible) calc(100% - var(--timeline-fade-size)), transparent 100%);
+}
+
+.ds-timeline__list::-webkit-scrollbar {
+  width: var(--timeline-scrollbar-width);
+}
+
+.ds-timeline__list::-webkit-scrollbar-thumb {
+  background: var(--timeline-scrollbar-thumb);
+  border-radius: var(--radius-full);
+}
+
+.ds-timeline__list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Ligne = rail (année/mois) · cercle · contenu. */
+.ds-timeline__item {
+  display: grid;
+  grid-template-columns: var(--timeline-date-width) auto 1fr;   /* date étroite | dot | titre (large, lisible) */
+  column-gap: var(--timeline-col-gap);
+  align-items: stretch;            /* le marqueur occupe toute la hauteur (connecteur) */
+}
+
+/* ── Rail : année + mois, alignés à GAUCHE (même bord que « Jalons ») et centrés vert. ── */
+.ds-timeline__rail {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;       /* dates à gauche, même bord que « Jalons » */
+  justify-content: flex-start;   /* haut : la date s'aligne sur la 1ère ligne du titre */
+  text-align: left;
+  gap: var(--space-4);
+}
+
+.ds-timeline__year {
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-lg-line);   /* = ligne du titre → 1ère ligne date alignée sur le titre */
+  font-weight: var(--font-weight-bold);
+  color: var(--timeline-year-color);
+}
+
+.ds-timeline__month {
   font-size: var(--type-caption-size);
-  color: var(--color-text-secondary);
+  line-height: var(--type-body-lg-line);   /* idem : mois (1ère ligne quand année groupée) aligné sur le titre */
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-label);
+  color: var(--timeline-month-color);
+}
+
+/* ── Cercle + connecteur vertical ────────────────────────────── */
+.ds-timeline__marker {
+  position: relative;
+  display: flex;
+  align-items: flex-start;   /* dot en haut, aligné sur la 1ère ligne du titre */
+  justify-content: center;
+  width: var(--timeline-dot-size);
+}
+
+.ds-timeline__dot {
+  position: relative;
+  width: var(--timeline-dot-size);
+  height: var(--timeline-dot-size);
+  /* centre le dot sur la 1ère ligne du titre (line-height du titre), en tokens. */
+  margin-top: calc((var(--type-body-lg-line) - var(--timeline-dot-size)) / 2);
+  border-radius: var(--radius-full);
+  box-shadow: inset 0 0 0 var(--timeline-dot-ring-width) var(--timeline-dot-ring-color);
+  background: var(--timeline-dot-fill);
+  flex-shrink: 0;
+  z-index: 1;
+}
+
+/* Connecteur : du centre du cercle (rangée à hauteur fixe) au centre du suivant. */
+.ds-timeline__item:not(:last-child) .ds-timeline__marker::after {
+  content: "";
+  position: absolute;
+  top: calc(var(--type-body-lg-line) / 2);   /* centre de la 1ère ligne du titre = centre des dots */
+  left: 50%;
+  transform: translateX(-50%);
+  width: var(--timeline-line-width);
+  height: calc(100% + var(--timeline-row-gap));
+  background: var(--timeline-line-color);
+}
+
+/* Segment parcouru (sous chaque jalon fait, jusqu'au courant) = clair → progression lisible sur la colonne. */
+.ds-timeline__item.is-done .ds-timeline__marker::after {
+  background: var(--timeline-line-done-color);
+}
+
+/* ── Contenu = bouton cliquable (ouvre la vue du jalon) ───────── */
+.ds-timeline__content {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-self: start;   /* le bouton épouse son contenu (pas toute la rangée) → hover/sélection centré sur le texte */
+  gap: var(--timeline-content-gap);
+  min-width: 0;
+  position: relative;
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  /* padding (zone de clic + surbrillance) annulé par une marge négative égale
+     (mêmes tokens --space-12/--space-8) : la hauteur de rangée et l'alignement
+     du texte ne bougent pas. */
+  padding: var(--space-8);
+  margin: calc(var(--space-8) * -1);
+  border-radius: var(--radius-md);
+  transition: var(--timeline-transition);
+}
+
+.ds-timeline__content:hover {
+  background: var(--button-ghost-background-hover);
+}
+
+.ds-timeline__content:focus-visible {
+  outline: var(--border-focus);
+  outline-offset: 0;
+  background: var(--button-ghost-background-hover);
+}
+
+.ds-timeline__title {
+  color: var(--color-text-muted);   /* défaut = gris ; l'EN COURS passe en blanc (hiérarchie) */
   font-weight: var(--font-weight-medium);
+  /* 2 lignes max → rangées de hauteur uniforme (dots équidistants). Titre complet dans la carte détail. */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-.ds-timeline-card-title {
+.ds-timeline__jalon {
+  color: var(--timeline-jalon-color);
+}
+
+/* ── État : jalon validé (disque blanc plein + coche knockout + année blanche) ── */
+.ds-timeline__item.is-done .ds-timeline__dot {
+  background: var(--timeline-dot-done-background);
+  box-shadow: none;
+}
+
+/* Coche creusée dans la pastille blanche : jalon VALIDÉ uniquement (action faite). */
+.ds-timeline__item.is-done .ds-timeline__dot::after {
+  content: "";
+  position: absolute;
+  top: var(--timeline-check-inset-top);
+  left: 50%;
+  width: var(--timeline-check-width);
+  height: var(--timeline-check-height);
+  border: solid var(--card-background);
+  border-width: 0 var(--timeline-check-stroke) var(--timeline-check-stroke) 0;
+  transform: translate(-50%, -55%) rotate(45deg);
+}
+
+.ds-timeline__item.is-done .ds-timeline__year {
+  color: var(--timeline-year-done-color);
+}
+
+/* ── État : jalon courant (« tu es ici ») : disque blanc + anneau concentrique, texte blanc ── */
+/* Dots simplifiés : seul le VALIDÉ a un dot spécial (blanc + coche).
+   Courant, sélectionné, futur → dot gris par défaut. Le « où on est » passe par le texte. */
+
+/* Jalon EN COURS : double dot blanc (centre plein + anneau concentrique), un poil plus grand que les autres. */
+.ds-timeline__item.is-current .ds-timeline__dot {
+  width: var(--timeline-dot-size-current);
+  height: var(--timeline-dot-size-current);
+  margin-top: calc((var(--type-body-lg-line) - var(--timeline-dot-size-current)) / 2);
+  background: var(--color-text-primary);
+  box-shadow:
+    0 0 0 var(--timeline-dot-current-ring-gap) var(--card-background),
+    0 0 0 var(--timeline-dot-current-ring-spread) var(--color-text-primary);
+}
+
+
+/* ── État : jalon sélectionné (cliqué, ouvre la carte) : rangée inversée + dot plein ──
+   Placé après is-done/is-current et spécificité relevée (…item.is-selected .content …)
+   pour gagner sur le blanc forcé du courant. */
+.ds-timeline__item.is-selected .ds-timeline__content {
+  background: var(--color-text-primary);
+}
+
+.ds-timeline__item.is-selected .ds-timeline__content .ds-timeline__title,
+.ds-timeline__item.is-selected .ds-timeline__content .ds-timeline__jalon {
+  color: var(--color-surface);
+}
+
+
+/* ── Carte « Jalon actif » : stepper horizontal J1→Jn ────────── */
+.ds-jalon-active {
+  margin-top: var(--jalon-active-margin-top);
+  padding: var(--jalon-active-padding);
+  background: var(--card-background);
+  border: var(--card-border-defined);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow-defined);
+}
+
+.ds-jalon-active[hidden] {
+  display: none;
+}
+
+.ds-jalon-active__eyebrow {
+  display: block;
+  color: var(--color-text-muted);
+  letter-spacing: var(--letter-spacing-label);
+}
+
+.ds-jalon-active__title {
+  margin: var(--jalon-active-eyebrow-gap) 0 var(--jalon-active-title-gap);
   color: var(--color-text-primary);
+  font-weight: var(--font-weight-bold);
 }
 
-.ds-timeline-card-desc {
-  color: var(--color-text-secondary);
+.ds-jalon-active__steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+.ds-jalon-active__step {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--jalon-active-step-gap);
+  position: relative;
+}
+
+/* Connecteur : du centre de ce dot au centre du dot suivant (pas de dépendance au nombre). */
+.ds-jalon-active__step:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: calc(var(--timeline-dot-size-current) / 2);
+  left: 50%;
+  width: 100%;
+  height: var(--timeline-line-width);
+  background: var(--timeline-line-color);
+  z-index: 0;
+}
+
+/* Hauteur du dot réservée au plus grand (courant) → labels alignés. */
+.ds-jalon-active__dot {
+  position: relative;
+  z-index: 1;
+  width: var(--timeline-dot-size);
+  height: var(--timeline-dot-size);
+  margin-block: calc((var(--timeline-dot-size-current) - var(--timeline-dot-size)) / 2);
+  border-radius: var(--radius-full);
+  box-shadow: inset 0 0 0 var(--timeline-dot-ring-width) var(--timeline-dot-ring-color);
+  background: var(--timeline-dot-fill);
+}
+
+/* Validé = disque blanc + coche. */
+.ds-jalon-active__step.is-done .ds-jalon-active__dot {
+  background: var(--timeline-dot-done-background);
+  box-shadow: none;
+}
+
+.ds-jalon-active__step.is-done .ds-jalon-active__dot::after {
+  content: "";
+  position: absolute;
+  top: var(--timeline-check-inset-top);
+  left: 50%;
+  width: var(--timeline-check-width);
+  height: var(--timeline-check-height);
+  border: solid var(--card-background);
+  border-width: 0 var(--timeline-check-stroke) var(--timeline-check-stroke) 0;
+  transform: translate(-50%, -55%) rotate(45deg);
+}
+
+/* Courant = double-dot (centre plein + anneau concentrique). */
+.ds-jalon-active__step.is-current .ds-jalon-active__dot {
+  width: var(--timeline-dot-size-current);
+  height: var(--timeline-dot-size-current);
+  margin-block: 0;
+  background: var(--color-text-primary);
+  box-shadow:
+    0 0 0 var(--timeline-dot-current-ring-gap) var(--card-background),
+    0 0 0 var(--timeline-dot-current-ring-spread) var(--color-text-primary);
+}
+
+.ds-jalon-active__label {
+  color: var(--color-text-muted);
 }
 
 @media (max-width: 640px) {
   .timeline-preview {
     padding: var(--space-page-mobile);
-  }
-
-  .ds-timeline-rail-date {
-    display: none;
-  }
-
-  .ds-timeline {
-    --timeline-rail-offset: 0px;
-  }
-
-  .ds-timeline-card {
-    margin-left: var(--space-24);
   }
 }
