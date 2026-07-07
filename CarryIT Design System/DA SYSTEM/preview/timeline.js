@@ -93,7 +93,8 @@
       else if (i === curIdx) li.classList.add('is-current');
       const dot = el('span', 'ds-jalon-active__dot');
       dot.setAttribute('aria-hidden', 'true');
-      li.append(dot, el('span', 'ds-jalon-active__label type-caption', `J${i + 1}`));
+      const label = (j.titre || '').trim().split(/\s+/)[0] || `J${i + 1}`; // 1er mot du titre
+      li.append(dot, el('span', 'ds-jalon-active__label type-caption', label));
       steps.append(li);
     });
   }
