@@ -1,0 +1,164 @@
+.smart-preview {
+  min-height: 100vh;
+  padding: var(--space-page-desktop);
+  color: var(--color-text-primary);
+}
+
+.smart-preview__shell {
+  max-width: 320px;   /* colonne étroite (panneau latéral) : compact, format portrait */
+}
+
+.smart-preview__header {
+  margin-bottom: var(--space-section-gap);
+}
+
+/* ── Carte ───────────────────────────────────────────────────── */
+.ds-smart {
+  padding: var(--smart-padding);
+  background: var(--card-background);
+  border: var(--card-border-defined);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow-defined);
+}
+
+/* Head : label « SMART » + action Modifier, séparés par un filet. */
+.ds-smart__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-8);
+  padding-bottom: var(--smart-head-gap);
+  margin-bottom: var(--smart-head-gap);
+  border-bottom: var(--border-subtle);
+}
+
+.ds-smart__label {
+  color: var(--color-text-muted);
+  letter-spacing: var(--letter-spacing-label);
+}
+
+/* ── Lignes S / M / A / R / T ─────────────────────────────────── */
+/* A/R clampés à 2 lignes (voir plus bas) → carte compacte, aucun scroll nécessaire. */
+.ds-smart__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Grille lettre | texte ; filet entre chaque ligne (pas au-dessus de la 1re : le head le porte déjà). */
+.ds-smart__row {
+  display: grid;
+  grid-template-columns: var(--smart-letter-width) 1fr;
+  column-gap: var(--smart-col-gap);
+  align-items: start;   /* lettre alignée sur la 1re ligne du texte */
+  padding-block: var(--smart-row-padding);
+}
+
+.ds-smart__row:first-child {
+  padding-top: 0;
+}
+
+.ds-smart__row:last-child {
+  padding-bottom: 0;
+}
+
+.ds-smart__row:not(:first-child) {
+  border-top: var(--border-subtle);
+}
+
+.ds-smart__letter {
+  font-size: var(--smart-letter-size);
+  line-height: var(--smart-letter-line);   /* = ligne du texte → lettre calée sur la 1re ligne */
+  font-weight: var(--smart-letter-weight);
+  color: var(--smart-letter-color);
+}
+
+/* Colonne texte : label de dimension + contenu, empilés. */
+.ds-smart__body {
+  min-width: 0;   /* autorise l'ellipsis multi-ligne dans une grille */
+}
+
+/* Label de dimension SMART (Spécifique / Mesurable / …) au-dessus du contenu. */
+.ds-smart__dimension {
+  display: block;
+  margin-bottom: var(--smart-dimension-gap);
+  color: var(--color-text-primary);   /* label de dimension en blanc → structure qui ressort */
+  letter-spacing: var(--letter-spacing-label);
+}
+
+.ds-smart__text {
+  color: var(--smart-text-color);   /* défaut = faits (M/T) */
+}
+
+/* Hiérarchie : S = l'objectif → emphase ; A/R = justification → démoté. */
+.ds-smart__text--lead {
+  color: var(--smart-text-lead-color);
+  font-weight: var(--smart-text-lead-weight);
+}
+
+/* M/T = faits durs (KPI, échéance) → blancs, poids normal. */
+.ds-smart__text--fact {
+  color: var(--color-text-primary);
+}
+
+.ds-smart__text--muted {
+  color: var(--smart-text-muted-color);
+}
+
+/* Justification (A/R) réduite à 2 lignes ; le texte complet s'ouvre dans un Modal
+   (la carte ne grandit ni ne scrolle JAMAIS). */
+.ds-smart__text--clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: var(--smart-clamp-lines);
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Affordance « Voir plus » — injectée par JS seulement si le texte déborde ; ouvre le Modal. */
+.ds-smart__more {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--smart-more-icon-gap);
+  margin-top: var(--smart-more-gap);
+  padding: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  border: 0;
+  font: inherit;
+  font-size: var(--type-body-sm-size);
+  color: var(--smart-more-color);
+  cursor: pointer;
+  transition: var(--motion-transition-default);
+}
+
+.ds-smart__more:hover {
+  color: var(--smart-more-color-hover);
+}
+
+.ds-smart__more:focus-visible {
+  outline: var(--border-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+.ds-smart__more-icon {
+  width: var(--smart-more-icon-size);
+  height: var(--smart-more-icon-size);
+}
+
+/* Le backdrop du Modal est en display:flex → `hidden` doit gagner pour le masquer. */
+.ds-modal-backdrop[hidden] {
+  display: none;
+}
+
+/* Corps du modal SMART : texte complet lisible (le modal gère son propre scroll si extrême). */
+.ds-smart-modal__text {
+  color: var(--color-text-secondary);
+}
+
+@media (max-width: 640px) {
+  .smart-preview {
+    padding: var(--space-page-mobile);
+  }
+}

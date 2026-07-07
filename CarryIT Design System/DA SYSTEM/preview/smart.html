@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DA System — SMART card</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="buttons.css">
+<link rel="stylesheet" href="modal.css">
+<link rel="stylesheet" href="smart.css">
+</head>
+<body>
+  <main class="smart-preview">
+    <section class="smart-preview__shell">
+      <header class="smart-preview__header">
+        <div class="type-label">Composant métier</div>
+        <h1 class="type-h1">SMART card</h1>
+        <p class="type-body-md">L'objectif de l'utilisateur décomposé en cinq lignes <strong>S / M / A / R / T</strong>. Carte <strong>définie</strong> (arête + filet + ombre), head avec action <strong>Modifier</strong> (bouton subtle), lignes séparées par un filet. Lettre démotée (label structurel), texte lisible — le contenu prime. Monochrome.</p>
+      </header>
+
+      <article class="ds-smart">
+        <header class="ds-smart__head">
+          <span class="ds-smart__label type-data-label">SMART</span>
+          <button type="button" class="ds-button ds-button--subtle ds-button--sm">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+            </svg>
+            Modifier
+          </button>
+        </header>
+
+        <ol class="ds-smart__list">
+          <li class="ds-smart__row">
+            <span class="ds-smart__letter">S</span>
+            <div class="ds-smart__body">
+              <span class="ds-smart__dimension type-data-label">Spécifique</span>
+              <p class="ds-smart__text ds-smart__text--lead type-body-md">Atteindre 1000 client mensuel sur Carry it qui paye 8e par mois</p>
+            </div>
+          </li>
+          <li class="ds-smart__row">
+            <span class="ds-smart__letter">M</span>
+            <div class="ds-smart__body">
+              <span class="ds-smart__dimension type-data-label">Mesurable</span>
+              <p class="ds-smart__text ds-smart__text--fact type-body-sm">[Nb Clients] Nombre de client payant · cible : 1000</p>
+            </div>
+          </li>
+          <li class="ds-smart__row">
+            <span class="ds-smart__letter">A</span>
+            <div class="ds-smart__body">
+              <span class="ds-smart__dimension type-data-label">Atteignable</span>
+              <p class="ds-smart__text ds-smart__text--muted ds-smart__text--clamp type-body-sm">Objectif atteignable en mettant en place une stratégie d'acquisition progressive : 50 clients en 2025, 300 en mars 2026, 1000 en septembre 2026, via marketing organique, partenariats et automatisation du funnel d'inscription.</p>
+            </div>
+          </li>
+          <li class="ds-smart__row">
+            <span class="ds-smart__letter">R</span>
+            <div class="ds-smart__body">
+              <span class="ds-smart__dimension type-data-label">Réaliste</span>
+              <p class="ds-smart__text ds-smart__text--muted ds-smart__text--clamp type-body-sm">Objectif ambitieux mais cohérent avec une période de 22 mois : phase bêta (3-4 mois), lancement (T2 2026), puis montée progressive jusqu'à 1000 abonnés. Le marché du développement personnel et de la productivité SaaS permet ce type de traction avec un bon positionnement et des coûts faibles d'acquisition.</p>
+            </div>
+          </li>
+          <li class="ds-smart__row">
+            <span class="ds-smart__letter">T</span>
+            <div class="ds-smart__body">
+              <span class="ds-smart__dimension type-data-label">Temporel</span>
+              <p class="ds-smart__text ds-smart__text--fact type-body-sm">23 septembre 2026</p>
+            </div>
+          </li>
+        </ol>
+      </article>
+    </section>
+  </main>
+
+  <!-- Modal « texte complet » : la carte ne bouge jamais, le détail s'ouvre ici. -->
+  <div class="ds-modal-backdrop" data-smart-modal hidden>
+    <div class="ds-modal" role="dialog" aria-modal="true" aria-labelledby="smart-modal-title">
+      <header class="ds-modal__header">
+        <div class="ds-modal__header-row">
+          <h2 id="smart-modal-title" class="type-h2" data-smart-modal-title></h2>
+          <button type="button" class="ds-modal__close" aria-label="Fermer" data-smart-modal-close>
+            <svg class="ds-modal__close-icon" viewBox="0 0 16 16" aria-hidden="true">
+              <path d="M4 4L12 12M12 4L4 12" />
+            </svg>
+          </button>
+        </div>
+      </header>
+      <div class="ds-modal__body">
+        <p class="ds-smart-modal__text type-body-md" data-smart-modal-text></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="smart.js"></script>
+</body>
+</html>

@@ -502,6 +502,31 @@
   --jalon-active-title-gap: var(--space-24);                     /* titre → stepper */
   --jalon-active-step-gap: var(--space-8);                       /* dot → label */
 
+  /* Component tokens: SMART card (objectif — 5 lignes S/M/A/R/T) */
+  --smart-padding: var(--card-padding);
+  --smart-head-gap: var(--space-12);                             /* head → filet → 1re ligne (compact) */
+  --smart-row-padding: var(--space-12);                          /* respiration verticale de chaque ligne (compact) */
+  --smart-col-gap: var(--space-12);                             /* lettre → texte */
+  --smart-letter-width: 1.25rem;                                /* colonne lettre (juste 1 glyphe) */
+  --smart-letter-size: var(--type-body-md-size);                /* lettre = taille texte (compact) */
+  --smart-letter-line: var(--type-body-sm-line);                /* = ligne du texte → lettre alignée sur la 1re ligne */
+  --smart-letter-weight: var(--font-weight-semibold);
+  --smart-letter-color: var(--color-text-muted);                /* label structurel = démoté (le contenu prime) */
+  /* Hiérarchie du contenu par importance réelle (Principe 3) : objectif > faits > justification.
+     Le signal porte sur TAILLE + GRAISSE + COULEUR combinées (la couleur seule ne se voit pas en dark). */
+  --smart-text-color: var(--color-text-secondary);              /* défaut (M/T = faits) */
+  --smart-text-lead-color: var(--color-text-primary);           /* S = l'objectif → blanc */
+  --smart-text-lead-weight: var(--font-weight-semibold);        /* + semibold → headline net */
+  --smart-text-muted-color: var(--color-text-muted);            /* A/R = justification → démoté (+ plus petit) */
+  --smart-dimension-gap: var(--space-4);                        /* label de dimension (Spécifique…) → contenu */
+  /* Justification (A/R) : réduite à 2 lignes, dépliée inline via « Voir plus » (accordéon). */
+  --smart-clamp-lines: 2;                                       /* A/R tronqués à 2 lignes par défaut */
+  --smart-more-gap: var(--space-8);                            /* texte → « Voir plus » */
+  --smart-more-icon-gap: var(--space-4);                       /* label → chevron */
+  --smart-more-icon-size: 0.875rem;
+  --smart-more-color: var(--color-text-secondary);             /* affordance lisible (pas muted → se voit) */
+  --smart-more-color-hover: var(--color-text-primary);
+
   /* Component tokens: Input number (champ numérique + steppers ↑↓) */
   --input-number-value-size: var(--type-h3-size);
   --input-number-value-line: var(--type-h3-line);
