@@ -116,6 +116,17 @@
   background: var(--button-subtle-background-active);
 }
 
+.ds-button--danger {
+  color: var(--button-danger-text);
+  background: var(--button-danger-background);
+  border: var(--button-danger-border);
+}
+
+.ds-button--danger:hover:not(:disabled) {
+  background: var(--button-danger-background-hover);
+  border: var(--button-danger-border-hover);
+}
+
 .ds-button--sm {
   min-height: var(--button-height-sm);
   padding: 0 var(--button-padding-inline-sm);

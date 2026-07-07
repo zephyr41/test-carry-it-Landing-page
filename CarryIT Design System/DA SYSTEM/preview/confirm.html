@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DA System — Confirmation</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="buttons.css">
+<link rel="stylesheet" href="modal.css">
+<link rel="stylesheet" href="confirm.css">
+</head>
+<body>
+  <main class="confirm-preview">
+    <section class="confirm-preview__shell">
+      <header class="confirm-preview__header">
+        <div class="type-label">Pattern</div>
+        <h1 class="type-h1">Confirmation</h1>
+        <p class="type-body-md">Avant une action importante ou irréversible, on demande de confirmer. Recette fixe : Modal (<code>role="alertdialog"</code>) + question + conséquence + <strong>[Annuler]</strong> + <strong>[action]</strong>. Destructif = bouton <strong>danger</strong> (rouge) ; validation = bouton <strong>inverse</strong> (blanc). Focus par défaut sur Annuler, Échap annule.</p>
+      </header>
+
+      <div class="confirm-preview__triggers">
+        <button type="button" class="ds-button ds-button--danger ds-button--sm"
+                data-confirm-open
+                data-title="Supprimer ce jalon ?"
+                data-desc="Cette action est définitive. Le jalon « Cadrage produit finalisé » et ses KPI seront supprimés."
+                data-action-label="Supprimer"
+                data-action-variant="danger">
+          Supprimer un jalon
+        </button>
+
+        <button type="button" class="ds-button ds-button--subtle ds-button--sm"
+                data-confirm-open
+                data-title="Valider ce jalon ?"
+                data-desc="Le jalon « Cadrage produit finalisé » passera en terminé. Tu pourras toujours le rouvrir depuis la timeline."
+                data-action-label="Valider"
+                data-action-variant="inverse">
+          Valider un jalon
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Pattern confirmation : un seul dialogue, configuré par le déclencheur. -->
+  <div class="ds-modal-backdrop" data-confirm hidden>
+    <div class="ds-modal ds-confirm" role="alertdialog" aria-modal="true" aria-labelledby="confirm-title" aria-describedby="confirm-desc">
+      <header class="ds-modal__header">
+        <h2 id="confirm-title" class="type-h2" data-confirm-title></h2>
+      </header>
+      <div class="ds-modal__body">
+        <p id="confirm-desc" class="ds-confirm__desc type-body-md" data-confirm-desc></p>
+      </div>
+      <footer class="ds-modal__footer">
+        <button type="button" class="ds-button ds-button--ghost ds-button--sm" data-confirm-cancel>Annuler</button>
+        <button type="button" class="ds-button ds-button--sm" data-confirm-action></button>
+      </footer>
+    </div>
+  </div>
+
+  <script src="confirm.js"></script>
+</body>
+</html>

@@ -213,6 +213,14 @@
   --button-subtle-text-hover: var(--color-text-secondary);
   --button-subtle-border: none;
 
+  /* Danger : action destructive (Supprimer). Rouge = status color, pas l'accent orange.
+     Bordé/restreint (pas de fill plein) — cohérent avec la retenue du système. */
+  --button-danger-text: var(--color-danger);
+  --button-danger-background: transparent;
+  --button-danger-border: var(--border-width-default) solid color-mix(in srgb, var(--color-danger) 40%, transparent);
+  --button-danger-background-hover: color-mix(in srgb, var(--color-danger) 12%, transparent);
+  --button-danger-border-hover: var(--border-width-default) solid var(--color-danger);
+
   --button-disabled-opacity: 0.3;
 
   /* Component tokens: Input */
@@ -527,6 +535,10 @@
   --smart-more-icon-size: 0.875rem;
   --smart-more-color: var(--color-text-secondary);             /* affordance lisible (pas muted → se voit) */
   --smart-more-color-hover: var(--color-text-primary);
+
+  /* Pattern tokens: Confirmation (dialogue Supprimer / Valider) */
+  --confirm-max-width: 420px;                                  /* dialogue compact (plus étroit qu'un form modal) */
+  --confirm-desc-color: var(--color-text-secondary);          /* texte de conséquence */
 
   /* Component tokens: Jalon détail (vue d'un jalon — meta + critère + KPI + valider) */
   --jalon-detail-max-width: 780px;                             /* vue détail (2 KPI côte à côte) — valeur preview */

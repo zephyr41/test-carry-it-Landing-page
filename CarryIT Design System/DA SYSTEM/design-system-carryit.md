@@ -900,11 +900,26 @@ Construit 2026-07-07. Présente l'objectif de l'utilisateur, décomposé en cinq
 6. **Accessibilité** : `<ol>` (les 5 dimensions), bouton `aria-expanded` synchronisé avec l'état déplié. Contraste muted vérifié > AA.
 7. **Preview** : `preview/smart.html` (+ `.css` + `.js`). Contenu de démo = l'objectif « 1000 clients mensuels ». Le déplié se déclenche depuis « Voir plus » d'Atteignable/Réaliste.
 
+## Patterns
+
+Comportements récurrents qui assemblent des composants pour une intention qui revient (distinct d'un composant = brique, et d'un template = écran). Le pattern fixe *quels composants, dans quel ordre, avec quelles règles* → même comportement partout dans l'app.
+
+### Confirmation ("Supprimer / Valider")
+
+Construit 2026-07-07.
+
+1. **Rôle** : avant une action **importante ou irréversible** (supprimer un jalon/tâche/KPI/mesure ; valider un jalon), demander de confirmer. Garantit que *chaque* action sensible de l'app se comporte pareil (même dialogue, même wording, même couleur, même clavier).
+2. **Recette** : Modal (`role="alertdialog"` + `aria-labelledby` + `aria-describedby`) > `.ds-modal__header` (question courte, ex « Supprimer ce jalon ? ») + `.ds-modal__body` (`.ds-confirm__desc` = la conséquence, ex « Cette action est définitive… ») + `.ds-modal__footer` (**[Annuler]** `ghost` + **[action]**).
+3. **Variantes d'action** : **destructif** → bouton **`ds-button--danger`** (rouge, status color — **pas** l'accent orange) ; **validation/positif** → bouton **`ds-button--inverse`** (blanc). Un seul dialogue (`.ds-confirm`), configuré par le déclencheur (`data-title` / `data-desc` / `data-action-label` / `data-action-variant`).
+4. **Règles** : **focus par défaut sur Annuler** (choix sûr), Échap annule, clic backdrop annule, focus renvoyé sur le déclencheur à la fermeture. Le dialogue est plus **étroit** qu'un form modal (`--confirm-max-width` 420px). L'action réelle (supprimer/valider) = câblage produit.
+5. **Nouveau composant** : bouton **`ds-button--danger`** ajouté (tokens `--button-danger-*`) — bordé/restreint (rouge texte + bordure, fond au hover), pas de fill plein, cohérent avec la retenue du système. Réutilisable pour toute action destructive.
+6. **Preview** : `preview/confirm.html` (+ `.css` + `.js`). Deux déclencheurs : « Supprimer un jalon » (destructif rouge) · « Valider un jalon » (positif blanc).
+
 ## À venir
 
 Sections non commencées (décisions produit pas encore prises, nécessitent une session dédiée) :
 - **5. Composants métier** — Effort modal (2026-07-04), KPI card (2026-07-05), Jalon card (2026-07-05), **SMART card (2026-07-07)** faits, cf. section "Composants métier". **Reste : le shell « Jalon détail »** (vue d'un jalon : header meta + titre + échéance + critère de validation + Valider ce jalon + ⋯ ; les KPI cards et la task list s'y branchent, déjà faites). Task row : déjà couvert par `task-list.html`/`task-list.css` (§6 "Task list imbriquée" — checkbox + grip + disclosure + titre + count + actions ⋯/supprimer, tâche ET sous-tâche). Reste éventuel : une carte de tâche « standalone » hors tableau si un écran le demande, pas nécessaire tant que la task list couvre le besoin. Distinct des composants de base ci-dessus (composant de base = brique atomique réutilisable partout, composant métier = assemblage propre à un écran CarryIT).
-- **6. Patterns** — création/modification/suppression/confirmation/filtre/recherche/tableau vide/chargement/erreur/onboarding/dashboard/détail.
+- **6. Patterns** — **Confirmation (2026-07-07) faite** (cf. section "Patterns"). Création/édition via form modal = instance faite (`effort-modal`), à formaliser. État vide = fait (`empty-state`). Feedback = fait (`toast`). **Reste : chargement/skeleton** (à faire maintenant), erreur de page (dépend du backend). **Filtre/recherche = écarté** (pas nécessaire pour CarryIT). Onboarding = plus tard.
 - **7. Templates d'écran** — Dashboard principal, page de détail, formulaire de création/édition. Dépend de la grille/largeurs de page réelles du produit, pas encore définies (cf. §4.3, largeurs de shell actuelles sont des valeurs de preview, pas des tokens produit — à faire au moment de construire les Templates, pas avant).
 - **8. Data visualisation** — Chart fait (2026-07-02), Calendar fait (2026-07-02), Calendar heatmap fait (2026-07-02), **KPI history fait (2026-07-05)** — historique/delta des `measures[]` en composant autonome (cf. section « KPI history »). **États vides Chart/history câblés (2026-07-06)** — réutilisent `.ds-empty-state`. Reste : un badge tendance/delta réutilisable hors contexte carte si un écran le demande.
 - **9. Accessibilité (règles globales consolidées)** — chaque composant a ses règles listées ci-dessus, mais pas de section transverse dédiée (tailles cliquables minimales, navigation clavier globale, aria patterns communs).

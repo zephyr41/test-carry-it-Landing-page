@@ -1,0 +1,39 @@
+.confirm-preview {
+  min-height: 100vh;
+  padding: var(--space-page-desktop);
+  color: var(--color-text-primary);
+}
+
+.confirm-preview__shell {
+  max-width: 720px;
+}
+
+.confirm-preview__header {
+  margin-bottom: var(--space-section-gap);
+}
+
+.confirm-preview__triggers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-16);
+}
+
+/* Le backdrop du Modal est en display:flex → `hidden` doit gagner pour le masquer. */
+.ds-modal-backdrop[hidden] {
+  display: none;
+}
+
+/* Dialogue de confirmation : plus étroit qu'un form modal. */
+.ds-confirm {
+  max-width: var(--confirm-max-width);
+}
+
+.ds-confirm__desc {
+  color: var(--confirm-desc-color);
+}
+
+@media (max-width: 640px) {
+  .confirm-preview {
+    padding: var(--space-page-mobile);
+  }
+}
