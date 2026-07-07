@@ -491,6 +491,9 @@
   --timeline-scrollbar-width: 6px;
   --timeline-scrollbar-thumb: color-mix(in srgb, var(--color-text-primary) 20%, transparent);
   --timeline-transition: background-color var(--motion-duration-fast) var(--motion-ease-out);
+  /* Rangée cliquable : padding de la zone de clic/surbrillance (bleed = marge négative égale) */
+  --timeline-row-padding: var(--space-8);                        /* padding interne + débord vertical/droit */
+  --timeline-row-lead-bleed: var(--space-4);                     /* débord gauche réduit → carte détachée du dot */
 
   /* Component tokens: Carte « Jalon actif » (stepper horizontal J1→Jn, réutilise les dots timeline) */
   --jalon-active-margin-top: var(--space-24);                    /* écart sous la timeline */

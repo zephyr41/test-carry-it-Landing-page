@@ -162,8 +162,11 @@
   /* padding (zone de clic + surbrillance) annulé par une marge négative égale
      (mêmes tokens --space-12/--space-8) : la hauteur de rangée et l'alignement
      du texte ne bougent pas. */
-  padding: var(--space-8);
-  margin: calc(var(--space-8) * -1);
+  /* surbrillance qui déborde le texte sans décaler la mise en page (bleed = marge négative = padding) ;
+     débord gauche réduit → la carte reste détachée du dot. */
+  padding: var(--timeline-row-padding);
+  margin-block: calc(var(--timeline-row-padding) * -1);
+  margin-inline: calc(var(--timeline-row-lead-bleed) * -1) calc(var(--timeline-row-padding) * -1);
   border-radius: var(--radius-md);
   transition: var(--timeline-transition);
 }
@@ -179,7 +182,7 @@
 }
 
 .ds-timeline__title {
-  color: var(--color-text-muted);   /* défaut = gris ; l'EN COURS passe en blanc (hiérarchie) */
+  color: var(--color-text-primary);   /* titre = blanc ; « Jalon x/5 » reste muted → hiérarchie par la couleur */
   font-weight: var(--font-weight-medium);
   /* 2 lignes max → rangées de hauteur uniforme (dots équidistants). Titre complet dans la carte détail. */
   display: -webkit-box;
@@ -213,6 +216,12 @@
 
 .ds-timeline__item.is-done .ds-timeline__year {
   color: var(--timeline-year-done-color);
+}
+
+/* Jalon validé : titre barré + estompé (fait = coché, ça recule). */
+.ds-timeline__item.is-done .ds-timeline__title {
+  text-decoration: line-through;
+  color: var(--color-text-muted);
 }
 
 /* ── État : jalon courant (« tu es ici ») : disque blanc + anneau concentrique, texte blanc ── */
