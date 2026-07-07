@@ -476,9 +476,9 @@
   --timeline-month-color: var(--color-text-muted);
   --timeline-jalon-color: var(--color-text-muted);
   /* Dot courant (double-dot : centre plein + anneau concentrique) */
-  --timeline-dot-size-current: 1rem;                             /* = base ; distinction via l'anneau, pas la taille */
+  --timeline-dot-size-current: 0.875rem;                         /* centre un peu plus petit ; distinction via l'anneau */
   --timeline-dot-current-ring-gap: 2px;                          /* gap fond entre centre et anneau */
-  --timeline-dot-current-ring-spread: 3.5px;                     /* épaisseur cumulée de l'anneau extérieur (fin) */
+  --timeline-dot-current-ring-spread: 3px;                       /* épaisseur cumulée de l'anneau extérieur (fin) */
   /* Coche « validé » creusée */
   --timeline-check-width: 0.1875rem;
   --timeline-check-height: 0.375rem;
