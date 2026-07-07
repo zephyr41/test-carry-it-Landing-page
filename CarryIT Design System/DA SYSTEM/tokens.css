@@ -536,6 +536,27 @@
   --smart-more-color: var(--color-text-secondary);             /* affordance lisible (pas muted → se voit) */
   --smart-more-color-hover: var(--color-text-primary);
 
+  /* Grid tokens: grille 12 colonnes fluides (dashboard, vues) — colonnes fluides, gouttière + marge fixes */
+  --grid-columns: 12;                                          /* desktop — se divise en 6+6, 4+4+4, 3+3+3+3, 8+4 */
+  --grid-columns-tablet: 8;                                    /* tablette (≤1024px) */
+  --grid-columns-mobile: 4;                                    /* mobile (≤600px) */
+  --grid-max-width: 1440px;                                    /* largeur max du contenu (dashboard) — pas d'étalement infini */
+  --grid-gutter: var(--space-24);                              /* gouttière desktop entre colonnes */
+  --grid-gutter-mobile: var(--space-16);                       /* gouttière resserrée sur petit écran */
+  --grid-page-padding: var(--space-page-desktop);              /* marge de page (bords écran) — 32 */
+  --grid-page-padding-mobile: var(--space-page-mobile);        /* marge de page mobile — 16 */
+  /* Breakpoints (référence — CSS @media ne peut pas lire var()) : tablette 1024px · mobile 600px */
+
+  /* View tokens: Jalon détail (vue d'un jalon — meta + critère + KPI + valider) */
+  --jalon-detail-max-width: 780px;                             /* vue détail (2 KPI côte à côte) — valeur preview */
+  --jalon-detail-head-gap: var(--space-8);                     /* meta → titre → échéance (groupe serré) */
+  --jalon-detail-section-gap: var(--space-32);                 /* entre les grands blocs */
+  --jalon-detail-label-gap: var(--space-16);                   /* label de section → son contenu */
+  --jalon-detail-kpi-gap: var(--space-16);                     /* entre les 2 cartes KPI */
+  --jalon-detail-rule-gap: var(--space-32);                    /* air autour des filets (haut/bas) */
+  --jalon-detail-meta-color: var(--color-text-muted);          /* ligne meta (Jalon x/n · Mois · statut) */
+  --jalon-detail-due-color: var(--color-text-muted);           /* échéance */
+
   /* Pattern tokens: Skeleton (placeholders de chargement) */
   --skeleton-base: color-mix(in srgb, var(--color-text-primary) 8%, transparent);   /* bloc au repos */
   --skeleton-sheen: color-mix(in srgb, var(--color-text-primary) 7%, transparent);  /* reflet qui balaie */
@@ -650,7 +671,8 @@
      hauteur confortable (le tassement vertical était une erreur). */
   --kpi-card-summary-padding: var(--space-16);
   --kpi-card-summary-title-gap: var(--space-8);
-  --kpi-card-summary-metric-gap: var(--space-8);
+  --kpi-card-summary-metric-gap: var(--space-4);          /* resserré (vue dashboard) — carte plus basse */
+  --kpi-card-summary-divider-gap: var(--space-8);         /* air autour du filet, scopé summary (24 en vue jalon) */
   --kpi-card-summary-value-size: var(--type-h1-size); /* 28px vs 40 en vue jalon */
   --kpi-card-summary-width: 260px; /* tuile résumé fixe, plus étroite que le jalon (360) */
   --kpi-card-summary-min-height: 150px;

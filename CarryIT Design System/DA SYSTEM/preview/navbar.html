@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DA System — Navbar</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="buttons.css">
+<link rel="stylesheet" href="tabs.css">
+<link rel="stylesheet" href="navbar.css">
+<style>
+  body {
+    background: var(--color-background);
+    color: var(--color-text-primary);
+    font-family: var(--font-body);
+  }
+  .navbar-preview__label {
+    max-width: var(--grid-max-width);
+    margin: var(--space-48) auto var(--space-16);
+    padding-inline: var(--grid-page-padding);
+    color: var(--color-text-muted);
+  }
+</style>
+</head>
+<body>
+
+  <div class="navbar-preview__label type-label">App shell — barre d'application (2 étages)</div>
+
+  <!-- ═══ Composant Navbar ═══ -->
+  <nav class="ds-navbar" aria-label="Barre principale">
+    <div class="ds-navbar__inner">
+
+      <!-- Étage haut -->
+      <div class="ds-navbar__top">
+        <div class="ds-navbar__left">
+          <a class="ds-navbar__brand" href="#" aria-label="CarryIT — accueil">
+            <span class="ds-navbar__brand-mark" aria-hidden="true">C</span>
+            <span class="ds-navbar__brand-name type-data-label">CARRY IT</span>
+          </a>
+          <span class="ds-navbar__sep" aria-hidden="true">/</span>
+          <button type="button" class="ds-navbar__project type-body-sm">
+            <span>Carry It</span>
+            <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5L7 8.5L10 5.5"/></svg>
+          </button>
+        </div>
+        <div class="ds-navbar__right">
+          <button type="button" class="ds-button ds-button--subtle ds-button--xs">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            Synchroniser
+          </button>
+          <button type="button" class="ds-navbar__user" aria-label="Menu utilisateur">
+            <span class="ds-navbar__user-avatar" aria-hidden="true">N</span>
+            <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5L7 8.5L10 5.5"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Étage bas : onglets de vue -->
+      <div class="ds-navbar__tabs">
+        <nav class="ds-tabs" role="tablist" aria-label="Vues du dashboard">
+          <button class="ds-tabs__tab is-active" role="tab" aria-selected="true">
+            <svg class="ds-tabs__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5M4 19h16M9 16V9M14 16V7M19 16v-4"/></svg>
+            <span>Long terme</span>
+          </button>
+          <button class="ds-tabs__tab" role="tab" aria-selected="false">
+            <svg class="ds-tabs__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V5m0 0l14 5L4 15"/></svg>
+            <span>Moyen terme</span>
+          </button>
+          <button class="ds-tabs__tab" role="tab" aria-selected="false">
+            <svg class="ds-tabs__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            <span>To-do</span>
+          </button>
+        </nav>
+      </div>
+
+    </div>
+  </nav>
+
+</body>
+</html>

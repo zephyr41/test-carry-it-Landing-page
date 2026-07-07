@@ -1,0 +1,58 @@
+/* ============================================================
+   Grid — système 12 colonnes fluides
+   Colonnes fluides (fr), gouttière + marge fixes (tokens).
+   Responsive : 12 col desktop → 8 tablette (≤1024) → 4 mobile (≤600).
+   Une carte se pose sur N colonnes via .ds-col-N.
+   ============================================================ */
+
+/* Conteneur de page : centre le contenu, applique marge d'écran + max-width. */
+.ds-container {
+  width: 100%;
+  max-width: calc(var(--grid-max-width) + var(--grid-page-padding) * 2);
+  margin-inline: auto;
+  padding-inline: var(--grid-page-padding);
+}
+
+/* La grille : 12 pistes fluides, gouttière fixe. */
+.ds-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-columns), 1fr);
+  gap: var(--grid-gutter);
+}
+
+/* Spans desktop — 1 à 12. */
+.ds-col-1  { grid-column: span 1; }
+.ds-col-2  { grid-column: span 2; }
+.ds-col-3  { grid-column: span 3; }
+.ds-col-4  { grid-column: span 4; }
+.ds-col-5  { grid-column: span 5; }
+.ds-col-6  { grid-column: span 6; }
+.ds-col-7  { grid-column: span 7; }
+.ds-col-8  { grid-column: span 8; }
+.ds-col-9  { grid-column: span 9; }
+.ds-col-10 { grid-column: span 10; }
+.ds-col-11 { grid-column: span 11; }
+.ds-col-12 { grid-column: span 12; }
+
+/* Occupe toute la largeur quelle que soit la grille courante. */
+.ds-col-full { grid-column: 1 / -1; }
+
+/* ---- Tablette : grille à 8 colonnes. Un span > 8 est clampé à la ligne pleine. ---- */
+@media (max-width: 1024px) {
+  .ds-grid { grid-template-columns: repeat(var(--grid-columns-tablet), 1fr); }
+  .ds-col-9, .ds-col-10, .ds-col-11, .ds-col-12 { grid-column: 1 / -1; }
+}
+
+/* ---- Mobile : grille à 4 colonnes, gouttière + marge resserrées. ---- */
+@media (max-width: 600px) {
+  .ds-container {
+    padding-inline: var(--grid-page-padding-mobile);
+  }
+  .ds-grid {
+    grid-template-columns: repeat(var(--grid-columns-mobile), 1fr);
+    gap: var(--grid-gutter-mobile);
+  }
+  /* Au-delà de 4, on empile en pleine largeur (lisibilité mobile). */
+  .ds-col-5, .ds-col-6, .ds-col-7, .ds-col-8,
+  .ds-col-9, .ds-col-10, .ds-col-11, .ds-col-12 { grid-column: 1 / -1; }
+}

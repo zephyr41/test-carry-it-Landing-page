@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DA System — Grid</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="grid.css">
+<style>
+  body {
+    background: var(--color-background);
+    color: var(--color-text-primary);
+    font-family: var(--font-body);
+  }
+  .grid-preview { padding-block: var(--space-48); }
+  .grid-preview__header { margin-bottom: var(--space-48); }
+  .grid-preview__group { margin-bottom: var(--space-48); }
+  .grid-preview__group-label {
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-16);
+  }
+
+  /* Cellule de démo : bloc qui matérialise un span. */
+  .grid-cell {
+    background: var(--color-surface-raised);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-sm);
+    padding-block: var(--space-16);
+    text-align: center;
+    color: var(--color-text-secondary);
+  }
+
+  /* Ruler : les 12 colonnes brutes pour visualiser la trame. */
+  .grid-ruler .grid-cell {
+    background: color-mix(in srgb, var(--color-text-primary) 6%, transparent);
+    border-style: dashed;
+  }
+</style>
+</head>
+<body>
+  <main class="ds-container grid-preview">
+
+    <header class="grid-preview__header">
+      <div class="type-label">Layout</div>
+      <h1 class="type-h1">Grid — 12 colonnes fluides</h1>
+    </header>
+
+    <!-- La trame : 12 colonnes égales -->
+    <section class="grid-preview__group">
+      <div class="grid-preview__group-label type-label">La trame — 12 colonnes (desktop) · 8 (tablette) · 4 (mobile)</div>
+      <div class="ds-grid grid-ruler">
+        <div class="ds-col-1 grid-cell type-body-sm">1</div>
+        <div class="ds-col-1 grid-cell type-body-sm">2</div>
+        <div class="ds-col-1 grid-cell type-body-sm">3</div>
+        <div class="ds-col-1 grid-cell type-body-sm">4</div>
+        <div class="ds-col-1 grid-cell type-body-sm">5</div>
+        <div class="ds-col-1 grid-cell type-body-sm">6</div>
+        <div class="ds-col-1 grid-cell type-body-sm">7</div>
+        <div class="ds-col-1 grid-cell type-body-sm">8</div>
+        <div class="ds-col-1 grid-cell type-body-sm">9</div>
+        <div class="ds-col-1 grid-cell type-body-sm">10</div>
+        <div class="ds-col-1 grid-cell type-body-sm">11</div>
+        <div class="ds-col-1 grid-cell type-body-sm">12</div>
+      </div>
+    </section>
+
+    <!-- Moitiés -->
+    <section class="grid-preview__group">
+      <div class="grid-preview__group-label type-label">Moitiés — 6 + 6</div>
+      <div class="ds-grid">
+        <div class="ds-col-6 grid-cell type-body-sm">span 6</div>
+        <div class="ds-col-6 grid-cell type-body-sm">span 6</div>
+      </div>
+    </section>
+
+    <!-- Tiers -->
+    <section class="grid-preview__group">
+      <div class="grid-preview__group-label type-label">Tiers — 4 + 4 + 4</div>
+      <div class="ds-grid">
+        <div class="ds-col-4 grid-cell type-body-sm">span 4</div>
+        <div class="ds-col-4 grid-cell type-body-sm">span 4</div>
+        <div class="ds-col-4 grid-cell type-body-sm">span 4</div>
+      </div>
+    </section>
+
+    <!-- Quarts -->
+    <section class="grid-preview__group">
+      <div class="grid-preview__group-label type-label">Quarts — 3 + 3 + 3 + 3</div>
+      <div class="ds-grid">
+        <div class="ds-col-3 grid-cell type-body-sm">span 3</div>
+        <div class="ds-col-3 grid-cell type-body-sm">span 3</div>
+        <div class="ds-col-3 grid-cell type-body-sm">span 3</div>
+        <div class="ds-col-3 grid-cell type-body-sm">span 3</div>
+      </div>
+    </section>
+
+    <!-- Pattern dashboard : 8 + 4 -->
+    <section class="grid-preview__group">
+      <div class="grid-preview__group-label type-label">Pattern dashboard — 8 + 4 (graphique large + colonne latérale)</div>
+      <div class="ds-grid">
+        <div class="ds-col-8 grid-cell type-body-sm">span 8 — graphique</div>
+        <div class="ds-col-4 grid-cell type-body-sm">span 4 — SMART</div>
+      </div>
+    </section>
+
+  </main>
+</body>
+</html>
