@@ -503,6 +503,7 @@
   --jalon-active-step-gap: var(--space-8);                       /* dot → label */
 
   /* Component tokens: SMART card (objectif — 5 lignes S/M/A/R/T) */
+  --smart-shell-max-width: 320px;                               /* colonne étroite (panneau latéral) — valeur de preview */
   --smart-padding: var(--card-padding);
   --smart-head-gap: var(--space-12);                             /* head → filet → 1re ligne (compact) */
   --smart-row-padding: var(--space-12);                          /* respiration verticale de chaque ligne (compact) */

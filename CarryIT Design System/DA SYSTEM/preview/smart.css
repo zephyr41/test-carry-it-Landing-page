@@ -5,7 +5,7 @@
 }
 
 .smart-preview__shell {
-  max-width: 320px;   /* colonne étroite (panneau latéral) : compact, format portrait */
+  max-width: var(--smart-shell-max-width);   /* colonne étroite (panneau latéral) : compact, format portrait */
 }
 
 .smart-preview__header {
