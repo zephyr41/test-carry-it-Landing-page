@@ -536,6 +536,15 @@
   --smart-more-color: var(--color-text-secondary);             /* affordance lisible (pas muted → se voit) */
   --smart-more-color-hover: var(--color-text-primary);
 
+  /* Pattern tokens: Skeleton (placeholders de chargement) */
+  --skeleton-base: color-mix(in srgb, var(--color-text-primary) 8%, transparent);   /* bloc au repos */
+  --skeleton-sheen: color-mix(in srgb, var(--color-text-primary) 7%, transparent);  /* reflet qui balaie */
+  --skeleton-radius: var(--radius-sm);
+  --skeleton-text-radius: var(--radius-full);                 /* lignes de texte = arrondi plein */
+  --skeleton-text-height: 0.75rem;                            /* hauteur d'une ligne de texte simulée */
+  --skeleton-line-gap: var(--space-8);                        /* entre 2 lignes simulées */
+  --skeleton-duration: 1.4s;                                  /* vitesse du balayage */
+
   /* Pattern tokens: Confirmation (dialogue Supprimer / Valider) */
   --confirm-max-width: 420px;                                  /* dialogue compact (plus étroit qu'un form modal) */
   --confirm-desc-color: var(--color-text-secondary);          /* texte de conséquence */

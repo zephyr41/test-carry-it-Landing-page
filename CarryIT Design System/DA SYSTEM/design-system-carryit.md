@@ -915,11 +915,22 @@ Construit 2026-07-07.
 5. **Nouveau composant** : bouton **`ds-button--danger`** ajouté (tokens `--button-danger-*`) — bordé/restreint (rouge texte + bordure, fond au hover), pas de fill plein, cohérent avec la retenue du système. Réutilisable pour toute action destructive.
 6. **Preview** : `preview/confirm.html` (+ `.css` + `.js`). Deux déclencheurs : « Supprimer un jalon » (destructif rouge) · « Valider un jalon » (positif blanc).
 
+### Skeleton ("Chargement")
+
+Construit 2026-07-07.
+
+1. **Rôle** : pendant le fetch de la donnée, afficher des **placeholders qui miment la forme du contenu réel** (pas un spinner générique) → l'utilisateur perçoit la structure qui arrive, le chargement paraît plus court. À afficher tant que la donnée n'est pas là, remplacé par le vrai contenu au chargement.
+2. **Primitive** : `.ds-skeleton` (bloc gris `--skeleton-base` + un **reflet** `--skeleton-sheen` qui balaie via `background-position`, `@keyframes ds-skeleton-sheen`). Variantes `--text` (ligne, arrondi plein, hauteur `--skeleton-text-height`), `--circle` (avatar/dot), + largeurs utilitaires `--w-full/-3-4/-1-2/-1-3/-1-4` (évite tout `style=""` inline dans les placeholders).
+3. **Assemblage** : on reproduit la forme de l'écran chargé — ex `.skeleton-kpi` (mime `ds-kpi-card` : eyebrow + nom + valeur + pied) dans une **carte définie**, `.skeleton-list` (rangées avatar + 2 lignes). Le squelette copie la vraie mise en page pour éviter le saut visuel à l'arrivée du contenu.
+4. **Accessibilité** : `@media (prefers-reduced-motion: reduce)` → balayage coupé, bloc statique. Les conteneurs placeholder portent `aria-hidden="true"` (rien à annoncer tant que vide).
+5. **Nature** : pattern pur CSS (zéro JS). Tokens `--skeleton-*`. Monochrome, token-pur.
+6. **Preview** : `preview/skeleton.html` (+ `.css`). Primitives · 2 cartes KPI en chargement · liste en chargement.
+
 ## À venir
 
 Sections non commencées (décisions produit pas encore prises, nécessitent une session dédiée) :
 - **5. Composants métier** — Effort modal (2026-07-04), KPI card (2026-07-05), Jalon card (2026-07-05), **SMART card (2026-07-07)** faits, cf. section "Composants métier". **Reste : le shell « Jalon détail »** (vue d'un jalon : header meta + titre + échéance + critère de validation + Valider ce jalon + ⋯ ; les KPI cards et la task list s'y branchent, déjà faites). Task row : déjà couvert par `task-list.html`/`task-list.css` (§6 "Task list imbriquée" — checkbox + grip + disclosure + titre + count + actions ⋯/supprimer, tâche ET sous-tâche). Reste éventuel : une carte de tâche « standalone » hors tableau si un écran le demande, pas nécessaire tant que la task list couvre le besoin. Distinct des composants de base ci-dessus (composant de base = brique atomique réutilisable partout, composant métier = assemblage propre à un écran CarryIT).
-- **6. Patterns** — **Confirmation (2026-07-07) faite** (cf. section "Patterns"). Création/édition via form modal = instance faite (`effort-modal`), à formaliser. État vide = fait (`empty-state`). Feedback = fait (`toast`). **Reste : chargement/skeleton** (à faire maintenant), erreur de page (dépend du backend). **Filtre/recherche = écarté** (pas nécessaire pour CarryIT). Onboarding = plus tard.
+- **6. Patterns** — **Confirmation + Skeleton (2026-07-07) faits** (cf. section "Patterns"). Création/édition via form modal = instance faite (`effort-modal`), à formaliser. État vide = fait (`empty-state`). Feedback = fait (`toast`). **Reste : erreur de page** (dépend du backend, plus tard). **Filtre/recherche = écarté** (pas nécessaire pour CarryIT). Onboarding = plus tard.
 - **7. Templates d'écran** — Dashboard principal, page de détail, formulaire de création/édition. Dépend de la grille/largeurs de page réelles du produit, pas encore définies (cf. §4.3, largeurs de shell actuelles sont des valeurs de preview, pas des tokens produit — à faire au moment de construire les Templates, pas avant).
 - **8. Data visualisation** — Chart fait (2026-07-02), Calendar fait (2026-07-02), Calendar heatmap fait (2026-07-02), **KPI history fait (2026-07-05)** — historique/delta des `measures[]` en composant autonome (cf. section « KPI history »). **États vides Chart/history câblés (2026-07-06)** — réutilisent `.ds-empty-state`. Reste : un badge tendance/delta réutilisable hors contexte carte si un écran le demande.
 - **9. Accessibilité (règles globales consolidées)** — chaque composant a ses règles listées ci-dessus, mais pas de section transverse dédiée (tailles cliquables minimales, navigation clavier globale, aria patterns communs).

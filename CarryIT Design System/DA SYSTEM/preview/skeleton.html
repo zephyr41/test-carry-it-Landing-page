@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DA System — Skeleton</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="skeleton.css">
+</head>
+<body>
+  <main class="skeleton-preview">
+    <section class="skeleton-preview__shell">
+      <header class="skeleton-preview__header">
+        <div class="type-label">Pattern</div>
+        <h1 class="type-h1">Skeleton (chargement)</h1>
+        <p class="type-body-md">Pendant qu'on charge la donnée, on affiche des <strong>placeholders</strong> qui miment la forme du contenu réel (pas un spinner générique). Un reflet balaie doucement le bloc. Primitives <code>.ds-skeleton</code> (+ <code>--text</code>, <code>--circle</code>, largeurs), assemblées pour reproduire chaque écran. Respecte <code>prefers-reduced-motion</code>.</p>
+      </header>
+
+      <!-- Primitives -->
+      <section class="skeleton-section">
+        <span class="skeleton-section__label type-data-label">Primitives</span>
+        <div class="ds-skeleton-lines">
+          <span class="ds-skeleton ds-skeleton--text ds-skeleton--w-1-3"></span>
+          <span class="ds-skeleton ds-skeleton--text ds-skeleton--w-full"></span>
+          <span class="ds-skeleton ds-skeleton--text ds-skeleton--w-3-4"></span>
+        </div>
+      </section>
+
+      <!-- Carte KPI en chargement -->
+      <section class="skeleton-section">
+        <span class="skeleton-section__label type-data-label">Cartes KPI en chargement</span>
+        <div class="skeleton-grid">
+
+          <article class="skeleton-kpi" aria-hidden="true">
+            <div class="skeleton-kpi__head">
+              <span class="ds-skeleton ds-skeleton--text ds-skeleton--w-1-4"></span>
+              <span class="ds-skeleton ds-skeleton--text ds-skeleton--w-3-4"></span>
+            </div>
+            <span class="ds-skeleton skeleton-kpi__value ds-skeleton--w-1-2"></span>
+            <span class="ds-skeleton ds-skeleton--text ds-skeleton--w-1-2"></span>
+          </article>
+
+          <article class="skeleton-kpi" aria-hidden="true">
+            <div class="skeleton-kpi__head">
+              <span class="ds-skeleton ds-skeleton--text ds-skeleton--w-1-4"></span>
+              <span class="ds-skeleton ds-skeleton--text ds-skeleton--w-3-4"></span>
+            </div>
+            <span class="ds-skeleton skeleton-kpi__value ds-skeleton--w-1-2"></span>
+            <span class="ds-skeleton ds-skeleton--text ds-skeleton--w-1-2"></span>
+          </article>
+
+        </div>
+      </section>
+
+      <!-- Liste en chargement -->
+      <section class="skeleton-section">
+        <span class="skeleton-section__label type-data-label">Liste en chargement</span>
+        <div class="skeleton-list" aria-hidden="true">
+          <div class="skeleton-list__row">
+            <span class="ds-skeleton ds-skeleton--circle skeleton-list__avatar"></span>
+            <div class="skeleton-list__body">
+              <span class="ds-skeleton ds-skeleton--text ds-skeleton--w-1-2"></span>
+              <span class="ds-skeleton ds-skeleton--text ds-skeleton--w-1-4"></span>
+            </div>
+          </div>
+          <div class="skeleton-list__row">
+            <span class="ds-skeleton ds-skeleton--circle skeleton-list__avatar"></span>
+            <div class="skeleton-list__body">
+              <span class="ds-skeleton ds-skeleton--text ds-skeleton--w-3-4"></span>
+              <span class="ds-skeleton ds-skeleton--text ds-skeleton--w-1-3"></span>
+            </div>
+          </div>
+          <div class="skeleton-list__row">
+            <span class="ds-skeleton ds-skeleton--circle skeleton-list__avatar"></span>
+            <div class="skeleton-list__body">
+              <span class="ds-skeleton ds-skeleton--text ds-skeleton--w-1-2"></span>
+              <span class="ds-skeleton ds-skeleton--text ds-skeleton--w-1-4"></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </section>
+  </main>
+</body>
+</html>
