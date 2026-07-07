@@ -55,6 +55,27 @@
   margin-top: 0;
 }
 
+/* État vide dans une tuile KPI compacte : l'empty-state est dimensionné pour un stage
+   autonome (padding-block 64 = +128px) → il gonfle la tuile à ~306px et casse le rythme
+   (réf = tuiles fines ~150px en haut, gros contenu en bas). On le rend compact + centré. */
+.dashboard-final__kpi-row .ds-empty-state {
+  padding-block: 0;
+  gap: var(--space-8);
+  max-width: none;
+}
+
+.dashboard-final__kpi-row .ds-empty-state__icon {
+  width: var(--space-32);
+  height: var(--space-32);
+  margin-bottom: 0;
+}
+
+.dashboard-final__kpi-row > *:has(.ds-empty-state) {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
 /* Timeline (liste) masquée : présente pour que timeline.js rende le stepper, mais pas affichée ici. */
 .dashboard-final__timeline-source {
   display: none;

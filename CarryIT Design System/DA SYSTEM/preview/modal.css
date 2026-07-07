@@ -18,6 +18,11 @@
   background: var(--modal-backdrop);
 }
 
+/* État fermé : le backdrop porte l'attribut [hidden]. */
+.ds-modal-backdrop[hidden] {
+  display: none;
+}
+
 .ds-modal {
   width: 100%;
   max-width: var(--modal-max-width);

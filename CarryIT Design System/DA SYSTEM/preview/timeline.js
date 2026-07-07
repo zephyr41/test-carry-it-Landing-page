@@ -4,36 +4,19 @@
 
 (() => {
   const STORAGE_KEY = 'carryit_v1_jalons';
-  const SEED_VERSION_KEY = 'carryit_v1_jalons_seed_version';
-  const SEED_VERSION = 6; // bump → réinjecte le seed de démo (écrase l'ancien état une fois)
   const MONTHS_FR = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
 
-  // Données de démo (seed) : ordre chronologique (haut = le plus proche/tôt, bas = le plus lointain).
-  // Jalon 1 validé → on est au jalon 2.
-  const SEED = [
-    { id: 'j1', date: '2026-04-01', titre: 'cadrage produit finalisé', statut: 'completed' },
-    { id: 'j2', date: '2026-05-01', titre: 'POC (V0)', statut: 'pending' },
-    { id: 'j3', date: '2026-06-01', titre: 'MVP carry it PRODUCTION', statut: 'pending' },
-    { id: 'j4', date: '2026-07-01', titre: 'Lancement V1.0 (MMP). Premiers revenus/KPIs significatifs.', statut: 'pending' },
-    { id: 'j5', date: '2026-09-01', titre: '1000 clients mensuels', statut: 'pending' },
-  ];
-
+  // Vide pur : on lit localStorage tel quel. Aucun seed. Les jalons sont créés
+  // dans l'onboarding (objectif.html), jamais injectés ici.
   function loadJalons() {
     try {
-      const version = Number(localStorage.getItem(SEED_VERSION_KEY));
-      if (version === SEED_VERSION) {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (raw) {
-          const parsed = JSON.parse(raw);
-          if (Array.isArray(parsed) && parsed.length) return parsed;
-        }
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) return parsed;
       }
-    } catch (e) { /* version/JSON invalide → on réinjecte le seed */ }
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(SEED));
-      localStorage.setItem(SEED_VERSION_KEY, String(SEED_VERSION));
-    } catch (e) { /* stockage indisponible */ }
-    return SEED;
+    } catch (e) { /* JSON invalide → vide */ }
+    return [];
   }
 
   function currentIndex(jalons) {
@@ -81,11 +64,25 @@
   function renderActiveCard(jalons, curIdx, total) {
     const card = document.querySelector('[data-jalon-active]');
     if (!card) return;
-    if (curIdx >= total) { card.hidden = true; return; } // tout validé → aucun jalon actif
+    if (curIdx >= total) {
+      // Aucun jalon actif → état vide DS. La carte RESTE dans la grille (4 cartes = 12 col),
+      // sinon la rangée perd une colonne et la grille casse.
+      card.hidden = false;
+      card.innerHTML =
+        '<div class="ds-empty-state">' +
+          '<svg class="ds-empty-state__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5M4 19h16M9 16V9M14 16V7M19 16v-4"/></svg>' +
+          '<h3 class="type-h3 ds-empty-state__title">Aucun jalon actif</h3>' +
+          '<p class="ds-empty-state__description type-body-md">Les jalons se créent dans l’onboarding.</p>' +
+        '</div>';
+      return;
+    }
     card.hidden = false;
-    card.querySelector('[data-active-eyebrow]').textContent = `Jalon actif · ${curIdx + 1}/${total}`;
-    card.querySelector('[data-active-title]').textContent = jalons[curIdx].titre;
+    const eyebrow = card.querySelector('[data-active-eyebrow]');
+    const title = card.querySelector('[data-active-title]');
     const steps = card.querySelector('[data-active-steps]');
+    if (!eyebrow || !title || !steps) return;
+    eyebrow.textContent = `Jalon actif · ${curIdx + 1}/${total}`;
+    title.textContent = jalons[curIdx].titre;
     steps.textContent = '';
     jalons.forEach((j, i) => {
       const li = el('li', 'ds-jalon-active__step');

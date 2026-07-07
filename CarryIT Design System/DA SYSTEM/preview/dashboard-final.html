@@ -17,6 +17,8 @@
 <link rel="stylesheet" href="smart.css">
 <link rel="stylesheet" href="grid.css">
 <link rel="stylesheet" href="navbar.css">
+<link rel="stylesheet" href="inputs.css">
+<link rel="stylesheet" href="modal.css">
 <link rel="stylesheet" href="dashboard-final.css">
 </head>
 <body>
@@ -40,7 +42,7 @@
             </button>
           </div>
           <div class="ds-navbar__right">
-            <button type="button" class="ds-button ds-button--subtle ds-button--xs">
+            <button type="button" class="ds-button ds-button--subtle ds-button--xs" data-sync-open>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
               Synchroniser
             </button>
@@ -77,22 +79,8 @@
       <!-- Ligne des 4 cartes -->
       <section class="ds-grid dashboard-final__kpi-row">
 
-        <!-- 1 · KPI du SMART (blanc) -->
-        <article class="ds-col-3 ds-kpi-card ds-kpi-card--summary ds-kpi-card--hero">
-          <div class="ds-kpi-card__labels">
-            <span class="ds-kpi-card__eyebrow type-data-label">KPI de l'objectif</span>
-            <span class="ds-kpi-card__name type-body-sm">Nombre de clients payants</span>
-          </div>
-          <div class="ds-kpi-card__metric">
-            <span class="ds-kpi-card__value">128</span>
-            <span class="ds-kpi-card__target type-body-md">/ 1000</span>
-          </div>
-          <hr class="ds-kpi-card__divider">
-          <div class="ds-kpi-card__footer">
-            <span class="type-body-sm ds-delta">872 restants</span>
-            <span class="ds-kpi-card__meta type-body-sm">Il y a 2j</span>
-          </div>
-        </article>
+        <!-- 1 · KPI de l'objectif (rempli par dashboard-final.js depuis localStorage) -->
+        <article class="ds-col-3 ds-kpi-card ds-kpi-card--summary ds-kpi-card--hero" data-objective-card></article>
 
         <!-- 2 · Jalon actif (stepper — carte du bas de timeline.html, rendue par timeline.js) -->
         <article class="ds-col-3 ds-jalon-active" data-jalon-active hidden>
@@ -101,39 +89,11 @@
           <ol class="ds-jalon-active__steps" data-active-steps></ol>
         </article>
 
-        <!-- 3 · KPI résultat -->
-        <article class="ds-col-3 ds-kpi-card ds-kpi-card--summary">
-          <div class="ds-kpi-card__labels">
-            <span class="ds-kpi-card__eyebrow type-data-label">Effort</span>
-            <span class="ds-kpi-card__name type-body-sm">Tests utilisateurs sur la V0</span>
-          </div>
-          <div class="ds-kpi-card__metric">
-            <span class="ds-kpi-card__value">5</span>
-            <span class="ds-kpi-card__target type-body-md">/ 15 testeurs</span>
-          </div>
-          <hr class="ds-kpi-card__divider">
-          <div class="ds-kpi-card__footer">
-            <span class="type-body-sm ds-delta">10 restants</span>
-            <span class="ds-kpi-card__meta type-body-sm">Il y a 27j</span>
-          </div>
-        </article>
+        <!-- 3 · KPI effort du jalon actif (rempli par dashboard-final.js) -->
+        <article class="ds-col-3 ds-kpi-card ds-kpi-card--summary" data-effort-card></article>
 
-        <!-- 4 · KPI résultat -->
-        <article class="ds-col-3 ds-kpi-card ds-kpi-card--summary">
-          <div class="ds-kpi-card__labels">
-            <span class="ds-kpi-card__eyebrow type-data-label">Résultat</span>
-            <span class="ds-kpi-card__name type-body-sm">Documentations techniques</span>
-          </div>
-          <div class="ds-kpi-card__metric">
-            <span class="ds-kpi-card__value">3</span>
-            <span class="ds-kpi-card__target type-body-md">/ 3 documents</span>
-          </div>
-          <hr class="ds-kpi-card__divider">
-          <div class="ds-kpi-card__footer">
-            <span class="type-body-sm ds-delta">Objectif atteint</span>
-            <span class="ds-kpi-card__meta type-body-sm">Il y a 12j</span>
-          </div>
-        </article>
+        <!-- 4 · KPI résultat du jalon actif (rempli par dashboard-final.js) -->
+        <article class="ds-col-3 ds-kpi-card ds-kpi-card--summary" data-result-card></article>
 
       </section>
 
@@ -145,7 +105,7 @@
           <div class="ds-chart-header">
             <div class="ds-chart-heading">
               <span class="type-data-label ds-chart-eyebrow">KPI global</span>
-              <span class="type-h2 ds-chart-title">Nombre de clients payants</span>
+              <span class="type-h2 ds-chart-title"></span>
             </div>
             <button type="button" class="ds-button ds-button--subtle ds-button--xs ds-chart-add-btn">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
@@ -157,55 +117,8 @@
           </div>
         </article>
 
-        <!-- SMART card -->
-        <article class="ds-col-4 ds-smart">
-          <header class="ds-smart__head">
-            <span class="ds-smart__label type-data-label">SMART</span>
-            <button type="button" class="ds-button ds-button--subtle ds-button--xs">
-              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
-              </svg>
-              Modifier
-            </button>
-          </header>
-          <ol class="ds-smart__list">
-            <li class="ds-smart__row">
-              <span class="ds-smart__letter">S</span>
-              <div class="ds-smart__body">
-                <span class="ds-smart__dimension type-data-label">Spécifique</span>
-                <p class="ds-smart__text ds-smart__text--lead type-body-md">Atteindre 1000 client mensuel sur Carry it qui paye 8e par mois</p>
-              </div>
-            </li>
-            <li class="ds-smart__row">
-              <span class="ds-smart__letter">M</span>
-              <div class="ds-smart__body">
-                <span class="ds-smart__dimension type-data-label">Mesurable</span>
-                <p class="ds-smart__text ds-smart__text--fact type-body-sm">[Nb Clients] Nombre de client payant · cible : 1000</p>
-              </div>
-            </li>
-            <li class="ds-smart__row">
-              <span class="ds-smart__letter">A</span>
-              <div class="ds-smart__body">
-                <span class="ds-smart__dimension type-data-label">Atteignable</span>
-                <p class="ds-smart__text ds-smart__text--muted ds-smart__text--clamp type-body-sm">Objectif atteignable en mettant en place une stratégie d'acquisition progressive : 50 clients en 2025, 300 en mars 2026, 1000 en septembre 2026, via marketing organique, partenariats et automatisation du funnel d'inscription.</p>
-              </div>
-            </li>
-            <li class="ds-smart__row">
-              <span class="ds-smart__letter">R</span>
-              <div class="ds-smart__body">
-                <span class="ds-smart__dimension type-data-label">Réaliste</span>
-                <p class="ds-smart__text ds-smart__text--muted ds-smart__text--clamp type-body-sm">Objectif ambitieux mais cohérent avec une période de 22 mois : phase bêta (3-4 mois), lancement (T2 2026), puis montée progressive jusqu'à 1000 abonnés. Le marché du développement personnel et de la productivité SaaS permet ce type de traction avec un bon positionnement et des coûts faibles d'acquisition.</p>
-              </div>
-            </li>
-            <li class="ds-smart__row">
-              <span class="ds-smart__letter">T</span>
-              <div class="ds-smart__body">
-                <span class="ds-smart__dimension type-data-label">Temporel</span>
-                <p class="ds-smart__text ds-smart__text--fact type-body-sm">23 septembre 2026</p>
-              </div>
-            </li>
-          </ol>
-        </article>
+        <!-- SMART card (remplie par dashboard-final.js depuis localStorage) -->
+        <article class="ds-col-4 ds-smart" data-smart-card></article>
 
       </section>
 
@@ -221,9 +134,48 @@
     </article>
   </main>
 
+  <!-- Modal Synchroniser : export/import manuel des données (localStorage), sans backend. -->
+  <div class="ds-modal-backdrop" data-sync-modal hidden>
+    <div class="ds-modal" role="dialog" aria-modal="true" aria-labelledby="sync-title">
+      <header class="ds-modal__header">
+        <div class="ds-modal__header-row">
+          <h2 id="sync-title" class="type-h2">Synchroniser</h2>
+          <button type="button" class="ds-modal__close" aria-label="Fermer" data-sync-close>
+            <svg class="ds-modal__close-icon" viewBox="0 0 16 16" aria-hidden="true">
+              <path d="M4 4L12 12M12 4L4 12" />
+            </svg>
+          </button>
+        </div>
+        <p class="ds-modal__subtitle type-body-sm">Transfère tes données entre navigateurs : exporte ici, importe là-bas.</p>
+      </header>
+
+      <div class="ds-modal__body">
+        <div class="input-group">
+          <label class="type-label">Exporter</label>
+          <p class="ds-modal__subtitle type-body-sm">Télécharge ton objectif SMART + tes jalons dans un fichier <code>.json</code>.</p>
+          <button type="button" class="ds-button ds-button--subtle ds-button--sm" data-sync-export>Télécharger l'export (.json)</button>
+        </div>
+
+        <div class="input-group">
+          <label class="type-label" for="sync-file">Importer</label>
+          <p class="ds-modal__subtitle type-body-sm">Charge un fichier <code>.json</code> exporté. Ça remplace tes données actuelles.</p>
+          <input id="sync-file" class="ds-input" type="file" accept="application/json,.json" data-sync-file>
+          <p class="ds-modal__subtitle type-body-sm" data-sync-msg hidden></p>
+        </div>
+      </div>
+
+      <footer class="ds-modal__footer">
+        <button type="button" class="ds-button ds-button--primary ds-button--sm" data-sync-import disabled>Importer</button>
+      </footer>
+    </div>
+  </div>
+
   <script src="timeline.js"></script>
   <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+  <script src="dashboard-data.js"></script>
   <script src="chart.js"></script>
+  <script src="dashboard-final.js"></script>
+  <script src="sync.js"></script>
   <script src="smart.js"></script>
 </body>
 </html>
