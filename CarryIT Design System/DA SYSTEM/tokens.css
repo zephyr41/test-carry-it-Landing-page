@@ -528,6 +528,16 @@
   --smart-more-color: var(--color-text-secondary);             /* affordance lisible (pas muted → se voit) */
   --smart-more-color-hover: var(--color-text-primary);
 
+  /* Component tokens: Jalon détail (vue d'un jalon — meta + critère + KPI + valider) */
+  --jalon-detail-max-width: 780px;                             /* vue détail (2 KPI côte à côte) — valeur preview */
+  --jalon-detail-head-gap: var(--space-8);                     /* meta → titre → échéance (groupe serré) */
+  --jalon-detail-section-gap: var(--space-32);                 /* entre les grands blocs */
+  --jalon-detail-label-gap: var(--space-16);                   /* label de section → son contenu */
+  --jalon-detail-kpi-gap: var(--space-16);                     /* entre les 2 cartes KPI */
+  --jalon-detail-rule-gap: var(--space-32);                    /* air autour des filets (haut/bas) */
+  --jalon-detail-meta-color: var(--color-text-muted);          /* ligne meta (Jalon x/n · Mois · statut) */
+  --jalon-detail-due-color: var(--color-text-muted);           /* échéance */
+
   /* Component tokens: Input number (champ numérique + steppers ↑↓) */
   --input-number-value-size: var(--type-h3-size);
   --input-number-value-line: var(--type-h3-line);
