@@ -767,33 +767,39 @@ Distinct des 18 composants de base (§6) : ces composants affichent des séries 
 
 ### Timeline
 
-1. **Rôle** : visualiser une séquence de jalons dans le temps (rail vertical + dots), du plus ancien au plus récent, avec le jalon final (objectif SMART) visuellement distinct. Porté depuis `jalons.html` (`.timeline-list`/`.timeline-line`/`.timeline-item`/`.dot`), déjà en prod et fonctionnel.
-2. **Anatomie** : `.ds-timeline` (conteneur, `--timeline-rail-offset` fixe l'espace réservé à la colonne date) > `.ds-timeline-line` (rail, position absolue) + N × `.ds-timeline-item` (`.ds-timeline-rail-date` = année/mois alignés à droite, `.ds-timeline-dot` positionné sur le rail, `.ds-timeline-card` = carte connectée au dot via un connecteur horizontal en `::before`).
-3. **Variantes** : `.ds-timeline-dot--final` + `.ds-timeline-tag--final` pour le dernier jalon (objectif SMART) — rempli plein orange, bordure blanche, glow plus fort, tag encadré au lieu de texte nu. Les jalons intermédiaires ont un dot creux (fond = `--color-background`, bordure orange 3px).
-4. **États** : aucun état interactif dans cette version (affichage seul). En prod (`jalons.html`), chaque carte est un formulaire éditable complet (titre/description/KPI) — volontairement simplifié ici en carte de lecture (titre + description + date), le formulaire d'édition est un composant métier séparé, pas le pattern "rail+dots" lui-même.
-5. **Tokens** : `--timeline-rail-offset/item-gap/card-gap`, `--timeline-line-width/gradient/glow`, `--timeline-dot-size/background/border/ring` (+ variantes `-final-*`), `--timeline-rail-year-color/rail-month-color`, `--timeline-connector-gradient`, `--timeline-tag-color` (+ variantes `-final-*`). **Passe premium (2026-07-06)** : `.ds-timeline-card` utilise la **carte définie** partagée (`--card-border-defined` / `--card-shadow-defined`) ; `.ds-timeline-tag` tracké via `--letter-spacing-label`. Le distinctif (rail/dots/connecteur/badge orange `--final`) inchangé — c'est le composant qui utilise le mieux l'accent (roadmap vers l'objectif).
-6. **Règles d'usage** : le rail dégrade toujours de l'orange plein (haut, jalon le plus proche) vers `--color-border-subtle` (bas) — la lecture visuelle "je me rapproche du présent" ne doit jamais s'inverser. Un seul dot `--final` par timeline (l'objectif, pas "le dernier jalon dans le temps" si l'ordre change).
-7. **Erreurs à éviter** : ne pas répéter le rail-offset en dur dans plusieurs règles — tout part du token `--timeline-rail-offset`, y compris le calcul de position du dot (`calc(var(--timeline-rail-offset) + 1.5px)`). Sur mobile, la colonne date est masquée et le rail réduit à 0 plutôt que comprimé illisible (cf. media query).
-8. **Exemple** :
+1. **Rôle** : panneau vertical listant les jalons d'un objectif dans l'ordre chronologique (rail année/mois · cercle · titre), avec l'état de chacun lisible d'un coup d'œil. Rendu **dynamiquement en JS depuis `localStorage`** (`carryit_v1_jalons`, `timeline.js`) : les états sont dérivés du statut (`completed` = validé ; premier `pending` = courant ; suivants = à venir). Chaque jalon est un `<button>` cliquable qui émet `carryit:jalon-open` — l'app branche l'ouverture de la vue du jalon.
+2. **Anatomie** : `.ds-timeline` (carte panneau, **carte définie** partagée) > `.ds-timeline__head` (label « Jalons » + `.ds-timeline__count`) + `.ds-timeline__list` (`<ol>`, hauteur fixe `--timeline-list-height` → carte de dimensions constantes, scroll au-delà). Chaque `.ds-timeline__item` = grille 3 colonnes `date | dot | contenu` : `.ds-timeline__rail` (`.ds-timeline__year` affichée seulement quand l'année change + `.ds-timeline__month`), `.ds-timeline__marker` (`.ds-timeline__dot` + connecteur vertical en `::after` vers le dot suivant), `.ds-timeline__content` (**`<button>`** : `.ds-timeline__title` 2 lignes max + `.ds-timeline__jalon` « Jalon x/n »).
+3. **États** (sur `.ds-timeline__item`, dérivés du statut) :
+   - `.is-done` (validé) : dot = disque blanc plein + coche creusée (`::after`), année blanche, titre **barré + muted** (fait = ça recule), segment de connecteur au-dessus éclairci (`--timeline-line-done-color`).
+   - `.is-current` (« tu es ici ») : double-dot blanc (centre plein + anneau concentrique), centre un peu plus petit que le dot de base (`--timeline-dot-size-current` 0.875rem — distinction par l'anneau, pas la taille) ; `aria-current="step"`.
+   - `.is-selected` (cliqué) : rangée inversée (fond blanc, texte surface) ; posé après done/current avec spécificité relevée pour gagner sur le blanc forcé du courant.
+   - Défaut (à venir) : dot gris creux, fond opaque qui masque le connecteur.
+   - Le contenu est un bouton : hover/`focus-visible` = surbrillance `--button-ghost-background-hover` qui **déborde le texte sans décaler la mise en page** (padding = marge négative égale ; débord gauche réduit via `--timeline-row-lead-bleed` pour rester détaché du dot).
+4. **Carte « Jalon actif »** (`.ds-jalon-active`, composant frère sous la timeline) : reprend le jalon en cours en **stepper horizontal J1→Jn** (`.ds-jalon-active__steps` > `.ds-jalon-active__step` avec `.is-done`/`.is-current`, mêmes dots/coche que la timeline). Eyebrow « Jalon actif · x/n » + titre du jalon. Le label sous chaque dot = **1er mot du titre** du jalon (`titre.trim().split(/\s+/)[0]`, ellipsis si long). `hidden` quand tout est validé (aucun jalon actif). Utilise aussi la **carte définie** partagée.
+5. **Tokens** : `--timeline-padding/head-gap/row-gap/list-height/date-width/col-gap/content-gap` ; rail/cercles `--timeline-line-color` (+ `-done-color`)/`line-width`/`dot-size`/`dot-ring-width`/`dot-ring-color`/`dot-fill`/`dot-done-background` ; courant `--timeline-dot-size-current`/`dot-current-ring-gap`/`dot-current-ring-spread` ; coche `--timeline-check-width/height/stroke/inset-top` ; textes `--timeline-year-color` (+ `-done`)/`month-color`/`jalon-color` ; scroll/interaction `--timeline-shell-max-width`/`fade-size`/`mask-visible`/`scrollbar-width`/`scrollbar-thumb`/`transition`/`row-padding`/`row-lead-bleed`. Carte active : `--jalon-active-margin-top`/`padding`/`eyebrow-gap`/`title-gap`/`step-gap`. `.ds-timeline` et `.ds-jalon-active` utilisent la **carte définie** partagée (`--card-border-defined` / `--card-shadow-defined`).
+6. **Règles d'usage** : ordre chronologique haut→bas (le plus tôt en haut). Le segment de connecteur *au-dessus* d'un jalon validé est éclairci → lecture « je suis arrivé jusqu'ici ». Un seul jalon `.is-current` (premier `pending`). L'année n'est affichée que lorsqu'elle change (groupée, pas de « 2026 » répété). Le fondu haut/bas (`.is-scrollable`) n'apparaît **que si** la liste déborde réellement (mesuré en JS via `scrollHeight`). Pas d'accent orange : l'état se lit par le texte/blanc/coche, pas par la couleur.
+7. **Erreurs à éviter** : ne pas coder les dimensions du dot/rangée en dur — tout part des tokens (le centrage du dot sur la 1ère ligne du titre est calculé en `calc` depuis `--type-body-lg-line`). Ne jamais afficher l'année à chaque ligne. Le clic passe par le `<button>` (`.ds-timeline__content`), pas par la rangée entière → hover/sélection centrés sur le texte. Sur mobile, le padding du panneau bascule sur `--space-page-mobile`.
+8. **Exemple** (markup généré par `timeline.js` — structure d'un item validé) :
 ```html
-<div class="ds-timeline">
-  <div class="ds-timeline-line"></div>
-  <div class="ds-timeline-item">
-    <div class="ds-timeline-rail-date">
-      <span class="ds-timeline-rail-year">2026</span>
-      <span class="ds-timeline-rail-month">Avr</span>
-    </div>
-    <div class="ds-timeline-dot"></div>
-    <article class="ds-timeline-card">
-      <div class="ds-timeline-card-top">
-        <span class="ds-timeline-tag">Jalon 1 / 3</span>
-        <span class="ds-timeline-date-chip">12 avr. 2026</span>
+<article class="ds-timeline">
+  <header class="ds-timeline__head">
+    <span class="type-data-label">Jalons</span>
+    <span class="ds-timeline__count type-data-label" data-timeline-count>5</span>
+  </header>
+  <ol class="ds-timeline__list" data-timeline-list>
+    <li class="ds-timeline__item is-done">
+      <div class="ds-timeline__rail">
+        <span class="ds-timeline__year">2026</span>
+        <span class="ds-timeline__month">Avr</span>
       </div>
-      <h3 class="type-h3 ds-timeline-card-title">Cadrage produit finalisé</h3>
-      <p class="type-body-md ds-timeline-card-desc">3 documentations techniques sont faites.</p>
-    </article>
-  </div>
-</div>
+      <div class="ds-timeline__marker" aria-hidden="true"><span class="ds-timeline__dot"></span></div>
+      <button class="ds-timeline__content" type="button" data-jalon-id="j1">
+        <span class="ds-timeline__title type-body-lg">Cadrage produit finalisé</span>
+        <span class="ds-timeline__jalon type-body-sm">Jalon 1/5</span>
+      </button>
+    </li>
+  </ol>
+</article>
 ```
 
 ### Scheduler (QUAND)
