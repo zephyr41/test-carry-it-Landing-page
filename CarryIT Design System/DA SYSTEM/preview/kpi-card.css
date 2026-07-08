@@ -243,6 +243,7 @@
 
 .ds-kpi-card--summary .ds-kpi-card__value {
   font-size: var(--kpi-card-summary-value-size);
+  line-height: var(--kpi-card-summary-value-line);   /* lh suit la taille 28 (sinon hérite du lh 40px → +14px de tuile) */
 }
 
 /* ── Empty / define state ───────────────────────────────────── */

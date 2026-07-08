@@ -540,11 +540,12 @@
   --grid-columns: 12;                                          /* desktop — se divise en 6+6, 4+4+4, 3+3+3+3, 8+4 */
   --grid-columns-tablet: 8;                                    /* tablette (≤1024px) */
   --grid-columns-mobile: 4;                                    /* mobile (≤600px) */
-  --grid-max-width: 1440px;                                    /* largeur max du contenu (dashboard) — pas d'étalement infini */
+  --grid-max-width: 1280px;                                    /* largeur max du contenu (dashboard) — pas d'étalement infini + air sur les bords (MacBook ~1512) */
   --grid-gutter: var(--space-24);                              /* gouttière desktop entre colonnes */
   --grid-gutter-mobile: var(--space-16);                       /* gouttière resserrée sur petit écran */
   --grid-page-padding: var(--space-page-desktop);              /* marge de page (bords écran) — 32 */
   --grid-page-padding-mobile: var(--space-page-mobile);        /* marge de page mobile — 16 */
+  --grid-row-content-height: clamp(490px, 34vw, 560px);        /* grille verticale : rangée contenu (chart/SMART). Plancher 490 = PLAT sur la plage laptop (1280 ET 1440 → 490, pas de variation gênante) ; ne grandit qu'au-delà de ~1440 jusqu'à 560 max (ultra-large). Bande KPI reste FIXE (~150) car contenu fixe. */
   /* Breakpoints (référence — CSS @media ne peut pas lire var()) : tablette 1024px · mobile 600px */
 
   /* View tokens: Jalon détail (vue d'un jalon — meta + critère + KPI + valider) */
@@ -674,6 +675,7 @@
   --kpi-card-summary-metric-gap: var(--space-4);          /* resserré (vue dashboard) — carte plus basse */
   --kpi-card-summary-divider-gap: var(--space-8);         /* air autour du filet, scopé summary (24 en vue jalon) */
   --kpi-card-summary-value-size: var(--type-h1-size); /* 28px vs 40 en vue jalon */
+  --kpi-card-summary-value-line: var(--type-h1-line); /* lh SUIT la taille 28 (sinon hérite du lh 40px → tuile gonflée) */
   --kpi-card-summary-width: 260px; /* tuile résumé fixe, plus étroite que le jalon (360) */
   --kpi-card-summary-min-height: 150px;
   --kpi-card-empty-copy-color: var(--color-text-secondary);

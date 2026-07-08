@@ -305,6 +305,32 @@ Transitions sémantiques : `--motion-transition-default` (border/background/colo
 
 **Reduced motion : implémenté globalement (2026-07-02).** Une règle `@media (prefers-reduced-motion: reduce)` dans `tokens.css` (à la racine, hors `:root` principal) réduit `--motion-duration-fast/base/slow` à `1ms`. Comme tous les composants animent via ces 3 primitives (jamais de durée en dur dans un composant), le fallback s'applique automatiquement partout — Button, Input, Modal, Toast, Tooltip, etc. — sans avoir à toucher chaque fichier individuellement.
 
+### 4.8 Grille & hauteurs (layout dashboard)
+
+Le dashboard long terme pose une **grille à deux axes**. Règle cardinale de hauteur : **fixe où le contenu est fixe, proportionnel (clamp) où le contenu veut de la place.** Ne jamais forcer une `height` en dur sur une carte (ça clippe) — la hauteur vient des tokens ci-dessous.
+
+**Axe horizontal — grille 12 colonnes** (`grid.css`, `.ds-grid`) :
+
+| Token | Valeur | Rôle |
+|---|---|---|
+| `--grid-columns` / `-tablet` / `-mobile` | 12 / 8 / 4 | pistes fluides (`1fr`), reflow ≤1024 puis ≤600 |
+| `--grid-max-width` | **1280px** | largeur max du contenu, centré. Au-delà → figé + marges latérales (pas d'étalement) |
+| `--grid-gutter` | 24 (`--space-24`) | gouttière entre colonnes |
+| `--grid-page-padding` | 32 (`--space-page-desktop`) | marge écran (16 en mobile) |
+
+Bande KPI = 4 × `.ds-col-3` (=12). Rangée du bas = `.ds-col-8` (chart) + `.ds-col-4` (SMART).
+
+**Axe vertical — deux rangées** (`.dashboard-final__page`, `grid-template-rows: auto minmax(var(--grid-row-content-height), auto)`) :
+
+| Rangée | Hauteur | Pourquoi |
+|---|---|---|
+| **Bande KPI** (haut) | **FIXE ~150** — `--kpi-card-summary-min-height` (150) ; le contenu tient dedans grâce à la discipline line-height (cf. ci-dessous) | contenu fixe (eyebrow + valeur + delta) : l'agrandir n'ajoute que du vide |
+| **Contenu** (chart/SMART, bas) | **PROPORTIONNEL borné** — `--grid-row-content-height: clamp(490px, 34vw, 560px)` | le graphique profite de la place ; **plat sur la plage laptop** (plancher 490), ne grandit qu'au-delà de ~1440 jusqu'à 560 (ultra-large) |
+
+Mesuré (Playwright) : bande KPI = 151 à 1280/1440/1920 (stable) ; rangée contenu = 490 / 490 / 560 (plate 1280→1440, puis proportionnelle jusqu'au cap).
+
+**Discipline line-height (piège hauteur).** Une carte gonfle si un texte garde un `line-height` taillé pour une **autre** taille. Cas réel corrigé : la valeur résumé passe à 28px (`--kpi-card-summary-value-size`) mais héritait du `line-height` du 40px (`--type-display-line`) → +14px par tuile. Fix = `--kpi-card-summary-value-line: var(--type-h1-line)` (le lh **suit** la taille). Règle : tout token `*-size` réduit dans une variante doit avoir son `*-line` apparié sur la même échelle (seule exception documentée : `--smart-letter-line` volontairement calé sur la ligne du texte voisin).
+
 ## 5. Design tokens
 
 Le système utilise 3 niveaux, tous dans `tokens.css` :
@@ -855,7 +881,7 @@ Construit 2026-07-05. Porté depuis `renderJalonKpiCardV2` de `dashboard.html`. 
 - `measures[]` (`{date, value, delta, total}`) : la plus récente `date` → « Mis à jour il y a Xj · {frequency} », toujours en gris muted (pas d'ambre)
 - **Delta = `.ds-delta` (chip partagé, cf. section Delta)** : écart-à-cible, symétrique effort/résultat (le résultat, vraie preuve, ne doit pas être plus silencieux que l'effort). **Effort au-dessus du seuil** → `+36 h au-delà` (`valeur − cible`) ; **résultat sous le seuil** → `10 restants` (`cible − valeur`). Monochrome, pas de flèche, valeur **dynamique**. *Anti-vanity* : on met en avant le franchissement du seuil / le restant vers la preuve, pas l'activité brute.
 3. **Nature** : composant métier. Classes `.ds-kpi-card*` dans `kpi-card.css` ; réutilise **Delta (chip) / Button / row-action / tokens type**. `badge.css` **PAS lié** (le delta n'est plus une pill de statut).
-4. **Tokens** : `--kpi-card-*` — `--kpi-card-width` 360 / `--kpi-card-min-height` / `--kpi-card-footer-gap` (filet→pied) ; padding = `--card-padding` (24) ; grid-gap (24) ; `--kpi-card-metric-gap` (head→valeur) ; résumé `--kpi-card-summary-width` 260 / `--kpi-card-summary-min-height` / valeur `--type-h1-size` (28) ; couleurs eyebrow/name/meta/target/value/define. Le chip delta réutilise `--delta-*` (chrome = `--badge-*`). Aucun accent couleur.
+4. **Tokens** : `--kpi-card-*` — `--kpi-card-width` 360 / `--kpi-card-min-height` / `--kpi-card-footer-gap` (filet→pied) ; padding vue jalon = `--card-padding` (24) ; grid-gap (24) ; `--kpi-card-metric-gap` (head→valeur) ; résumé `--kpi-card-summary-width` 260 / `--kpi-card-summary-min-height` / **padding `--kpi-card-summary-padding` (16)** — la variante compacte (bande long terme) descend **sous** le standard 24 (règle « variante compacte = padding sous standard ») ; dans cette bande, la carte Jalon actif reprend ce même 16 pour un inset homogène / valeur `--type-h1-size` (28) ; couleurs eyebrow/name/meta/target/value/define. Le chip delta réutilise `--delta-*` (chrome = `--badge-*`). Aucun accent couleur.
 5. **Règles d'usage (Principe 2)** : la **valeur** est l'emphase (héros 40/bold blanc), la **cible démotée en gris**. Le **delta chip** accroche l'œil en second (fond surélevé monochrome) sans voler la vedette au nombre. Strictement monochrome (orange = **action** only). Distinction effort/résultat par **eyebrow + delta**, jamais par couleur ni icône de type (teal prod `#5BAEC9` écarté). Bouton d'action = **`ds-button--ghost`** (monochrome, contour) flush au bord droit — pas d'orange sur la carte, l'orange reste au CTA de conversion.
 6. **Accessibilité** : boutons édition/action avec `aria-label` ; icônes `aria-hidden`, `stroke-width` par token ; filet = `<hr>` décoratif.
 7. **Preview** : `preview/kpi-card.html` (+ `.css`). Vue jalon (effort · résultat · **effort à définir** · **résultat à définir**) + Vue long terme (résumé lecture seule). Toutes cartes = **taille fixe**, delta **pinné au pied**.

@@ -60,10 +60,21 @@
       (!kpi.measures || !kpi.measures.length) && kpi.target == null);
   }
 
-  function footerText(value, target) {
-    if (value == null || target == null) return '';
-    if (value >= target) return 'Objectif atteint';
-    return fmt(target - value) + ' restants';
+  // Delta = écart-à-cible, sémantique par TYPE (spec §856) :
+  //  · effort (leading)  → au-dessus du seuil : « +X {unit} au-delà » · sinon « X restants »
+  //  · résultat (lagging) / objectif → atteint : « Objectif atteint » · sinon « X restants »
+  // L'effort ne dit JAMAIS « Objectif atteint » (concept de preuve = résultat only).
+  function deltaText(kpi) {
+    if (!kpi || kpi.value == null || kpi.target == null) return '';
+    if (kpi.type === 'leading') {
+      if (kpi.value >= kpi.target) {
+        var unit = kpi.unitShort || kpi.unit || '';
+        return '+' + fmt(kpi.value - kpi.target) + (unit ? ' ' + unit : '') + ' au-delà';
+      }
+      return fmt(kpi.target - kpi.value) + ' restants';
+    }
+    if (kpi.value >= kpi.target) return 'Objectif atteint';
+    return fmt(kpi.target - kpi.value) + ' restants';
   }
 
   function renderKpiCard(sel, eyebrow, kpi, opts) {
@@ -82,7 +93,7 @@
 
     var unit = kpi.unitShort || kpi.unit || '';
     var target = kpi.target != null ? '/ ' + fmt(kpi.target) + (unit ? ' ' + esc(unit) : '') : '';
-    var foot = footerText(kpi.value, kpi.target);
+    var foot = deltaText(kpi);
     var fresh = freshness(lastMeasureDate(kpi));
 
     card.innerHTML =
