@@ -10,18 +10,28 @@
   var K_JALONS = 'carryit_v1_jalons';
 
   var modal, fileInput, importBtn, importLabel, msg;
-  var pending = null;   // données parsées prêtes, en attente de confirmation d'écrasement
+  var pending = null;   // { data: { clé: valeurBrute } } en attente de confirmation d'écrasement
 
   function readJSON(key) {
     try { var r = localStorage.getItem(key); return r ? JSON.parse(r) : null; }
     catch (e) { return null; }
   }
 
+  // Toutes les données CarryIT vivent sous ces préfixes (legacy « carryIt* » + React « carryit_v1_* »).
+  // On les transfère TOUTES : SMART, KPI global (+ measures du chart), jalons, milestones, objectifs.
+  function isCarryItKey(k) { return !!k && /^carryit/i.test(k); }
+
+  function carryItKeys() {
+    var keys = [];
+    for (var i = 0; i < localStorage.length; i++) {
+      var k = localStorage.key(i);
+      if (isCarryItKey(k)) keys.push(k);
+    }
+    return keys;
+  }
+
   function hasExistingData() {
-    var s = readJSON(K_SMART), j = readJSON(K_JALONS);
-    var sf = s && typeof s === 'object' && Object.keys(s).length > 0;
-    var jf = Array.isArray(j) && j.length > 0;
-    return !!(sf || jf);
+    return carryItKeys().length > 0;
   }
 
   function setMsg(text) {
@@ -46,12 +56,13 @@
     setMsg('');
   }
 
-  // ── Export ─────────────────────────────────────────────────────────
+  // ── Export : TOUTES les clés carryit* (valeurs brutes = round-trip exact) ──
   function doExport() {
+    var data = {};
+    carryItKeys().forEach(function (k) { data[k] = localStorage.getItem(k); });
     var payload = {
-      _meta: { app: 'CarryIT', exportedAt: new Date().toISOString(), version: 1 },
-      carryItObjectifSMART: readJSON(K_SMART),
-      carryit_v1_jalons: readJSON(K_JALONS),
+      _meta: { app: 'CarryIT', exportedAt: new Date().toISOString(), version: 2 },
+      data: data,
     };
     var blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
     var url = URL.createObjectURL(blob);
@@ -62,6 +73,21 @@
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+  }
+
+  // Normalise le contenu d'un fichier importé → map { clé: valeurBrute string }.
+  // v2 = { data: { clé: valeur } } ; v1 (ancien) = clés carryit* à plat. Null si rien.
+  function parseData(parsed) {
+    if (!parsed || typeof parsed !== 'object') return null;
+    var src = (parsed.data && typeof parsed.data === 'object') ? parsed.data : parsed;
+    var out = {};
+    var any = false;
+    Object.keys(src).forEach(function (k) {
+      if (!isCarryItKey(k) || src[k] == null) return;
+      out[k] = (typeof src[k] === 'string') ? src[k] : JSON.stringify(src[k]);
+      any = true;
+    });
+    return any ? out : null;
   }
 
   // ── Import : clic sur le bouton ────────────────────────────────────
@@ -82,13 +108,12 @@
       try { parsed = JSON.parse(reader.result); }
       catch (e) { setMsg('Fichier illisible : JSON invalide.'); return; }
 
-      var smart = parsed && parsed.carryItObjectifSMART;
-      var jalons = parsed && parsed.carryit_v1_jalons;
-      if (smart == null && jalons == null) {
+      var data = parseData(parsed);
+      if (!data) {
         setMsg('Fichier non reconnu : aucune donnée CarryIT trouvée.');
         return;
       }
-      pending = { smart: smart, jalons: jalons };
+      pending = { data: data };
 
       if (hasExistingData()) {
         // Écrasement → confirmation : le bouton devient destructif, 2e clic valide.
@@ -107,12 +132,11 @@
 
   // ── Import : écriture + reload ─────────────────────────────────────
   function applyImport() {
-    if (!pending) return;
+    if (!pending || !pending.data) return;
     try {
-      if (pending.smart != null) localStorage.setItem(K_SMART, JSON.stringify(pending.smart));
-      else localStorage.removeItem(K_SMART);
-      if (pending.jalons != null) localStorage.setItem(K_JALONS, JSON.stringify(pending.jalons));
-      else localStorage.removeItem(K_JALONS);
+      // Remplacement propre : on retire toutes les clés carryit* existantes, puis on écrit celles du fichier.
+      carryItKeys().forEach(function (k) { localStorage.removeItem(k); });
+      Object.keys(pending.data).forEach(function (k) { localStorage.setItem(k, pending.data[k]); });
     } catch (e) {
       setMsg('Échec de l’écriture locale (stockage indisponible).');
       return;
