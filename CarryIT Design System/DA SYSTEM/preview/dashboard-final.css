@@ -32,7 +32,7 @@
   max-width: var(--grid-max-width);
   margin-inline: auto;
   padding-inline: var(--grid-page-padding);
-  padding-block: var(--space-48) var(--grid-page-padding);   /* haut aéré → la grille démarre plus bas */
+  padding-block: var(--space-32) var(--grid-page-padding);   /* gap navbar→grille resserré (48 jugé trop) — symétrique avec le bas */
   /* Grille VERTICALE : rangée KPI compacte (auto) + rangée contenu à hauteur définie
      (≥ token, grandit si le contenu déborde). Rythme vertical stable, vide ou rempli,
      sans forcer 100vh. */
