@@ -63,12 +63,20 @@
       ? gk.measures
       : (Array.isArray(v1kpi.measures) ? v1kpi.measures : []);
 
+    var oMeasures = gkMeasures.map(normMeasure).filter(function (m) { return m.date; });
+    // Valeur courante du KPI = dernière mesure VALIDE (par date). Sinon la valeur stockée.
+    var latestVal = null;
+    var withVal = oMeasures.filter(function (m) { return m.value != null; });
+    if (withVal.length) {
+      var srt = withVal.slice().sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : 0; });
+      latestVal = srt[srt.length - 1].value;
+    }
     var objectiveKpi = {
       label: pick(gk.titre, gk.label, smartRaw.kpiLabel, v1kpi.label, v1kpi.titre),
-      value: num(pick(gk.valeur, gk.value, v1kpi.value, v1kpi.valeur)),
+      value: (latestVal != null ? latestVal : num(pick(gk.valeur, gk.value, v1kpi.value, v1kpi.valeur))),
       target: num(pick(gk.cible, gk.target, smartRaw.kpiTarget, v1kpi.cible, v1kpi.target)),
       unit: pick(gk.unite, gk.unit, smartRaw.kpiUnit, v1kpi.unit, v1kpi.unite) || '',
-      measures: gkMeasures.map(normMeasure).filter(function (m) { return m.date; }),
+      measures: oMeasures,
     };
 
     var smart = {

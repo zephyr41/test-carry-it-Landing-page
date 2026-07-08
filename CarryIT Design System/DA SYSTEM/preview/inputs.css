@@ -49,6 +49,53 @@
   color-scheme: dark;
 }
 
+/* Champ date : déclencheur compact (comme un input) + calendrier DS en popover. */
+.ds-datefield {
+  position: relative;
+}
+
+.ds-datefield__trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  width: 100%;
+  min-height: var(--input-height);
+  padding: 0 var(--input-padding-inline);
+  text-align: left;
+  font-family: var(--font-body);
+  font-size: var(--input-font-size);
+  color: var(--input-text);
+  background: var(--input-background);
+  border: var(--input-border);
+  border-radius: var(--input-radius);
+  cursor: pointer;
+  transition: var(--input-transition);
+}
+
+.ds-datefield__trigger:focus-visible {
+  outline: none;
+  border: var(--input-border-focus);
+}
+
+.ds-datefield__trigger svg {
+  width: var(--space-16);
+  height: var(--space-16);
+  flex-shrink: 0;
+  color: var(--color-text-secondary);
+  stroke-width: var(--icon-stroke-width);
+}
+
+.ds-datefield__popover {
+  position: absolute;
+  top: calc(100% + var(--space-8));
+  left: 0;
+  z-index: var(--z-overlay);
+}
+
+.ds-datefield__popover[hidden] {
+  display: none;
+}
+
 .ds-input:focus-visible {
   outline: none;
   border: var(--input-border-focus);

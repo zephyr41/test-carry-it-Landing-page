@@ -19,6 +19,8 @@
 <link rel="stylesheet" href="navbar.css">
 <link rel="stylesheet" href="inputs.css">
 <link rel="stylesheet" href="textarea.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@calendarjs/ce/dist/style.min.css">
+<link rel="stylesheet" href="calendar.css">
 <link rel="stylesheet" href="modal.css">
 <link rel="stylesheet" href="sync.css">
 <link rel="stylesheet" href="dashboard-final.css">
@@ -188,15 +190,23 @@
       </header>
       <div class="ds-modal__body">
         <div class="input-group">
-          <label class="type-label" for="measure-date">Date</label>
-          <input id="measure-date" class="ds-input" type="date" data-measure-date>
+          <label class="type-data-label">Date de la mesure</label>
+          <div class="ds-datefield">
+            <button type="button" class="ds-datefield__trigger" data-measure-date-trigger aria-haspopup="true" aria-expanded="false">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+              <span data-measure-date-label>Choisir une date</span>
+            </button>
+            <div class="ds-datefield__popover ds-calendar-wrap" data-measure-cal-pop hidden>
+              <div id="measureCalendar"></div>
+            </div>
+          </div>
         </div>
         <div class="input-group">
-          <label class="type-label" for="measure-value">Valeur</label>
+          <label class="type-data-label" for="measure-value">Valeur mesurée</label>
           <input id="measure-value" class="ds-input" type="number" step="any" placeholder="0" data-measure-value>
         </div>
         <div class="input-group">
-          <label class="type-label" for="measure-note">Note (optionnel)</label>
+          <label class="type-data-label" for="measure-note">Note</label>
           <textarea id="measure-note" class="ds-textarea" rows="2" placeholder="Contexte, conditions…" data-measure-note></textarea>
         </div>
         <p class="input-error-msg type-caption" data-measure-msg hidden></p>
@@ -215,6 +225,8 @@
   <script src="dashboard-final.js"></script>
   <script src="sync.js"></script>
   <script src="smart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lemonadejs/dist/lemonade.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@calendarjs/ce/dist/index.min.js"></script>
   <script src="dashboard-actions.js"></script>
   <script src="projects.js"></script>
 </body>

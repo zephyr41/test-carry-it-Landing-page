@@ -37,11 +37,48 @@
   function initMeasure() {
     var m = bindModal('[data-measure-modal]', '[data-measure-close]');
     if (!m) return;
-    var dateEl = $('[data-measure-date]'), valEl = $('[data-measure-value]'),
-        noteEl = $('[data-measure-note]'), msgEl = $('[data-measure-msg]'), saveBtn = $('[data-measure-save]');
+    var valEl = $('[data-measure-value]'), noteEl = $('[data-measure-note]'),
+        msgEl = $('[data-measure-msg]'), saveBtn = $('[data-measure-save]'),
+        dateTrigger = $('[data-measure-date-trigger]'), dateLabel = $('[data-measure-date-label]'),
+        calPop = $('[data-measure-cal-pop]');
+
+    var MONTHS = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
+    function fmtDate(iso) {
+      var p = (iso || '').split('-');
+      return (p.length < 3) ? 'Choisir une date' : (parseInt(p[2], 10) + ' ' + MONTHS[parseInt(p[1], 10) - 1] + ' ' + p[0]);
+    }
+
+    // Calendar DS (@calendarjs) en POPOVER — compact : déclencheur + calendrier au clic.
+    var cal = null, measureDate = null;
+    function setDate(iso) { measureDate = iso; if (dateLabel) dateLabel.textContent = fmtDate(iso); }
+    function closePop() { if (calPop) calPop.hidden = true; if (dateTrigger) dateTrigger.setAttribute('aria-expanded', 'false'); }
+    function togglePop() {
+      if (!calPop) return;
+      var willOpen = calPop.hidden;
+      calPop.hidden = !willOpen;
+      if (dateTrigger) dateTrigger.setAttribute('aria-expanded', String(willOpen));
+    }
+    function initCalendar() {
+      var el = document.getElementById('measureCalendar');
+      if (!el || !window.calendarjs || cal) return;
+      window.calendarjs.setDictionary({
+        January: 'Janvier', February: 'Février', March: 'Mars', April: 'Avril', May: 'Mai', June: 'Juin',
+        July: 'Juillet', August: 'Août', September: 'Septembre', October: 'Octobre', November: 'Novembre', December: 'Décembre',
+        Sunday: 'Dimanche', Monday: 'Lundi', Tuesday: 'Mardi', Wednesday: 'Mercredi', Thursday: 'Jeudi', Friday: 'Vendredi', Saturday: 'Samedi',
+      });
+      cal = window.calendarjs.Calendar(el, {
+        type: 'inline', startingDay: 1, footer: false,
+        onchange: function (_, val) { setDate(val); closePop(); },
+      });
+    }
+
+    if (dateTrigger) dateTrigger.addEventListener('click', function (e) { e.stopPropagation(); initCalendar(); togglePop(); });
 
     function openMeasure() {
-      dateEl.value = todayISO();
+      initCalendar();
+      setDate(todayISO());
+      if (cal && cal.setValue) cal.setValue(measureDate);
+      closePop();
       valEl.value = '';
       if (noteEl) noteEl.value = '';
       if (msgEl) msgEl.hidden = true;
@@ -55,7 +92,8 @@
     });
 
     saveBtn.addEventListener('click', function () {
-      var date = dateEl.value, value = num(valEl.value);
+      var date = measureDate || (cal && cal.getValue && cal.getValue()) || todayISO();
+      var value = num(valEl.value);
       if (!date || value == null) {
         if (msgEl) { msgEl.textContent = 'Date et valeur requises.'; msgEl.hidden = false; }
         return;
@@ -80,6 +118,18 @@
     try {
       localStorage.setItem('carryItObjectifSMART', JSON.stringify(smart));
       localStorage.setItem('carryit_v1_kpi', JSON.stringify(v1kpi));
+      // Persiste dans le projet courant du tableau (sinon un switch de projet écrase la mesure).
+      var all = readJSON('carryItAllObjectifs');
+      if (Array.isArray(all) && all.length) {
+        var idx = parseInt(localStorage.getItem('carryItEditingProjectIndex') || '0', 10);
+        if (isNaN(idx) || idx < 0 || idx >= all.length) idx = 0;
+        var p = all[idx];
+        if (p && typeof p === 'object') {
+          var pgk = (p.globalKpi && typeof p.globalKpi === 'object') ? p.globalKpi : {};
+          pgk.measures = current; p.globalKpi = pgk; p.measures = current;
+          localStorage.setItem('carryItAllObjectifs', JSON.stringify(all));
+        }
+      }
     } catch (e) {}
   }
 

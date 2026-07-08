@@ -59,10 +59,16 @@
 
     var dash = window.CarryITDashboardData || {};
     var okpi = dash.objectiveKpi || {};
-    var data = (okpi.measures || [])
-      .map(function (m) { return { time: toISO(m.date), value: m.value }; })
-      .filter(function (p) { return p.time && p.value != null; })
-      .sort(function (a, b) { return a.time < b.time ? -1 : a.time > b.time ? 1 : 0; });
+    // Robuste : rejette null/undefined/NaN (garde 0) et DÉDOUBLONNE par date. lightweight-charts
+    // exige des temps uniques et croissants — 2 mesures le même jour (date par défaut =
+    // aujourd'hui) → "Value is null" en boucle sinon. Dernière valeur d'une même date l'emporte.
+    var byTime = {};
+    (okpi.measures || []).forEach(function (m) {
+      var t = toISO(m.date);
+      var v = (m.value == null) ? null : Number(m.value);
+      if (t && v != null && isFinite(v)) byTime[t] = v;
+    });
+    var data = Object.keys(byTime).sort().map(function (t) { return { time: t, value: byTime[t] }; });
 
     // Rien à tracer → état vide DS (pas de courbe fantôme).
     if (!data.length) { renderEmpty(shell); return; }
