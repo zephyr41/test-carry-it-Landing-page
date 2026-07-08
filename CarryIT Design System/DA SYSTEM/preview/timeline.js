@@ -84,7 +84,16 @@
     eyebrow.textContent = `Jalon actif · ${curIdx + 1}/${total}`;
     title.textContent = jalons[curIdx].titre;
     steps.textContent = '';
-    jalons.forEach((j, i) => {
+
+    // Fenêtre de 5 (le stepper horizontal n'a pas de scroll). ≤ 5 jalons → tout affiché.
+    // > 5 → fenêtre glissante : le courant tenu en slot 2 (1 validé visible à gauche),
+    // décalage d'1 cran par validation ; en fin de liste, le courant dérive vers la droite.
+    const WINDOW = 5;
+    const start = Math.min(Math.max(curIdx - 1, 0), Math.max(total - WINDOW, 0));
+    const end = Math.min(start + WINDOW, total);
+
+    for (let i = start; i < end; i++) {
+      const j = jalons[i];
       const li = el('li', 'ds-jalon-active__step');
       if (j.statut === 'completed') li.classList.add('is-done');
       else if (i === curIdx) li.classList.add('is-current');
@@ -93,10 +102,13 @@
       const label = (j.titre || '').trim().split(/\s+/)[0] || `J${i + 1}`; // 1er mot du titre
       li.append(dot, el('span', 'ds-jalon-active__label type-caption', label));
       steps.append(li);
-    });
+    }
   }
 
   function render(root, jalons) {
+    // Ordre chronologique croissant : le plus tôt à gauche (stepper) / en haut (liste),
+    // le plus tard à droite/en bas. Indépendant de l'ordre de stockage localStorage.
+    jalons = jalons.slice().sort((a, b) => new Date(a.date) - new Date(b.date));
     const list = root.querySelector('[data-timeline-list]');
     const count = root.querySelector('[data-timeline-count]');
     const total = jalons.length;
