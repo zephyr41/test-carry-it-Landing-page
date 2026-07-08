@@ -18,6 +18,7 @@
 <link rel="stylesheet" href="grid.css">
 <link rel="stylesheet" href="navbar.css">
 <link rel="stylesheet" href="inputs.css">
+<link rel="stylesheet" href="textarea.css">
 <link rel="stylesheet" href="modal.css">
 <link rel="stylesheet" href="sync.css">
 <link rel="stylesheet" href="dashboard-final.css">
@@ -163,6 +164,40 @@
     </div>
   </div>
 
+  <!-- Modal Ajouter une mesure (KPI global) : date + valeur + note → globalKpi.measures. -->
+  <div class="ds-modal-backdrop" data-measure-modal hidden>
+    <div class="ds-modal" role="dialog" aria-modal="true" aria-labelledby="measure-title">
+      <header class="ds-modal__header">
+        <div class="ds-modal__header-row">
+          <h2 id="measure-title" class="type-h2">Ajouter une mesure</h2>
+          <button type="button" class="ds-modal__close" aria-label="Fermer" data-measure-close>
+            <svg class="ds-modal__close-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4L12 12M12 4L4 12"/></svg>
+          </button>
+        </div>
+        <p class="ds-modal__subtitle type-body-sm">Nouvelle valeur de ton KPI principal.</p>
+      </header>
+      <div class="ds-modal__body">
+        <div class="input-group">
+          <label class="type-label" for="measure-date">Date</label>
+          <input id="measure-date" class="ds-input" type="date" data-measure-date>
+        </div>
+        <div class="input-group">
+          <label class="type-label" for="measure-value">Valeur</label>
+          <input id="measure-value" class="ds-input" type="number" step="any" placeholder="0" data-measure-value>
+        </div>
+        <div class="input-group">
+          <label class="type-label" for="measure-note">Note (optionnel)</label>
+          <textarea id="measure-note" class="ds-textarea" rows="2" placeholder="Contexte, conditions…" data-measure-note></textarea>
+        </div>
+        <p class="input-error-msg type-caption" data-measure-msg hidden></p>
+      </div>
+      <footer class="ds-modal__footer">
+        <button type="button" class="ds-button ds-button--ghost ds-button--sm" data-measure-close>Annuler</button>
+        <button type="button" class="ds-button ds-button--inverse ds-button--sm" data-measure-save>Enregistrer</button>
+      </footer>
+    </div>
+  </div>
+
   <script src="timeline.js"></script>
   <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
   <script src="dashboard-data.js"></script>
@@ -170,5 +205,6 @@
   <script src="dashboard-final.js"></script>
   <script src="sync.js"></script>
   <script src="smart.js"></script>
+  <script src="dashboard-actions.js"></script>
 </body>
 </html>

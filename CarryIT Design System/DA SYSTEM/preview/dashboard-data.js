@@ -4,9 +4,15 @@
    Rien inventé : une clé/valeur absente → null. La carte affichera son état vide
    ("si y'a rien y'a rien"). Source de vérité unique consommée par chart.js + dashboard-final.js. */
 (function () {
+  // Robuste au double-encodage (certaines écritures de l'app stringifient 2× → string).
   function readJSON(key) {
-    try { var raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : null; }
-    catch (e) { return null; }
+    try {
+      var raw = localStorage.getItem(key);
+      if (raw == null || raw === '') return null;
+      var v = JSON.parse(raw), guard = 0;
+      while (typeof v === 'string' && guard++ < 3) { try { v = JSON.parse(v); } catch (e) { break; } }
+      return v;
+    } catch (e) { return null; }
   }
   function pick() {
     for (var i = 0; i < arguments.length; i++) {

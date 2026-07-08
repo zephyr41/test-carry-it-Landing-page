@@ -43,6 +43,12 @@
   color: var(--input-placeholder);
 }
 
+/* Contrôles natifs (date picker, steppers) rendus en sombre — sinon popup/icônes clairs. */
+.ds-input[type="date"],
+.ds-input[type="number"] {
+  color-scheme: dark;
+}
+
 .ds-input:focus-visible {
   outline: none;
   border: var(--input-border-focus);
