@@ -44,105 +44,58 @@
   function open() { if (modal) modal.hidden = false; }
   function close() { if (modal) modal.hidden = true; resetImport(); }
 
-  // Remet le bouton Importer dans son état neutre (variante secondary, libellé d'origine).
   function resetImport() {
-    pending = null;
     if (fileInput) fileInput.value = '';
-    if (importBtn) {
-      importBtn.classList.remove('ds-button--danger');
-      importBtn.classList.add('ds-button--secondary');
-    }
-    if (importLabel) importLabel.textContent = 'Importer mes données';
     setMsg('');
   }
 
-  // ── Export : TOUTES les clés carryit* (valeurs brutes = round-trip exact) ──
+  // ── Export : TOUTES les clés localStorage, à plat, valeurs brutes ──
+  // Format identique à dashboard.html (backup cross-compatible).
   function doExport() {
     var data = {};
-    carryItKeys().forEach(function (k) { data[k] = localStorage.getItem(k); });
-    var payload = {
-      _meta: { app: 'CarryIT', exportedAt: new Date().toISOString(), version: 2 },
-      data: data,
-    };
-    var blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    for (var i = 0; i < localStorage.length; i++) {
+      var k = localStorage.key(i);
+      data[k] = localStorage.getItem(k);
+    }
+    var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a');
     a.href = url;
-    a.download = 'carryit-export-' + new Date().toISOString().slice(0, 10) + '.json';
+    a.download = 'carryit-backup-' + new Date().toISOString().slice(0, 10) + '.json';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   }
 
-  // Normalise le contenu d'un fichier importé → map { clé: valeurBrute string }.
-  // v2 = { data: { clé: valeur } } ; v1 (ancien) = clés carryit* à plat. Null si rien.
-  function parseData(parsed) {
-    if (!parsed || typeof parsed !== 'object') return null;
-    var src = (parsed.data && typeof parsed.data === 'object') ? parsed.data : parsed;
-    var out = {};
-    var any = false;
-    Object.keys(src).forEach(function (k) {
-      if (!isCarryItKey(k) || src[k] == null) return;
-      out[k] = (typeof src[k] === 'string') ? src[k] : JSON.stringify(src[k]);
-      any = true;
-    });
-    return any ? out : null;
-  }
+  // ── Import : le bouton ouvre le sélecteur de fichier. ──────────────
+  function onImportClick() { if (fileInput) fileInput.click(); }
 
-  // ── Import : clic sur le bouton ────────────────────────────────────
-  // Pas de fichier en attente → ouvre le sélecteur. Fichier en attente → confirme l'écrasement.
-  function onImportClick() {
-    if (pending) { applyImport(); return; }
-    if (fileInput) fileInput.click();
-  }
-
-  // ── Import : lecture du fichier choisi ─────────────────────────────
+  // ── Import : au choix du fichier → écrase et recharge (comme dashboard.html). ──
+  // Pas de confirmation : choisir un fichier applique directement.
   function onFile() {
-    resetImport();   // repart propre (efface un éventuel état de confirmation précédent)
     var file = fileInput.files && fileInput.files[0];
+    if (fileInput) fileInput.value = '';   // permet de re-sélectionner le même fichier
     if (!file) return;
     var reader = new FileReader();
     reader.onload = function () {
       var parsed;
       try { parsed = JSON.parse(reader.result); }
-      catch (e) { setMsg('Fichier illisible : JSON invalide.'); return; }
-
-      var data = parseData(parsed);
-      if (!data) {
-        setMsg('Fichier non reconnu : aucune donnée CarryIT trouvée.');
-        return;
-      }
-      pending = { data: data };
-
-      if (hasExistingData()) {
-        // Écrasement → confirmation : le bouton devient destructif, 2e clic valide.
-        if (importBtn) {
-          importBtn.classList.remove('ds-button--secondary');
-          importBtn.classList.add('ds-button--danger');
-        }
-        if (importLabel) importLabel.textContent = 'Remplacer mes données';
-        setMsg('Ça remplacera ton objectif SMART et tes jalons actuels.');
-      } else {
-        applyImport();
-      }
+      catch (e) { setMsg('Fichier invalide. Assure-toi que c’est un export CarryIT.'); return; }
+      // Compat : format plat {clé: valeur} (dashboard.html) OU ancien {data: {...}}.
+      var data = (parsed && parsed.data && typeof parsed.data === 'object') ? parsed.data : parsed;
+      if (!data || typeof data !== 'object') { setMsg('Fichier invalide.'); return; }
+      try {
+        Object.keys(data).forEach(function (k) {
+          var v = data[k];
+          localStorage.setItem(k, (typeof v === 'string') ? v : JSON.stringify(v));
+        });
+        // Aligne les clés live sur le projet courant du tableau (cohérence navbar ↔ SMART).
+        if (window.CarryITProjectCurrent) window.CarryITProjectCurrent();
+      } catch (e) { setMsg('Échec de l’écriture locale (stockage indisponible).'); return; }
+      window.location.reload();
     };
     reader.readAsText(file);
-  }
-
-  // ── Import : écriture + reload ─────────────────────────────────────
-  function applyImport() {
-    if (!pending || !pending.data) return;
-    try {
-      // Remplacement propre : on retire toutes les clés carryit* existantes, puis on écrit celles du fichier.
-      carryItKeys().forEach(function (k) { localStorage.removeItem(k); });
-      Object.keys(pending.data).forEach(function (k) { localStorage.setItem(k, pending.data[k]); });
-    } catch (e) {
-      setMsg('Échec de l’écriture locale (stockage indisponible).');
-      return;
-    }
-    // Reload : dashboard-data / dashboard-final / chart / timeline relisent tout proprement.
-    window.location.reload();
   }
 
   function init() {

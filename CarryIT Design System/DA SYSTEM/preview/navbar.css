@@ -93,6 +93,145 @@
   color: var(--color-text-muted);
 }
 
+/* ── Dropdown de projets (switch + supprimer) ─────────────────────── */
+.ds-navbar__project-wrap {
+  position: relative;
+}
+
+.ds-navbar__project-menu {
+  position: absolute;
+  top: calc(100% + var(--space-8));
+  left: 0;
+  z-index: var(--z-overlay);
+  min-width: 240px;
+  padding: var(--space-8);
+  background: var(--color-surface);
+  border: var(--border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+}
+
+.ds-navbar__project-menu[hidden] {
+  display: none;
+}
+
+.ds-navbar__project-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Une ligne = bouton de sélection (nom) + bouton supprimer révélé au survol. */
+.ds-navbar__project-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.ds-navbar__project-pick {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+  padding: var(--space-8);
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-secondary);
+  font: inherit;
+  font-size: var(--type-body-sm-size);
+  cursor: pointer;
+  transition: var(--motion-transition-default);
+}
+
+.ds-navbar__project-pick:hover {
+  background: var(--color-surface-raised);
+  color: var(--color-text-primary);
+}
+
+.ds-navbar__project-row.is-current .ds-navbar__project-pick {
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.ds-navbar__project-del {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--space-24);
+  height: var(--space-24);
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  opacity: 0;
+  transition: var(--motion-transition-default);
+}
+
+.ds-navbar__project-row:hover .ds-navbar__project-del,
+.ds-navbar__project-del:focus-visible {
+  opacity: 1;
+}
+
+.ds-navbar__project-del:hover {
+  background: color-mix(in srgb, var(--color-danger) 12%, transparent);
+  color: var(--color-danger);
+}
+
+.ds-navbar__project-del svg {
+  width: var(--space-16);
+  height: var(--space-16);
+  stroke-width: var(--icon-stroke-width-bold);
+}
+
+/* Confirmation de suppression inline (remplace la ligne). */
+.ds-navbar__project-confirm {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  padding: var(--space-8);
+  font-size: var(--type-caption-size);
+  color: var(--color-text-secondary);
+}
+
+.ds-navbar__project-confirm-label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* « Ajouter un projet » : lien en pied, séparé par un filet. */
+.ds-navbar__project-add {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  margin-top: var(--space-8);
+  padding: var(--space-8);
+  border-top: var(--border-subtle);
+  padding-top: var(--space-12);
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  font-size: var(--type-body-sm-size);
+  transition: var(--motion-transition-default);
+}
+
+.ds-navbar__project-add:hover {
+  color: var(--color-text-primary);
+}
+
+.ds-navbar__project-add svg {
+  width: var(--space-16);
+  height: var(--space-16);
+  color: var(--color-text-muted);
+}
+
 /* Pastille initiale du menu utilisateur */
 .ds-navbar__user-avatar {
   display: inline-grid;

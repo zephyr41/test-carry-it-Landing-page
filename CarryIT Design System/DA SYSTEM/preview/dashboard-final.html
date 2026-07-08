@@ -38,10 +38,20 @@
               <span class="ds-navbar__brand-name type-data-label">CARRY IT</span>
             </a>
             <span class="ds-navbar__sep" aria-hidden="true">/</span>
-            <button type="button" class="ds-navbar__project type-body-sm">
-              <span>Carry It</span>
-              <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5L7 8.5L10 5.5"/></svg>
-            </button>
+            <div class="ds-navbar__project-wrap">
+              <button type="button" class="ds-navbar__project type-body-sm" data-project-toggle aria-haspopup="true" aria-expanded="false">
+                <span data-project-label>Carry It</span>
+                <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5L7 8.5L10 5.5"/></svg>
+              </button>
+              <!-- Dropdown de projets (rendu par projects.js depuis carryItAllObjectifs) : switch + supprimer. -->
+              <div class="ds-navbar__project-menu" data-project-menu role="menu" hidden>
+                <ul class="ds-navbar__project-list" data-project-list></ul>
+                <a class="ds-navbar__project-add" href="objectif-intro.html">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v14M5 12h14"/></svg>
+                  Ajouter un projet
+                </a>
+              </div>
+            </div>
           </div>
           <div class="ds-navbar__right">
             <button type="button" class="ds-button ds-button--subtle ds-button--xs" data-sync-open>
@@ -206,5 +216,6 @@
   <script src="sync.js"></script>
   <script src="smart.js"></script>
   <script src="dashboard-actions.js"></script>
+  <script src="projects.js"></script>
 </body>
 </html>
