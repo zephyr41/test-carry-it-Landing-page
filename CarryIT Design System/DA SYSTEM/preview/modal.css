@@ -11,6 +11,7 @@
 .ds-modal-backdrop {
   position: fixed;
   inset: 0;
+  z-index: var(--z-overlay);   /* au-dessus du contenu de page (sinon les dots z-index:1 transpercent) */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -37,7 +38,7 @@
 
 .ds-modal__header {
   display: grid;
-  gap: var(--space-4);
+  gap: var(--space-label-gap);   /* titre → sous-titre : même règle titre↔paragraphe que partout (pas 4px collés) */
   padding-bottom: var(--modal-header-gap);
   border-bottom: var(--border-subtle);
 }
@@ -54,6 +55,10 @@
 }
 
 .ds-modal__close {
+  /* En flux dans le header-row → alignée verticalement au titre (align-items:center).
+     Tirée vers le coin par une marge négative = inset < padding de contenu, sans casser
+     l'alignement vertical (le piège de l'absolute qui la remontait au-dessus du titre). */
+  margin-right: calc(-1 * (var(--modal-padding-inline) - var(--modal-close-inset)));
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -98,6 +103,52 @@
   display: flex;
   justify-content: flex-end;
   gap: var(--space-12);
+}
+
+/* Sections de corps (titre + description + action) : rythme GROUPÉ — gap:0 + marges
+   par relation, jamais uniforme. Scopé aux modals qui adoptent .ds-modal__section
+   (confirm.html / modal.html gardent leur corps simple). */
+.ds-modal__body:has(.ds-modal__section) {
+  gap: var(--space-24);   /* section → section : > les gaps internes (grouping) */
+}
+
+.ds-modal__section {
+  display: grid;
+  gap: 0;
+}
+
+/* Séparation entre 2 sections = filet + air (même langage que le filet du header).
+   Le vide seul (24) ne coupait pas assez → les 2 sections se fondaient. */
+.ds-modal__section + .ds-modal__section {
+  padding-top: var(--space-24);
+  border-top: var(--border-subtle);
+}
+
+.ds-modal__section > * {
+  margin: 0;
+}
+
+.ds-modal__section-title {
+  letter-spacing: var(--letter-spacing-label);   /* eyebrow tracké, comme tous les micro-labels */
+  color: var(--color-text-primary);   /* titre = ancre (blanc) ; le corps reste secondary → contraste par couleur, pas juste uppercase */
+}
+
+.ds-modal__section-desc {
+  margin-top: var(--space-label-gap);   /* titre → paragraphe : une unité de sens */
+}
+
+.ds-modal__section-action {
+  margin-top: var(--space-element-gap);   /* paragraphe → action */
+}
+
+/* Un bouton d'action de section hug son contenu (pas pleine largeur). Un champ
+   (ex : file-field, width:100%) garde sa largeur pour afficher le nom de fichier. */
+.ds-modal__section .ds-button.ds-modal__section-action {
+  justify-self: start;
+}
+
+.ds-modal__section-msg {
+  margin-top: var(--space-8);   /* action → message de retour */
 }
 
 

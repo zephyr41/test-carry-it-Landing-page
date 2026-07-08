@@ -116,10 +116,37 @@
   background: var(--button-subtle-background-active);
 }
 
+.ds-button--secondary {
+  color: var(--button-secondary-text);
+  background: var(--button-secondary-background);
+  border: var(--button-secondary-border);
+}
+
+.ds-button--secondary:hover:not(:disabled) {
+  background: var(--button-secondary-background-hover);
+}
+
+.ds-button--secondary:active:not(:disabled) {
+  background: var(--button-secondary-background-active);
+}
+
 .ds-button--danger {
   color: var(--button-danger-text);
   background: var(--button-danger-background);
   border: var(--button-danger-border);
+}
+
+/* Pleine largeur : boutons empilés dans un modal / une colonne étroite. */
+.ds-button--block {
+  width: 100%;
+  justify-content: center;
+}
+
+/* Icône de bouton (hors xs qui a son propre token) : proportionnelle à la taille du texte. */
+.ds-button > svg {
+  width: 1.2em;
+  height: 1.2em;
+  flex-shrink: 0;
 }
 
 .ds-button--danger:hover:not(:disabled) {
@@ -130,6 +157,8 @@
 .ds-button--sm {
   min-height: var(--button-height-sm);
   padding: 0 var(--button-padding-inline-sm);
+  font-size: var(--button-font-size-sm);
+  font-weight: var(--button-font-weight-sm);
 }
 
 .ds-button--xs {

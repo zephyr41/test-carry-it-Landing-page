@@ -19,6 +19,7 @@
 <link rel="stylesheet" href="navbar.css">
 <link rel="stylesheet" href="inputs.css">
 <link rel="stylesheet" href="modal.css">
+<link rel="stylesheet" href="sync.css">
 <link rel="stylesheet" href="dashboard-final.css">
 </head>
 <body>
@@ -136,37 +137,29 @@
 
   <!-- Modal Synchroniser : export/import manuel des données (localStorage), sans backend. -->
   <div class="ds-modal-backdrop" data-sync-modal hidden>
-    <div class="ds-modal" role="dialog" aria-modal="true" aria-labelledby="sync-title">
+    <div class="ds-modal ds-sync-modal" role="dialog" aria-modal="true" aria-labelledby="sync-title">
       <header class="ds-modal__header">
-        <div class="ds-modal__header-row">
-          <h2 id="sync-title" class="type-h2">Synchroniser</h2>
-          <button type="button" class="ds-modal__close" aria-label="Fermer" data-sync-close>
-            <svg class="ds-modal__close-icon" viewBox="0 0 16 16" aria-hidden="true">
-              <path d="M4 4L12 12M12 4L4 12" />
-            </svg>
-          </button>
-        </div>
-        <p class="ds-modal__subtitle type-body-sm">Transfère tes données entre navigateurs : exporte ici, importe là-bas.</p>
+        <h2 id="sync-title" class="type-h2">Synchroniser mes données</h2>
+        <p class="ds-modal__subtitle type-body-md">Transfère tes données entre appareils via un fichier JSON.</p>
       </header>
 
-      <div class="ds-modal__body">
-        <div class="input-group">
-          <label class="type-label">Exporter</label>
-          <p class="ds-modal__subtitle type-body-sm">Télécharge ton objectif SMART + tes jalons dans un fichier <code>.json</code>.</p>
-          <button type="button" class="ds-button ds-button--subtle ds-button--sm" data-sync-export>Télécharger l'export (.json)</button>
-        </div>
-
-        <div class="input-group">
-          <label class="type-label" for="sync-file">Importer</label>
-          <p class="ds-modal__subtitle type-body-sm">Charge un fichier <code>.json</code> exporté. Ça remplace tes données actuelles.</p>
-          <input id="sync-file" class="ds-input" type="file" accept="application/json,.json" data-sync-file>
-          <p class="ds-modal__subtitle type-body-sm" data-sync-msg hidden></p>
-        </div>
+      <div class="ds-sync-modal__actions">
+        <button type="button" class="ds-button ds-button--primary ds-button--block" data-sync-export>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+          Exporter mes données
+        </button>
+        <button type="button" class="ds-button ds-button--secondary ds-button--block" data-sync-import>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+          <span data-sync-import-label>Importer mes données</span>
+        </button>
+        <input type="file" accept="application/json,.json" data-sync-file hidden>
+        <p class="ds-sync-modal__msg type-body-sm" data-sync-msg hidden></p>
       </div>
 
-      <footer class="ds-modal__footer">
-        <button type="button" class="ds-button ds-button--primary ds-button--sm" data-sync-import disabled>Importer</button>
-      </footer>
+      <div class="ds-sync-modal__foot">
+        <p class="ds-sync-modal__note type-body-sm">Tes données ne quittent jamais ton appareil.</p>
+        <button type="button" class="ds-button ds-button--ghost ds-button--block" data-sync-close>Fermer</button>
+      </div>
     </div>
   </div>
 

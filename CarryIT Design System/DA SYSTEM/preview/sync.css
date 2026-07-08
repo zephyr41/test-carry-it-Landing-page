@@ -1,0 +1,48 @@
+/* Instance : modal « Synchroniser mes données ».
+   Action-first (2 boutons pleine largeur empilés), pas de sections/eyebrows/divider.
+   Styles propres à cet assemblage (comme effort-modal.css) ; le reste = tokens/composants. */
+
+/* Header sans filet : modal court, pas besoin de séparer header/corps. */
+.ds-sync-modal .ds-modal__header {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+/* Actions principales empilées (Exporter / Importer). */
+.ds-sync-modal__actions {
+  display: grid;
+  gap: var(--space-12);
+}
+
+/* Icônes des boutons d'action : stroke tokenisé (jamais en dur, cf. icons.md). */
+.ds-sync-modal__actions .ds-button > svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: var(--icon-stroke-width-bold);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Message d'erreur / confirmation d'import (caché par défaut, centré). */
+.ds-sync-modal__msg {
+  margin: 0;
+  text-align: center;
+  color: var(--color-text-secondary);
+}
+
+/* Pied : réassurance + Fermer, groupés. */
+.ds-sync-modal__foot {
+  display: grid;
+  gap: var(--space-12);
+}
+
+.ds-sync-modal__note {
+  margin: 0;
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+/* Fermer = dismiss discret (ghost bordé, texte gris). */
+.ds-sync-modal [data-sync-close] {
+  color: var(--color-text-secondary);
+}

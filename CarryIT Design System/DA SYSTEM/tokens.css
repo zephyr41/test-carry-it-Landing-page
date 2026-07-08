@@ -97,6 +97,7 @@
 
   /* Semantic spacing tokens */
   --space-card-padding: var(--space-24);
+  --space-label-gap: var(--space-8);      /* un titre/label → le texte qu'il introduit (paragraphe/description) : collés = une unité de sens. Plus serré que element-gap. */
   --space-element-gap: var(--space-12);
   --space-section-gap: var(--space-32);
   --space-page-desktop: var(--space-32);
@@ -120,6 +121,11 @@
   /* Focus tokens */
   --border-focus: var(--border-width-default) solid var(--color-focus-border);
   --focus-glow: 0 0 0 3px rgba(255, 253, 246, 0.08);
+
+  /* Z-index — layering des overlays flottants (Modal backdrop, Toast, Tooltip)
+     au-dessus du contenu de page. Sans ça, un contenu positionné avec z-index
+     (ex : dots du stepper) transperce le backdrop. */
+  --z-overlay: 1000;
 
   /* Primitive shadow tokens */
   --shadow-none: none;
@@ -168,7 +174,7 @@
 
   /* Component tokens: Button */
   --button-height-lg: var(--space-64);
-  --button-height-sm: var(--space-48);
+  --button-height-sm: calc(var(--space-32) + var(--space-8));   /* 40 — vraie taille « small » (secondaire), pas 48 */
   --button-height-xs: var(--space-24);
   --button-height-mobile: var(--space-48);
   --button-padding-inline-lg: var(--space-32);
@@ -178,9 +184,11 @@
   --button-radius-default: var(--radius-xl);
   --button-radius-pill: var(--radius-full);
   --button-font-size: var(--type-body-lg-size);
+  --button-font-size-sm: var(--type-body-md-size);   /* 14 — small = plus discret que lg (16) */
   --button-font-size-xs: var(--type-label-size);
   --button-line-height: var(--type-body-lg-line);
   --button-font-weight: var(--font-weight-bold);
+  --button-font-weight-sm: var(--font-weight-medium);   /* small = medium (secondaire), lg reste bold (CTA) */
   --button-font-weight-xs: var(--font-weight-medium);
   --button-gap: var(--space-8);
   --button-gap-xs: var(--space-4);
@@ -212,6 +220,14 @@
   --button-subtle-text: var(--color-text-muted);
   --button-subtle-text-hover: var(--color-text-secondary);
   --button-subtle-border: none;
+
+  /* Secondary : action secondaire REMPLIE (surface-raised + bordure), distincte de ghost
+     (contour transparent) et inverse (blanc). Ex : « Importer » à côté d'un CTA orange. */
+  --button-secondary-background: var(--color-surface-raised);
+  --button-secondary-background-hover: color-mix(in srgb, var(--color-text-primary) 6%, var(--color-surface-raised));
+  --button-secondary-background-active: color-mix(in srgb, var(--color-text-primary) 10%, var(--color-surface-raised));
+  --button-secondary-text: var(--color-text-primary);
+  --button-secondary-border: var(--border-subtle);
 
   /* Danger : action destructive (Supprimer). Rouge = status color, pas l'accent orange.
      Bordé/restreint (pas de fill plein) — cohérent avec la retenue du système. */
@@ -304,11 +320,12 @@
   --modal-border: var(--border-subtle);
   --modal-radius: var(--container-radius);
   --modal-padding-inline: calc(var(--space-32) + var(--space-8));
-  --modal-padding-block: calc(var(--space-32) + var(--space-8));
+  --modal-padding-block: var(--space-48);   /* plus d'air vertical (haut/bas) que l'inline — modal moins tassé */
   --modal-header-gap: var(--space-24);
   --modal-shadow: var(--shadow-lg);
   --modal-max-width: 480px;
   --modal-close-size: var(--space-32);
+  --modal-close-inset: var(--space-24);   /* croix pinnée au coin (inset < padding de contenu) — pas flottante à 40 */
 
   /* Component tokens: Tooltip */
   --tooltip-background: var(--color-surface-raised);

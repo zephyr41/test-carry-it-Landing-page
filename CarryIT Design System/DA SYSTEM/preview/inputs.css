@@ -63,6 +63,48 @@
   color: var(--input-error-text);
 }
 
+/* File input — natif restylé : le bouton du sélecteur reprend le chrome d'un bouton
+   ghost sm (affordance DS), le nom de fichier passe en texte secondaire. On garde la
+   sémantique + le clavier natifs (pas de trigger custom masqué). */
+.ds-file-field {
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-line);
+  color: var(--color-text-secondary);
+}
+
+.ds-file-field::file-selector-button {
+  appearance: none;
+  -webkit-appearance: none;
+  min-height: var(--button-height-xs);
+  margin-right: var(--space-12);
+  padding: 0 var(--button-padding-inline-xs);
+  font-family: var(--font-body);
+  font-size: var(--button-font-size-xs);
+  line-height: var(--button-line-height);
+  font-weight: var(--button-font-weight-xs);
+  color: var(--button-ghost-text);
+  background: var(--button-ghost-background);
+  border: var(--button-ghost-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--button-transition);
+}
+
+.ds-file-field::file-selector-button:hover {
+  background: var(--button-ghost-background-hover);
+  border: var(--button-ghost-border-hover);
+}
+
+.ds-file-field:focus-visible {
+  outline: none;
+}
+
+.ds-file-field:focus-visible::file-selector-button {
+  border: var(--border-focus);
+}
+
 @media (max-width: 640px) {
   .inputs-preview {
     padding: var(--space-page-mobile);
