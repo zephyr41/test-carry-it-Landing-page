@@ -434,6 +434,14 @@
   --chart-point-radius: 3;
   --chart-marker-radius: 4;
   --chart-scale-margin: 0.02;
+  /* Pastilles HTML survolables posées sur chaque mesure → bulle de valeur au survol */
+  --chart-point-size: 14px;
+  --chart-point-background: var(--color-text-primary);
+  --chart-point-border: 2px solid var(--color-surface);
+  --chart-point-hover-background: var(--color-accent-primary);
+  --chart-point-hover-ring: 0 0 0 5px color-mix(in srgb, var(--color-accent-primary) 22%, transparent);
+  --chart-point-label-background: var(--chart-last-value-bg);
+  --chart-point-label-text: var(--chart-last-value-text);
 
   /* Component tokens: Calendar (skins @calendarjs/ce via its --lm-* custom properties) */
   --calendar-background: var(--container-background);

@@ -80,6 +80,86 @@
   font-size: var(--chart-axis-font-size);
 }
 
+/* ── Pastilles survolables : une par mesure, posées sur la courbe ──
+   Calque en absolute au-dessus du canvas (positionné par chart.js). La bulle
+   affiche la valeur saisie au survol du point, comme sur le dashboard legacy. */
+.ds-chart-point-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.ds-chart-point {
+  position: absolute;
+  z-index: 3;
+  width: var(--chart-point-size);
+  height: var(--chart-point-size);
+  padding: 0;
+  border: var(--chart-point-border);
+  border-radius: var(--radius-full);
+  background: var(--chart-point-background);
+  transform: translate(-50%, -50%);
+  cursor: default;
+  pointer-events: auto;
+}
+
+.ds-chart-point:hover,
+.ds-chart-point:focus-visible,
+.ds-chart-point.is-active {
+  outline: none;
+  background: var(--chart-point-hover-background);
+  box-shadow: var(--chart-point-hover-ring);
+}
+
+/* Valeur (bulle) au-dessus du point, date en-dessous — révélées au survol. */
+.ds-chart-point__value,
+.ds-chart-point__date {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  line-height: 1;
+  white-space: nowrap;
+  text-align: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 120ms ease, transform 120ms ease;
+}
+
+.ds-chart-point__value {
+  bottom: calc(100% + var(--space-8));
+  min-width: var(--space-24);
+  padding: var(--space-4) var(--space-8);
+  border-radius: var(--radius-sm);
+  background: var(--chart-point-label-background);
+  color: var(--chart-point-label-text);
+  font-size: var(--type-caption-size);
+  font-weight: var(--font-weight-bold);
+}
+
+.ds-chart-point__date {
+  top: calc(100% + var(--space-8));
+  padding: var(--space-4) var(--space-8);
+  border-radius: var(--radius-sm);
+  background: var(--chart-point-label-background);
+  color: var(--chart-point-label-text);
+  font-size: var(--type-caption-size);
+  font-weight: var(--font-weight-medium);
+}
+
+.ds-chart-point:hover .ds-chart-point__value,
+.ds-chart-point:focus-visible .ds-chart-point__value,
+.ds-chart-point.is-active .ds-chart-point__value {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-2px);
+}
+
+.ds-chart-point:hover .ds-chart-point__date,
+.ds-chart-point:focus-visible .ds-chart-point__date,
+.ds-chart-point.is-active .ds-chart-point__date {
+  opacity: 1;
+  transform: translateX(-50%) translateY(2px);
+}
+
 @media (max-width: 640px) {
   .chart-preview {
     padding: var(--space-page-mobile);

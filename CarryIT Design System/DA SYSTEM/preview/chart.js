@@ -35,6 +35,13 @@
     return isNaN(dt) ? null : dt.toISOString().slice(0, 10);
   }
 
+  // 'yyyy-mm-dd' → '1 juil. 2026' (bulle de survol des points).
+  function fmtDate(iso) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso || '');
+    if (!m) return '';
+    return Number(m[3]) + ' ' + MONTHS_FR[Number(m[2]) - 1] + ' ' + m[1];
+  }
+
   function renderEmpty(shell) {
     shell.innerHTML =
       '<div class="ds-empty-state">' +
@@ -114,9 +121,10 @@
         },
       },
       crosshair: {
-        mode: (LW.CrosshairMode && LW.CrosshairMode.Normal) || 0,
-        vertLine: { color: tokens.crosshairLine, width: tokens.crosshairWidth, style: (LW.LineStyle && LW.LineStyle.Solid) || 0, labelBackgroundColor: tokens.lastValueBg },
-        horzLine: { color: tokens.crosshairLine, width: tokens.crosshairWidth, style: (LW.LineStyle && LW.LineStyle.Solid) || 0, labelBackgroundColor: tokens.lastValueBg },
+        // Ligne verticale de repère seule ; labels natifs coupés (nos bulles HTML portent valeur + date).
+        mode: (LW.CrosshairMode && LW.CrosshairMode.Magnet) || 1,
+        vertLine: { color: tokens.crosshairLine, width: tokens.crosshairWidth, style: (LW.LineStyle && LW.LineStyle.Solid) || 0, labelVisible: false },
+        horzLine: { visible: false, labelVisible: false },
       },
       handleScroll: false,
       handleScale: false,
@@ -134,8 +142,7 @@
       crosshairMarkerRadius: tokens.markerRadius,
       crosshairMarkerBorderColor: tokens.lastValueBg,
       crosshairMarkerBackgroundColor: tokens.lineColor,
-      pointMarkersVisible: true,
-      pointMarkersRadius: tokens.pointRadius,
+      pointMarkersVisible: false,   /* pastilles rendues en HTML (calque) → survol = bulle de valeur */
       priceFormat: { type: 'price', precision: 0, minMove: 1 },
       autoscaleInfoProvider: function (orig) {
         // Cible connue → l'axe monte de 0 à la cible : la courbe se lit à sa VRAIE hauteur
@@ -159,6 +166,60 @@
     // La cible (1000) vit sur la carte hero, pas ici (une seule source de vérité).
 
     chart.timeScale().setVisibleRange({ from: data[0].time, to: data[data.length - 1].time });
+
+    // ── Pastilles HTML : une par mesure, survol = bulle de la valeur saisie ──
+    var layer = document.createElement('div');
+    layer.className = 'ds-chart-point-layer';
+    shell.appendChild(layer);
+
+    var pointEls = [];   // { time, el } — pour activer le point le plus proche au survol de la ligne
+
+    function positionPoints() {
+      layer.replaceChildren();
+      pointEls = [];
+      data.forEach(function (pt) {
+        var x = chart.timeScale().timeToCoordinate(pt.time);
+        var y = series.priceToCoordinate(pt.value);
+        if (!isFinite(x) || !isFinite(y)) return;
+        var point = document.createElement('div');
+        point.className = 'ds-chart-point';
+        point.style.left = x + 'px';
+        point.style.top = y + 'px';
+        point.tabIndex = 0;
+        var val = document.createElement('span');
+        val.className = 'ds-chart-point__value';   // bulle valeur — au-dessus du point
+        val.textContent = String(pt.value);
+        var date = document.createElement('span');
+        date.className = 'ds-chart-point__date';    // date — en-dessous du point
+        date.textContent = fmtDate(pt.time);
+        point.appendChild(val);
+        point.appendChild(date);
+        layer.appendChild(point);
+        pointEls.push({ time: pt.time, el: point });
+      });
+    }
+
+    // Survol n'importe où sur le graphique → active le point le plus proche (bulle valeur + date).
+    chart.subscribeCrosshairMove(function (param) {
+      if (!param || !param.point) {
+        pointEls.forEach(function (p) { p.el.classList.remove('is-active'); });
+        return;
+      }
+      var mx = param.point.x, best = null, bestD = Infinity;
+      pointEls.forEach(function (p) {
+        var x = chart.timeScale().timeToCoordinate(p.time);
+        if (!isFinite(x)) return;
+        var d = Math.abs(x - mx);
+        if (d < bestD) { bestD = d; best = p; }
+      });
+      pointEls.forEach(function (p) { p.el.classList.toggle('is-active', p === best); });
+    });
+
+    requestAnimationFrame(positionPoints);
+    chart.timeScale().subscribeVisibleTimeRangeChange(positionPoints);
+    if (window.ResizeObserver) {
+      new ResizeObserver(function () { requestAnimationFrame(positionPoints); }).observe(el);
+    }
   }
 
   // Ré-exposé : après ajout/édition d'une mesure, on relit les données et on retrace.
