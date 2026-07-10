@@ -172,7 +172,13 @@
     layer.className = 'ds-chart-point-layer';
     shell.appendChild(layer);
 
-    var pointEls = [];   // { time, el } — pour activer le point le plus proche au survol de la ligne
+    var pointEls = [];      // { time, el } — pour activer le point le plus proche au survol de la ligne
+    var activePoint = null; // point le plus proche du curseur (pour le clic → édition)
+
+    // Clic sur une mesure → l'app ouvre l'édition (édite/supprime), comme dashboard.html.
+    function emitClick(time) {
+      document.dispatchEvent(new CustomEvent('carryit:measure-click', { detail: { date: time } }));
+    }
 
     function positionPoints() {
       layer.replaceChildren();
@@ -194,6 +200,7 @@
         date.textContent = fmtDate(pt.time);
         point.appendChild(val);
         point.appendChild(date);
+        point.addEventListener('click', function () { emitClick(pt.time); });  // clic direct sur la pastille
         layer.appendChild(point);
         pointEls.push({ time: pt.time, el: point });
       });
@@ -202,6 +209,7 @@
     // Survol n'importe où sur le graphique → active le point le plus proche (bulle valeur + date).
     chart.subscribeCrosshairMove(function (param) {
       if (!param || !param.point) {
+        activePoint = null;
         pointEls.forEach(function (p) { p.el.classList.remove('is-active'); });
         return;
       }
@@ -212,8 +220,12 @@
         var d = Math.abs(x - mx);
         if (d < bestD) { bestD = d; best = p; }
       });
+      activePoint = best;
       pointEls.forEach(function (p) { p.el.classList.toggle('is-active', p === best); });
     });
+
+    // Clic sur la ligne (canvas) → édite le point le plus proche (celui surligné).
+    chart.subscribeClick(function () { if (activePoint) emitClick(activePoint.time); });
 
     requestAnimationFrame(positionPoints);
     chart.timeScale().subscribeVisibleTimeRangeChange(positionPoints);

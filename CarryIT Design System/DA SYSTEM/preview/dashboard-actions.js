@@ -39,8 +39,10 @@
     if (!m) return;
     var valEl = $('[data-measure-value]'), noteEl = $('[data-measure-note]'),
         msgEl = $('[data-measure-msg]'), saveBtn = $('[data-measure-save]'),
+        deleteBtn = $('[data-measure-delete]'), titleEl = $('#measure-title'),
         dateTrigger = $('[data-measure-date-trigger]'), dateLabel = $('[data-measure-date-label]'),
         calPop = $('[data-measure-cal-pop]');
+    var editingKey = null;   // null = ajout ; sinon { by:'id'|'date', v } = mesure éditée
 
     var MONTHS = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
     function fmtDate(iso) {
@@ -75,6 +77,9 @@
     if (dateTrigger) dateTrigger.addEventListener('click', function (e) { e.stopPropagation(); initCalendar(); togglePop(); });
 
     function openMeasure() {
+      editingKey = null;
+      if (titleEl) titleEl.textContent = 'Ajouter une mesure';
+      if (deleteBtn) deleteBtn.hidden = true;
       initCalendar();
       setDate(todayISO());
       if (cal && cal.setValue) cal.setValue(measureDate);
@@ -86,9 +91,40 @@
       valEl.focus();
     }
 
+    // Édition d'une mesure existante — même modal, pré-rempli (règle DS : une seule porte d'édition).
+    function openEdit(measure) {
+      var iso = toComparable(measure.date);
+      editingKey = (measure.id != null) ? { by: 'id', v: measure.id } : { by: 'date', v: iso };
+      if (titleEl) titleEl.textContent = 'Modifier la mesure';
+      if (deleteBtn) deleteBtn.hidden = false;
+      initCalendar();
+      setDate(iso);
+      if (cal && cal.setValue) cal.setValue(iso);
+      closePop();
+      valEl.value = (measure.value == null ? '' : measure.value);
+      if (noteEl) noteEl.value = measure.note || '';
+      if (msgEl) msgEl.hidden = true;
+      m.open();
+      valEl.focus();
+    }
+
     // Bouton « Ajouter une mesure » du chart (re-rendu → délégation).
     document.addEventListener('click', function (e) {
       if (e.target.closest('.ds-chart-add-btn')) openMeasure();
+    });
+
+    // Clic sur une mesure du chart (émis par chart.js) → ouvre l'édition pré-remplie.
+    document.addEventListener('carryit:measure-click', function (e) {
+      var iso = e.detail && e.detail.date;
+      if (!iso) return;
+      var mm = findMeasureByDate(iso);
+      if (mm) openEdit(mm);
+    });
+
+    if (deleteBtn) deleteBtn.addEventListener('click', function () {
+      if (editingKey) deleteMeasure(editingKey);
+      m.close();
+      refresh();
     });
 
     saveBtn.addEventListener('click', function () {
@@ -98,23 +134,45 @@
         if (msgEl) { msgEl.textContent = 'Date et valeur requises.'; msgEl.hidden = false; }
         return;
       }
-      saveMeasure(date, value, noteEl ? noteEl.value.trim() : '');
+      var noteVal = noteEl ? noteEl.value.trim() : '';
+      if (editingKey) updateMeasure(editingKey, date, value, noteVal);
+      else saveMeasure(date, value, noteVal);
       m.close();
       refresh();
     });
   }
 
-  function saveMeasure(date, value, note) {
+  // Date comparable (yyyy-mm-dd) depuis ISO ou jj/mm/aaaa — les 2 formats coexistent en stockage.
+  function toComparable(d) {
+    if (!d) return '';
+    if (/^\d{4}-\d{2}-\d{2}/.test(d)) return d.slice(0, 10);
+    var m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(d);
+    return m ? (m[3] + '-' + m[2] + '-' + m[1]) : d;
+  }
+
+  // Liste source unique des mesures du KPI global (legacy si non vide, sinon v1).
+  function readMeasuresRaw() {
+    var gk = readObj('carryItObjectifSMART').globalKpi;
+    gk = (gk && typeof gk === 'object') ? gk : {};
+    var v1kpi = readObj('carryit_v1_kpi');
+    return (Array.isArray(gk.measures) && gk.measures.length) ? gk.measures.slice()
+      : (Array.isArray(v1kpi.measures) ? v1kpi.measures.slice() : []);
+  }
+
+  function sortByDate(list) {
+    return list.slice().sort(function (a, b) {
+      var ta = toComparable(a.date), tb = toComparable(b.date);
+      return ta < tb ? -1 : ta > tb ? 1 : 0;
+    });
+  }
+
+  // Écrit la liste complète dans les 2 stores + le projet courant (cohérence, cf. saveMeasure d'origine).
+  function writeMeasures(list) {
     var smart = readObj('carryItObjectifSMART');
     var gk = (smart.globalKpi && typeof smart.globalKpi === 'object') ? smart.globalKpi : {};
     var v1kpi = readObj('carryit_v1_kpi');
-    // Source unique = la liste réellement affichée (legacy si non vide, sinon v1).
-    var current = (Array.isArray(gk.measures) && gk.measures.length) ? gk.measures.slice()
-      : (Array.isArray(v1kpi.measures) ? v1kpi.measures.slice() : []);
-    current.push({ id: Date.now(), date: date, value: value, note: note || '' });
-    // Même liste complète écrite dans les 2 stores (cohérence).
-    gk.measures = current; smart.globalKpi = gk; smart.measures = current;
-    v1kpi.measures = current;
+    gk.measures = list; smart.globalKpi = gk; smart.measures = list;
+    v1kpi.measures = list;
     try {
       localStorage.setItem('carryItObjectifSMART', JSON.stringify(smart));
       localStorage.setItem('carryit_v1_kpi', JSON.stringify(v1kpi));
@@ -126,11 +184,36 @@
         var p = all[idx];
         if (p && typeof p === 'object') {
           var pgk = (p.globalKpi && typeof p.globalKpi === 'object') ? p.globalKpi : {};
-          pgk.measures = current; p.globalKpi = pgk; p.measures = current;
+          pgk.measures = list; p.globalKpi = pgk; p.measures = list;
           localStorage.setItem('carryItAllObjectifs', JSON.stringify(all));
         }
       }
     } catch (e) {}
+  }
+
+  // Identifie une mesure par id (fiable) ou, à défaut, par date (données anciennes sans id).
+  function sameMeasure(m, key) {
+    return key.by === 'id' ? m.id === key.v : toComparable(m.date) === key.v;
+  }
+  function findMeasureByDate(iso) {
+    var list = readMeasuresRaw();
+    for (var i = 0; i < list.length; i++) { if (toComparable(list[i].date) === iso) return list[i]; }
+    return null;
+  }
+
+  function saveMeasure(date, value, note) {
+    var list = readMeasuresRaw();
+    list.push({ id: Date.now(), date: date, value: value, note: note || '' });
+    writeMeasures(sortByDate(list));
+  }
+  function updateMeasure(key, date, value, note) {
+    var list = readMeasuresRaw().map(function (m) {
+      return sameMeasure(m, key) ? { id: m.id, date: date, value: value, note: note || '' } : m;
+    });
+    writeMeasures(sortByDate(list));
+  }
+  function deleteMeasure(key) {
+    writeMeasures(readMeasuresRaw().filter(function (m) { return !sameMeasure(m, key); }));
   }
 
   // ── Éditer l'objectif SMART — INLINE dans la carte (pas de modal) ──
