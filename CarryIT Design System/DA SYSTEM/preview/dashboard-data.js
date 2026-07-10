@@ -22,6 +22,13 @@
     return null;
   }
   function num(v) { var n = Number(v); return (v !== null && v !== '' && isFinite(n)) ? n : null; }
+  // Date comparable (yyyy-mm-dd) depuis ISO OU jj/mm/aaaa (les 2 formats coexistent en stockage).
+  function toComparable(d) {
+    if (!d) return '';
+    if (/^\d{4}-\d{2}-\d{2}/.test(d)) return d.slice(0, 10);
+    var m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(d);
+    return m ? (m[3] + '-' + m[2] + '-' + m[1]) : d;
+  }
   function deriveUnitShort(u) { return u ? (String(u).split(/[\s\/]/)[0] || '') : ''; }
 
   function normMeasure(m) {
@@ -68,7 +75,10 @@
     var latestVal = null;
     var withVal = oMeasures.filter(function (m) { return m.value != null; });
     if (withVal.length) {
-      var srt = withVal.slice().sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : 0; });
+      var srt = withVal.slice().sort(function (a, b) {
+        var ta = toComparable(a.date), tb = toComparable(b.date);
+        return ta < tb ? -1 : ta > tb ? 1 : 0;
+      });
       latestVal = srt[srt.length - 1].value;
     }
     var objectiveKpi = {
