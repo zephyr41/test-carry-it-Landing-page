@@ -152,6 +152,13 @@
     });
   }
 
+  // Re-render le rail depuis localStorage (après édition/suppression d'un jalon).
+  // render() remplace seulement les items ; le listener de clic vit sur root (délégation) → conservé.
+  window.CarryITRefreshTimeline = function () {
+    var root = document.querySelector('.ds-timeline');
+    if (root) render(root, loadJalons());
+  };
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else {

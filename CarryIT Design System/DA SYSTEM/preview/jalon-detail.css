@@ -65,8 +65,10 @@
   margin-top: var(--jalon-detail-section-gap);
 }
 
+/* Label de section = eyebrow ANCRE blanc (Modal §6 / SMART §925) : il introduit le contenu,
+   il ne doit pas être plus faible que le paragraphe qu'il annonce (sinon hiérarchie inversée). */
 .ds-jalon-detail__label {
-  color: var(--color-text-muted);
+  color: var(--color-text-primary);
   letter-spacing: var(--letter-spacing-label);
 }
 
@@ -79,6 +81,16 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--jalon-detail-kpi-gap);
+}
+
+/* Nom du KPI en blanc (comme la variante résumé §871) : il tranche sur les gris de la tuile.
+   Contexte détail (col-8 large) : nom sur 2 lignes plutôt que tronqué en « … » (le nom respire). */
+.ds-jalon-detail__kpi-grid .ds-kpi-card__name {
+  color: var(--color-text-primary);
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
 /* ── Footer : Valider ce jalon + ⋯ ───────────────────────────── */

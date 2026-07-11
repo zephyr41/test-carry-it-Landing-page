@@ -1,18 +1,23 @@
 /* Effort modal — composant métier : assemble Modal + date nav + Scheduler + Input number.
    Zéro valeur en dur : tout référence tokens.css. */
 
-.ds-effort-modal {
-  max-height: calc(100vh - var(--space-64));
-  overflow-y: auto;
-}
+/* max-height / scroll gérés par .ds-modal (token --modal-max-height, header+footer fixes). */
 
 .ds-effort-modal__context {
   color: var(--color-text-muted);
 }
 
+/* Le form NE scrolle PAS : il remplit la hauteur dispo, seul le scheduler (rail d'heures)
+   absorbe l'excédent et scrolle en interne. date-nav / quantité / note restent fixes. */
 .ds-effort-modal__form {
-  display: grid;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
   gap: var(--space-24);
+}
+.ds-effort-modal__form > :not(.ds-scheduler) {
+  flex-shrink: 0;   /* seul le scheduler rétrécit */
 }
 
 /* Note : textarea sans surface (se fond dans le modal), séparée par un trait haut. */
@@ -93,11 +98,15 @@
 
 /* ---- Scheduler horaire (QUAND) ---- */
 .ds-scheduler {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: var(--space-8);
+  flex: 1 1 auto;   /* absorbe la hauteur du form ; son viewport scrolle en interne */
+  min-height: 0;
 }
 
 .ds-scheduler__head {
+  flex-shrink: 0;   /* label QUAND + résumé fixes, ne rétrécissent pas */
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -111,12 +120,16 @@
 }
 
 .ds-scheduler__hint {
+  flex-shrink: 0;   /* aide clavier fixe sous le rail */
   margin-top: var(--space-8);
   color: var(--color-text-muted);
 }
 
 .ds-scheduler__viewport {
-  height: var(--scheduler-viewport-height);
+  /* Défaut ~4h (flex-basis) ; grandit si place dispo, rétrécit + scrolle sur petit écran.
+     Plancher ~2h30 pour rester utilisable (ne collapse jamais à 0). */
+  flex: 1 1 var(--scheduler-viewport-height);
+  min-height: calc(var(--scheduler-hour-height) * 2.5);
   overflow-y: auto;
   user-select: none;
   scrollbar-width: thin;

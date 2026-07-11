@@ -41,7 +41,7 @@
         <!-- Scheduler horaire (QUAND) -->
         <div class="ds-scheduler">
           <div class="ds-scheduler__head">
-            <span class="type-data-label" id="schedLabel">Quand</span>
+            <span class="type-label" id="schedLabel">Quand</span>
             <span class="ds-scheduler__summary" id="schedSummary" aria-live="polite">15:00 → 16:00 · 1h</span>
           </div>
           <div class="ds-scheduler__viewport" id="schedViewport">
@@ -68,7 +68,7 @@
 
         <!-- Quantité (input number) -->
         <div class="ds-field">
-          <label class="type-data-label" for="effortQty">Quantité (h/entre chaque test)</label>
+          <label class="type-label" for="effortQty">Quantité (h/entre chaque test)</label>
           <div class="ds-input-number">
             <input class="ds-input-number__field" id="effortQty" type="number" min="0" step="any" placeholder="0">
             <div class="ds-input-number__steppers">
@@ -84,15 +84,16 @@
 
         <!-- Note -->
         <div class="ds-field ds-field--note">
-          <label class="type-data-label" for="effortNote">Note</label>
+          <label class="type-label" for="effortNote">Note</label>
           <textarea class="ds-textarea ds-effort-modal__note" id="effortNote" rows="2" placeholder="Conditions, qualité, points notables..."></textarea>
         </div>
 
-        <footer class="ds-modal__footer">
-          <button type="button" class="ds-button ds-button--ghost ds-button--sm">Annuler</button>
-          <button type="submit" class="ds-button ds-button--inverse ds-button--sm">Enregistrer l'effort</button>
-        </footer>
       </form>
+
+      <footer class="ds-modal__footer">
+        <button type="button" class="ds-button ds-button--ghost ds-button--sm">Annuler</button>
+        <button type="button" class="ds-button ds-button--inverse ds-button--sm">Enregistrer l'effort</button>
+      </footer>
     </div>
   </div>
 

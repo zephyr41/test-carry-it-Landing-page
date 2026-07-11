@@ -324,6 +324,9 @@
   --modal-header-gap: var(--space-24);
   --modal-shadow: var(--shadow-lg);
   --modal-max-width: 480px;
+  /* Hauteur max d'un modal long : ne dépasse jamais le viewport (marge = padding du backdrop).
+     Comble le trou §6 (« ajouté quand un modal long apparaîtra » → l'effort-modal). */
+  --modal-max-height: calc(100dvh - var(--space-page-desktop) * 2);
   --modal-close-size: var(--space-32);
   --modal-close-inset: var(--space-24);   /* croix pinnée au coin (inset < padding de contenu) — pas flottante à 40 */
 
@@ -577,10 +580,10 @@
   --jalon-detail-max-width: 780px;                             /* vue détail (2 KPI côte à côte) — valeur preview */
   --jalon-detail-head-gap: var(--space-8);                     /* meta → titre → échéance (groupe serré) */
   --jalon-detail-section-gap: var(--space-32);                 /* entre les grands blocs */
-  --jalon-detail-label-gap: var(--space-16);                   /* label de section → son contenu */
-  --jalon-detail-kpi-gap: var(--space-16);                     /* entre les 2 cartes KPI */
-  --jalon-detail-rule-gap: var(--space-32);                    /* air autour des filets (haut/bas) */
-  --jalon-detail-meta-color: var(--color-text-muted);          /* ligne meta (Jalon x/n · Mois · statut) */
+  --jalon-detail-label-gap: var(--space-8);                    /* label de section → son contenu : titre→texte = unité de sens (§4.3 label-gap), pas 16 */
+  --jalon-detail-kpi-gap: var(--space-24);                     /* entre les 2 cartes KPI : gap externe ≥ padding interne (24) + §887 grid-gap */
+  --jalon-detail-rule-gap: var(--space-16);                    /* air autour des filets : 16+16=32 = section-gap (frontière cohérente), pas 64 */
+  --jalon-detail-meta-color: var(--color-text-primary);        /* ligne meta (Jalon x/n · Mois · statut) — eyebrow ancre blanc (Modal §6 / SMART §925) */
   --jalon-detail-due-color: var(--color-text-muted);           /* échéance */
 
   /* Pattern tokens: Skeleton (placeholders de chargement) */

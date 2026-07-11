@@ -22,7 +22,7 @@
 
 .input-group {
   display: grid;
-  gap: var(--space-12);
+  gap: var(--space-8);   /* label → champ = unité de sens (§4.3), aligné sur inputs.css/textarea.css */
 }
 
 .ds-select-wrapper {

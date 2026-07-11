@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="task-list.css">
 <link rel="stylesheet" href="delta.css">
 <link rel="stylesheet" href="kpi-card.css">
+<link rel="stylesheet" href="jalon-detail.css">
 <link rel="stylesheet" href="tabs.css">
 <link rel="stylesheet" href="timeline.css">
 <link rel="stylesheet" href="empty-state.css">
@@ -19,9 +20,11 @@
 <link rel="stylesheet" href="navbar.css">
 <link rel="stylesheet" href="inputs.css">
 <link rel="stylesheet" href="textarea.css">
+<link rel="stylesheet" href="select.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@calendarjs/ce/dist/style.min.css">
 <link rel="stylesheet" href="calendar.css">
 <link rel="stylesheet" href="modal.css">
+<link rel="stylesheet" href="effort-modal.css">
 <link rel="stylesheet" href="sync.css">
 <link rel="stylesheet" href="dashboard-final.css">
 </head>
@@ -70,15 +73,15 @@
         <!-- Étage bas : onglets de vue -->
         <div class="ds-navbar__tabs">
           <nav class="ds-tabs" role="tablist" aria-label="Vues du dashboard">
-            <button class="ds-tabs__tab is-active" role="tab" aria-selected="true">
+            <button class="ds-tabs__tab is-active" role="tab" aria-selected="true" data-view="long">
               <svg class="ds-tabs__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5M4 19h16M9 16V9M14 16V7M19 16v-4" /></svg>
               <span>Long terme</span>
             </button>
-            <button class="ds-tabs__tab" role="tab" aria-selected="false">
+            <button class="ds-tabs__tab" role="tab" aria-selected="false" data-view="moyen">
               <svg class="ds-tabs__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V5m0 0l14 5L4 15" /></svg>
               <span>Moyen terme</span>
             </button>
-            <button class="ds-tabs__tab" role="tab" aria-selected="false">
+            <button class="ds-tabs__tab" role="tab" aria-selected="false" data-view="todo">
               <svg class="ds-tabs__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 11l3 3L22 4" /><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" /></svg>
               <span>To-do</span>
             </button>
@@ -88,7 +91,7 @@
       </div>
     </nav>
 
-    <div class="dashboard-final__page">
+    <div class="dashboard-final__page" data-view-panel="long">
 
       <!-- Ligne des 4 cartes -->
       <section class="ds-grid dashboard-final__kpi-row">
@@ -138,14 +141,24 @@
 
     </div>
 
-    <!-- Source timeline masquée : présente pour que timeline.js rende le stepper « Jalon actif » ci-dessus. -->
-    <article class="ds-timeline dashboard-final__timeline-source" aria-hidden="true">
-      <header class="ds-timeline__head">
-        <span class="type-data-label">Jalons</span>
-        <span class="ds-timeline__count type-data-label" data-timeline-count>—</span>
-      </header>
-      <ol class="ds-timeline__list" data-timeline-list></ol>
-    </article>
+    <!-- Vue MOYEN TERME : rail (timeline, carte) + détail du jalon (carte) sur la grille col-4/col-8. -->
+    <div class="dashboard-final__page dashboard-final__page--moyen" data-view-panel="moyen" hidden>
+      <section class="ds-grid dashboard-final__moyen-row">
+        <!-- Rail : timeline des jalons. Aussi la source du stepper « Jalon actif » du long terme (une seule timeline). -->
+        <article class="ds-col-4 ds-timeline">
+          <header class="ds-timeline__head">
+            <span class="type-data-label">Jalons</span>
+            <span class="ds-timeline__count type-data-label" data-timeline-count>—</span>
+          </header>
+          <ol class="ds-timeline__list" data-timeline-list></ol>
+        </article>
+        <!-- Détail du jalon sélectionné (rendu par dashboard-views.js depuis les données). -->
+        <article class="ds-col-8 dashboard-final__detail-card" data-jalon-detail></article>
+      </section>
+    </div>
+
+    <!-- Vue TO-DO : à venir. -->
+    <div class="dashboard-final__page" data-view-panel="todo" hidden></div>
   </main>
 
   <!-- Modal Synchroniser : export/import manuel des données (localStorage), sans backend. -->
@@ -219,6 +232,179 @@
     </div>
   </div>
 
+  <!-- Modal Ajouter un effort / résultat (mesure de KPI de jalon) : scheduler QUAND + quantité + note. -->
+  <div class="ds-modal-backdrop" data-effort-modal hidden>
+    <div class="ds-modal ds-effort-modal" role="dialog" aria-modal="true" aria-labelledby="effort-title">
+      <header class="ds-modal__header">
+        <h2 id="effort-title" class="type-h2">Ajouter un effort</h2>
+        <p class="ds-modal__subtitle type-body-sm" data-effort-subtitle></p>
+        <p class="ds-effort-modal__context type-caption" data-effort-context></p>
+      </header>
+
+      <form class="ds-effort-modal__form" onsubmit="return false">
+        <div class="ds-date-nav">
+          <button type="button" class="ds-date-nav__arrow" data-date-step="-1" aria-label="Jour précédent">‹</button>
+          <button type="button" class="ds-date-nav__current" id="effortDateCurrent">
+            <svg class="ds-date-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
+            </svg>
+            <span id="effortDateLabel">—</span>
+          </button>
+          <button type="button" class="ds-date-nav__arrow" data-date-step="1" aria-label="Jour suivant">›</button>
+        </div>
+
+        <div class="ds-scheduler">
+          <div class="ds-scheduler__head">
+            <span class="type-label" id="schedLabel">Quand</span>
+            <span class="ds-scheduler__summary" id="schedSummary" aria-live="polite">15:00 → 16:00 · 1h</span>
+          </div>
+          <div class="ds-scheduler__viewport" id="schedViewport">
+            <div class="ds-scheduler__track" id="schedTrack">
+              <div class="ds-scheduler__hours" id="schedHours" aria-hidden="true"></div>
+              <div class="ds-scheduler__block" id="schedBlock"
+                   role="slider" tabindex="0" aria-labelledby="schedLabel"
+                   aria-valuemin="6" aria-valuemax="23" aria-valuenow="15"
+                   aria-valuetext="15:00 à 16:00, durée 1h" aria-describedby="schedHint">
+                <div class="ds-scheduler__block-body">
+                  <span class="ds-scheduler__block-eyebrow" data-effort-block-eyebrow>Effort</span>
+                  <span class="ds-scheduler__block-value" id="schedBlockLabel">15:00 → 16:00 · 1h</span>
+                </div>
+                <div class="ds-scheduler__resize" id="schedResize" aria-hidden="true">
+                  <div class="ds-scheduler__resize-grip"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="ds-scheduler__hint type-caption" id="schedHint">Flèches ↑↓ pour déplacer, Maj+↑↓ pour ajuster la durée.</p>
+        </div>
+
+        <div class="ds-field">
+          <label class="type-label" for="effortQty" data-effort-qty-label>Quantité</label>
+          <div class="ds-input-number">
+            <input class="ds-input-number__field" id="effortQty" type="number" min="0" step="any" placeholder="0">
+            <div class="ds-input-number__steppers">
+              <button type="button" class="ds-input-number__step" data-step="1" aria-label="Augmenter">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" aria-hidden="true"><path d="M4 10l4-4 4 4"/></svg>
+              </button>
+              <button type="button" class="ds-input-number__step" data-step="-1" aria-label="Diminuer">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="ds-field ds-field--note">
+          <label class="type-label" for="effortNote">Note</label>
+          <textarea class="ds-textarea ds-effort-modal__note" id="effortNote" rows="2" placeholder="Conditions, qualité, points notables..."></textarea>
+        </div>
+
+        <p class="input-error-msg type-caption" data-effort-msg hidden></p>
+      </form>
+
+      <footer class="ds-modal__footer">
+        <button type="button" class="ds-button ds-button--ghost ds-button--sm" data-effort-close>Annuler</button>
+        <button type="button" class="ds-button ds-button--inverse ds-button--sm" data-effort-save>Enregistrer</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Modal Configurer / Modifier un KPI de jalon (définition : métrique, cible, unité, fréquence, mode). -->
+  <div class="ds-modal-backdrop" data-kpi-modal hidden>
+    <div class="ds-modal" role="dialog" aria-modal="true" aria-labelledby="kpi-title">
+      <header class="ds-modal__header">
+        <div class="ds-modal__header-row">
+          <h2 id="kpi-title" class="type-h2" data-kpi-title>Configurer le KPI</h2>
+          <button type="button" class="ds-modal__close" aria-label="Fermer" data-kpi-close>
+            <svg class="ds-modal__close-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4L12 12M12 4L4 12"/></svg>
+          </button>
+        </div>
+        <p class="ds-modal__subtitle type-body-sm" data-kpi-subtitle></p>
+      </header>
+      <div class="ds-modal__body">
+        <div class="input-group">
+          <label class="type-label" for="kpi-label">Métrique</label>
+          <input id="kpi-label" class="ds-input" type="text" placeholder="km courus, clients onboardés…" data-kpi-field-label>
+        </div>
+        <div class="input-group">
+          <label class="type-label" for="kpi-target">Cible</label>
+          <input id="kpi-target" class="ds-input" type="number" min="0" step="any" placeholder="100" data-kpi-field-target>
+        </div>
+        <div class="input-group">
+          <label class="type-label" for="kpi-unit">Unité</label>
+          <input id="kpi-unit" class="ds-input" type="text" placeholder="km, clients…" data-kpi-field-unit>
+        </div>
+        <div class="input-group">
+          <label class="type-label" for="kpi-freq">Fréquence de saisie</label>
+          <div class="ds-select-wrapper">
+            <select id="kpi-freq" class="ds-select" data-kpi-field-freq>
+              <option>Quotidien</option>
+              <option>Hebdomadaire</option>
+              <option>Mensuel</option>
+            </select>
+          </div>
+        </div>
+        <div class="input-group">
+          <label class="type-label" for="kpi-mode">Mode de saisie</label>
+          <div class="ds-select-wrapper">
+            <select id="kpi-mode" class="ds-select" data-kpi-field-mode>
+              <option value="incremental">Cumulatif (on additionne)</option>
+              <option value="absolute">Instantané (dernière valeur)</option>
+            </select>
+          </div>
+        </div>
+        <p class="input-error-msg type-caption" data-kpi-msg hidden></p>
+      </div>
+      <footer class="ds-modal__footer">
+        <button type="button" class="ds-button ds-button--danger ds-button--sm" data-kpi-delete hidden>Supprimer</button>
+        <button type="button" class="ds-button ds-button--ghost ds-button--sm" data-kpi-close>Annuler</button>
+        <button type="button" class="ds-button ds-button--inverse ds-button--sm" data-kpi-save>Enregistrer</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Modal Modifier le jalon : titre + échéance (calendrier) + critère de validation. -->
+  <div class="ds-modal-backdrop" data-jalon-modal hidden>
+    <div class="ds-modal" role="dialog" aria-modal="true" aria-labelledby="jalon-modal-title">
+      <header class="ds-modal__header">
+        <div class="ds-modal__header-row">
+          <h2 id="jalon-modal-title" class="type-h2">Modifier le jalon</h2>
+          <button type="button" class="ds-modal__close" aria-label="Fermer" data-jalon-close>
+            <svg class="ds-modal__close-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4L12 12M12 4L4 12"/></svg>
+          </button>
+        </div>
+        <p class="ds-modal__subtitle type-body-sm">Titre, échéance et critère de validation.</p>
+      </header>
+      <div class="ds-modal__body">
+        <div class="input-group">
+          <label class="type-label" for="jalon-titre">Titre du jalon</label>
+          <input id="jalon-titre" class="ds-input" type="text" placeholder="POC (V0), Lancement…" data-jalon-field-titre>
+        </div>
+        <div class="input-group">
+          <label class="type-label">Échéance</label>
+          <div class="ds-datefield">
+            <button type="button" class="ds-datefield__trigger" data-jalon-date-trigger aria-haspopup="true" aria-expanded="false">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+              <span data-jalon-date-label>Choisir une date</span>
+            </button>
+            <div class="ds-datefield__popover ds-calendar-wrap" data-jalon-cal-pop hidden>
+              <div id="jalonCalendar"></div>
+            </div>
+          </div>
+        </div>
+        <div class="input-group">
+          <label class="type-label" for="jalon-critere">Critère de validation</label>
+          <textarea id="jalon-critere" class="ds-textarea" rows="3" placeholder="Ce qui doit être vrai pour valider ce jalon." data-jalon-field-critere></textarea>
+        </div>
+        <p class="input-error-msg type-caption" data-jalon-msg hidden></p>
+      </div>
+      <footer class="ds-modal__footer">
+        <button type="button" class="ds-button ds-button--danger ds-button--sm" data-jalon-delete>Supprimer</button>
+        <button type="button" class="ds-button ds-button--ghost ds-button--sm" data-jalon-close>Annuler</button>
+        <button type="button" class="ds-button ds-button--inverse ds-button--sm" data-jalon-save>Enregistrer</button>
+      </footer>
+    </div>
+  </div>
+
   <script src="timeline.js"></script>
   <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
   <script src="dashboard-data.js"></script>
@@ -230,5 +416,10 @@
   <script src="https://cdn.jsdelivr.net/npm/@calendarjs/ce/dist/index.min.js"></script>
   <script src="dashboard-actions.js"></script>
   <script src="projects.js"></script>
+  <script src="dashboard-views.js"></script>
+  <script src="effort-modal.js"></script>
+  <script src="dashboard-effort.js"></script>
+  <script src="dashboard-kpi.js"></script>
+  <script src="dashboard-jalon.js"></script>
 </body>
 </html>

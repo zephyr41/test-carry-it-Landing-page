@@ -84,9 +84,59 @@
   justify-content: center;
 }
 
-/* Timeline (liste) masquée : présente pour que timeline.js rende le stepper, mais pas affichée ici. */
-.dashboard-final__timeline-source {
+/* ── Vues commutables (onglets) : une page par vue, une seule visible. ──
+   Le [hidden] natif ne suffit pas : .dashboard-final__page force display:grid
+   (gagne sur hidden). On rétablit donc explicitement display:none. */
+.dashboard-final__page[hidden] {
   display: none;
+}
+
+/* Vue moyen terme : une seule rangée à hauteur DÉFINIE (§4.8, même token que le long terme)
+   → la vue remplit l'écran, zéro scroll, rythme vertical stable. */
+.dashboard-final__page--moyen {
+  grid-template-rows: minmax(var(--grid-row-content-height), auto);
+}
+
+/* Cartes à hauteur ÉGALE (stretch) : rail et détail font la hauteur de la rangée
+   → grille régulière, alignées haut ET bas (comme chart + SMART en long terme). */
+.dashboard-final__moyen-row {
+  align-items: stretch;
+}
+
+/* Rail : la liste des jalons remplit la carte étirée et scrolle dedans si débordement. */
+.dashboard-final__moyen-row > .ds-timeline {
+  display: flex;
+  flex-direction: column;
+}
+.dashboard-final__moyen-row .ds-timeline__list {
+  height: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+/* Carte englobant le détail du jalon (carte définie DS — le détail seul est card-less). */
+.dashboard-final__detail-card {
+  display: flex;   /* le détail remplit la hauteur de la carte */
+  padding: var(--card-padding);
+  background: var(--card-background);
+  border: var(--card-border-defined);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow-defined);
+}
+.dashboard-final__detail-card .ds-jalon-detail {
+  flex: 1;
+}
+/* Filet + footer (« Valider ce jalon ») épinglés en bas de la carte pleine hauteur. */
+.dashboard-final__detail-card .ds-jalon-detail__rule:last-of-type {
+  margin-top: auto;
+}
+
+/* KPI cards imbriquées dans la carte détail (surface) : les monter sur surface-raised
+   pour qu'elles se détachent de leur parent — même fond que le parent = elles se fondent.
+   Usage documenté de surface-raised (§4.1 : « les champs se fondaient dans leur carte
+   parente, même fond que surface → surface-raised ajouté pour ça »). */
+.dashboard-final__detail-card .ds-kpi-card {
+  background: var(--color-surface-raised);
 }
 
 /* ── Rangée du bas : sur la grille DS — graphique span 8 + SMART span 4. ── */

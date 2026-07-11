@@ -27,7 +27,11 @@
 .ds-modal {
   width: 100%;
   max-width: var(--modal-max-width);
-  display: grid;
+  /* Flex column : header + footer FIXES, seul le corps scrolle si le contenu déborde.
+     max-height borne le modal au viewport (modal long → ne remplit jamais toute la page). */
+  max-height: var(--modal-max-height);
+  display: flex;
+  flex-direction: column;
   gap: var(--modal-header-gap);
   padding: var(--modal-padding-block) var(--modal-padding-inline);
   background: var(--modal-background);
@@ -37,6 +41,7 @@
 }
 
 .ds-modal__header {
+  flex-shrink: 0;   /* header fixe (ne scrolle pas) */
   display: grid;
   gap: var(--space-label-gap);   /* titre → sous-titre : même règle titre↔paragraphe que partout (pas 4px collés) */
   padding-bottom: var(--modal-header-gap);
@@ -97,9 +102,12 @@
 .ds-modal__body {
   display: grid;
   gap: var(--space-element-gap);
+  min-height: 0;        /* autorise le corps à rétrécir dans le flex column */
+  overflow-y: auto;     /* seul le corps scrolle quand le contenu déborde la max-height */
 }
 
 .ds-modal__footer {
+  flex-shrink: 0;   /* footer fixe (actions toujours visibles) */
   display: flex;
   justify-content: flex-end;
   gap: var(--space-12);

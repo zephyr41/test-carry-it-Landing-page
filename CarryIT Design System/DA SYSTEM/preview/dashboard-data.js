@@ -102,6 +102,7 @@
     if (!Array.isArray(jalons)) jalons = [];
     jalons = jalons.map(function (j) {
       return {
+        id: pick(j.id),
         titre: pick(j.titre, j.title),
         date: pick(j.date),
         statut: pick(j.statut, j.status),
