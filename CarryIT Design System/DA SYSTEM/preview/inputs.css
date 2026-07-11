@@ -85,11 +85,10 @@
   stroke-width: var(--icon-stroke-width);
 }
 
+/* Calendrier INLINE (dans le flux) : dans un modal, un popover absolute déborde/dérive
+   au scroll. Inline → pousse le contenu, scrolle avec le corps, ne sort jamais du modal. */
 .ds-datefield__popover {
-  position: absolute;
-  top: calc(100% + var(--space-8));
-  left: 0;
-  z-index: var(--z-overlay);
+  margin-top: var(--space-8);
 }
 
 .ds-datefield__popover[hidden] {

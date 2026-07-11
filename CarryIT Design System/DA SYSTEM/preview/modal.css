@@ -103,7 +103,7 @@
   display: grid;
   gap: var(--space-element-gap);
   min-height: 0;        /* autorise le corps à rétrécir dans le flex column */
-  overflow-y: auto;     /* seul le corps scrolle quand le contenu déborde la max-height */
+  overflow-y: auto;     /* corps scrolle si le contenu déborde (ex. calendrier inline ouvert) */
 }
 
 .ds-modal__footer {
