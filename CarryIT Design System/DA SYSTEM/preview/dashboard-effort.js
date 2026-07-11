@@ -87,14 +87,30 @@
       target = { jalonId: jalonId, kpiType: kpiType };
 
       if (titleEl) titleEl.textContent = isEffort ? 'Ajouter un effort' : 'Ajouter un résultat';
-      if (subEl) subEl.textContent = (isEffort ? 'Note ce que tu as fait' : 'Nouvelle valeur') +
-        (kpi && kpi.label ? ' pour ' + kpi.label + '.' : '.');
+      // Sous-titre : cadrage (secondary) + nom du KPI (dynamique → blanc pour ressortir).
+      if (subEl) {
+        subEl.textContent = (isEffort ? 'Note ce que tu as fait pour ' : 'Nouvelle valeur pour ');
+        var nameSpan = document.createElement('span');
+        nameSpan.className = 'ds-effort-dynamic';
+        nameSpan.textContent = (kpi && kpi.label) ? kpi.label : 'ce KPI';
+        subEl.appendChild(nameSpan);
+        subEl.appendChild(document.createTextNode('.'));
+      }
       if (ctxEl) {
         var hasVal = kpi && kpi.value != null;
         ctxEl.textContent = hasVal ? ('Déjà fait : ' + kpi.value + (unit ? ' ' + unit : '')) : '';
         ctxEl.hidden = !hasVal;
       }
-      if (qtyLabel) qtyLabel.textContent = 'Quantité' + (unit ? ' (' + unit + ')' : '');
+      // Label : « Quantité » (secondary) + unité (dynamique → blanc).
+      if (qtyLabel) {
+        qtyLabel.textContent = 'Quantité ';
+        if (unit) {
+          var unitSpan = document.createElement('span');
+          unitSpan.className = 'ds-effort-dynamic';
+          unitSpan.textContent = '(' + unit + ')';
+          qtyLabel.appendChild(unitSpan);
+        }
+      }
       if (blockEyebrow) blockEyebrow.textContent = isEffort ? 'Effort' : 'Résultat';
       if (msgEl) msgEl.hidden = true;
 

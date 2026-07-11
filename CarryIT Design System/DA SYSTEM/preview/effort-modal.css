@@ -7,6 +7,12 @@
   color: var(--color-text-muted);
 }
 
+/* Valeur DYNAMIQUE (nom/unité du KPI) injectée dans un label/sous-titre : blanc = elle
+   ressort de son cadrage secondary (c'est de la vraie donnée, pas du texte décoratif). */
+.ds-effort-dynamic {
+  color: var(--color-text-primary);
+}
+
 /* Le form NE scrolle PAS : il remplit la hauteur dispo, seul le scheduler (rail d'heures)
    absorbe l'excédent et scrolle en interne. date-nav / quantité / note restent fixes. */
 .ds-effort-modal__form {

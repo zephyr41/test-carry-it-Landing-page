@@ -146,7 +146,7 @@
     var scroller = makeEdgeScroller(els.viewport);
     var onMove = function (ev) {
       var endTop = snapPx(getRelY(pointerY(ev)));
-      state.duration = Math.max(0.25, (endTop - fixedTop) / hourHeight);
+      state.duration = Math.max(0.25, Math.min(HOURS, (endTop - fixedTop) / hourHeight));   // durée ≤ 24h
       applyBlock();
       scroller.update(pointerY(ev));
       if (ev.cancelable) ev.preventDefault();
@@ -179,7 +179,7 @@
     var scroller = makeEdgeScroller(els.viewport);
     var onMove = function (ev) {
       var clientY = pointerY(ev);
-      state.duration = Math.max(0.25, (snapPx(getRelY(clientY)) - state.top) / hourHeight);
+      state.duration = Math.max(0.25, Math.min(HOURS, (snapPx(getRelY(clientY)) - state.top) / hourHeight));   // durée ≤ 24h
       applyBlock();
       scroller.update(clientY);
       if (ev.cancelable) ev.preventDefault();
