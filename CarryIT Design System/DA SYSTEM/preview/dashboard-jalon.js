@@ -54,6 +54,9 @@
       });
     }
     if (dateTrigger) dateTrigger.addEventListener('click', function (e) { e.stopPropagation(); initCalendar(); togglePop(); });
+    // La lib @calendarjs change de mois à la molette (trop sensible). On neutralise la molette
+    // SUR le calendrier (capture → la lib ne reçoit pas l'event) : le mois ne défile plus au scroll.
+    if (calPop) calPop.addEventListener('wheel', function (e) { e.stopPropagation(); e.preventDefault(); }, { capture: true, passive: false });
 
     function close() { modal.hidden = true; target = null; closePop(); }
 
