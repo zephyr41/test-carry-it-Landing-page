@@ -106,6 +106,48 @@
     '</article>';
   }
 
+  var MONTHS_SHORT = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
+  function fmtDateShort(dateStr) {
+    var iso = toISO(dateStr);
+    var d = iso ? new Date(iso) : null;
+    if (!d || isNaN(d)) return esc(dateStr || '');
+    return d.getUTCDate() + ' ' + MONTHS_SHORT[d.getUTCMonth()];
+  }
+
+  // Historique des mesures d'un KPI (lecture seule) — remplit la vue avec la DYNAMIQUE
+  // (spec Vue 2 : « accès à l'historique »). date (gauche) · valeur (droite), récent en haut.
+  function kpiHistoryHTML(kpi, typeLabel) {
+    var freq = (kpi && kpi.frequency) ? ' · ' + esc(kpi.frequency) : '';
+    var title = (kpi && kpi.label) ? esc(kpi.label) : esc(typeLabel);
+    var head =
+      '<header class="ds-kpi-history__head">' +
+        '<span class="ds-kpi-history__eyebrow type-data-label">Historique' + freq + '</span>' +
+        '<h2 class="ds-kpi-history__title type-h3">' + title + '</h2>' +
+      '</header>';
+    var measures = (kpi && Array.isArray(kpi.measures)) ? kpi.measures.slice() : [];
+    if (!measures.length) {
+      return '<article class="ds-kpi-history ds-col-6">' + head +
+        '<div class="ds-empty-state ds-kpi-history__empty">' +
+          '<h3 class="type-h3 ds-empty-state__title">Aucune mesure</h3>' +
+          '<p class="ds-empty-state__description type-body-md">Ajoute une première mesure pour suivre ce KPI.</p>' +
+        '</div></article>';
+    }
+    var unit = kpi.unitShort || kpi.unit || '';
+    var rows = measures.slice().reverse().map(function (m) {   // récent en haut
+      return '<li class="ds-kpi-history__row"><div class="ds-kpi-history__main">' +
+        '<span class="ds-kpi-history__date type-body-sm">' + fmtDateShort(m.date) + '</span>' +
+        '<span class="ds-kpi-history__value type-body-md">' + esc(fmt(m.value)) +
+          (unit ? ' <span class="ds-kpi-history__unit">' + esc(unit) + '</span>' : '') +
+        '</span></div></li>';
+    }).join('');
+    return '<article class="ds-kpi-history ds-col-6">' + head +
+      '<div class="ds-kpi-history__cols">' +
+        '<span class="type-data-label">Date</span>' +
+        '<span class="type-data-label ds-kpi-history__col--value">Valeur</span>' +
+      '</div>' +
+      '<ol class="ds-kpi-history__list">' + rows + '</ol></article>';
+  }
+
   function emptyDetail() {
     return '<div class="ds-empty-state">' +
       '<svg class="ds-empty-state__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V5m0 0l14 5L4 15"/></svg>' +
@@ -155,6 +197,13 @@
           '<div class="ds-jalon-detail__kpi-grid ds-grid">' +
             kpiCardHTML(effort, 'Effort', 'Ajouter un effort', jalon.id, 'leading') +
             kpiCardHTML(result, 'Résultat', 'Ajouter un résultat', jalon.id, 'lagging') +
+          '</div>' +
+        '</section>' +
+        '<section class="ds-jalon-detail__section">' +
+          '<span class="ds-jalon-detail__label type-data-label">Historique des mesures</span>' +
+          '<div class="ds-grid dashboard-final__history-grid">' +
+            kpiHistoryHTML(effort, 'Effort') +
+            kpiHistoryHTML(result, 'Résultat') +
           '</div>' +
         '</section>' +
         '<hr class="ds-jalon-detail__rule">' +

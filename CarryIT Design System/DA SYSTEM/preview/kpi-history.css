@@ -29,8 +29,11 @@
 .ds-kpi-history {
   padding: var(--kpi-history-padding);
   background: var(--card-background);
-  border: var(--card-border);
+  /* Carte DÉFINIE (§912) — arête + ombre douce, cohérent avec les cartes KPI voisines
+     (le CSS utilisait --card-border subtle, désync avec la spec). */
+  border: var(--card-border-defined);
   border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow-defined);
 }
 
 .ds-kpi-history__head {

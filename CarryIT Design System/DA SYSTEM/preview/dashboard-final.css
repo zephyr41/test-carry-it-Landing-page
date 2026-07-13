@@ -98,9 +98,21 @@
   grid-template-rows: auto;
 }
 
-/* Rail et détail alignés en haut, chacun à sa hauteur naturelle (pas d'étirement hollow).
-   Le rail garde sa hauteur de composant (liste timeline à dimensions constantes). */
+/* Rail et détail alignés en haut, chacun à sa hauteur naturelle (pas d'étirement hollow). */
 .dashboard-final__moyen-row {
+  align-items: start;
+}
+
+/* Le rail épouse ses jalons (pas de hauteur fixe qui laisse un vide sous le dernier),
+   scrolle seulement au-delà de la hauteur de liste du composant. */
+.dashboard-final__moyen-row .ds-timeline__list {
+  height: auto;
+  max-height: var(--timeline-list-height);
+}
+
+/* Les 2 cartes historique épousent leur contenu (nombre de mesures différent effort/résultat)
+   → pas d'étirement hollow de la plus courte. */
+.dashboard-final__history-grid {
   align-items: start;
 }
 
