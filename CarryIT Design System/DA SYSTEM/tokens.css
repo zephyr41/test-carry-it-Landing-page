@@ -657,8 +657,10 @@
      Hauteur mini réservée pour que le filet + delta soient à la MÊME hauteur partout. */
   --kpi-card-width: 360px;
   --kpi-card-min-height: 190px;
-  /* air SYMÉTRIQUE autour du filet (nombre ne touche pas le filet = clé du premium) */
-  --kpi-card-divider-gap: var(--space-24);
+  /* Air symétrique autour du filet (nombre ne touche jamais le filet). 24 rendait la carte jalon
+     creuse en vue moyen terme (contenu clairsemé) — même constat que la variante summary
+     (« 24px autour d'un 1px = trop d'air »). Resserré à 16 : clairance préservée, moins de vide. */
+  --kpi-card-divider-gap: var(--space-16);
   /* filet → pied (delta + contexte) — conservé pour compat, = divider-gap */
   --kpi-card-footer-gap: var(--space-16);
   /* Carte définie = token système partagé (voir --card-border-defined). */

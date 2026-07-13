@@ -27,7 +27,7 @@
 
 .ds-jalon-detail__meta-row {
   display: flex;
-  align-items: center;
+  align-items: flex-start;   /* meta en haut (pas centrée sur le bouton plus haut) → alignée au rail */
   justify-content: space-between;
   gap: var(--space-8);
 }
@@ -76,21 +76,18 @@
   color: var(--color-text-secondary);
 }
 
-/* Grille des 2 cartes KPI (Effort / Résultat). */
-.ds-jalon-detail__kpi-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--jalon-detail-kpi-gap);
+/* Les 2 cartes KPI vivent sur la grille DS (.ds-grid + .ds-col-6 chacune) — plus de grille
+   locale : gouttière = --grid-gutter, reflow géré par grid.css. */
+/* Largeur fixe (360) du composant neutralisée → la colonne de grille (col-6) pilote la largeur. */
+.ds-jalon-detail__kpi-grid .ds-kpi-card {
+  width: auto;
 }
 
-/* Nom du KPI en blanc (comme la variante résumé §871) : il tranche sur les gris de la tuile.
-   Contexte détail (col-8 large) : nom sur 2 lignes plutôt que tronqué en « … » (le nom respire). */
+/* Nom en blanc uniquement ; on garde le nowrap/ellipsis 1-ligne du composant (§866) :
+   des noms sur 2 lignes rendaient les cartes de hauteurs inégales → creux. Le nom complet
+   reste visible dans le modal d'édition du KPI. */
 .ds-jalon-detail__kpi-grid .ds-kpi-card__name {
   color: var(--color-text-primary);
-  white-space: normal;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
 }
 
 /* ── Footer : Valider ce jalon + ⋯ ───────────────────────────── */
@@ -104,9 +101,5 @@
 @media (max-width: 640px) {
   .jalon-detail-preview {
     padding: var(--space-page-mobile);
-  }
-
-  .ds-jalon-detail__kpi-grid {
-    grid-template-columns: minmax(0, 1fr);
   }
 }

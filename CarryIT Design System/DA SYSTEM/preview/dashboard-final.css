@@ -91,52 +91,35 @@
   display: none;
 }
 
-/* Vue moyen terme : une seule rangée à hauteur DÉFINIE (§4.8, même token que le long terme)
-   → la vue remplit l'écran, zéro scroll, rythme vertical stable. */
+/* Vue moyen terme : la rangée ÉPOUSE son contenu (pas de hauteur réservée qui creuserait le
+   rail sur peu de jalons). Zéro scroll (Principe 5) sans forcer un remplissage hollow ; l'espace
+   restant sous la vue = fond de page. */
 .dashboard-final__page--moyen {
-  grid-template-rows: minmax(var(--grid-row-content-height), auto);
+  grid-template-rows: auto;
 }
 
-/* Cartes à hauteur ÉGALE (stretch) : rail et détail font la hauteur de la rangée
-   → grille régulière, alignées haut ET bas (comme chart + SMART en long terme). */
+/* Rail et détail alignés en haut, chacun à sa hauteur naturelle (pas d'étirement hollow).
+   Le rail garde sa hauteur de composant (liste timeline à dimensions constantes). */
 .dashboard-final__moyen-row {
-  align-items: stretch;
+  align-items: start;
 }
 
-/* Rail : la liste des jalons remplit la carte étirée et scrolle dedans si débordement. */
-.dashboard-final__moyen-row > .ds-timeline {
-  display: flex;
-  flex-direction: column;
-}
-.dashboard-final__moyen-row .ds-timeline__list {
-  height: auto;
-  flex: 1;
-  min-height: 0;
-}
-
-/* Carte englobant le détail du jalon (carte définie DS — le détail seul est card-less). */
+/* Détail du jalon = CARD-LESS (intention DS : jalon-detail « pas une carte »). Un seul niveau
+   de carte : les 2 KPI sont les seules cartes, elles ressortent sur le fond de page (pas de
+   surface-raised détournée, pas de cadre imbriqué). Padding-block pour aligner le haut sur le
+   rail carté ; pas de bordure/ombre/fond. */
 .dashboard-final__detail-card {
-  display: flex;   /* le détail remplit la hauteur de la carte */
+  display: flex;
+  /* Card-less (pas de cadre) mais AVEC inset : sans padding, le contenu collait à la gouttière
+     du rail (24 seulement). Padding → 24 gouttière + 24 inset = respiration du rail. */
   padding: var(--card-padding);
-  background: var(--card-background);
-  border: var(--card-border-defined);
-  border-radius: var(--card-radius);
-  box-shadow: var(--card-shadow-defined);
 }
 .dashboard-final__detail-card .ds-jalon-detail {
   flex: 1;
 }
-/* Filet + footer (« Valider ce jalon ») épinglés en bas de la carte pleine hauteur. */
+/* Filet + footer (« Valider ce jalon ») épinglés en bas de la colonne pleine hauteur. */
 .dashboard-final__detail-card .ds-jalon-detail__rule:last-of-type {
   margin-top: auto;
-}
-
-/* KPI cards imbriquées dans la carte détail (surface) : les monter sur surface-raised
-   pour qu'elles se détachent de leur parent — même fond que le parent = elles se fondent.
-   Usage documenté de surface-raised (§4.1 : « les champs se fondaient dans leur carte
-   parente, même fond que surface → surface-raised ajouté pour ça »). */
-.dashboard-final__detail-card .ds-kpi-card {
-  background: var(--color-surface-raised);
 }
 
 /* ── Rangée du bas : sur la grille DS — graphique span 8 + SMART span 4. ── */

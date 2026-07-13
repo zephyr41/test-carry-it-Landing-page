@@ -66,19 +66,24 @@
   function kpiCardHTML(kpi, typeLabel, addLabel, jalonId, kpiType) {
     var attrs = 'data-jalon-id="' + esc(jalonId) + '" data-kpi-type="' + esc(kpiType) + '"';
     if (!kpi) {
-      return '<article class="ds-kpi-card">' +
+      return '<article class="ds-kpi-card ds-col-6">' +
         '<div class="ds-empty-state">' +
           '<h3 class="type-h3 ds-empty-state__title">' + esc(typeLabel) + ' à définir</h3>' +
-          '<p class="ds-empty-state__description type-body-md">Ce KPI n’est pas encore défini pour ce jalon.</p>' +
-          '<button type="button" class="ds-button ds-button--inverse ds-button--sm ds-empty-state__action" data-define-kpi ' + attrs + '>Définir ' + (kpiType === 'leading' ? 'l’effort' : 'le résultat') + '</button>' +
+          '<p class="ds-empty-state__description type-body-md">' +
+            (kpiType === 'leading'
+              ? 'Ce que tu fais pour faire augmenter ton résultat.'
+              : 'Définit un indicateur pour savoir ton avancée par rapport à ton objectif à moyen terme.') +
+          '</p>' +
+          '<button type="button" class="ds-button ds-button--ghost ds-button--sm ds-empty-state__action" data-define-kpi ' + attrs + '>Définir ' + (kpiType === 'leading' ? 'l’effort' : 'le résultat') + '</button>' +
         '</div></article>';
     }
     var unit = kpi.unitShort || kpi.unit || '';
     var target = kpi.target != null ? '/ ' + fmt(kpi.target) + (unit ? ' ' + esc(unit) : '') : '';
     var foot = deltaText(kpi);
     var fresh = freshness(lastMeasureDate(kpi));
-    var freq = kpi.frequency ? ' · ' + esc(kpi.frequency) : '';
-    return '<article class="ds-kpi-card">' +
+    // Fréquence retirée du footer : « Hebdomadaire » tronquait toujours en « Hebdo… ».
+    // Elle vit dans le modal d'édition du KPI, pas besoin de la répéter ici.
+    return '<article class="ds-kpi-card ds-col-6">' +
       '<div class="ds-kpi-card__head">' +
         '<div class="ds-kpi-card__labels">' +
           '<span class="ds-kpi-card__eyebrow type-data-label">' + esc(typeLabel) + '</span>' +
@@ -96,7 +101,7 @@
       '<hr class="ds-kpi-card__divider">' +
       '<div class="ds-kpi-card__footer">' +
         '<span class="type-body-sm ds-delta">' + esc(foot) + '</span>' +
-        (fresh ? '<span class="ds-kpi-card__meta type-body-sm">Mis à jour ' + esc(fresh) + freq + '</span>' : '') +
+        (fresh ? '<span class="ds-kpi-card__meta type-body-sm">Mis à jour ' + esc(fresh) + '</span>' : '') +
       '</div>' +
     '</article>';
   }
@@ -126,7 +131,8 @@
     var effort = (jalon.kpis || []).find(function (k) { return k.type === 'leading'; }) || null;
     var result = (jalon.kpis || []).find(function (k) { return k.type === 'lagging'; }) || null;
     var status = STATUS_LABEL[jalon.statut] || '';
-    var meta = 'Jalon ' + (index + 1) + '/' + total + ' · Mois ' + (index + 1) + (status ? ' · ' + status : '');
+    // Pas de « Mois N » fabriqué (c'était index+1 déguisé en date — la marque ne fabrique pas de données).
+    var meta = 'Jalon ' + (index + 1) + '/' + total + (status ? ' · ' + status : '');
     var due = fmtDue(jalon.date);
 
     card.innerHTML =
@@ -146,19 +152,29 @@
         '</section>' +
         '<section class="ds-jalon-detail__section">' +
           '<span class="ds-jalon-detail__label type-data-label">KPI de jalon</span>' +
-          '<div class="ds-jalon-detail__kpi-grid">' +
+          '<div class="ds-jalon-detail__kpi-grid ds-grid">' +
             kpiCardHTML(effort, 'Effort', 'Ajouter un effort', jalon.id, 'leading') +
             kpiCardHTML(result, 'Résultat', 'Ajouter un résultat', jalon.id, 'lagging') +
           '</div>' +
         '</section>' +
         '<hr class="ds-jalon-detail__rule">' +
         '<footer class="ds-jalon-detail__footer">' +
+          // Valider = action-pic de la vue → CTA orange (Principe 2), UNIQUEMENT sur le jalon en cours.
+          // Terminé → statut ; à venir → pas de bouton (on ne valide pas un jalon futur).
           (jalon.statut === 'completed'
             ? '<span class="ds-jalon-detail__meta type-data-label">Jalon validé</span>'
-            : '<button type="button" class="ds-button ds-button--inverse ds-button--sm">Valider ce jalon</button>') +
+            : jalon.statut === 'in_progress'
+              ? '<button type="button" class="ds-button ds-button--inverse ds-button--sm" data-validate-jalon data-jalon-id="' + esc(jalon.id) + '">Valider ce jalon</button>'
+              : '<span class="ds-jalon-detail__meta type-data-label">À venir</span>') +
           '<button type="button" class="ds-row-action" aria-label="Plus d’options">' + DOTS_ICON + '</button>' +
         '</footer>' +
       '</div>';
+
+    // Surligne dans le rail le jalon actuellement affiché (sinon on détaille j3 sans repère).
+    Array.prototype.forEach.call(document.querySelectorAll('.ds-timeline__item'), function (li) {
+      var btn = li.querySelector('[data-jalon-id]');
+      li.classList.toggle('is-selected', !!btn && String(btn.dataset.jalonId) === String(jalon.id));
+    });
   }
 
   // Rend le jalon actif (premier non terminé) — l'état par défaut de la vue.
@@ -197,10 +213,30 @@
     else renderActive();
   };
 
+  // Valide un jalon (passe statut → completed) dans carryit_v1_jalons, puis rafraîchit tout.
+  function validateJalon(id) {
+    var raw;
+    try { raw = JSON.parse(localStorage.getItem('carryit_v1_jalons')); } catch (e) { raw = null; }
+    if (!Array.isArray(raw)) return;
+    var j = raw.find(function (x) { return String(x.id) === String(id); });
+    if (!j) return;
+    j.statut = 'completed'; j.status = 'completed';
+    try { localStorage.setItem('carryit_v1_jalons', JSON.stringify(raw)); } catch (e) { return; }
+    if (window.CarryITRefreshDashboard) window.CarryITRefreshDashboard();
+    if (window.CarryITRefreshTimeline) window.CarryITRefreshTimeline();
+    if (window.CarryITRefreshMoyen) window.CarryITRefreshMoyen();
+  }
+
   function init() {
     document.addEventListener('click', function (e) {
       var tab = e.target.closest('.ds-tabs__tab[data-view]');
       if (tab) { showView(tab.dataset.view); return; }
+      // Valider ce jalon : action importante/irréversible → confirmation avant d'agir (§941).
+      var val = e.target.closest('[data-validate-jalon]');
+      if (val) {
+        if (window.confirm('Valider ce jalon ? Il passera en terminé.')) validateJalon(val.dataset.jalonId);
+        return;
+      }
     });
 
     // Clic sur un jalon du rail → détaille ce jalon.
