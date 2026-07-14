@@ -122,6 +122,12 @@
   --border-focus: var(--border-width-default) solid var(--color-focus-border);
   --focus-glow: 0 0 0 3px rgba(255, 253, 246, 0.08);
 
+  /* Opacité d'un élément en cours de déplacement (drag ghost) — distinct du disabled (0.3). */
+  --opacity-dragging: 0.5;
+
+  /* Largeur du panneau latéral détail de tâche (to-do) — repris du legacy .side-panel (560). */
+  --taskpanel-width: 560px;
+
   /* Z-index — layering des overlays flottants (Modal backdrop, Toast, Tooltip)
      au-dessus du contenu de page. Sans ça, un contenu positionné avec z-index
      (ex : dots du stepper) transperce le backdrop. */
@@ -755,6 +761,18 @@
   --kpi-history-value-input-width: 4.5rem;             /* champ valeur en édition */
   --kpi-history-actions-gutter: calc(var(--space-32) * 2 + var(--space-4)); /* gouttière fixe trailing (2 icônes) → bord droit de la valeur constant */
   --kpi-history-row-border: var(--border-subtle);      /* trait fin pleine largeur entre mesures */
+
+  /* ── Kanban (vue To-do) : colonnes de flux À faire / En cours / Terminé ── */
+  --kanban-head-gap: var(--space-element-gap);         /* header de colonne → cartes */
+  --kanban-card-gap: var(--space-element-gap);         /* espace entre cartes d'une colonne */
+  --kanban-card-padding: var(--space-16);              /* carte compacte (pas 24 : densité kanban) */
+  --kanban-card-inner-gap: var(--space-8);             /* titre → méta (une unité de sens) */
+  --kanban-card-background: var(--card-background);
+  --kanban-card-border: var(--card-border-defined);    /* tuile définie = liftable (drag) */
+  --kanban-card-radius: var(--card-radius);
+  --kanban-card-shadow: var(--card-shadow-defined);
+  --kanban-list-min-height: calc(var(--space-64) * 2); /* colonne vide reste cible de dépôt */
+  --kanban-meta-gap: var(--space-12);                  /* progression ↔ jalon dans la méta */
 }
 
 @media (prefers-reduced-motion: reduce) {

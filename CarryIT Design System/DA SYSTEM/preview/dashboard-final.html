@@ -7,11 +7,17 @@
 <link rel="stylesheet" href="../tokens.css">
 <link rel="stylesheet" href="buttons.css">
 <link rel="stylesheet" href="progress.css">
+<link rel="stylesheet" href="card.css">
+<link rel="stylesheet" href="jalon-card.css">
+<link rel="stylesheet" href="badge.css">
+<link rel="stylesheet" href="checkbox.css">
+<link rel="stylesheet" href="disclosure.css">
+<link rel="stylesheet" href="table.css">
 <link rel="stylesheet" href="task-list.css">
 <link rel="stylesheet" href="delta.css">
 <link rel="stylesheet" href="kpi-card.css">
 <link rel="stylesheet" href="kpi-history.css">
-<link rel="stylesheet" href="jalon-detail.css">
+<link rel="stylesheet" href="jalon-detail .css">
 <link rel="stylesheet" href="tabs.css">
 <link rel="stylesheet" href="timeline.css">
 <link rel="stylesheet" href="empty-state.css">
@@ -158,8 +164,11 @@
       </section>
     </div>
 
-    <!-- Vue TO-DO : à venir. -->
-    <div class="dashboard-final__page" data-view-panel="todo" hidden></div>
+    <!-- Vue TO-DO : exécution. Barre de jalon (switcher) + liste 3 blocs (En cours/À faire/Terminé) ↔ Board.
+         Tout est rendu par dashboard-todo.js (tâches scopées au jalon visionné, comme dashboard.html). -->
+    <div class="dashboard-final__page dashboard-final__page--todo" data-view-panel="todo" hidden>
+      <section class="dashboard-final__todo" data-todo-root></section>
+    </div>
   </main>
 
   <!-- Modal Synchroniser : export/import manuel des données (localStorage), sans backend. -->
@@ -422,5 +431,6 @@
   <script src="dashboard-effort.js"></script>
   <script src="dashboard-kpi.js"></script>
   <script src="dashboard-jalon.js"></script>
+  <script src="dashboard-todo.js"></script>
 </body>
 </html>

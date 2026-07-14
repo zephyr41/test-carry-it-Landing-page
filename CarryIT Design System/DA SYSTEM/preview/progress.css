@@ -44,7 +44,9 @@
   height: 100%;
   background: var(--progress-fill-background);
   border-radius: var(--progress-radius);
-  transform: scaleX(0);
+  /* Valeur pilotée par data (--ds-progress-scale, posée en JS depuis la donnée) — cf. spec §Progress
+     « en prod, scaleX posé dynamiquement via une variable CSS ». Fallback 0. Les classes démo --17/--100 surchargent. */
+  transform: scaleX(var(--ds-progress-scale, 0));
   transform-origin: left center;
   transition: var(--progress-transition);
 }

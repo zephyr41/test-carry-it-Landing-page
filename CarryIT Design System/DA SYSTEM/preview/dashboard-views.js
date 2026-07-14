@@ -247,6 +247,7 @@
       p.hidden = p.dataset.viewPanel !== name;
     });
     if (name === 'moyen') renderActive();
+    if (name === 'todo' && window.CarryITRefreshTodo) window.CarryITRefreshTodo();
   }
 
   // Ré-affiche un jalon donné (après ajout de mesure) — data déjà rebuildée par l'appelant.
@@ -274,6 +275,7 @@
     if (window.CarryITRefreshDashboard) window.CarryITRefreshDashboard();
     if (window.CarryITRefreshTimeline) window.CarryITRefreshTimeline();
     if (window.CarryITRefreshMoyen) window.CarryITRefreshMoyen();
+    if (window.CarryITRefreshTodo) window.CarryITRefreshTodo();
   }
 
   function init() {

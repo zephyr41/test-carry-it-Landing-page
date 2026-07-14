@@ -134,6 +134,459 @@
   margin-top: auto;
 }
 
+/* ── Vue TO-DO : exécution. Barre jalon + liste 3 blocs (En cours/À faire/Terminé) ↔ Board. ──
+   La rangée épouse son contenu (comme moyen terme) : pas de hauteur réservée. */
+.dashboard-final__page--todo {
+  grid-template-rows: auto;
+}
+
+/* Pile verticale : barre jalon → validation → corps. RYTHME CONSTANT (24 partout,
+   identique au gap entre blocs de statut) → pas de mélange 16/24. */
+.dashboard-final__todo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-24);
+}
+
+/* ── Barre de jalons (milestone tabs) : carte pleine largeur, pills scrollables. ── */
+.dashboard-final__jalonbar {
+  display: flex;
+  gap: var(--space-4);
+  padding: var(--space-8);
+  background: var(--card-background);
+  border: var(--card-border-defined);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow-defined);
+  overflow-x: auto;
+}
+
+.dashboard-final__jalonpill {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: var(--space-8);
+  padding: var(--space-8) var(--space-12);
+  background: none;
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+  font-size: var(--type-body-md-size);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: var(--motion-transition-default);
+}
+
+.dashboard-final__jalonpill:hover {
+  color: var(--color-text-secondary);
+  background: var(--color-surface-raised);
+}
+
+.dashboard-final__jalonpill.is-active {
+  color: var(--color-text-primary);
+  background: var(--color-surface-raised);
+}
+
+.dashboard-final__jalonpill-name {
+  white-space: nowrap;
+}
+
+.dashboard-final__jalonpill-dot {
+  flex-shrink: 0;
+  width: var(--space-8);
+  height: var(--space-8);
+  border-radius: var(--radius-full);
+}
+
+/* Jalon en cours = dot orange (statut actif, DS §900). Validé = dot neutre. */
+.dashboard-final__jalonpill-dot.is-active {
+  background: var(--color-accent-primary);
+}
+
+.dashboard-final__jalonpill-dot.is-done {
+  background: var(--color-text-muted);
+}
+
+.dashboard-final__jalonpill-count {
+  color: var(--color-text-muted);
+  font-size: var(--type-caption-size);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Ligne validation : drapeau + VALIDATION · {jalon} : {critère} + Valider. ──
+   Pas de séparateur/padding propre : le gap de section (24) uniforme fait la respiration. */
+.dashboard-final__validation {
+  display: flex;
+  align-items: center;
+  gap: var(--space-16);
+}
+
+.dashboard-final__validation-text {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+}
+
+.dashboard-final__validation-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-label);
+}
+
+.dashboard-final__validation-icon {
+  flex-shrink: 0;
+  width: var(--space-16);
+  height: var(--space-16);
+  stroke-width: var(--icon-stroke-width);
+}
+
+.dashboard-final__validation-crit {
+  color: var(--color-text-secondary);
+}
+
+.dashboard-final__validation-empty {
+  color: var(--color-text-muted);
+}
+
+.dashboard-final__validation-btn {
+  flex-shrink: 0;
+}
+
+/* ── Toolbar : bascule Liste/Board (icônes), en absolu top-right → alignée sur le 1er bloc. ── */
+.dashboard-final__todo-bodywrap {
+  position: relative;
+}
+
+.dashboard-final__todo-toolbar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.dashboard-final__todo-toolbar .ds-tabs-segmented__tab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.dashboard-final__toggle-icon {
+  width: var(--space-16);
+  height: var(--space-16);
+  stroke-width: var(--icon-stroke-width-bold);
+}
+
+/* ── Liste : 3 CARTES séparées (une par bloc), chacune = composant task-list (table-stage). ── */
+.dashboard-final__todo-card:not(:last-child) {
+  margin-bottom: var(--space-16);
+}
+
+/* Titre de tâche = medium (comme le legacy .task-name 500), pas regular. */
+.dashboard-final__todo-card .ds-row-title {
+  font-weight: var(--font-weight-medium);
+}
+
+/* Rapprocher badge + tâches + sous-tâches du bord gauche : le composant met margin-left 32 sur le
+   status-heading et 16 de padding inline sur les cellules → trop d'inset. On réduit dans le contexte todo. */
+.dashboard-final__todo-card .ds-table__status-heading {
+  margin-left: 0;
+}
+
+.dashboard-final__todo-card .ds-table td {
+  padding-inline: var(--space-8);
+}
+
+/* Bloc cible de dépôt (drag inter-carte) : surface levée = zone d'accueil claire. */
+.dashboard-final__todo-group.is-drop-target .ds-table--nested tbody {
+  background: var(--color-surface-raised);
+}
+
+/* Tâche/sous-tâche terminée : titre atténué + barré (fait = ça recule, cohérent timeline §802). */
+.nested-group__task.is-done .ds-row-title,
+.ds-row-title.is-done {
+  color: var(--color-text-muted);
+  text-decoration: line-through;
+}
+
+/* Compteur de sous-tâches accolé au titre (déjà type-caption). */
+.ds-row-subcount {
+  flex-shrink: 0;
+  color: var(--color-text-muted);
+}
+
+/* Chevron sans sous-tâche : garde la place (alignement) mais icône masquée + non cliquable. */
+.ds-disclosure.is-empty {
+  cursor: default;
+}
+
+.ds-disclosure.is-empty .ds-disclosure__icon {
+  opacity: 0;
+}
+
+/* ── Board (Kanban) : 3 colonnes de flux sur la grille DS (ds-col-4 ×3). ──
+   Colonnes transparentes (pas de cadre) → les cartes sont le seul niveau de surface
+   (jamais de carte dans une carte). */
+.dashboard-final__kanban-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kanban-head-gap);
+}
+
+.dashboard-final__kanban-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+.dashboard-final__kanban-count {
+  color: var(--color-text-muted);
+}
+
+.dashboard-final__kanban-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kanban-card-gap);
+  min-height: var(--kanban-list-min-height);
+}
+
+/* Carte = tuile définie (liftable au drag), compacte. */
+.dashboard-final__kanban-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kanban-card-inner-gap);
+  padding: var(--kanban-card-padding);
+  background: var(--kanban-card-background);
+  border: var(--kanban-card-border);
+  border-radius: var(--kanban-card-radius);
+  box-shadow: var(--kanban-card-shadow);
+  cursor: grab;
+}
+
+/* Tête de carte : titre + actions (⋯/×) révélées au survol, à droite. */
+.dashboard-final__kanban-cardhead {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-8);
+}
+
+.dashboard-final__kanban-title {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+.dashboard-final__kanban-card.is-done .dashboard-final__kanban-title {
+  color: var(--color-text-muted);
+}
+
+/* Actions de carte : en flux (pas absolu comme dans la table), masquées au repos. */
+.dashboard-final__kanban-actions {
+  position: static;
+  flex-shrink: 0;
+  opacity: 0;
+}
+
+.dashboard-final__kanban-card:hover .dashboard-final__kanban-actions,
+.dashboard-final__kanban-card:focus-within .dashboard-final__kanban-actions {
+  opacity: 1;
+}
+
+/* Méta : progression sous-tâches (atténuée). */
+.dashboard-final__kanban-meta {
+  display: flex;
+  align-items: baseline;
+  gap: var(--kanban-meta-gap);
+}
+
+.dashboard-final__kanban-progress {
+  flex-shrink: 0;
+  color: var(--color-text-muted);
+}
+
+/* Le « + Ajouter… » du kanban : pleine largeur de colonne, sous les cartes. */
+.dashboard-final__kanban-add {
+  justify-content: flex-start;
+}
+
+/* Carte en cours de déplacement : estompée (fantôme suivant le curseur). */
+.dashboard-final__kanban-card.is-dragging {
+  opacity: var(--opacity-dragging);
+  cursor: grabbing;
+}
+
+/* Colonne cible de dépôt : surface levée = zone d'accueil claire (sans accent réservé au CTA). */
+.dashboard-final__kanban-list.is-drop-target {
+  background: var(--color-surface-raised);
+  border-radius: var(--card-radius);
+  box-shadow: inset 0 0 0 var(--border-width-default) var(--color-border-strong);
+}
+
+/* ── Édition inline (ajout / renommage) : champ borderless qui garde le look de la row (pas un gros ds-input). ── */
+.dashboard-final__todo-input {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  color: var(--color-text-primary);
+  font: inherit;
+  background: transparent;
+  border: none;
+  outline: none;
+}
+
+/* Row d'ajout en édition : reprend l'inline ghost (« + » + champ) → rythme identique à « Ajouter une action… ». */
+.dashboard-final__todo-editing {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--empty-inline-gap);
+  width: 100%;
+}
+
+/* ── Panneau détail = panneau latéral DROITE (comme le legacy .side-panel). ──
+   Pas de backdrop : le dashboard reste visible et cliquable. DS neutre (pas d'orange). */
+.dashboard-final__taskpanel-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-overlay);
+  pointer-events: none;   /* wrapper jamais bloquant */
+}
+
+.dashboard-final__taskpanel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  width: min(var(--taskpanel-width), 42vw);
+  padding: var(--space-32) var(--space-24);
+  background: var(--color-surface);
+  border-left: var(--border-subtle);
+  box-shadow: var(--shadow-lg);
+  pointer-events: auto;   /* le panneau est interactif */
+  overflow-y: auto;
+}
+
+.dashboard-final__taskpanel-close {
+  position: absolute;
+  top: var(--space-16);
+  right: var(--space-16);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-32);
+  height: var(--space-32);
+  padding: 0;
+  color: var(--color-text-muted);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--motion-transition-default);
+}
+
+.dashboard-final__taskpanel-close:hover {
+  color: var(--color-text-primary);
+  background: var(--button-ghost-background-hover);
+}
+
+/* Corps : rythme groupé (titre→champ tight, section→section aéré). */
+.dashboard-final__taskpanel-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-section-gap);
+  flex: 1;
+}
+
+.dashboard-final__taskpanel-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-label-gap);
+}
+
+.dashboard-final__taskpanel-label {
+  color: var(--color-text-secondary);
+}
+
+/* Titre = héros du panneau (h2), collé au statut au-dessus (marge négative du gap section). */
+.dashboard-final__taskpanel-title {
+  margin: 0;
+}
+
+.dashboard-final__taskpanel-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.dashboard-final__taskpanel-jalon {
+  color: var(--color-text-secondary);
+}
+
+.dashboard-final__taskpanel-checkhead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.dashboard-final__taskpanel-checkcount {
+  color: var(--color-text-muted);
+}
+
+.dashboard-final__taskpanel-subs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-element-gap);
+  margin-top: var(--space-element-gap);
+}
+
+.dashboard-final__taskpanel-sub {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+.dashboard-final__taskpanel-sub .ds-checkbox {
+  flex: 1;
+  min-width: 0;
+}
+
+.dashboard-final__taskpanel-sub .ds-row-action {
+  flex-shrink: 0;
+  opacity: 0;
+}
+
+.dashboard-final__taskpanel-sub:hover .ds-row-action,
+.dashboard-final__taskpanel-sub:focus-within .ds-row-action {
+  opacity: 1;
+}
+
+.dashboard-final__taskpanel-subadd {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+.dashboard-final__taskpanel-subaddicon {
+  flex-shrink: 0;
+  width: var(--checkbox-size-round);
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+/* Zone destructive : épinglée en bas, séparée par un filet. */
+.dashboard-final__taskpanel-danger {
+  margin-top: var(--space-section-gap);
+  padding-top: var(--space-24);
+  border-top: var(--border-subtle);
+}
+
 /* ── Rangée du bas : sur la grille DS — graphique span 8 + SMART span 4. ── */
 
 /* Les composants ont une largeur propre : on la neutralise, la colonne de grille pilote. */

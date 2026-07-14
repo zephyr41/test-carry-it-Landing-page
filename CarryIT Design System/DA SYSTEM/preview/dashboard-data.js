@@ -57,6 +57,24 @@
     };
   }
 
+  // Tâche d'exécution (vue To-do). Statut todo|doing|done ; done = miroir binaire (liste).
+  function normTask(t) {
+    if (!t || typeof t !== 'object') return null;
+    var status = pick(t.status) || (t.done ? 'done' : 'todo');
+    var subs = (Array.isArray(t.subtasks) ? t.subtasks : []).map(function (s) {
+      return { id: pick(s.id), text: pick(s.text, s.title), done: !!s.done };
+    }).filter(function (s) { return s.text; });
+    return {
+      id: pick(t.id),
+      text: pick(t.text, t.title),
+      status: status,
+      done: status === 'done',
+      jalonId: pick(t.jalonId),
+      notes: pick(t.notes) || '',
+      subtasks: subs,
+    };
+  }
+
   function build() {
     var smartRaw = readJSON('carryItObjectifSMART') || {};
     // Fallback stockage React (le vrai app écrit AUSSI ces clés) — sans ça, un SMART/KPI
@@ -111,6 +129,10 @@
       };
     });
 
+    var tasks = readJSON('carryit_v1_tasks');
+    if (!Array.isArray(tasks)) tasks = [];
+    tasks = tasks.map(normTask).filter(function (t) { return t && t.text; });
+
     var activeIndex = jalons.findIndex(function (j) { return j.statut === 'in_progress'; });
     if (activeIndex < 0) activeIndex = jalons.findIndex(function (j) { return j.statut !== 'completed'; });
     if (activeIndex < 0 && jalons.length) activeIndex = 0;
@@ -121,6 +143,7 @@
       smart: smart,
       objectiveKpi: objectiveKpi,
       jalons: jalons,
+      tasks: tasks,
       activeIndex: activeIndex,
       activeJalon: activeJalon,
       effortKpi: kpis.find(function (k) { return k.type === 'leading'; }) || null,
