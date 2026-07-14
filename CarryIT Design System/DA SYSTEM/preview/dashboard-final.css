@@ -135,6 +135,14 @@
   max-width: none;
   flex: none;
 }
+/* Le popover au survol s'ouvre PAR-DESSUS la grille (pas en dessous) : dans le dashboard la
+   carte est près du bas du viewport et la vue est clippée (overflow:hidden) → un popover sous
+   la grille tomberait hors cadre. Il masque le calendrier le temps du survol, c'est voulu.
+   pointer-events:none (composant) → on continue de survoler les cases dessous. */
+.dashboard-final__moyen-heatmap .ds-heatmap-popover {
+  top: 0;
+  bottom: auto;
+}
 
 /* Détail du jalon = CARTE DÉFINIE (fidèle v4 : bord + ombre + padding). */
 .dashboard-final__detail-card {
