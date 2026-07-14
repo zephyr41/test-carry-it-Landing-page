@@ -188,6 +188,13 @@
     flex: none;
     overflow-y: visible;
   }
+  /* Empilé : la carte cadence est pleine largeur → un popover à droite (left:100%) déborderait
+     le viewport. On l'ancre au bord droit de la carte (s'ouvre vers la gauche, dans le cadre). */
+  .dashboard-final__moyen-heatmap .ds-heatmap-popover {
+    left: auto;
+    right: 0;
+    margin-left: 0;
+  }
 }
 
 /* ── Vue TO-DO : exécution. Barre jalon + liste 3 blocs (En cours/À faire/Terminé) ↔ Board. ──

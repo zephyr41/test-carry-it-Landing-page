@@ -64,14 +64,37 @@
     return d;
   }
 
-  // ── Switch jalon (ct__jalons) : un onglet par jalon, pastille sur l'actif + compteur tâches. ──
+  // ── Switch jalon (ct__jalons). Même gestion que dashboard.html : actif d'abord, puis à venir,
+  //    puis les jalons VALIDÉS compactés en pastille à droite (pas de label ni compteur). ──
   function renderJalonTabs() {
     var list = jalonsSorted();
     if (!list.length) return '';
-    var tabs = list.map(function (j) {
+    var active = list.filter(function (j) { return j.statut === 'in_progress'; })[0]
+      || list.filter(function (j) { return j.statut !== 'completed'; })[0] || null;
+    var activeId = active ? String(active.id) : null;
+
+    // Ordre d'affichage : actif → à venir (chrono) → validés (compacts) en fin.
+    var order = [];
+    if (active) order.push(active);
+    list.forEach(function (j) { if (String(j.id) !== activeId && j.statut !== 'completed') order.push(j); });
+    var firstDoneId = null;
+    list.forEach(function (j) {
+      if (String(j.id) !== activeId && j.statut === 'completed') { if (firstDoneId == null) firstDoneId = String(j.id); order.push(j); }
+    });
+
+    var tabs = order.map(function (j) {
       var on = String(j.id) === String(selectedJalonId);
+      var isDone = j.statut === 'completed';
+      var isActive = String(j.id) === activeId;
+      if (isDone) {
+        // Validé → pastille compacte, poussée à droite. Le titre reste accessible (title/aria).
+        return '<button type="button" class="ct__jalon ct__jalon--done' + (on ? ' is-active' : '') +
+          (String(j.id) === firstDoneId ? ' is-first-done' : '') + '" role="tab" aria-selected="' + on +
+          '" data-jalon-select="' + esc(j.id) + '" title="' + esc(j.titre || '') + '" aria-label="Jalon validé : ' + esc(j.titre || '') + '">' +
+          '<span class="ct__jalon-dot ct__jalon-dot--done" aria-hidden="true"></span></button>';
+      }
       var c = jalonTaskCounts(j.id);
-      var dot = on ? '<span class="ct__jalon-dot" aria-hidden="true"></span>' : '';
+      var dot = isActive ? '<span class="ct__jalon-dot" aria-hidden="true"></span>' : '';
       var count = c.total ? '<span class="ct__jalon-count type-caption">' + c.done + '/' + c.total + '</span>' : '';
       return '<button type="button" class="ct__jalon' + (on ? ' is-active' : '') + '" role="tab" aria-selected="' + on + '" data-jalon-select="' + esc(j.id) + '">' +
         dot + esc(j.titre || '') + count + '</button>';

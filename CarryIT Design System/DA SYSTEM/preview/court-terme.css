@@ -47,6 +47,10 @@
   background: var(--color-text-primary);
   flex-shrink: 0;
 }
+/* Jalon validé : pastille compacte (dot seul), verte, poussée à droite de la barre. */
+.ct__jalon--done { padding: var(--space-8); gap: 0; }
+.ct__jalon--done.is-first-done { margin-left: auto; }
+.ct__jalon-dot--done { background: var(--color-success); }
 
 /* Bloc critère de validation + bouton Valider (droite). */
 .ct__validation {
