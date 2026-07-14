@@ -284,7 +284,6 @@
     if (!root) return;
     ensureSelectedJalon();
     root.innerHTML =
-      '<header class="ct__pagehead"><span class="type-data-label ct__eyebrow">Vue court terme</span></header>' +
       renderJalonTabs() +
       renderValidation() +
       renderListCard();
@@ -318,9 +317,31 @@
     var arr = readRaw(); var t = findRaw(arr, id); if (!t || t.status === status) return;
     t.status = status; t.done = status === 'done'; saveRaw(arr);
   }
+  // Confirmation in-app (ds-modal) : fiable même en iframe sandboxée où window.confirm est bloqué.
+  function confirmDelete(onOk) {
+    var root = document.querySelector('[data-todo-confirm-root]');
+    if (!root) { root = document.createElement('div'); root.setAttribute('data-todo-confirm-root', ''); document.body.appendChild(root); }
+    root.innerHTML =
+      '<div class="ds-modal-backdrop" data-confirm-backdrop>' +
+        '<div class="ds-modal" role="alertdialog" aria-modal="true" aria-labelledby="todoConfirmTitle">' +
+          '<header class="ds-modal__header"><h2 class="type-h2" id="todoConfirmTitle">Supprimer cette tâche ?</h2>' +
+            '<p class="ds-modal__subtitle type-body-sm">Cette action est définitive.</p></header>' +
+          '<footer class="ds-modal__footer">' +
+            '<button type="button" class="ds-button ds-button--ghost ds-button--sm" data-confirm-cancel>Annuler</button>' +
+            '<button type="button" class="ds-button ds-button--danger ds-button--sm" data-confirm-ok>Supprimer</button>' +
+          '</footer>' +
+        '</div>' +
+      '</div>';
+    function close() { root.innerHTML = ''; }
+    root.querySelector('[data-confirm-ok]').addEventListener('click', function () { close(); onOk(); });
+    root.querySelector('[data-confirm-cancel]').addEventListener('click', close);
+    root.querySelector('[data-confirm-backdrop]').addEventListener('click', function (e) { if (e.target === e.currentTarget) close(); });
+  }
+
   function deleteTask(id) {
-    if (!window.confirm('Supprimer cette tâche ?')) return;
-    saveRaw(readRaw().filter(function (t) { return String(t.id) !== String(id); }));
+    confirmDelete(function () {
+      saveRaw(readRaw().filter(function (t) { return String(t.id) !== String(id); }));
+    });
   }
   function renameTask(id, text) {
     var arr = readRaw(); var t = findRaw(arr, id); if (!t) return;
@@ -499,13 +520,20 @@
       var subDel = e.target.closest('[data-sub-delete]');
       if (subDel) { var stid = taskIdOf(subDel); if (stid != null) deleteSub(stid, subDel.dataset.subId); return; }
 
+      // Clic n'importe où sur la ligne de tâche (sauf checkbox, chevron, actions) → ouvre le panneau.
+      var taskRow = e.target.closest('.nested-group__task[data-task-id]');
+      if (taskRow && !e.target.closest('.ds-checkbox, .ds-disclosure, .ds-row-actions, .dashboard-final__todo-input')) {
+        var rid = taskRow.getAttribute('data-task-id');
+        if (rid != null && window.CarryITOpenTaskPanel) { window.CarryITOpenTaskPanel(rid); return; }
+      }
+
       // ── Modal détail ──
       var mSubDel = e.target.closest('[data-modal-sub-delete]');
       if (mSubDel) { if (openTaskId != null) deleteSub(openTaskId, mSubDel.dataset.subId); return; }
       var mDel = e.target.closest('[data-modal-delete]');
       if (mDel) {
         var mid = openTaskId;
-        if (mid != null && window.confirm('Supprimer cette tâche ?')) { closeModal(); saveRaw(readRaw().filter(function (t) { return String(t.id) !== String(mid); })); }
+        if (mid != null) confirmDelete(function () { closeModal(); saveRaw(readRaw().filter(function (t) { return String(t.id) !== String(mid); })); });
         return;
       }
       if (e.target.closest('[data-modal-close]')) { closeModal(); return; }
@@ -513,17 +541,12 @@
       if (backdrop && e.target === backdrop) { closeModal(); return; }
     });
 
-    // Double-clic sur le titre = renommer inline (row de liste ou titre du modal).
+    // Double-clic sur le titre du panneau = renommer inline (le clic simple sur la ligne ouvre le panneau).
     document.addEventListener('dblclick', function (e) {
       var mTitle = e.target.closest('[data-modal-title]');
       if (mTitle && openTaskId != null) {
         replaceWithInput(mTitle, mTitle.textContent, 'Titre de la tâche', function (v) { renameTask(openTaskId, v); });
-        return;
       }
-      var title = e.target.closest('[data-task-title]');
-      if (!title) return;
-      var id = taskIdOf(title);
-      if (id != null) replaceWithInput(title, title.textContent, 'Titre de la tâche', function (v) { renameTask(id, v); });
     });
 
     document.addEventListener('change', function (e) {

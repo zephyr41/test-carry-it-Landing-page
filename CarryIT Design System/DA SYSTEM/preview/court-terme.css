@@ -83,3 +83,8 @@
 
 /* Deux tables dans la carte En cours + À faire : espace entre les groupes. */
 .ct__stage table + table { margin-top: var(--space-24); }
+
+/* Icônes d'action (⋯ ✕) : l'offset négatif du composant les collait au bord droit de la
+   carte (calé sur un ds-container autonome). Ici on les rentre à l'intérieur du padding. */
+.ct .nested-group__task .ds-row-actions,
+.ct .nested-group__subtask .ds-row-actions { right: var(--space-8); }
