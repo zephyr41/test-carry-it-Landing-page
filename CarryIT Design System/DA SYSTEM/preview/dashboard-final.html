@@ -16,10 +16,10 @@
 <link rel="stylesheet" href="task-list.css">
 <link rel="stylesheet" href="delta.css">
 <link rel="stylesheet" href="kpi-card.css">
-<link rel="stylesheet" href="kpi-history.css">
-<link rel="stylesheet" href="jalon-detail .css">
+<link rel="stylesheet" href="jalon-detail.css">
 <link rel="stylesheet" href="tabs.css">
 <link rel="stylesheet" href="timeline.css">
+<link rel="stylesheet" href="calendar-heatmap.css">
 <link rel="stylesheet" href="empty-state.css">
 <link rel="stylesheet" href="chart.css">
 <link rel="stylesheet" href="smart.css">
@@ -151,14 +151,29 @@
     <!-- Vue MOYEN TERME : rail (timeline, carte) + détail du jalon (carte) sur la grille col-4/col-8. -->
     <div class="dashboard-final__page dashboard-final__page--moyen" data-view-panel="moyen" hidden>
       <section class="ds-grid dashboard-final__moyen-row">
-        <!-- Rail : timeline des jalons. Aussi la source du stepper « Jalon actif » du long terme (une seule timeline). -->
-        <article class="ds-col-4 ds-timeline">
-          <header class="ds-timeline__head">
-            <span class="type-data-label">Jalons</span>
-            <span class="ds-timeline__count type-data-label" data-timeline-count>—</span>
-          </header>
-          <ol class="ds-timeline__list" data-timeline-list></ol>
-        </article>
+        <!-- CONTEXTE (col-4) : rail des jalons + carte cadence 28 jours (mt3__side). -->
+        <div class="ds-col-4 dashboard-final__moyen-side">
+          <!-- Rail : timeline des jalons. Aussi la source du stepper « Jalon actif » du long terme (une seule timeline). -->
+          <article class="ds-timeline">
+            <header class="ds-timeline__head">
+              <span class="type-data-label">Jalons</span>
+              <span class="ds-timeline__count type-data-label" data-timeline-count>—</span>
+            </header>
+            <ol class="ds-timeline__list" data-timeline-list></ol>
+          </article>
+          <!-- Cadence du jalon actif : dernière mesure de chaque jour du mois (dashboard-heatmap.js). -->
+          <article class="ds-heatmap-card dashboard-final__moyen-heatmap">
+            <div class="ds-heatmap-stats">
+              <div class="ds-heatmap-stat-row">
+                <span class="type-label">28 derniers jours</span>
+              </div>
+            </div>
+            <div class="ds-heatmap-panel">
+              <div class="ds-heatmap-grid" id="dsHeatmapGrid" aria-label="Cadence effort/résultat du jalon actif"></div>
+              <div class="ds-heatmap-popover" id="dsHeatmapPopover"></div>
+            </div>
+          </article>
+        </div>
         <!-- Détail du jalon sélectionné (rendu par dashboard-views.js depuis les données). -->
         <article class="ds-col-8 dashboard-final__detail-card" data-jalon-detail></article>
       </section>
@@ -427,6 +442,7 @@
   <script src="dashboard-actions.js"></script>
   <script src="projects.js"></script>
   <script src="dashboard-views.js"></script>
+  <script src="dashboard-heatmap.js"></script>
   <script src="effort-modal.js"></script>
   <script src="dashboard-effort.js"></script>
   <script src="dashboard-kpi.js"></script>

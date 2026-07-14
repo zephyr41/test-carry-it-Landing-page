@@ -51,10 +51,8 @@
     btn.type = 'button';
     btn.dataset.jalonId = jalon.id;
     if (index === curIdx) btn.setAttribute('aria-current', 'step');
-    btn.append(
-      el('span', 'ds-timeline__title type-body-lg', jalon.titre),
-      el('span', 'ds-timeline__jalon type-body-sm', `Jalon ${index + 1}/${total}`)
-    );
+    // Titre seul (fidèle moyen-terme-v4) — pas de sous-label « Jalon X/5 ».
+    btn.append(el('span', 'ds-timeline__title type-body-lg', jalon.titre));
 
     li.append(rail, marker, btn);
     return li;

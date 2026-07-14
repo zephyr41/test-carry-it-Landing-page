@@ -1,6 +1,10 @@
 .dashboard-final {
   min-height: 100vh;
   color: var(--color-text-primary);
+  /* Shell en colonne : la navbar prend sa hauteur, la vue active occupe le reste.
+     Permet à la vue moyen terme de tenir dans le viewport (zéro scroll de page). */
+  display: flex;
+  flex-direction: column;
 }
 
 /* La barre d'application vit dans le composant .ds-navbar (navbar.css). */
@@ -91,47 +95,88 @@
   display: none;
 }
 
-/* Vue moyen terme : la rangée ÉPOUSE son contenu (pas de hauteur réservée qui creuserait le
-   rail sur peu de jalons). Zéro scroll (Principe 5) sans forcer un remplissage hollow ; l'espace
-   restant sous la vue = fond de page. */
+/* La vue moyen terme occupe la hauteur restante sous la navbar et n'excède jamais le
+   viewport : pas de scroll de page (Principe 5). Le seul défilement possible est interne
+   au rail (liste de jalons) si les jalons débordent — la carte cadence reste visible. */
 .dashboard-final__page--moyen {
-  grid-template-rows: auto;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  grid-template-rows: minmax(0, 1fr);
 }
 
-/* Rail et détail alignés en haut, chacun à sa hauteur naturelle (pas d'étirement hollow). */
+/* La rangée remplit la page ; les deux colonnes s'étirent à la même hauteur (v4). */
 .dashboard-final__moyen-row {
-  align-items: start;
+  align-items: stretch;
+  min-height: 0;
 }
 
-/* Le rail épouse ses jalons (pas de hauteur fixe qui laisse un vide sous le dernier),
-   scrolle seulement au-delà de la hauteur de liste du composant. */
-.dashboard-final__moyen-row .ds-timeline__list {
+/* CONTEXTE (col-4) : rail puis carte cadence empilés en haut (enquillés). Le rail épouse
+   ses jalons (pas de void) et scrolle en interne s'il déborde ; la cadence reste visible. */
+.dashboard-final__moyen-side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--grid-gutter);
+  min-height: 0;
+}
+.dashboard-final__moyen-side .ds-timeline {
+  display: flex;
+  flex-direction: column;
+  flex: 0 1 auto;   /* hauteur naturelle, rétrécit seulement si la colonne déborde */
+  min-height: 0;
+}
+.dashboard-final__moyen-side .ds-timeline__list {
   height: auto;
-  max-height: var(--timeline-list-height);
+  min-height: 0;
+  overflow-y: auto;
+}
+/* La carte cadence garde sa taille, collée juste sous le rail (pas étirée, pas déplacée). */
+.dashboard-final__moyen-heatmap {
+  max-width: none;
+  flex: none;
 }
 
-/* Les 2 cartes historique épousent leur contenu (nombre de mesures différent effort/résultat)
-   → pas d'étirement hollow de la plus courte. */
-.dashboard-final__history-grid {
-  align-items: start;
-}
-
-/* Détail du jalon = CARD-LESS (intention DS : jalon-detail « pas une carte »). Un seul niveau
-   de carte : les 2 KPI sont les seules cartes, elles ressortent sur le fond de page (pas de
-   surface-raised détournée, pas de cadre imbriqué). Padding-block pour aligner le haut sur le
-   rail carté ; pas de bordure/ombre/fond. */
+/* Détail du jalon = CARTE DÉFINIE (fidèle v4 : bord + ombre + padding). */
 .dashboard-final__detail-card {
   display: flex;
-  /* Card-less (pas de cadre) mais AVEC inset : sans padding, le contenu collait à la gouttière
-     du rail (24 seulement). Padding → 24 gouttière + 24 inset = respiration du rail. */
+  background: var(--card-background);
+  border: var(--card-border-defined);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow-defined);
   padding: var(--card-padding);
 }
 .dashboard-final__detail-card .ds-jalon-detail {
   flex: 1;
+  display: flex;
+  flex-direction: column;
 }
-/* Filet + footer (« Valider ce jalon ») épinglés en bas de la colonne pleine hauteur. */
-.dashboard-final__detail-card .ds-jalon-detail__rule:last-of-type {
-  margin-top: auto;
+
+/* Desktop : asymétrie SUR la grille 12 col — rail = 3 colonnes, détail = 9 (gouttière système).
+   Les cartes KPI absorbent le mou pour remplir la hauteur du détail (v4 : cartes hautes). */
+@media (min-width: 1025px) {
+  .dashboard-final__moyen-row > .ds-col-4 { grid-column: span 3; }
+  .dashboard-final__moyen-row > .ds-col-8 { grid-column: span 9; }
+  .dashboard-final__detail-card .ds-jalon-detail__section + .ds-jalon-detail__section { flex: 1; }
+  .dashboard-final__detail-card .ds-jalon-detail__kpi-grid { flex: 1; }
+  .dashboard-final__detail-card .ds-jalon-detail__kpi-grid .ds-kpi-card { display: flex; flex-direction: column; }
+  .dashboard-final__detail-card .ds-jalon-detail__kpi-grid .ds-kpi-card__metric { flex: 1; }
+}
+
+/* Empilé (≤1024) : rail + détail pleine largeur, flux naturel (le viewport-fill ne tient
+   plus quand les colonnes s'empilent → on relâche la contrainte de hauteur). */
+@media (max-width: 1024px) {
+  .dashboard-final__page--moyen {
+    flex: none;
+    overflow: visible;
+    grid-template-rows: auto;
+  }
+  .dashboard-final__moyen-row > .ds-col-4,
+  .dashboard-final__moyen-row > .ds-col-8 { grid-column: 1 / -1; }
+  .dashboard-final__moyen-side { grid-template-rows: none; }
+  .dashboard-final__moyen-side .ds-timeline__list {
+    flex: none;
+    overflow-y: visible;
+  }
 }
 
 /* ── Vue TO-DO : exécution. Barre jalon + liste 3 blocs (En cours/À faire/Terminé) ↔ Board. ──

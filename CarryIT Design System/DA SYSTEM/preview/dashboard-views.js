@@ -11,7 +11,10 @@
   var DOTS_ICON = '<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>';
 
   var MONTHS_FR = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
-  var STATUS_LABEL = { completed: 'Terminé', in_progress: 'En cours', pending: 'À venir' };
+  var STATUS_LABEL = { completed: 'Terminé', in_progress: 'Actif', pending: 'À venir' };
+  var FREQ_SHORT = { 'Quotidien': 'Quotid.', 'Hebdomadaire': 'Hebdo', 'Mensuel': 'Mensuel' };
+  function freqShort(f) { return f ? (FREQ_SHORT[f] || f) : ''; }
+  function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
 
   function esc(v) {
     return String(v == null ? '' : v).replace(/[&<>"]/g, function (c) {
@@ -52,11 +55,11 @@
   function deltaText(kpi) {
     if (!kpi || kpi.value == null || kpi.target == null) return '';
     if (kpi.type === 'leading') {
+      var u = kpi.unitShort || kpi.unit || '';
       if (kpi.value >= kpi.target) {
-        var unit = kpi.unitShort || kpi.unit || '';
-        return '+' + fmt(kpi.value - kpi.target) + (unit ? ' ' + unit : '') + ' au-delà';
+        return '+' + fmt(kpi.value - kpi.target) + (u ? ' ' + u : '') + ' au-delà';
       }
-      return fmt(kpi.target - kpi.value) + ' restants';
+      return fmt(kpi.target - kpi.value) + (u ? ' ' + u : '') + ' restantes';
     }
     if (kpi.value >= kpi.target) return 'Objectif atteint';
     return fmt(kpi.target - kpi.value) + ' restants';
@@ -81,6 +84,18 @@
     var target = kpi.target != null ? '/ ' + fmt(kpi.target) + (unit ? ' ' + esc(unit) : '') : '';
     var foot = deltaText(kpi);
     var fresh = freshness(lastMeasureDate(kpi));
+    // Meta v4 : « Hier · Hebdo » = fraîcheur (capitalisée) · fréquence abrégée.
+    var fq = freqShort(kpi.frequency);
+    var metaLine = [fresh ? cap(fresh) : '', fq].filter(Boolean).join(' · ');
+    // Barre de progression (v4) : ratio value/cible clampé 0-1. La valeur exacte (scaleX)
+    // est appliquée en JS après render (data-fill) — pas de style inline dans le HTML.
+    var pct = (kpi.value != null && kpi.target)
+      ? Math.max(0, Math.min(1, kpi.value / kpi.target)) : null;
+    var progress = pct == null ? '' :
+      '<div class="ds-progress" role="progressbar" aria-valuenow="' + Math.round(pct * 100) +
+        '" aria-valuemin="0" aria-valuemax="100" aria-label="Avancement du ' + esc(typeLabel).toLowerCase() + '">' +
+        '<div class="ds-progress__fill" data-fill="' + pct + '"></div>' +
+      '</div>';
     // Fréquence retirée du footer : « Hebdomadaire » tronquait toujours en « Hebdo… ».
     // Elle vit dans le modal d'édition du KPI, pas besoin de la répéter ici.
     return '<article class="ds-kpi-card ds-col-6">' +
@@ -98,54 +113,13 @@
         '<span class="ds-kpi-card__value">' + esc(fmt(kpi.value)) + '</span>' +
         (target ? '<span class="ds-kpi-card__target type-body-md">' + target + '</span>' : '') +
       '</div>' +
+      progress +
       '<hr class="ds-kpi-card__divider">' +
       '<div class="ds-kpi-card__footer">' +
         '<span class="type-body-sm ds-delta">' + esc(foot) + '</span>' +
-        (fresh ? '<span class="ds-kpi-card__meta type-body-sm">Mis à jour ' + esc(fresh) + '</span>' : '') +
+        (metaLine ? '<span class="ds-kpi-card__meta type-body-sm">' + esc(metaLine) + '</span>' : '') +
       '</div>' +
     '</article>';
-  }
-
-  var MONTHS_SHORT = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
-  function fmtDateShort(dateStr) {
-    var iso = toISO(dateStr);
-    var d = iso ? new Date(iso) : null;
-    if (!d || isNaN(d)) return esc(dateStr || '');
-    return d.getUTCDate() + ' ' + MONTHS_SHORT[d.getUTCMonth()];
-  }
-
-  // Historique des mesures d'un KPI (lecture seule) — remplit la vue avec la DYNAMIQUE
-  // (spec Vue 2 : « accès à l'historique »). date (gauche) · valeur (droite), récent en haut.
-  function kpiHistoryHTML(kpi, typeLabel) {
-    var freq = (kpi && kpi.frequency) ? ' · ' + esc(kpi.frequency) : '';
-    var title = (kpi && kpi.label) ? esc(kpi.label) : esc(typeLabel);
-    var head =
-      '<header class="ds-kpi-history__head">' +
-        '<span class="ds-kpi-history__eyebrow type-data-label">Historique' + freq + '</span>' +
-        '<h2 class="ds-kpi-history__title type-h3">' + title + '</h2>' +
-      '</header>';
-    var measures = (kpi && Array.isArray(kpi.measures)) ? kpi.measures.slice() : [];
-    if (!measures.length) {
-      return '<article class="ds-kpi-history ds-col-6">' + head +
-        '<div class="ds-empty-state ds-kpi-history__empty">' +
-          '<h3 class="type-h3 ds-empty-state__title">Aucune mesure</h3>' +
-          '<p class="ds-empty-state__description type-body-md">Ajoute une première mesure pour suivre ce KPI.</p>' +
-        '</div></article>';
-    }
-    var unit = kpi.unitShort || kpi.unit || '';
-    var rows = measures.slice().reverse().map(function (m) {   // récent en haut
-      return '<li class="ds-kpi-history__row"><div class="ds-kpi-history__main">' +
-        '<span class="ds-kpi-history__date type-body-sm">' + fmtDateShort(m.date) + '</span>' +
-        '<span class="ds-kpi-history__value type-body-md">' + esc(fmt(m.value)) +
-          (unit ? ' <span class="ds-kpi-history__unit">' + esc(unit) + '</span>' : '') +
-        '</span></div></li>';
-    }).join('');
-    return '<article class="ds-kpi-history ds-col-6">' + head +
-      '<div class="ds-kpi-history__cols">' +
-        '<span class="type-data-label">Date</span>' +
-        '<span class="type-data-label ds-kpi-history__col--value">Valeur</span>' +
-      '</div>' +
-      '<ol class="ds-kpi-history__list">' + rows + '</ol></article>';
   }
 
   function emptyDetail() {
@@ -190,20 +164,13 @@
         '<hr class="ds-jalon-detail__rule">' +
         '<section class="ds-jalon-detail__section">' +
           '<span class="ds-jalon-detail__label type-data-label">Critère de validation</span>' +
-          '<p class="ds-jalon-detail__criteria type-body-lg">' + esc(jalon.critere || '') + '</p>' +
+          '<p class="ds-jalon-detail__criteria type-h3">' + esc(jalon.critere || '') + '</p>' +
         '</section>' +
         '<section class="ds-jalon-detail__section">' +
           '<span class="ds-jalon-detail__label type-data-label">KPI de jalon</span>' +
           '<div class="ds-jalon-detail__kpi-grid ds-grid">' +
             kpiCardHTML(effort, 'Effort', 'Ajouter un effort', jalon.id, 'leading') +
             kpiCardHTML(result, 'Résultat', 'Ajouter un résultat', jalon.id, 'lagging') +
-          '</div>' +
-        '</section>' +
-        '<section class="ds-jalon-detail__section">' +
-          '<span class="ds-jalon-detail__label type-data-label">Historique des mesures</span>' +
-          '<div class="ds-grid dashboard-final__history-grid">' +
-            kpiHistoryHTML(effort, 'Effort') +
-            kpiHistoryHTML(result, 'Résultat') +
           '</div>' +
         '</section>' +
         '<hr class="ds-jalon-detail__rule">' +
@@ -218,6 +185,11 @@
           '<button type="button" class="ds-row-action" aria-label="Plus d’options">' + DOTS_ICON + '</button>' +
         '</footer>' +
       '</div>';
+
+    // Applique le remplissage des barres (scaleX) hors HTML — data-fill → transform.
+    Array.prototype.forEach.call(card.querySelectorAll('.ds-progress__fill[data-fill]'), function (el) {
+      el.style.transform = 'scaleX(' + el.dataset.fill + ')';
+    });
 
     // Surligne dans le rail le jalon actuellement affiché (sinon on détaille j3 sans repère).
     Array.prototype.forEach.call(document.querySelectorAll('.ds-timeline__item'), function (li) {
@@ -246,7 +218,10 @@
     Array.prototype.forEach.call(document.querySelectorAll('[data-view-panel]'), function (p) {
       p.hidden = p.dataset.viewPanel !== name;
     });
-    if (name === 'moyen') renderActive();
+    if (name === 'moyen') {
+      renderActive();
+      if (window.CarryITRefreshHeatmap) window.CarryITRefreshHeatmap();
+    }
     if (name === 'todo' && window.CarryITRefreshTodo) window.CarryITRefreshTodo();
   }
 
@@ -261,6 +236,7 @@
   window.CarryITRefreshMoyen = function () {
     if (currentJalonId != null) window.CarryITShowJalon(currentJalonId);
     else renderActive();
+    if (window.CarryITRefreshHeatmap) window.CarryITRefreshHeatmap();
   };
 
   // Valide un jalon (passe statut → completed) dans carryit_v1_jalons, puis rafraîchit tout.

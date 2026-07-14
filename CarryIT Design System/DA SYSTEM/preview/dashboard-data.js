@@ -37,6 +37,9 @@
       value: num(pick(m.value, m.valeur)),
       total: num(pick(m.total)),
       delta: num(pick(m.delta)),
+      time: pick(m.time, m.heure),           // "hh:mm" — bloc horaire du popover cadence
+      duration: pick(m.duration, m.duree),   // "1h", "30min" — hauteur du bloc
+      note: pick(m.note),
     };
   }
 
