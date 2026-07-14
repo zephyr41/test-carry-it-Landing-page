@@ -317,31 +317,9 @@
     var arr = readRaw(); var t = findRaw(arr, id); if (!t || t.status === status) return;
     t.status = status; t.done = status === 'done'; saveRaw(arr);
   }
-  // Confirmation in-app (ds-modal) : fiable même en iframe sandboxée où window.confirm est bloqué.
-  function confirmDelete(onOk) {
-    var root = document.querySelector('[data-todo-confirm-root]');
-    if (!root) { root = document.createElement('div'); root.setAttribute('data-todo-confirm-root', ''); document.body.appendChild(root); }
-    root.innerHTML =
-      '<div class="ds-modal-backdrop" data-confirm-backdrop>' +
-        '<div class="ds-modal" role="alertdialog" aria-modal="true" aria-labelledby="todoConfirmTitle">' +
-          '<header class="ds-modal__header"><h2 class="type-h2" id="todoConfirmTitle">Supprimer cette tâche ?</h2>' +
-            '<p class="ds-modal__subtitle type-body-sm">Cette action est définitive.</p></header>' +
-          '<footer class="ds-modal__footer">' +
-            '<button type="button" class="ds-button ds-button--ghost ds-button--sm" data-confirm-cancel>Annuler</button>' +
-            '<button type="button" class="ds-button ds-button--danger ds-button--sm" data-confirm-ok>Supprimer</button>' +
-          '</footer>' +
-        '</div>' +
-      '</div>';
-    function close() { root.innerHTML = ''; }
-    root.querySelector('[data-confirm-ok]').addEventListener('click', function () { close(); onOk(); });
-    root.querySelector('[data-confirm-cancel]').addEventListener('click', close);
-    root.querySelector('[data-confirm-backdrop]').addEventListener('click', function (e) { if (e.target === e.currentTarget) close(); });
-  }
-
+  // Suppression directe (pas de confirmation) : clic sur la croix → la tâche disparaît.
   function deleteTask(id) {
-    confirmDelete(function () {
-      saveRaw(readRaw().filter(function (t) { return String(t.id) !== String(id); }));
-    });
+    saveRaw(readRaw().filter(function (t) { return String(t.id) !== String(id); }));
   }
   function renameTask(id, text) {
     var arr = readRaw(); var t = findRaw(arr, id); if (!t) return;
@@ -533,7 +511,7 @@
       var mDel = e.target.closest('[data-modal-delete]');
       if (mDel) {
         var mid = openTaskId;
-        if (mid != null) confirmDelete(function () { closeModal(); saveRaw(readRaw().filter(function (t) { return String(t.id) !== String(mid); })); });
+        if (mid != null) { closeModal(); saveRaw(readRaw().filter(function (t) { return String(t.id) !== String(mid); })); }
         return;
       }
       if (e.target.closest('[data-modal-close]')) { closeModal(); return; }

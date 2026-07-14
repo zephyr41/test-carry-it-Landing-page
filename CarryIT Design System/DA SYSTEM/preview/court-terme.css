@@ -10,9 +10,14 @@
   display: flex;
   align-items: center;
   gap: var(--space-8);
-  overflow-x: auto;
+  min-width: 0;          /* sinon la barre s'élargit à la somme des onglets → scroll de PAGE */
+  overflow-x: auto;      /* les onglets scrollent en interne, pas la page */
   scrollbar-width: none;
 }
+/* La colonne de grille et le root doivent pouvoir rétrécir, sinon min-width:auto laisse la
+   barre d'onglets élargir la page sur tablette (scroll horizontal). */
+.dashboard-final__page--todo { grid-template-columns: minmax(0, 1fr); }
+.dashboard-final__todo { min-width: 0; }
 .ct__jalons::-webkit-scrollbar { display: none; }
 .ct__jalon {
   display: inline-flex;
@@ -56,7 +61,10 @@
 
 /* Board : cartes de statut empilées. */
 .ct__board { display: grid; gap: var(--grid-gutter); }
-.ct__stage { max-width: none; }
+/* Le fond/bordure pleine largeur des lignes déborde par --table-cell-padding-inline hors de la
+   table (pseudo-éléments) → sur tablette ça créait un scroll horizontal dans la carte. On clippe
+   ce débordement au bord de la carte (le plein-cadre reste, plus de scroll). */
+.ct__stage { max-width: none; overflow-x: clip; }
 
 /* En-tête de groupe secondaire (À faire) dans une carte partagée (via 2 tables). */
 .ct__group-head td { padding-top: var(--space-24); border-bottom: none; }
