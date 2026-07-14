@@ -64,16 +64,35 @@
     return d;
   }
 
-  // ── Switch jalon = composant Tabs (ds-tabs-segmented), un onglet par jalon (nom). ──
+  // ── Switch jalon (ct__jalons) : un onglet par jalon, pastille sur l'actif + compteur tâches. ──
   function renderJalonTabs() {
     var list = jalonsSorted();
     if (!list.length) return '';
     var tabs = list.map(function (j) {
       var on = String(j.id) === String(selectedJalonId);
-      return '<button type="button" class="ds-tabs-segmented__tab" role="tab" aria-selected="' + on + '"' +
-        (on ? ' data-active' : '') + ' data-jalon-select="' + esc(j.id) + '">' + esc(j.titre || '') + '</button>';
+      var c = jalonTaskCounts(j.id);
+      var dot = on ? '<span class="ct__jalon-dot" aria-hidden="true"></span>' : '';
+      var count = c.total ? '<span class="ct__jalon-count type-caption">' + c.done + '/' + c.total + '</span>' : '';
+      return '<button type="button" class="ct__jalon' + (on ? ' is-active' : '') + '" role="tab" aria-selected="' + on + '" data-jalon-select="' + esc(j.id) + '">' +
+        dot + esc(j.titre || '') + count + '</button>';
     }).join('');
-    return '<div class="dashboard-final__jalontabs"><div class="ds-tabs-segmented" role="tablist" aria-label="Jalons">' + tabs + '</div></div>';
+    return '<nav class="ct__jalons" aria-label="Jalons">' + tabs + '</nav>';
+  }
+
+  // ── Bloc critère de validation + bouton Valider (droite), sur le jalon sélectionné. ──
+  function renderValidation() {
+    var j = selectedJalon();
+    if (!j) return '';
+    // Valider = action irréversible → géré par dashboard-views.js ([data-validate-jalon], confirm).
+    var valider = j.statut === 'in_progress'
+      ? '<button type="button" class="ds-button ds-button--inverse ds-button--sm" data-validate-jalon data-jalon-id="' + esc(j.id) + '">Valider</button>'
+      : '';
+    return '<section class="ct__validation">' +
+      '<div class="ct__validation-copy">' +
+        '<span class="ct__validation-label type-data-label">Critère de validation</span>' +
+        '<p class="type-h3">' + esc(j.critere || '') + '</p>' +
+      '</div>' + valider +
+    '</section>';
   }
 
   // ── Contexte col-4 = composant Jalon card (ds-jalon-card), jalon sélectionné. ──
@@ -178,17 +197,20 @@
     { status: 'done', label: 'Terminées' },
   ];
 
-  // Composant Task list imbriquée : en-tête = ds-table__status-heading + ds-badge (comme le preview).
+  // Composant Task list imbriquée : en-tête = chevron repliable + ds-badge + compteur (mockup ct).
   function groupHTML(g, items) {
-    var rows = items.map(taskRowHTML).join('');
-    var addRow = g.status === 'done' ? '' :
+    var collapsed = groupCollapsed[g.status] === true;
+    var rows = collapsed ? '' : items.map(taskRowHTML).join('');
+    var addRow = (collapsed || g.status === 'done') ? '' :
       '<tr class="ds-table__row--inline-action"><td><span class="disclosure-row nested-group__add-task">' +
         '<button type="button" class="ds-empty-inline" data-todo-add data-add-status="' + g.status + '"><span class="ds-empty-inline__icon" aria-hidden="true">+</span><span>Ajouter une action…</span></button>' +
       '</span></td></tr>';
     // Bloc actif (En cours) = badge inversé (ds-badge--active, fond plein) ; autres = muted (hiérarchie DS §480, sans couleur).
     var badgeMod = g.status === 'doing' ? 'ds-badge--active' : 'ds-badge--muted';
+    var chevron = '<button type="button" class="ds-disclosure" aria-expanded="' + (!collapsed) + '" aria-label="Replier le groupe" data-group-toggle="' + g.status + '"><span class="ds-disclosure__icon" aria-hidden="true">&nbsp;</span></button>';
     return '<table class="ds-table ds-table--nested dashboard-final__todo-group" data-group-status="' + g.status + '">' +
       '<thead><tr><th scope="col"><span class="ds-table__status-heading">' +
+        chevron +
         '<span class="ds-badge ' + badgeMod + '">' + esc(g.label) + '</span>' +
         '<span class="type-caption dashboard-final__todo-groupcount">' + items.length + '</span>' +
       '</span></th></tr></thead>' +
@@ -196,13 +218,18 @@
     '</table>';
   }
 
-  // Liste = 3 CARTES séparées (une par bloc de statut), chacune = composant task-list dans un table-stage.
+  // Board (ct__board) = 2 cartes : [En cours + À faire] partagent une carte, [Terminées] à part.
+  // 2 tables par carte (chacune sa dropzone data-group-status) → le drag inter-bloc reste intact.
   function renderListCard() {
     var scoped = tasksForSelected();
-    return GROUPS.map(function (g) {
-      var items = scoped.filter(function (t) { return taskStatus(t) === g.status; });
-      return '<section class="table-stage task-list-stage dashboard-final__todo-card">' + groupHTML(g, items) + '</section>';
-    }).join('');
+    function grp(status) {
+      var g = null;
+      for (var i = 0; i < GROUPS.length; i++) { if (GROUPS[i].status === status) { g = GROUPS[i]; break; } }
+      return groupHTML(g, scoped.filter(function (t) { return taskStatus(t) === status; }));
+    }
+    var stage1 = '<section class="table-stage task-list-stage ct__stage dashboard-final__todo-card">' + grp('doing') + grp('todo') + '</section>';
+    var stage2 = '<section class="table-stage task-list-stage ct__stage ct__stage--done ct__done dashboard-final__todo-card">' + grp('done') + '</section>';
+    return '<section class="ct__board">' + stage1 + stage2 + '</section>';
   }
 
   // ── Board (Kanban) ───────────────────────────────────────────────
@@ -257,10 +284,10 @@
     if (!root) return;
     ensureSelectedJalon();
     root.innerHTML =
-      '<div class="ds-grid dashboard-final__todo-grid">' +
-        '<div class="ds-col-12">' + renderJalonTabs() + '</div>' +
-        '<div class="ds-col-12">' + renderListCard() + '</div>' +
-      '</div>';
+      '<header class="ct__pagehead"><span class="type-data-label ct__eyebrow">Vue court terme</span></header>' +
+      renderJalonTabs() +
+      renderValidation() +
+      renderListCard();
     // Progress bar : valeur posée en data (var CSS), pas de style de design en dur (cf. §Progress).
     Array.prototype.forEach.call(root.querySelectorAll('[data-progress-fill]'), function (el) {
       el.style.setProperty('--ds-progress-scale', el.getAttribute('data-progress-fill'));
