@@ -357,8 +357,8 @@
         definition: "Un objectif spécifique dit exactement ce que tu veux réussir.",
         hint: "Ton objectif doit décrire un résultat précis. \"Améliorer mes finances\" n'est pas spécifique. \"5 000 € nets mensuels de revenus locatifs\" l'est. Plus c'est précis, plus tu sais quoi viser. C'est plus simple quand tu définis un seuil précis (un chiffre) ou un état précis (fait / pas fait).",
         fields: [
-          ["result", "Quel résultat concret veux-tu obtenir ?", "Ex : de l'investissement en bourse, des biens locatifs, une app payante, courir un marathon"],
-          ["threshold", "Quel seuil précis ou état marque la réussite ?", "Ex : 60K, 1 000 clients, 42 km · ou un état : signé, publié, fait"]
+          ["result", "Quel résultat concret veux-tu obtenir ?", "Ex : courir ___ km, atteindre ___ de CA mensuel, obtenir ___ biens (___ = ton seuil)"],
+          ["threshold", "Quel seuil précis ou état marque la réussite ?", "Ex : 100 km, 5 000 €, 1 000 clients · remplace le ___ (ou un état : signé, fait)"]
         ]
       },
       {
@@ -552,6 +552,24 @@
       return optional ? "Optionnel" : "Vide";
     }
 
+    // Évite « je veux je veux … » si l'utilisateur écrit déjà « je veux » dans le champ.
+    function stripJeVeux(s) {
+      return String(s).replace(/^\s*je\s+veux\s+/i, "");
+    }
+    // Seuil injecté DANS le résultat à l'emplacement ___ (ex : « courir ___ km » → « courir 100 km »).
+    // Pas de ___ → seuil ajouté en fin (compat).
+    function specificGoal(result, threshold) {
+      const r = stripJeVeux(result);
+      if (/_{2,}/.test(r)) return r.replace(/_{2,}/, threshold);
+      return `${r}, avec un seuil de réussite à ${threshold}`;
+    }
+    // Version compacte pour l'aperçu latéral (dot-join si pas de ___).
+    function specificPreview(result, threshold) {
+      const r = stripJeVeux(result);
+      if (/_{2,}/.test(r)) return threshold ? r.replace(/_{2,}/, threshold) : r;
+      return [r, threshold ? `seuil : ${threshold}` : ""].filter(Boolean).join(" · ");
+    }
+
     function buildObjective() {
       const rawDeadline = form.timebound.deadline;
       const deadline = rawDeadline
@@ -563,9 +581,10 @@
       const resources = form.achievable.resources || "[ce que j'ai déjà]";
       const constraints = form.achievable.constraints || "[ce qu'il me manque]";
       const hoursTxt = form.relevant.hours ? `${form.relevant.hours} par semaine` : "[temps par semaine]";
+      const goal = specificGoal(result, threshold);
       const vision = form.animated?.vision;
 
-      let text = `D'ici ${deadline}, je veux ${result}, avec un seuil de réussite à ${threshold}.\nJe mesurerai mes progrès avec ${indicator}.\nJe peux déjà m'appuyer sur ${resources}.\nCe qu'il me faut pour démarrer : ${constraints}.\nJe peux y consacrer ${hoursTxt}.`;
+      let text = `D'ici ${deadline}, je veux ${goal}.\nJe mesurerai mes progrès avec ${indicator}.\nJe peux déjà m'appuyer sur ${resources}.\nCe qu'il me faut pour démarrer : ${constraints}.\nJe peux y consacrer ${hoursTxt}.`;
       if (vision) text += `\nSi j'y arrive : ${vision}.`;
       return text;
     }
@@ -581,10 +600,11 @@
       const resources = form.achievable.resources || "[ce que j'ai déjà]";
       const constraints = form.achievable.constraints || "[ce qu'il me manque]";
       const hoursTxt = form.relevant.hours ? `${form.relevant.hours} par semaine` : "[temps par semaine]";
+      const goal = specificGoal(result, threshold);
       const vision = form.animated?.vision;
 
       const lines = [
-        `D'ici ${escapeHtml(deadline)}, je veux ${escapeHtml(result)}, avec un seuil de réussite à ${escapeHtml(threshold)}.`,
+        `D'ici ${escapeHtml(deadline)}, je veux ${escapeHtml(goal)}.`,
         `Je mesurerai mes progrès avec ${escapeHtml(indicator)}.`,
         `Je peux déjà m'appuyer sur ${escapeHtml(resources)}.`,
         `Ce qu'il me faut pour démarrer : ${escapeHtml(constraints)}.`,
@@ -612,7 +632,7 @@
       const deadline = rawDeadline
         ? new Date(rawDeadline).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })
         : "";
-      const ambition = [form.specific.result, form.specific.threshold ? `seuil : ${form.specific.threshold}` : ""].filter(isFilled).join(" · ");
+      const ambition = form.specific.result ? specificPreview(form.specific.result, form.specific.threshold) : "";
       const measure = form.measurable.indicator;
       const attainable = [form.achievable.resources, form.achievable.constraints].filter(isFilled).join(" · ");
       const realiste = form.relevant.hours ? `${form.relevant.hours} par semaine` : "";
