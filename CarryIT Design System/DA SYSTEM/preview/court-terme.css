@@ -100,3 +100,7 @@
    carte (calé sur un ds-container autonome). Ici on les rentre à l'intérieur du padding. */
 .ct .nested-group__task .ds-row-actions,
 .ct .nested-group__subtask .ds-row-actions { right: var(--space-8); }
+
+/* Le titre remplit la ligne → l'édition inline (double-clic) dispose de toute la largeur.
+   Avant : le champ était calé sur la largeur du titre (~166px) → texte clippé/scrollé. */
+.ct .nested-group__task .ds-row-copy { flex: 1; min-width: 0; }
