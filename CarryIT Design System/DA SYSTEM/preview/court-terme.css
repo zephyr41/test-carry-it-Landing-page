@@ -114,3 +114,14 @@
 .ct .nested-group__subtask.is-sub-drop .disclosure-subrow {
   box-shadow: inset 0 var(--border-width-default) 0 0 var(--color-text-primary);
 }
+
+/* Réordonnancement des tâches : élément tiré atténué + trait d'insertion avant/après la cible. */
+.ct .nested-group__task[draggable] { cursor: grab; }
+.ct .nested-group__task.is-dragging { opacity: var(--opacity-dragging); }
+.ct .nested-group__task.insert-before { box-shadow: inset 0 var(--border-width-default) 0 0 var(--color-text-primary); }
+.ct .nested-group__task.insert-after { box-shadow: inset 0 calc(-1 * var(--border-width-default)) 0 0 var(--color-text-primary); }
+
+/* Croix de suppression : rentrée du bord dans la checklist (elle collait au bord). */
+.ct .nested-group__subtask .ds-row-actions { right: var(--space-16); }
+/* Dans le panneau, la ligne déborde du padding → on rentre davantage la croix. */
+.dashboard-final__taskpanel .nested-group__subtask .ds-row-actions { right: var(--space-32); }

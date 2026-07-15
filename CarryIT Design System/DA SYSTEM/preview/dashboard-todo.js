@@ -406,7 +406,9 @@
 
     // Panneau latéral (droite) — pas de backdrop, le dashboard reste visible/cliquable (comme le legacy).
     root.innerHTML =
-      '<div class="dashboard-final__taskpanel-overlay" data-task-modal>' +
+      // classe .ct : le panneau vit hors du root To-do → sans elle, les règles .ct des
+      // sous-tâches (texte à gauche, croix rentrée, glisser-déposer) ne s'appliqueraient pas.
+      '<div class="dashboard-final__taskpanel-overlay ct" data-task-modal>' +
         '<aside class="dashboard-final__taskpanel" role="dialog" aria-modal="false" aria-labelledby="taskPanelTitle">' +
           '<button type="button" class="dashboard-final__taskpanel-close" aria-label="Fermer" data-modal-close>' + CLOSE_ICON + '</button>' +
           '<div class="dashboard-final__taskpanel-body">' +
@@ -484,8 +486,9 @@
   var dragId = null;
   var dragSub = null;   // { taskId, subId } — glisser d'une sous-tâche (réordonnancement)
   function clearDrop() {
-    Array.prototype.forEach.call(document.querySelectorAll('.is-drop-target, .is-sub-drop'), function (n) {
+    Array.prototype.forEach.call(document.querySelectorAll('.is-drop-target, .is-sub-drop, .insert-before, .insert-after'), function (n) {
       n.classList.remove('is-drop-target'); n.classList.remove('is-sub-drop');
+      n.classList.remove('insert-before'); n.classList.remove('insert-after');
     });
   }
   // Réordonne une sous-tâche dans SA tâche (déplace subId à la position de targetSubId).
@@ -497,6 +500,27 @@
     var to = t.subtasks.findIndex(function (x) { return String(x.id) === String(targetSubId); });
     if (from < 0 || to < 0) return;
     t.subtasks.splice(to, 0, t.subtasks.splice(from, 1)[0]);
+    saveRaw(arr);
+  }
+  function clearInsertion() {
+    Array.prototype.forEach.call(document.querySelectorAll('.insert-before, .insert-after'), function (n) {
+      n.classList.remove('insert-before'); n.classList.remove('insert-after');
+    });
+  }
+  // Déplace une tâche AVANT/APRÈS une autre (réordonnancement) + adopte le statut du groupe cible
+  // (permet aussi de changer de bloc en déposant sur une tâche). Porté de dashboard.html.
+  function moveTaskRelativeTo(draggedId, targetId, position) {
+    if (String(draggedId) === String(targetId)) return;
+    var arr = readRaw();
+    var di = arr.findIndex(function (t) { return String(t.id) === String(draggedId); });
+    var target = arr.find(function (t) { return String(t.id) === String(targetId); });
+    if (di < 0 || !target) return;
+    var dragged = arr.splice(di, 1)[0];
+    dragged.status = target.status || (target.done ? 'done' : 'todo');
+    dragged.done = dragged.status === 'done';
+    var ti = arr.findIndex(function (t) { return String(t.id) === String(targetId); });
+    if (ti < 0) arr.push(dragged);
+    else arr.splice(position === 'before' ? ti : ti + 1, 0, dragged);
     saveRaw(arr);
   }
 
@@ -617,8 +641,21 @@
         }
         return;
       }
+      if (dragId == null) return;
+      // Tâche-sur-tâche : trait d'insertion avant/après selon la position du curseur.
+      var overTask = e.target.closest('.nested-group__task[data-task-id]');
+      if (overTask && overTask.dataset.taskId !== dragId) {
+        e.preventDefault();
+        if (e.dataTransfer) e.dataTransfer.dropEffect = 'move';
+        var rect = overTask.getBoundingClientRect();
+        var before = e.clientY < rect.top + rect.height / 2;
+        clearInsertion();
+        overTask.classList.add(before ? 'insert-before' : 'insert-after');
+        return;
+      }
+      // Sinon : zone de groupe (change le statut, ajoute en fin).
       var zone = e.target.closest('[data-kanban-drop], [data-group-status]');
-      if (!zone || dragId == null) return;
+      if (!zone) return;
       e.preventDefault();
       if (e.dataTransfer) e.dataTransfer.dropEffect = 'move';
       zone.classList.add('is-drop-target');
@@ -626,6 +663,8 @@
     document.addEventListener('dragleave', function (e) {
       var overSub = e.target.closest('.nested-group__subtask');
       if (overSub && !overSub.contains(e.relatedTarget)) overSub.classList.remove('is-sub-drop');
+      var overTask = e.target.closest('.nested-group__task');
+      if (overTask && !overTask.contains(e.relatedTarget)) { overTask.classList.remove('insert-before'); overTask.classList.remove('insert-after'); }
       var zone = e.target.closest('[data-kanban-drop], [data-group-status]');
       if (zone && !zone.contains(e.relatedTarget)) zone.classList.remove('is-drop-target');
     });
@@ -635,8 +674,18 @@
         if (overSub) { e.preventDefault(); reorderSub(dragSub.taskId, dragSub.subId, overSub.dataset.subId); }
         dragSub = null; clearDrop(); return;
       }
+      if (dragId == null) return;
+      // Tâche-sur-tâche : réordonne avant/après.
+      var overTask = e.target.closest('.nested-group__task[data-task-id]');
+      if (overTask && overTask.dataset.taskId !== dragId) {
+        e.preventDefault();
+        var rect = overTask.getBoundingClientRect();
+        var pos = e.clientY < rect.top + rect.height / 2 ? 'before' : 'after';
+        moveTaskRelativeTo(dragId, overTask.dataset.taskId, pos);
+        dragId = null; clearDrop(); return;
+      }
       var zone = e.target.closest('[data-kanban-drop], [data-group-status]');
-      if (!zone || dragId == null) return;
+      if (!zone) { clearDrop(); return; }
       e.preventDefault();
       var status = zone.dataset.kanbanDrop || zone.dataset.groupStatus;
       if (status) setTaskStatus(dragId, status);
