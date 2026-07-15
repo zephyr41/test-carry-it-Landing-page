@@ -257,21 +257,12 @@
         .system-preview {
             position: relative;
             min-width: 0;
-            border: 1px solid var(--line-soft);
-            border-radius: 22px;
-            background: var(--bg);
-            box-shadow: 0 32px 90px var(--shadow-card);
+            border: 1px solid rgba(255,253,246,0.10);
+            border-radius: 12px;
+            background: #161617;
+            box-shadow: 0 4px 12px -4px rgba(0,0,0,0.45),
+                        inset 0 1px 0 rgba(255,253,246,0.05);
             overflow: hidden;
-        }
-
-        .system-preview::before {
-            content: "";
-            position: absolute;
-            inset: 0 0 auto;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--accent-line), transparent);
-            opacity: 0.42;
-            pointer-events: none;
         }
 
         .preview-top {
@@ -279,9 +270,8 @@
             align-items: center;
             justify-content: space-between;
             gap: 18px;
-            padding: 14px 18px;
+            padding: 16px 20px;
             border-bottom: 1px solid var(--line-card);
-            background: var(--surface);
         }
 
         .preview-brand {
@@ -305,30 +295,28 @@
             width: 6px;
             height: 6px;
             border-radius: 999px;
-            background: var(--accent);
-            box-shadow: 0 0 0 0 var(--accent-pulse);
-            animation: signalPulse 2.8s ease-out infinite;
+            background: var(--text-36);
         }
 
         .preview-body {
-            padding: 16px;
+            padding: 20px;
             display: grid;
-            gap: 10px;
+            gap: 12px;
         }
 
         .preview-label {
             display: block;
-            margin-bottom: 4px;
-            color: var(--text-36);
-            font-size: 10px;
-            font-weight: 800;
-            letter-spacing: 0.08em;
+            margin-bottom: 10px;
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
             text-transform: uppercase;
         }
 
         .preview-label strong {
-            color: var(--text-86);
-            font-weight: 900;
+            color: var(--text);
+            font-weight: 700;
         }
 
         .preview-divider {
@@ -338,15 +326,15 @@
 
         .smart-line-row {
             display: grid;
-            grid-template-columns: 24px minmax(0, 1fr);
-            gap: 9px;
+            grid-template-columns: 20px minmax(0, 1fr);
+            gap: 12px;
             align-items: center;
-            padding: 5px 0;
+            padding: 7px 0;
             border-bottom: 1px solid var(--line-card);
-            color: var(--text-74);
-            font-size: 11px;
-            line-height: 1.4;
-            font-weight: 600;
+            color: var(--muted-strong);
+            font-size: 13px;
+            line-height: 1.38;
+            font-weight: 400;
         }
 
         .smart-line-row:last-child {
@@ -354,25 +342,18 @@
         }
 
         .smart-letter {
-            display: grid;
-            place-items: center;
-            width: 24px;
-            height: 24px;
-            border: 1px solid var(--line-strong);
-            border-radius: 7px;
+            text-align: center;
             color: var(--text-52);
-            font-size: 11px;
-            font-weight: 900;
-        }
-
-        .smart-line-row.is-active .smart-letter {
-            border-color: var(--accent-border);
-            background: var(--accent-soft);
-            color: var(--accent);
+            font-size: 13px;
+            font-weight: 600;
         }
 
         .smart-line-row.is-active {
-            color: var(--text-90);
+            color: var(--text);
+        }
+
+        .smart-line-row.is-active .smart-letter {
+            color: var(--text);
         }
 
         .jalon-lines {
@@ -414,8 +395,8 @@
         }
 
         .jalon-line.is-active .jalon-dot {
-            background: var(--accent);
-            box-shadow: 0 0 0 4px var(--accent-ring);
+            background: var(--text);
+            box-shadow: 0 0 0 4px rgba(255,253,246,0.10);
         }
 
         .actions {
@@ -557,8 +538,7 @@
                 <h1 class="section-question" id="intro-title">Gravis ta plus grande ambition.</h1>
 
                 <div class="copy">
-                    <p class="copy-note">Les gens confondent atteignable et réaliste aujourd'hui, et atteignable et réaliste dans 3 ans, en y mettant 10h/semaine.</p>
-                    <p class="copy-setup">En 20 minutes environ, tu poses un objectif précis, daté, mesurable, <span class="strike-soft">atteignable et réaliste</span>.</p>
+                    <p class="copy-setup">En 20 minutes environ, tu poses un objectif précis, daté, mesurable, atteignable et réaliste.</p>
                     <div class="outcome-lines">
                         <p>Tu le découpes en jalons clairs.</p>
                         <p>Pour exécuter les actions et avancer avec lucidité.</p>
@@ -596,7 +576,6 @@
 
                 </div>
             </div>
-            <p class="card-fn"><span style="color:var(--accent);">*</span>Les gens confondent atteignable et réaliste aujourd'hui, et atteignable et réaliste dans 3 ans, en y mettant 10h/semaine.</p>
             </div>
         </section>
     </main>

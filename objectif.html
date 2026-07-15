@@ -4,9 +4,21 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Objectif SMART — Carry IT</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
+
+  <!-- Design System : source unique (tokens + composants). Aucune valeur en dur. -->
+  <link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/tokens.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@calendarjs/ce/dist/style.min.css" />
+  <link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/buttons.css" />
+  <link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/inputs.css" />
+  <link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/textarea.css" />
+  <link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/badge.css" />
+  <link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/grid.css" />
+  <link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/card.css" />
+  <link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/toast.css" />
+  <link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/calendar.css" />
+
   <style>
+    /* ── Fonte du wordmark (hors DS) ── */
     @font-face {
       font-family: Rifton;
       src: url('assets/rifton/rifton-regular.woff2') format('woff2'),
@@ -15,460 +27,275 @@
       font-style: normal;
     }
 
-    :root {
-      --bg: #080809;
-      --surface: #18181d;
-      --surface-raised: #1f1f27;
-      --nav-bg: rgba(8,8,9,0.88);
-      --border: rgba(255,255,255,0.12);
-      --border-hover: rgba(255,255,255,0.22);
-      --border-strong: rgba(255,255,255,0.20);
-      --text: #FFFDF6;
-      --text-94: rgba(255,253,246,0.94);
-      --text-90: rgba(255,253,246,0.90);
-      --text-86: rgba(255,253,246,0.86);
-      --text-82: rgba(255,253,246,0.82);
-      --text-76: rgba(255,253,246,0.76);
-      --text-72: rgba(255,253,246,0.72);
-      --text-58: rgba(255,253,246,0.58);
-      --text-52: rgba(255,253,246,0.52);
-      --text-42: rgba(255,253,246,0.42);
-      --text-36: rgba(255,253,246,0.36);
-      --muted: rgba(255,253,246,0.56);
-      --muted-strong: rgba(255,253,246,0.76);
-      --accent: #EE4408;
-      --accent-soft: rgba(238,68,8,0.10);
-      --accent-ring: rgba(238,68,8,0.14);
-      --accent-border: rgba(238,68,8,0.40);
-      --accent-hover: #ff5d1a;
-      --radius-lg: 20px;
-      --radius-md: 14px;
-      --state-empty-bg: rgba(255,253,246,0.06);
-      --state-empty-text: rgba(255,253,246,0.36);
-      --state-partial-bg: rgba(217,119,6,0.12);
-      --state-partial-text: rgba(251,191,36,0.90);
-      --state-complete-bg: rgba(22,163,74,0.12);
-      --state-complete-text: rgba(74,222,128,0.88);
-    }
-
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0; padding: 0;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      min-height: 100dvh;
-      line-height: 1.5;
-    }
-
-    button, textarea { font: inherit; }
+    /* ── Chrome de page + layout : uniquement des tokens DS ──
+       (les seules valeurs non-tokenisées sont structurelles : ratios de grille,
+       %, ch et breakpoints @media — non couverts par le système de tokens.) */
+    body { min-height: 100dvh; }
+    button, textarea, input { font: inherit; }
     button { cursor: pointer; }
 
-    /* ── NAV ── */
+    /* ── NAV (chrome de page) ── */
     nav {
       position: sticky;
-      top: 0; z-index: 100;
-      background: var(--nav-bg);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border);
+      top: 0;
+      z-index: 100;
+      background: var(--color-background);
+      border-bottom: var(--border-subtle);
       display: grid;
       grid-template-columns: 1fr auto 1fr;
       align-items: center;
-      padding: 0 clamp(24px, 4vw, 52px);
-      height: 64px;
+      padding: 0 var(--space-page-desktop);
+      height: var(--space-64);
     }
 
     .nav-back {
       justify-self: start;
-      width: 44px; height: 44px;
-      background: none;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--muted);
-      display: flex;
+      width: var(--space-48);
+      height: var(--space-48);
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      transition: color 0.15s, border-color 0.15s;
+      background: transparent;
+      border: var(--border-subtle);
+      border-radius: var(--radius-md);
+      color: var(--color-text-secondary);
+      transition: var(--motion-transition-default);
     }
-    .nav-back:hover { color: var(--text); border-color: var(--border-hover); }
-    .nav-back:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    .nav-back:hover { color: var(--color-text-primary); border: var(--border-strong); }
+    .nav-back:focus-visible { outline: none; border: var(--border-focus); }
 
     .nav-logo {
-      font-family: 'Rifton', serif;
-      font-size: 15px;
-      color: var(--text-36);
-      letter-spacing: 1px;
+      justify-self: center;
+      font-family: 'Rifton', var(--font-body);
+      font-size: var(--type-body-md-size);
+      color: var(--color-text-muted);
+      letter-spacing: var(--letter-spacing-label);
     }
 
     .nav-reset {
       justify-self: end;
-      background: none;
+      background: transparent;
       border: none;
-      color: var(--text-36);
-      font-size: 12px;
-      font-weight: 650;
-      letter-spacing: 0.03em;
-      padding: 6px 0;
-      transition: color 0.15s;
+      color: var(--color-text-muted);
+      font-size: var(--type-label-size);
+      font-weight: var(--font-weight-semibold);
+      padding: var(--space-4) 0;
+      transition: var(--motion-transition-default);
     }
-    .nav-reset:hover { color: var(--text-58); }
+    .nav-reset:hover { color: var(--color-text-secondary); }
 
     .nav-progress {
       position: absolute;
       left: 0; right: 0; bottom: 0;
-      height: 16px;
+      height: var(--space-16);
       pointer-events: none;
     }
+    /* Remplissage = blanc (DS : progression n'est pas une action → jamais l'orange). */
     .nav-progress::before {
       content: "";
       position: absolute;
       left: 0; bottom: 0;
       width: 33%;
-      height: 3px;
-      background: var(--accent);
+      height: var(--space-4);
+      background: var(--color-text-primary);
       z-index: 1;
     }
     .nav-progress::after {
       content: "";
       position: absolute;
       left: 0; right: 0; bottom: 0;
-      height: 3px;
-      background: var(--border-strong);
+      height: var(--space-4);
+      background: var(--color-surface-raised);
       z-index: 0;
     }
     .nav-progress-label {
       position: absolute;
-      left: clamp(24px, 4vw, 52px);
-      bottom: 6px;
-      color: var(--text-58);
-      font-size: 0.625rem;
-      font-weight: 850;
-      letter-spacing: 0.12em;
+      left: var(--space-page-desktop);
+      bottom: var(--space-8);
+      color: var(--color-text-secondary);
+      font-size: var(--type-data-label-size);
+      font-weight: var(--font-weight-bold);
+      letter-spacing: var(--letter-spacing-label);
       text-transform: uppercase;
       z-index: 2;
     }
 
-    /* ── PAGE ── */
+    /* ── PAGE (largeur/marge d'écran = .ds-container ; ici juste le rythme vertical) ── */
     .page {
-      width: min(1160px, calc(100% - 64px));
-      margin: 0 auto;
-      padding: 56px 0 100px;
+      padding-block: var(--space-48) var(--space-64);
     }
-
-    h1, h2, h3, p { margin-top: 0; }
 
     /* ── HERO ── */
-    .hero { margin-bottom: 40px; }
-
-    h1 {
-      font-size: clamp(1.875rem, 3.5vw, 2.625rem);
-      font-weight: 850;
-      line-height: 1.1;
-      letter-spacing: -0.03em;
-      color: var(--text);
-      margin-bottom: 12px;
-      text-wrap: balance;
-    }
-
+    .hero { margin-bottom: var(--space-section-gap); }
     .lead {
-      color: var(--muted-strong);
-      font-size: 1rem;
-      line-height: 1.65;
+      color: var(--color-text-secondary);
       max-width: 60ch;
-      margin-bottom: 0;
+      margin-top: var(--space-12);
     }
 
-    /* ── LAYOUT ── */
-    .main-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1.45fr) minmax(260px, 1fr);
-      gap: 20px;
-      align-items: start;
-    }
+    /* ── LAYOUT (grille 12 col DS : form ds-col-8 + sidebar ds-col-4, §4.8) ── */
+    .form-layout { align-items: start; }
+    .stack { display: grid; gap: var(--space-24); }
 
-    .form-col { display: grid; gap: 20px; }
-    .stack { display: grid; gap: 14px; }
-
-    /* ── CARDS ── */
-    .card, .section-card, .output-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 20px 22px;
-    }
-
-    /* Titre field (not a card) */
-    .titre-field {
-      padding: 0;
-    }
-    .titre-label {
-      display: block; margin-bottom: 8px;
-      font-size: 0.8125rem; font-weight: 700;
-      color: var(--text-52); letter-spacing: 0.04em;
-      text-transform: uppercase;
-    }
-
-    /* ── SECTION CARDS ── */
+    /* ── SECTION CARDS (composition DS : ds-card + lettre + badge + champs) ── */
     .section-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 14px; margin-bottom: 14px;
+      gap: var(--space-12);
     }
     .section-title-row {
-      display: flex; gap: 12px; align-items: center;
+      display: flex;
+      align-items: center;
+      gap: var(--space-12);
+      min-width: 0;
     }
-
+    /* Lettre S/M/A/R/T : marqueur nu démoté (jamais un chip orange). */
     .letter {
-      display: grid; flex: 0 0 auto;
-      width: 38px; height: 38px;
-      place-items: center;
-      border-radius: 11px;
-      background: var(--state-empty-bg);
-      border: 1px solid var(--border-strong);
-      color: var(--text-52);
-      font-size: 13px; font-weight: 900;
-    }
-    .letter.complete {
-      background: var(--accent-soft);
-      border-color: var(--accent-border);
-      color: var(--accent);
-    }
-
-    h2 {
-      font-size: 0.9375rem; font-weight: 750;
-      color: var(--text-90);
-      margin-bottom: 0; line-height: 1.3;
-    }
-
-    /* ── BADGES ── */
-    .badge {
       flex: 0 0 auto;
-      padding: 3px 9px; border-radius: 999px;
-      font-size: 0.7rem; font-weight: 800;
-      white-space: nowrap; letter-spacing: 0.02em;
+      width: var(--smart-letter-width);
+      text-align: center;
+      color: var(--smart-letter-color);
+      font-size: var(--type-body-lg-size);
+      font-weight: var(--font-weight-semibold);
     }
-    .badge.empty  { background: var(--state-empty-bg);    color: var(--state-empty-text); }
-    .badge.partial { background: var(--state-partial-bg); color: var(--state-partial-text); }
-    .badge.complete { background: var(--state-complete-bg); color: var(--state-complete-text); }
+    .letter.is-complete { color: var(--color-text-primary); }
+    .section-title { min-width: 0; }
 
-    /* ── FIELDS ── */
-    .field-group { display: grid; gap: 14px; margin-top: 2px; }
-    label { display: block; }
-    .label-text {
-      display: block; margin-bottom: 7px;
-      color: var(--text-72); font-size: 0.875rem; font-weight: 650;
-    }
-
-    textarea {
-      width: 100%; min-height: 88px;
-      resize: vertical;
-      border: 1px solid var(--border-strong);
-      border-radius: 13px;
-      background: rgba(255,255,255,0.07);
-      color: var(--text);
-      padding: 11px 13px; outline: none;
-      line-height: 1.6;
-      transition: border-color 0.15s, box-shadow 0.15s;
-    }
-    textarea:focus {
-      border-color: var(--accent-border);
-      box-shadow: 0 0 0 3px var(--accent-ring);
-    }
-    textarea::placeholder { color: var(--text-52); }
-
-    /* ── HINT ── */
+    /* Bouton d'aide « ? » : mono, sans orange. */
     .hint-btn {
-      display: inline-grid; place-items: center;
-      width: 17px; height: 17px; border-radius: 50%;
-      border: 1.5px solid var(--border-strong);
+      display: inline-grid;
+      place-items: center;
+      width: var(--space-16);
+      height: var(--space-16);
+      margin-left: var(--space-8);
+      vertical-align: middle;
+      border: var(--border-subtle);
+      border-radius: var(--radius-full);
       background: transparent;
-      color: var(--text-42); font-size: 9px; font-weight: 800;
-      cursor: pointer; margin-left: 7px; vertical-align: middle;
-      transition: border-color 0.15s, color 0.15s, background 0.15s;
-      line-height: 1; flex-shrink: 0;
+      color: var(--color-text-muted);
+      font-size: var(--type-data-label-size);
+      font-weight: var(--font-weight-bold);
+      line-height: 1;
+      transition: var(--motion-transition-default);
     }
-    .hint-btn:hover, .hint-btn[aria-expanded="true"] {
-      border-color: var(--accent-border);
-      color: var(--accent); background: var(--accent-soft);
+    .hint-btn:hover,
+    .hint-btn[aria-expanded="true"] {
+      color: var(--color-text-secondary);
+      border: var(--border-strong);
     }
     .hint-panel {
-      margin: 8px 0 4px 50px; padding: 11px 14px;
-      border-radius: 11px;
-      background: var(--accent-soft);
-      border: 1px solid var(--accent-border);
-      color: var(--text-72); font-size: 0.84rem; line-height: 1.65;
+      padding: var(--space-12) var(--space-16);
+      border-radius: var(--radius-md);
+      background: var(--color-surface-raised);
+      border: var(--border-subtle);
+      color: var(--color-text-secondary);
     }
 
-    /* ── DATE CHIP ── */
-    .date-chip-smart {
-      display: inline-flex; align-items: center; gap: 8px;
-      width: 100%; padding: 11px 13px; border-radius: 13px;
-      background: rgba(255,255,255,0.07);
-      border: 1px solid var(--border-strong);
-      font-size: 0.9rem; font-family: inherit;
-      cursor: pointer; text-align: left;
-      transition: border-color 0.15s;
-    }
-    .date-chip-smart:hover { border-color: var(--accent-border); }
-    .date-chip-smart svg { flex-shrink: 0; opacity: 0.5; }
-    .date-chip-smart.has-value { color: var(--text-90); }
-    .date-chip-smart:not(.has-value) { color: var(--text-52); }
+    .field-group { display: grid; gap: var(--space-16); }
+    /* Label de question : type-body-md (14, blanc) + medium — lisible, pas le 12px gris de type-label. */
+    .field-label { font-weight: var(--font-weight-medium); }
 
-    /* ── CALENDAR POPUP ── */
-    .cal-popup { position: fixed; z-index: 9999; background: #1a1c22; border: 1px solid rgba(255,253,246,0.14); border-radius: 14px; box-shadow: 0 8px 40px rgba(0,0,0,0.7); padding: 14px; width: 256px; user-select: none; }
-    .cal-popup.hidden { display: none; }
-    .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-    .cal-nav { background: transparent; border: none; color: rgba(255,253,246,0.55); cursor: pointer; padding: 4px 8px; border-radius: 5px; font-size: 16px; line-height: 1; transition: color 100ms, background 100ms; }
-    .cal-nav:hover { color: #FFFDF6; background: rgba(255,253,246,0.07); }
-    .cal-month-label { font-size: 14px; font-weight: 650; color: #FFFDF6; }
-    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
-    .cal-dow { text-align: center; font-size: 10px; font-weight: 700; color: rgba(255,253,246,0.35); padding-bottom: 6px; text-transform: uppercase; letter-spacing: 0.06em; }
-    .cal-day { text-align: center; padding: 5px 2px; font-size: 13px; color: rgba(255,253,246,0.75); border-radius: 5px; cursor: pointer; transition: background 80ms, color 80ms; }
-    .cal-day:hover { background: rgba(255,253,246,0.09); color: #FFFDF6; }
-    .cal-day.today { color: #EE4408; font-weight: 700; }
-    .cal-day.selected { background: #EE4408; color: #FFFDF6; font-weight: 700; }
-    .cal-day.selected:hover { background: #d83d08; }
-    .cal-day.empty { cursor: default; }
+    /* Déclencheur date vide → couleur placeholder (comble l'état vide du datefield DS). */
+    .ds-datefield__trigger[data-empty="true"] { color: var(--input-placeholder); }
+    .ds-calendar-wrap { display: block; max-width: none; }
 
     /* ── SIDEBAR ── */
     .side {
-      display: grid; gap: 14px;
-      position: sticky; top: 80px;
-    }
-
-    .output-header {
-      display: flex; justify-content: space-between;
-      gap: 14px; align-items: flex-start; margin-bottom: 14px;
-    }
-    .output-help {
-      color: var(--text-58); font-size: 0.8rem; line-height: 1.55; margin: 3px 0 0;
-    }
-    .objective-phrase {
-      padding: 16px 0 18px;
-      border-bottom: 1px solid var(--border);
-      color: var(--text-52);
-      font-size: 0.8125rem;
-      font-style: italic;
-      line-height: 1.78;
-      letter-spacing: 0.003em;
-    }
-    .badge.optional {
-      color: var(--text-42);
-      border-color: var(--border);
-      background: transparent;
-    }
-
-    .smart-preview {
       display: grid;
-      border-top: 1px solid var(--border);
+      gap: var(--space-16);
+      position: sticky;
+      top: calc(var(--space-64) + var(--space-16));
     }
+    /* Carte de sortie = carte définie DS (arête + filet + ombre). */
+    .output-card {
+      display: grid;
+      gap: var(--space-16);
+      padding: var(--card-padding);
+      background: var(--card-background);
+      border: var(--card-border-defined);
+      border-radius: var(--card-radius);
+      box-shadow: var(--card-shadow-defined);
+    }
+    .output-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: var(--space-12);
+    }
+    .output-help { color: var(--color-text-muted); margin-top: var(--space-4); }
+
+    .objective-phrase {
+      padding-block: var(--space-16);
+      border-bottom: var(--border-subtle);
+      color: var(--color-text-muted);
+      font-size: var(--type-body-sm-size);
+      line-height: var(--type-body-sm-line);
+      font-style: italic;
+    }
+
+    .smart-preview { display: grid; }
     .smart-preview-row {
       display: grid;
-      grid-template-columns: 28px 1fr;
-      gap: 12px;
-      padding: 14px 0;
-      border-bottom: 1px solid var(--border);
+      grid-template-columns: var(--smart-letter-width) 1fr;
+      gap: var(--smart-col-gap);
+      align-items: start;
+      padding-block: var(--space-16);
+      border-bottom: var(--border-subtle);
     }
+    .smart-preview-row:last-child { border-bottom: 0; }
     .smart-preview-letter {
-      width: 28px;
-      height: 28px;
-      display: grid;
-      place-items: center;
-      border: 1px solid var(--border-strong);
-      border-radius: 7px;
-      color: var(--text-58);
-      font-size: 0.78rem;
-      font-weight: 850;
+      text-align: center;
+      color: var(--smart-letter-color);
+      font-size: var(--type-body-md-size);
+      line-height: var(--type-data-label-line);   /* = ligne du label → lettre calée sur l'eyebrow */
+      font-weight: var(--font-weight-semibold);
     }
     .smart-preview-label {
       display: block;
-      margin-bottom: 3px;
-      color: var(--text-42);
-      font-size: 0.67rem;
-      font-weight: 850;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
+      margin-bottom: var(--smart-dimension-gap);
+      color: var(--color-text-primary);
+      letter-spacing: var(--letter-spacing-label);
     }
     .smart-preview-value {
-      color: var(--text-82);
-      font-size: 0.875rem;
-      font-weight: 650;
-      line-height: 1.5;
+      color: var(--color-text-secondary);
+      font-size: var(--type-body-sm-size);
+      line-height: var(--type-body-sm-line);
     }
-    .smart-preview-value.empty {
-      color: var(--text-42);
-      font-weight: 550;
-    }
+    .smart-preview-value.empty { color: var(--color-text-muted); }
 
-    /* ── BUTTONS ── */
-    .btn {
-      display: inline-flex; justify-content: center; align-items: center;
-      min-height: 36px; padding: 7px 14px; border-radius: 9px;
-      border: 1px solid var(--border-strong);
-      background: transparent; color: var(--text-72);
-      font-size: 0.8125rem; font-weight: 650;
-      transition: border-color 0.15s, color 0.15s, background 0.15s;
-    }
-    .btn:hover { border-color: var(--border-hover); color: var(--text-90); background: rgba(255,255,255,0.04); }
-    .btn:active { transform: translateY(1px); }
-
-    .btn-primary {
-      display: flex; justify-content: center; align-items: center;
-      width: 100%; min-height: 48px; padding: 12px 20px;
-      border-radius: 13px; border: none;
-      background: var(--accent); color: var(--text);
-      font-size: 0.9375rem; font-weight: 800; letter-spacing: 0.01em;
-      transition: background 0.15s, transform 0.12s; cursor: pointer;
-    }
-    .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
-    .btn-primary:active { transform: translateY(0); }
-    .btn-primary:focus-visible { outline: 2px solid var(--text); outline-offset: 4px; }
-    .btn-primary:disabled { opacity: 0.32; cursor: not-allowed; transform: none; }
-
-    /* ── TOAST ── */
+    /* ── TOAST (composant ds-toast + positionnement) ── */
     .toast {
-      position: fixed; right: 20px; bottom: 20px;
-      max-width: 280px; padding: 11px 14px; border-radius: 12px;
-      background: var(--surface-raised); border: 1px solid var(--border-strong);
-      color: var(--text-82); font-size: 0.875rem;
-      box-shadow: 0 16px 30px rgba(0,0,0,0.5);
-      opacity: 0; transform: translateY(8px); pointer-events: none;
-      transition: opacity 0.2s, transform 0.2s;
+      position: fixed;
+      right: var(--space-24);
+      bottom: var(--space-24);
+      z-index: var(--z-overlay);
+      opacity: 0;
+      transform: translateY(var(--space-8));
+      pointer-events: none;
+      transition: opacity var(--motion-duration-base) var(--motion-ease-out),
+                  transform var(--motion-duration-base) var(--motion-ease-out);
     }
     .toast.visible { opacity: 1; transform: translateY(0); }
 
     /* ── RESPONSIVE ── */
-    @media (max-width: 860px) {
-      .main-grid { grid-template-columns: 1fr; }
-      .side { position: static; }
+    /* ≤1024 : la grille DS passe à 8 col (form devient pleine largeur). La sidebar
+       tiendrait sur 4/8 (moitié) → on la force pleine largeur + on coupe le sticky. */
+    @media (max-width: 1024px) {
+      .side { grid-column: 1 / -1; position: static; }
     }
     @media (max-width: 640px) {
-      .page { width: min(100% - 32px, 640px); padding: 36px 0 80px; }
-      nav { padding: 0 20px; }
-      h1 { font-size: 1.75rem; }
-      .section-header, .output-header { flex-wrap: wrap; }
-      .badge { width: fit-content; }
-      .hint-panel { margin-left: 0; }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        transition-duration: 0.01ms !important;
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-      }
+      .page { padding-block: var(--space-32) var(--space-64); }
+      nav { padding: 0 var(--space-page-mobile); }
+      .nav-progress-label { left: var(--space-page-mobile); }
+      .section-header { flex-wrap: wrap; }
     }
   </style>
 </head>
 <body>
   <nav>
     <button class="nav-back" onclick="goBack()" aria-label="Retour">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
     </button>
     <span class="nav-logo">CARRY IT</span>
     <button class="nav-reset" id="resetButton" type="button">Recommencer</button>
@@ -477,40 +304,44 @@
     </div>
   </nav>
 
-  <main class="page">
+  <main class="page ds-container">
     <header class="hero">
-      <h1>Définis ton objectif SMART.</h1>
-      <p class="lead">SMART sert à transformer une ambition en objectif clair : spécifique, mesurable, atteignable, réaliste, daté. Pas besoin d'avoir tout le plan. Ici, tu poses ce que réussir veut dire.</p>
+      <h1 class="type-display">Définis ton objectif SMART.</h1>
+      <p class="lead type-body-lg">SMART sert à transformer une ambition en objectif clair : spécifique, mesurable, atteignable, réaliste, daté. Pas besoin d'avoir tout le plan. Ici, tu poses ce que réussir veut dire.</p>
     </header>
 
-    <section class="main-grid" aria-label="Formulaire objectif SMART">
-      <div class="form-col">
-        <div class="titre-field">
-          <span class="titre-label">Nom du projet</span>
-          <textarea id="titreInput" rows="1" placeholder="Ex : Immo, Marathon, SaaS…"></textarea>
-        </div>
-        <div class="stack" id="sectionsContainer"></div>
+    <section class="ds-grid form-layout" aria-label="Formulaire objectif SMART">
+      <div class="input-group ds-col-8">
+        <span class="type-body-md field-label">Nom du projet</span>
+        <input id="titreInput" class="ds-input" type="text" placeholder="Ex : Immo, Marathon, SaaS…" />
       </div>
+      <div class="stack ds-col-8" id="sectionsContainer"></div>
 
-      <aside class="side">
+      <aside class="side ds-col-4">
         <div class="output-card">
           <div class="output-header">
             <div>
-              <h2>Objectif SMART finalisé</h2>
-              <p class="output-help">L'aperçu se construit pendant que tu remplis.</p>
+              <h2 class="type-h3">Ton objectif SMART</h2>
+              <p class="output-help type-caption">L'aperçu se construit pendant que tu remplis.</p>
             </div>
-            <button class="btn" type="button" id="copyButton">Copier</button>
+            <button class="ds-button ds-button--subtle ds-button--xs" type="button" id="copyButton">Copier</button>
           </div>
           <div class="objective-phrase" id="objectivePhrase"></div>
           <div class="smart-preview" id="objectiveText"></div>
         </div>
 
-        <button type="button" id="validateButton" class="btn-primary">Valider l'objectif</button>
+        <button type="button" id="validateButton" class="ds-button ds-button--primary ds-button--block">Valider l'objectif</button>
       </aside>
     </section>
   </main>
 
-  <div class="toast" id="toast" role="status" aria-live="polite">Objectif copié.</div>
+  <div class="ds-toast toast" id="toast" role="status" aria-live="polite">
+    <svg class="ds-toast__icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>
+    <p class="ds-toast__message type-body-sm" id="toastMsg">Objectif copié.</p>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/lemonadejs/dist/lemonade.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@calendarjs/ce/dist/index.min.js"></script>
 
   <script>
     function goBack() {
@@ -526,7 +357,8 @@
         definition: "Un objectif spécifique dit exactement ce que tu veux réussir.",
         hint: "Ton objectif doit décrire un résultat précis. \"Améliorer mes finances\" n'est pas spécifique. \"5 000 € nets mensuels de revenus locatifs\" l'est. Plus c'est précis, plus tu sais quoi viser. C'est plus simple quand tu définis un seuil précis (un chiffre) ou un état précis (fait / pas fait).",
         fields: [
-          ["result", "Quel résultat concret veux-tu obtenir ?", "Ex : publier un livre, obtenir des biens locatifs, lancer une app payante, courir un marathon officiel"]
+          ["result", "Quel résultat concret veux-tu obtenir ?", "Ex : de l'investissement en bourse, des biens locatifs, une app payante, courir un marathon"],
+          ["threshold", "Quel seuil précis ou état marque la réussite ?", "Ex : 60K, 1 000 clients, 42 km · ou un état : signé, publié, fait"]
         ]
       },
       {
@@ -536,8 +368,7 @@
         definition: "Ce que tu vas suivre chaque mois pour voir ton avancée.",
         hint: "Un indicateur : un chiffre ou une preuve qui bouge. Il te dit si tu avances ou pas. Sans indicateur, tu travailles à l'aveugle. Le chiffre n'a pas besoin d'être parfait au départ, il doit juste exister.",
         fields: [
-          ["indicator", "Quel indicateur tu vas suivre chaque mois ?", "Ex : temps au km, chiffre d'affaires mensuel, utilisateurs actifs, biens visités"],
-          ["target", "Quel seuil rendra l'objectif atteint ?", "Ex : 1 000 clients payants, 5 000 € mensuels, 42 km, 3 biens signés"]
+          ["indicator", "Par rapport à ton seuil, quelle mesure tu vas suivre chaque mois pour voir que tu avances vers ton objectif ?", "Ex : montant investi ce mois, temps au km, chiffre d'affaires mensuel, utilisateurs actifs"]
         ]
       },
       {
@@ -547,8 +378,8 @@
         definition: "Le sommet, c'est ton objectif. Pour l'atteindre, il faut savoir ce que t'as dans ton sac et ce qu'il te manque.",
         hint: "Pas \"est-ce que c'est possible en théorie\", mais \"est-ce que t'as le minimum pour démarrer ?\" Les ressources = ce que t'as maintenant pour t'y mettre. Ce dont tu as besoin = ce qu'il faut pour démarrer. Tu le résous, tu ne le suis pas. Ça c'est le M.",
         fields: [
-          ["resources", "Quelles ressources tu as maintenant pour t'y mettre concrètement ?", "Ex : compétences techniques, réseau, expérience terrain, capital disponible"],
-          ["constraints", "De quoi tu as besoin pour démarrer ?", "Ex : compétence à apprendre, outil à obtenir, blocage à lever"]
+          ["resources", "Sur quel ressource tu peux t'appuyer pour démarrer ?", "Ex : compétences techniques, réseau, expérience terrain, capital disponible"],
+          ["constraints", "Ce qu'il me faut pour démarrer ?", "Ex : compétence à apprendre, outil à obtenir, blocage à lever"]
         ]
       },
       {
@@ -558,7 +389,7 @@
         definition: "Un objectif réaliste rentre dans ton emploi du temps et tes contraintes.",
         hint: "L'ambition ne correspond pas automatiquement aux heures disponibles. Si tu vises un marathon mais tu peux courir 30 min par semaine, ta date doit le refléter. Cette case force l'honnêteté sur ce que tu peux vraiment engager.",
         fields: [
-          ["hours", "Combien d'heures par semaine peux-tu vraiment y consacrer ?", "Ex : 2h/semaine, 5h/semaine, 1h par jour, 2 soirs par semaine"]
+          ["hours", "Combien peux-tu y consacrer par semaine ?", "Ex : 4 jours, 5h, 2 soirs, 1h par jour"]
         ]
       },
       {
@@ -589,8 +420,8 @@
 
     const emptyForm = {
       titre: "",
-      specific: { result: "" },
-      measurable: { indicator: "", target: "" },
+      specific: { result: "", threshold: "" },
+      measurable: { indicator: "" },
       achievable: { resources: "", constraints: "" },
       relevant: { hours: "" },
       timebound: { deadline: "" },
@@ -605,8 +436,11 @@
         if (saved) {
           const parsed = JSON.parse(saved);
           if (!parsed.animated) parsed.animated = { vision: "" };
-          if (!parsed.measurable) parsed.measurable = { indicator: "", target: "" };
-          if (parsed.measurable.target === undefined) parsed.measurable.target = "";
+          if (!parsed.specific) parsed.specific = { result: "", threshold: "" };
+          if (!parsed.measurable) parsed.measurable = { indicator: "" };
+          // Migration : le seuil passe de Mesurable → Spécifique.
+          if (parsed.specific.threshold === undefined) parsed.specific.threshold = parsed.measurable.target || "";
+          delete parsed.measurable.target;
           return parsed;
         }
       } catch {}
@@ -699,10 +533,17 @@
       };
     }
 
-    function statusClass(status, optional) {
-      if (status.complete) return "complete";
-      if (status.filled > 0) return "partial";
-      return optional ? "optional" : "empty";
+    /* Badges monochromes (DS : zéro vert/ambre sémantique — contraste seul). */
+    function badgeClass(status, optional) {
+      if (status.complete) return "ds-badge ds-badge--active";
+      if (status.filled > 0) return "ds-badge";
+      return "ds-badge ds-badge--muted";
+    }
+
+    // Label Mesurable dynamique : injecte le seuil réel saisi dans Spécifique.
+    function measurableLabel() {
+      const seuil = form.specific.threshold.trim();
+      return `Par rapport à ${seuil || "ton seuil"}, quelle mesure tu vas suivre chaque mois pour voir que tu avances vers ton objectif ?`;
     }
 
     function statusLabel(status, optional) {
@@ -717,14 +558,14 @@
         ? new Date(rawDeadline).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })
         : "[échéance]";
       const result = form.specific.result || "[résultat concret]";
+      const threshold = form.specific.threshold || "[seuil]";
       const indicator = form.measurable.indicator || "[indicateur]";
-      const target = form.measurable.target || "[seuil]";
       const resources = form.achievable.resources || "[ce que j'ai déjà]";
       const constraints = form.achievable.constraints || "[ce qu'il me manque]";
-      const hours = form.relevant.hours || "[heures/semaine]";
+      const hoursTxt = form.relevant.hours ? `${form.relevant.hours} par semaine` : "[temps par semaine]";
       const vision = form.animated?.vision;
 
-      let text = `D'ici ${deadline}, je veux ${result}.\nJe mesurerai mes progrès avec ${indicator}, avec un seuil de réussite à ${target}.\nJe peux déjà m'appuyer sur ${resources}.\nCe qu'il me faut pour démarrer : ${constraints}.\nJe peux y consacrer ${hours}.`;
+      let text = `D'ici ${deadline}, je veux ${result}, avec un seuil de réussite à ${threshold}.\nJe mesurerai mes progrès avec ${indicator}.\nJe peux déjà m'appuyer sur ${resources}.\nCe qu'il me faut pour démarrer : ${constraints}.\nJe peux y consacrer ${hoursTxt}.`;
       if (vision) text += `\nSi j'y arrive : ${vision}.`;
       return text;
     }
@@ -735,19 +576,19 @@
         ? new Date(rawDeadline).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })
         : "[échéance]";
       const result = form.specific.result || "[résultat concret]";
+      const threshold = form.specific.threshold || "[seuil]";
       const indicator = form.measurable.indicator || "[indicateur]";
-      const target = form.measurable.target || "[seuil]";
       const resources = form.achievable.resources || "[ce que j'ai déjà]";
       const constraints = form.achievable.constraints || "[ce qu'il me manque]";
-      const hours = form.relevant.hours || "[heures/semaine]";
+      const hoursTxt = form.relevant.hours ? `${form.relevant.hours} par semaine` : "[temps par semaine]";
       const vision = form.animated?.vision;
 
       const lines = [
-        `D'ici ${escapeHtml(deadline)}, je veux ${escapeHtml(result)}.`,
-        `Je mesurerai mes progrès avec ${escapeHtml(indicator)}, avec un seuil de réussite à ${escapeHtml(target)}.`,
+        `D'ici ${escapeHtml(deadline)}, je veux ${escapeHtml(result)}, avec un seuil de réussite à ${escapeHtml(threshold)}.`,
+        `Je mesurerai mes progrès avec ${escapeHtml(indicator)}.`,
         `Je peux déjà m'appuyer sur ${escapeHtml(resources)}.`,
         `Ce qu'il me faut pour démarrer : ${escapeHtml(constraints)}.`,
-        `Je peux y consacrer ${escapeHtml(hours)}.`
+        `Je peux y consacrer ${escapeHtml(hoursTxt)}.`
       ];
       if (vision) lines.push(`Si j'y arrive : ${escapeHtml(vision)}.`);
       return lines.join("<br>");
@@ -759,7 +600,7 @@
         <div class="smart-preview-row">
           <span class="smart-preview-letter">${escapeHtml(letter)}</span>
           <div>
-            <span class="smart-preview-label">${escapeHtml(label)}</span>
+            <span class="smart-preview-label type-data-label">${escapeHtml(label)}</span>
             <span class="smart-preview-value${isEmpty ? " empty" : ""}">${escapeHtml(isEmpty ? emptyText : value)}</span>
           </div>
         </div>
@@ -771,15 +612,16 @@
       const deadline = rawDeadline
         ? new Date(rawDeadline).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })
         : "";
-      const ambition = form.specific.result;
-      const measure = [form.measurable.indicator, form.measurable.target ? `cible : ${form.measurable.target}` : ""].filter(isFilled).join(" · ");
+      const ambition = [form.specific.result, form.specific.threshold ? `seuil : ${form.specific.threshold}` : ""].filter(isFilled).join(" · ");
+      const measure = form.measurable.indicator;
       const attainable = [form.achievable.resources, form.achievable.constraints].filter(isFilled).join(" · ");
+      const realiste = form.relevant.hours ? `${form.relevant.hours} par semaine` : "";
 
       const rows = [
-        smartPreviewRow("S", "L'ambition", ambition, "Résultat précis à atteindre"),
-        smartPreviewRow("M", "La mesure", measure, "Indicateur et seuil de réussite"),
+        smartPreviewRow("S", "L'ambition", ambition, "Résultat précis et son seuil"),
+        smartPreviewRow("M", "La mesure", measure, "Ce que tu suis chaque mois"),
         smartPreviewRow("A", "Atteignable", attainable, "Ressources et manques à regarder en face"),
-        smartPreviewRow("R", "Réaliste", form.relevant.hours, "Temps réel que tu peux engager"),
+        smartPreviewRow("R", "Réaliste", realiste, "Temps réel que tu peux engager"),
         smartPreviewRow("T", "L'échéance", deadline, "Date limite")
       ];
       if (form.animated?.vision) rows.push(smartPreviewRow("V", "La vision", form.animated.vision, ""));
@@ -792,37 +634,43 @@
         const fieldHtml = section.fields.map(([fieldKey, label, placeholder, type]) => {
           const path = `${section.key}.${fieldKey}`;
           const val = escapeHtml(getValue(path));
+          const displayLabel = (section.key === "measurable" && fieldKey === "indicator") ? measurableLabel() : label;
           const dateLabel = val ? new Date(val).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : 'Choisir une date…';
           const input = type === "date"
-            ? `<button type="button" class="date-chip-smart${val ? ' has-value' : ''}" onclick="openSmartCal(this, '${escapeHtml(path)}')" id="datebtn-${escapeHtml(path)}">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-                <span>${dateLabel}</span>
-               </button>
-               <input type="hidden" data-field="${escapeHtml(path)}" value="${val}" id="datehidden-${escapeHtml(path)}" />`
-            : `<textarea data-field="${escapeHtml(path)}" placeholder="${escapeHtml(placeholder)}">${val}</textarea>`;
+            ? `<div class="ds-datefield">
+                 <button type="button" class="ds-datefield__trigger" data-empty="${val ? 'false' : 'true'}" onclick="toggleSmartCal(this, '${escapeHtml(path)}')" id="datebtn-${escapeHtml(path)}">
+                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                   <span>${dateLabel}</span>
+                 </button>
+                 <input type="hidden" data-field="${escapeHtml(path)}" value="${val}" id="datehidden-${escapeHtml(path)}" />
+                 <div class="ds-datefield__popover" hidden id="datepop-${escapeHtml(path)}">
+                   <div class="ds-calendar-wrap"><div class="ds-cal-host" id="dscal-${escapeHtml(path)}"></div></div>
+                 </div>
+               </div>`
+            : `<textarea class="ds-textarea" data-field="${escapeHtml(path)}" placeholder="${escapeHtml(placeholder)}">${val}</textarea>`;
           return `
-            <label>
-              <span class="label-text">${escapeHtml(label)}</span>
+            <label class="input-group">
+              <span class="type-body-md field-label" id="label-${escapeHtml(path)}">${escapeHtml(displayLabel)}</span>
               ${input}
             </label>
           `;
         }).join("");
 
         const hintHtml = section.hint
-          ? `<div class="hint-panel" id="hint-${escapeHtml(section.key)}" hidden>${escapeHtml(section.hint)}</div>`
+          ? `<div class="hint-panel type-body-sm" id="hint-${escapeHtml(section.key)}" hidden>${escapeHtml(section.hint)}</div>`
           : '';
         const hintBtn = section.hint
           ? ` <button class="hint-btn" onclick="toggleHint('${escapeHtml(section.key)}')" aria-expanded="false" aria-label="Aide pour ${escapeHtml(section.title)}">?</button>`
           : '';
 
         return `
-          <article class="section-card">
+          <article class="ds-card section-card">
             <div class="section-header">
               <div class="section-title-row">
-                <div class="letter ${status.complete ? "complete" : ""}" data-letter="${escapeHtml(section.key)}">${escapeHtml(section.letter)}</div>
-                <h2>${escapeHtml(section.title)}${hintBtn}</h2>
+                <span class="letter ${status.complete ? "is-complete" : ""}" data-letter="${escapeHtml(section.key)}">${escapeHtml(section.letter)}</span>
+                <h2 class="type-h3 section-title">${escapeHtml(section.title)}${hintBtn}</h2>
               </div>
-              <span class="badge ${statusClass(status, section.optional)}" data-badge="${escapeHtml(section.key)}">${statusLabel(status, section.optional)}</span>
+              <span class="${badgeClass(status, section.optional)}" data-badge="${escapeHtml(section.key)}">${statusLabel(status, section.optional)}</span>
             </div>
             ${hintHtml}
             <div class="field-group">${fieldHtml}</div>
@@ -836,13 +684,15 @@
         const status = getSectionStatus(section);
         const badge = sectionsContainer.querySelector(`[data-badge="${section.key}"]`);
         const letter = sectionsContainer.querySelector(`[data-letter="${section.key}"]`);
-        if (badge) { badge.className = `badge ${statusClass(status, section.optional)}`; badge.textContent = statusLabel(status, section.optional); }
-        if (letter) { letter.className = `letter${status.complete ? " complete" : ""}`; }
+        if (badge) { badge.className = badgeClass(status, section.optional); badge.textContent = statusLabel(status, section.optional); }
+        if (letter) { letter.className = `letter${status.complete ? " is-complete" : ""}`; }
       });
     }
 
     function updateDynamic() {
       updateSectionStatuses();
+      const mlab = document.getElementById("label-measurable.indicator");
+      if (mlab) mlab.textContent = measurableLabel();
       objectiveText.innerHTML = buildObjectivePreview();
       objectivePhrase.innerHTML = buildObjectiveHtml();
       const requiredComplete = sections
@@ -886,7 +736,7 @@
     validateButton.addEventListener("click", () => {
       const specifique = form.specific.result || "";
       const atteignable = [form.achievable.resources, form.achievable.constraints ? "manque : " + form.achievable.constraints : ""].filter(Boolean).join(" / ");
-      const metricTarget = parseMetricTarget(form.measurable.target);
+      const metricTarget = parseMetricTarget(form.specific.threshold);
       const smartObj = {
         titre: form.titre || "",
         specifique,
@@ -934,7 +784,8 @@
     });
 
     function showToast(message) {
-      toast.textContent = message;
+      const msg = document.getElementById("toastMsg");
+      if (msg) msg.textContent = message; else toast.textContent = message;
       toast.classList.add("visible");
       window.clearTimeout(showToast.timeout);
       showToast.timeout = window.setTimeout(() => {
@@ -952,78 +803,104 @@
     });
   </script>
 
-  <div id="calPopup" class="cal-popup hidden"></div>
   <script>
-  (function() {
+  /* Calendrier = composant DS (@calendarjs/ce), monté en popover inline dans .ds-datefield. */
+  (function () {
     const MONTHS_FR = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
-    const DAYS_FR   = ['Lu','Ma','Me','Je','Ve','Sa','Di'];
-    let calState = { path: null, year: 0, month: 0, anchor: null };
-    const popup = document.getElementById('calPopup');
+    let openPath = null;
 
-    window.openSmartCal = function(btn, path) {
-      const hidden = document.getElementById('datehidden-' + path);
-      const val = hidden ? hidden.value : '';
-      const d = val ? new Date(val) : new Date();
-      calState = { path, year: d.getFullYear(), month: d.getMonth(), anchor: btn };
-      renderCal(); positionPopup(btn); popup.classList.remove('hidden');
-    };
-
-    function positionPopup(anchor) {
-      const rect = anchor.getBoundingClientRect();
-      let top = rect.bottom + 8, left = rect.left;
-      if (top + 320 > window.innerHeight) top = rect.top - 320 - 8;
-      if (left + 256 > window.innerWidth) left = window.innerWidth - 268;
-      popup.style.top = top + 'px'; popup.style.left = left + 'px';
+    if (window.calendarjs) {
+      window.calendarjs.setDictionary({
+        January: 'Janvier', February: 'Février', March: 'Mars', April: 'Avril',
+        May: 'Mai', June: 'Juin', July: 'Juillet', August: 'Août',
+        September: 'Septembre', October: 'Octobre', November: 'Novembre', December: 'Décembre',
+        Sunday: 'Dimanche', Monday: 'Lundi', Tuesday: 'Mardi', Wednesday: 'Mercredi',
+        Thursday: 'Jeudi', Friday: 'Vendredi', Saturday: 'Samedi'
+      });
     }
 
-    function renderCal() {
-      const { year, month, path } = calState;
-      const hidden = document.getElementById('datehidden-' + path);
-      const sel = hidden && hidden.value ? new Date(hidden.value) : null;
-      const today = new Date();
-      let startDow = new Date(year, month, 1).getDay(); startDow = (startDow + 6) % 7;
-      const daysInMonth = new Date(year, month + 1, 0).getDate();
-      let cells = '';
-      DAYS_FR.forEach(d => { cells += `<div class="cal-dow">${d}</div>`; });
-      for (let i = 0; i < startDow; i++) cells += `<div class="cal-day empty"></div>`;
-      for (let d = 1; d <= daysInMonth; d++) {
-        const isToday = today.getFullYear()===year && today.getMonth()===month && today.getDate()===d;
-        const isSel   = sel && sel.getFullYear()===year && sel.getMonth()===month && sel.getDate()===d;
-        const cls = ['cal-day', isToday?'today':'', isSel?'selected':''].filter(Boolean).join(' ');
-        cells += `<div class="${cls}" onclick="smartPickDay(${d})">${d}</div>`;
-      }
-      popup.innerHTML = `<div class="cal-header"><button class="cal-nav" onclick="smartCalNav(-1)">&#8249;</button><span class="cal-month-label">${MONTHS_FR[month]} ${year}</span><button class="cal-nav" onclick="smartCalNav(1)">&#8250;</button></div><div class="cal-grid">${cells}</div>`;
+    function closeAll(except) {
+      document.querySelectorAll('.ds-datefield__popover').forEach((p) => {
+        if (p !== except) p.setAttribute('hidden', '');
+      });
     }
 
-    window.smartCalNav = function(dir) {
-      calState.month += dir;
-      if (calState.month > 11) { calState.month = 0; calState.year++; }
-      if (calState.month < 0)  { calState.month = 11; calState.year--; }
-      renderCal();
+    window.toggleSmartCal = function (btn, path) {
+      const pop = document.getElementById('datepop-' + path);
+      if (!pop) return;
+      const wasHidden = pop.hasAttribute('hidden');
+      closeAll(pop);
+      if (wasHidden) {
+        mountCal(path);
+        pop.removeAttribute('hidden');
+        openPath = path;
+      } else {
+        pop.setAttribute('hidden', '');
+        openPath = null;
+      }
     };
 
-    window.smartPickDay = function(d) {
-      const { year, month, path } = calState;
-      const iso = new Date(year, month, d).toISOString().slice(0, 10);
+    function mountCal(path) {
+      const host = document.getElementById('dscal-' + path);
+      if (!host || !window.calendarjs) return;
+      host.innerHTML = '';
       const hidden = document.getElementById('datehidden-' + path);
-      const btn    = document.getElementById('datebtn-'    + path);
-      if (hidden) {
-        hidden.value = iso;
-        hidden.dispatchEvent(new Event('input', { bubbles: true }));
+      const hasVal = hidden && hidden.value;
+      const opts = { type: 'inline', startingDay: 1, footer: false };
+      if (hasVal) opts.value = hidden.value;
+      window.calendarjs.Calendar(host, opts);
+      if (!hasVal) {
+        host.querySelectorAll('.lm-calendar-content > div[data-selected="true"]')
+          .forEach((d) => d.setAttribute('data-selected', 'false'));
       }
+      if (host.dataset.bound !== '1') {
+        host.addEventListener('click', (e) => onPick(e, path), true);
+        host.dataset.bound = '1';
+      }
+    }
+
+    function onPick(e, path) {
+      const cell = e.target.closest('.lm-calendar-content > div');
+      if (!cell || cell.getAttribute('data-disabled') === 'true') return;
+      const host = document.getElementById('dscal-' + path);
+      const monthBtn = host.querySelector('.lm-calendar-labels button[data-view="months"]');
+      const yearBtn = host.querySelector('.lm-calendar-labels button[data-view="years"]');
+      if (!monthBtn || !yearBtn) return;
+      let month = MONTHS_FR.indexOf(monthBtn.textContent.trim());
+      let year = parseInt(yearBtn.textContent.trim(), 10);
+      let day = parseInt((cell.textContent || '').trim(), 10);
+      if (month < 0 || !year || !day) return;
+      if (cell.getAttribute('data-grey') === 'true') {
+        if (day > 15) { month -= 1; if (month < 0) { month = 11; year -= 1; } }
+        else { month += 1; if (month > 11) { month = 0; year += 1; } }
+      }
+      commit(path, year, month, day);
+    }
+
+    function commit(path, year, month, day) {
+      const iso = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      const hidden = document.getElementById('datehidden-' + path);
+      const btn = document.getElementById('datebtn-' + path);
+      if (hidden) { hidden.value = iso; hidden.dispatchEvent(new Event('input', { bubbles: true })); }
       if (btn) {
-        btn.classList.add('has-value');
+        btn.setAttribute('data-empty', 'false');
         const span = btn.querySelector('span');
-        if (span) span.textContent = new Date(year, month, d).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+        if (span) span.textContent = new Date(year, month, day).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
       }
-      popup.classList.add('hidden');
-    };
+      const pop = document.getElementById('datepop-' + path);
+      // La lib re-render (lemonade) pendant la phase de clic → un hide synchrone
+      // se fait clobber. On ferme au tick suivant, après le re-render.
+      openPath = null;
+      setTimeout(() => { if (pop) pop.setAttribute('hidden', ''); }, 0);
+    }
 
-    document.addEventListener('mousedown', function(e) {
-      if (!popup.classList.contains('hidden') && !popup.contains(e.target) && e.target !== calState.anchor && !calState.anchor?.contains(e.target))
-        popup.classList.add('hidden');
+    document.addEventListener('mousedown', (e) => {
+      if (!openPath) return;
+      if (!e.target.closest('.ds-datefield')) { closeAll(null); openPath = null; }
     });
-    document.addEventListener('keydown', function(e) { if (e.key === 'Escape') popup.classList.add('hidden'); });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && openPath) { closeAll(null); openPath = null; }
+    });
   })();
   </script>
 </body>
