@@ -155,7 +155,9 @@
     var subs = Array.isArray(task.subtasks) ? task.subtasks : [];
     var rows = subs.map(function (s, i) {
       var id = 'todo-sub-' + esc(task.id) + '-' + i;
-      return '<div class="nested-group__subtask">' +
+      // Titre HORS du label : seul le dot (checkbox) coche ; cliquer le texte ouvre le panneau.
+      // draggable + data-sub-id → réordonnancement par glisser-déposer.
+      return '<div class="nested-group__subtask" draggable="true" data-sub-id="' + esc(s.id) + '">' +
         '<div class="disclosure-subrow">' +
           '<span class="ds-row-grip" aria-hidden="true">⠿</span>' +
           '<label class="ds-checkbox" for="' + id + '">' +
@@ -163,8 +165,8 @@
               '<input type="checkbox" id="' + id + '" class="ds-checkbox__input ds-checkbox__input--round" data-sub-check data-sub-id="' + esc(s.id) + '"' + (s.done ? ' checked' : '') + '>' +
               SUB_ICON +
             '</span>' +
-            '<span class="type-body-sm ds-row-title' + (s.done ? ' is-done' : '') + '">' + esc(s.text) + '</span>' +
           '</label>' +
+          '<span class="type-body-sm ds-row-title ds-row-title--sub' + (s.done ? ' is-done' : '') + '" data-sub-title>' + esc(s.text) + '</span>' +
           '<span class="ds-row-actions">' +
             '<button type="button" class="ds-row-action" aria-label="Supprimer la sous-tâche" data-sub-delete data-sub-id="' + esc(s.id) + '">' + CROSS + '</button>' +
           '</span>' +
@@ -415,7 +417,7 @@
               '</div>' +
             '</div>' +
             '<h2 class="type-h2 dashboard-final__taskpanel-title" id="taskPanelTitle" data-modal-title title="Modifier le titre">' + esc(task.text) + '</h2>' +
-            (j ? '<div class="dashboard-final__taskpanel-field"><span class="type-data-label dashboard-final__taskpanel-label">Jalon</span><span class="dashboard-final__taskpanel-jalon type-body-md">' + esc(j.titre || '') + '</span></div>' : '') +
+            (j ? '<div class="dashboard-final__taskpanel-field"><span class="type-data-label dashboard-final__taskpanel-label">Jalon</span><span class="dashboard-final__taskpanel-jalon type-body-lg">' + esc(j.titre || '') + '</span></div>' : '') +
             '<div class="dashboard-final__taskpanel-section">' +
               '<span class="type-data-label dashboard-final__taskpanel-label">Notes</span>' +
               '<textarea class="ds-textarea" id="taskPanelNotes" data-modal-notes placeholder="Ajouter une note…">' + esc(task.notes || '') + '</textarea>' +
@@ -480,8 +482,22 @@
   }
 
   var dragId = null;
+  var dragSub = null;   // { taskId, subId } — glisser d'une sous-tâche (réordonnancement)
   function clearDrop() {
-    Array.prototype.forEach.call(document.querySelectorAll('.is-drop-target'), function (n) { n.classList.remove('is-drop-target'); });
+    Array.prototype.forEach.call(document.querySelectorAll('.is-drop-target, .is-sub-drop'), function (n) {
+      n.classList.remove('is-drop-target'); n.classList.remove('is-sub-drop');
+    });
+  }
+  // Réordonne une sous-tâche dans SA tâche (déplace subId à la position de targetSubId).
+  function reorderSub(taskId, subId, targetSubId) {
+    if (String(subId) === String(targetSubId)) return;
+    var arr = readRaw(); var t = findRaw(arr, taskId);
+    if (!t || !Array.isArray(t.subtasks)) return;
+    var from = t.subtasks.findIndex(function (x) { return String(x.id) === String(subId); });
+    var to = t.subtasks.findIndex(function (x) { return String(x.id) === String(targetSubId); });
+    if (from < 0 || to < 0) return;
+    t.subtasks.splice(to, 0, t.subtasks.splice(from, 1)[0]);
+    saveRaw(arr);
   }
 
   function init() {
@@ -570,20 +586,37 @@
       if (e.key === 'Escape' && openTaskId != null && !e.target.closest('.dashboard-final__todo-input')) { closeModal(); return; }
     });
 
-    // ── Drag & drop : liste (entre blocs) ET board (entre colonnes) → change le statut. ──
+    // ── Drag & drop : tâches (entre blocs/colonnes → statut) ET sous-tâches (réordonnancement). ──
     document.addEventListener('dragstart', function (e) {
+      // Sous-tâche en priorité (elle est aussi dans une .nested-group porteuse de data-task-id).
+      var subEl = e.target.closest('.nested-group__subtask[data-sub-id]');
+      if (subEl) {
+        dragSub = { taskId: taskIdOf(subEl), subId: subEl.dataset.subId };
+        if (e.dataTransfer) e.dataTransfer.effectAllowed = 'move';
+        subEl.classList.add('is-dragging');
+        e.stopPropagation();
+        return;
+      }
       var el = e.target.closest('[data-task-id]');
       if (!el) return;
       dragId = el.dataset.taskId;
       if (e.dataTransfer) e.dataTransfer.effectAllowed = 'move';
       el.classList.add('is-dragging');
     });
-    document.addEventListener('dragend', function (e) {
-      var el = e.target.closest('[data-task-id]');
-      if (el) el.classList.remove('is-dragging');
-      clearDrop(); dragId = null;
+    document.addEventListener('dragend', function () {
+      Array.prototype.forEach.call(document.querySelectorAll('.is-dragging'), function (n) { n.classList.remove('is-dragging'); });
+      clearDrop(); dragId = null; dragSub = null;
     });
     document.addEventListener('dragover', function (e) {
+      if (dragSub) {
+        var overSub = e.target.closest('.nested-group__subtask[data-sub-id]');
+        if (overSub && overSub.dataset.subId !== dragSub.subId) {
+          e.preventDefault();
+          if (e.dataTransfer) e.dataTransfer.dropEffect = 'move';
+          overSub.classList.add('is-sub-drop');
+        }
+        return;
+      }
       var zone = e.target.closest('[data-kanban-drop], [data-group-status]');
       if (!zone || dragId == null) return;
       e.preventDefault();
@@ -591,10 +624,17 @@
       zone.classList.add('is-drop-target');
     });
     document.addEventListener('dragleave', function (e) {
+      var overSub = e.target.closest('.nested-group__subtask');
+      if (overSub && !overSub.contains(e.relatedTarget)) overSub.classList.remove('is-sub-drop');
       var zone = e.target.closest('[data-kanban-drop], [data-group-status]');
       if (zone && !zone.contains(e.relatedTarget)) zone.classList.remove('is-drop-target');
     });
     document.addEventListener('drop', function (e) {
+      if (dragSub) {
+        var overSub = e.target.closest('.nested-group__subtask[data-sub-id]');
+        if (overSub) { e.preventDefault(); reorderSub(dragSub.taskId, dragSub.subId, overSub.dataset.subId); }
+        dragSub = null; clearDrop(); return;
+      }
       var zone = e.target.closest('[data-kanban-drop], [data-group-status]');
       if (!zone || dragId == null) return;
       e.preventDefault();
