@@ -157,7 +157,7 @@
       var id = 'todo-sub-' + esc(task.id) + '-' + i;
       // Titre HORS du label : seul le dot (checkbox) coche ; cliquer le texte ouvre le panneau.
       // draggable + data-sub-id → réordonnancement par glisser-déposer.
-      return '<div class="nested-group__subtask" draggable="true" data-sub-id="' + esc(s.id) + '">' +
+      return '<div class="nested-group__subtask" draggable="false" data-sub-id="' + esc(s.id) + '">' +
         '<div class="disclosure-subrow">' +
           '<span class="ds-row-grip" aria-hidden="true">⠿</span>' +
           '<label class="ds-checkbox" for="' + id + '">' +
@@ -194,7 +194,7 @@
     return '<tr class="ds-table__row--nested-group">' +
       '<td>' +
         '<div class="nested-group">' +
-          '<span class="disclosure-row nested-group__task' + (done ? ' is-done' : '') + '" draggable="true" data-task-id="' + esc(task.id) + '">' +
+          '<span class="disclosure-row nested-group__task' + (done ? ' is-done' : '') + '" draggable="false" data-task-id="' + esc(task.id) + '">' +
             '<span class="ds-row-grip" aria-hidden="true">⠿</span>' +
             '<label class="ds-checkbox" for="' + id + '">' +
               '<span class="ds-checkbox__box">' +
@@ -502,6 +502,23 @@
     t.subtasks.splice(to, 0, t.subtasks.splice(from, 1)[0]);
     saveRaw(arr);
   }
+  // Déplace une sous-tâche vers UNE AUTRE tâche (avant beforeSubId, ou en fin si null).
+  function moveSubToTask(fromTaskId, subId, toTaskId, beforeSubId) {
+    if (String(fromTaskId) === String(toTaskId)) { reorderSub(fromTaskId, subId, beforeSubId); return; }
+    var arr = readRaw();
+    var from = findRaw(arr, fromTaskId), to = findRaw(arr, toTaskId);
+    if (!from || !to || !Array.isArray(from.subtasks)) return;
+    var idx = from.subtasks.findIndex(function (s) { return String(s.id) === String(subId); });
+    if (idx < 0) return;
+    var moved = from.subtasks.splice(idx, 1)[0];
+    if (!Array.isArray(to.subtasks)) to.subtasks = [];
+    if (beforeSubId != null) {
+      var ti = to.subtasks.findIndex(function (s) { return String(s.id) === String(beforeSubId); });
+      to.subtasks.splice(ti < 0 ? to.subtasks.length : ti, 0, moved);
+    } else { to.subtasks.push(moved); }
+    subOpen[toTaskId] = true;
+    saveRaw(arr);
+  }
   function clearInsertion() {
     Array.prototype.forEach.call(document.querySelectorAll('.insert-before, .insert-after'), function (n) {
       n.classList.remove('insert-before'); n.classList.remove('insert-after');
@@ -561,6 +578,12 @@
       }
 
       // ── Modal détail ──
+      // Simple clic sur le titre du panneau → édition inline (le panneau est déjà ouvert).
+      var mTitleClick = e.target.closest('[data-modal-title]');
+      if (mTitleClick && openTaskId != null && !e.target.closest('.dashboard-final__todo-input')) {
+        replaceWithInput(mTitleClick, mTitleClick.textContent, 'Titre de la tâche', function (v) { renameTask(openTaskId, v); });
+        return;
+      }
       var mDel = e.target.closest('[data-modal-delete]');
       if (mDel) {
         var mid = openTaskId;
@@ -611,6 +634,19 @@
     });
 
     // ── Drag & drop : tâches (entre blocs/colonnes → statut) ET sous-tâches (réordonnancement). ──
+    // Le glisser ne démarre QUE depuis la poignée (⠿) : draggable activé au mousedown sur le grip.
+    function disableRowDrag() {
+      Array.prototype.forEach.call(document.querySelectorAll('.nested-group__task[draggable="true"], .nested-group__subtask[draggable="true"]'), function (row) {
+        row.setAttribute('draggable', 'false');
+      });
+    }
+    document.addEventListener('mousedown', function (e) {
+      var grip = e.target.closest('.ds-row-grip');
+      if (!grip) return;
+      var row = grip.closest('.nested-group__task[data-task-id], .nested-group__subtask[data-sub-id]');
+      if (row) row.setAttribute('draggable', 'true');
+    });
+    document.addEventListener('mouseup', disableRowDrag);
     document.addEventListener('dragstart', function (e) {
       // Sous-tâche en priorité (elle est aussi dans une .nested-group porteuse de data-task-id).
       var subEl = e.target.closest('.nested-group__subtask[data-sub-id]');
@@ -629,7 +665,7 @@
     });
     document.addEventListener('dragend', function () {
       Array.prototype.forEach.call(document.querySelectorAll('.is-dragging'), function (n) { n.classList.remove('is-dragging'); });
-      clearDrop(); dragId = null; dragSub = null;
+      clearDrop(); disableRowDrag(); dragId = null; dragSub = null;
     });
     document.addEventListener('dragover', function (e) {
       if (dragSub) {
@@ -638,6 +674,14 @@
           e.preventDefault();
           if (e.dataTransfer) e.dataTransfer.dropEffect = 'move';
           overSub.classList.add('is-sub-drop');
+          return;
+        }
+        // Survol d'une autre tâche → cible de dépôt (la sous-tâche y sera rattachée).
+        var overTaskS = e.target.closest('.nested-group__task[data-task-id]');
+        if (overTaskS && String(overTaskS.dataset.taskId) !== String(dragSub.taskId)) {
+          e.preventDefault();
+          if (e.dataTransfer) e.dataTransfer.dropEffect = 'move';
+          overTaskS.classList.add('is-drop-target');
         }
         return;
       }
@@ -671,7 +715,14 @@
     document.addEventListener('drop', function (e) {
       if (dragSub) {
         var overSub = e.target.closest('.nested-group__subtask[data-sub-id]');
-        if (overSub) { e.preventDefault(); reorderSub(dragSub.taskId, dragSub.subId, overSub.dataset.subId); }
+        if (overSub) {
+          e.preventDefault();
+          moveSubToTask(dragSub.taskId, dragSub.subId, taskIdOf(overSub), overSub.dataset.subId);
+          dragSub = null; clearDrop(); return;
+        }
+        // Déposée sur une AUTRE tâche → devient une sous-tâche de cette tâche.
+        var onTask = e.target.closest('.nested-group__task[data-task-id]');
+        if (onTask) { e.preventDefault(); moveSubToTask(dragSub.taskId, dragSub.subId, onTask.dataset.taskId, null); }
         dragSub = null; clearDrop(); return;
       }
       if (dragId == null) return;
