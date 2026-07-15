@@ -371,6 +371,12 @@
     t.subtasks.push({ id: uid('sub'), text: text, done: false });
     subOpen[taskId] = true; saveRaw(arr);
   }
+  function renameSub(taskId, subId, text) {
+    var arr = readRaw(); var t = findRaw(arr, taskId);
+    if (!t || !Array.isArray(t.subtasks)) return;
+    var s = t.subtasks.find(function (x) { return String(x.id) === String(subId); });
+    if (!s) return; s.text = text; saveRaw(arr);
+  }
 
   function updateNotes(id, val) {
     var arr = readRaw(); var t = findRaw(arr, id); if (!t) return;
@@ -385,28 +391,6 @@
   var CLOSE_ICON = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>';
 
   function modalTask() { return allTasks().find(function (t) { return String(t.id) === String(openTaskId); }) || null; }
-
-  function modalSubHTML(task) {
-    var subs = Array.isArray(task.subtasks) ? task.subtasks : [];
-    var rows = subs.map(function (s, i) {
-      var id = 'modal-sub-' + esc(task.id) + '-' + i;
-      return '<div class="dashboard-final__taskpanel-sub">' +
-        '<label class="ds-checkbox" for="' + id + '">' +
-          '<span class="ds-checkbox__box ds-checkbox__box--round">' +
-            '<input type="checkbox" id="' + id + '" class="ds-checkbox__input ds-checkbox__input--round" data-modal-sub-check data-sub-id="' + esc(s.id) + '"' + (s.done ? ' checked' : '') + '>' +
-            SUB_ICON +
-          '</span>' +
-          '<span class="type-body-sm ds-row-title' + (s.done ? ' is-done' : '') + '">' + esc(s.text) + '</span>' +
-        '</label>' +
-        '<button type="button" class="ds-row-action" aria-label="Supprimer la sous-tâche" data-modal-sub-delete data-sub-id="' + esc(s.id) + '">' + CROSS + '</button>' +
-      '</div>';
-    }).join('');
-    return rows +
-      '<div class="dashboard-final__taskpanel-subadd">' +
-        '<span class="dashboard-final__taskpanel-subaddicon" aria-hidden="true">+</span>' +
-        '<input type="text" class="ds-input" data-modal-sub-add placeholder="Ajouter une sous-tâche…">' +
-      '</div>';
-  }
 
   function buildModal() {
     var root = document.querySelector('[data-task-modal-root]');
@@ -424,16 +408,16 @@
         '<aside class="dashboard-final__taskpanel" role="dialog" aria-modal="false" aria-labelledby="taskPanelTitle">' +
           '<button type="button" class="dashboard-final__taskpanel-close" aria-label="Fermer" data-modal-close>' + CLOSE_ICON + '</button>' +
           '<div class="dashboard-final__taskpanel-body">' +
-            '<div class="dashboard-final__taskpanel-section">' +
-              '<span class="type-label dashboard-final__taskpanel-label">Statut</span>' +
-              '<div class="ds-select-wrapper">' +
+            // Statut = pastille compacte (select inline), pas un gros champ pleine largeur.
+            '<div class="dashboard-final__taskpanel-statusrow">' +
+              '<div class="ds-select-wrapper dashboard-final__taskpanel-statusselect">' +
                 '<select class="ds-select" id="taskPanelStatus" data-modal-status>' + opt('todo', 'À faire') + opt('doing', 'En cours') + opt('done', 'Terminée') + '</select>' +
               '</div>' +
             '</div>' +
             '<h2 class="type-h2 dashboard-final__taskpanel-title" id="taskPanelTitle" data-modal-title title="Modifier le titre">' + esc(task.text) + '</h2>' +
-            (j ? '<div class="dashboard-final__taskpanel-field"><span class="type-label dashboard-final__taskpanel-label">Jalon</span><span class="dashboard-final__taskpanel-jalon">' + esc(j.titre || '') + '</span></div>' : '') +
+            (j ? '<div class="dashboard-final__taskpanel-field"><span class="type-data-label dashboard-final__taskpanel-label">Jalon</span><span class="dashboard-final__taskpanel-jalon type-body-md">' + esc(j.titre || '') + '</span></div>' : '') +
             '<div class="dashboard-final__taskpanel-section">' +
-              '<span class="type-label dashboard-final__taskpanel-label">Notes</span>' +
+              '<span class="type-data-label dashboard-final__taskpanel-label">Notes</span>' +
               '<textarea class="ds-textarea" id="taskPanelNotes" data-modal-notes placeholder="Ajouter une note…">' + esc(task.notes || '') + '</textarea>' +
             '</div>' +
             '<div class="dashboard-final__taskpanel-section">' +
@@ -441,7 +425,9 @@
                 '<span class="type-data-label">Checklist</span>' +
                 '<span class="type-caption dashboard-final__taskpanel-checkcount">' + openCount + ' à faire</span>' +
               '</div>' +
-              '<div class="dashboard-final__taskpanel-subs">' + modalSubHTML(task) + '</div>' +
+              // Réutilise le MÊME composant sous-tâche que la liste ; le wrapper data-task-id
+              // permet aux handlers (data-sub-check / data-sub-delete / data-subtask-add) de résoudre.
+              '<div class="dashboard-final__taskpanel-subs" data-task-id="' + esc(task.id) + '">' + subtasksInlineHTML(task) + '</div>' +
             '</div>' +
           '</div>' +
           '<div class="dashboard-final__taskpanel-danger">' +
@@ -527,10 +513,14 @@
         var rid = taskRow.getAttribute('data-task-id');
         if (rid != null && window.CarryITOpenTaskPanel) { window.CarryITOpenTaskPanel(rid); return; }
       }
+      // Clic sur une sous-tâche (hors checkbox/action/ajout, hors panneau) → ouvre le panneau parent.
+      var subRow = e.target.closest('.nested-group__subtask');
+      if (subRow && !e.target.closest('.ds-checkbox, .ds-row-actions, .ds-empty-inline, .dashboard-final__todo-input, .dashboard-final__taskpanel')) {
+        var sOpenId = taskIdOf(subRow);
+        if (sOpenId != null && window.CarryITOpenTaskPanel) { window.CarryITOpenTaskPanel(sOpenId); return; }
+      }
 
       // ── Modal détail ──
-      var mSubDel = e.target.closest('[data-modal-sub-delete]');
-      if (mSubDel) { if (openTaskId != null) deleteSub(openTaskId, mSubDel.dataset.subId); return; }
       var mDel = e.target.closest('[data-modal-delete]');
       if (mDel) {
         var mid = openTaskId;
@@ -542,12 +532,24 @@
       if (backdrop && e.target === backdrop) { closeModal(); return; }
     });
 
-    // Double-clic sur le titre du panneau = renommer inline (le clic simple sur la ligne ouvre le panneau).
+    // Double-clic = édition inline du titre (panneau, tâche de liste, sous-tâche).
     document.addEventListener('dblclick', function (e) {
       var mTitle = e.target.closest('[data-modal-title]');
       if (mTitle && openTaskId != null) {
         replaceWithInput(mTitle, mTitle.textContent, 'Titre de la tâche', function (v) { renameTask(openTaskId, v); });
+        return;
       }
+      // Sous-tâche (liste ou panneau) → éditer son texte.
+      var subTitle = e.target.closest('.nested-group__subtask .ds-row-title');
+      if (subTitle) {
+        var sub = subTitle.closest('.nested-group__subtask').querySelector('[data-sub-id]');
+        var stid = taskIdOf(subTitle);
+        if (sub && stid != null) { replaceWithInput(subTitle, subTitle.textContent, 'Sous-tâche', function (v) { renameSub(stid, sub.dataset.subId, v); }); }
+        return;
+      }
+      // Titre d'une tâche de la liste → renommer.
+      var tTitle = e.target.closest('.nested-group__task [data-task-title]');
+      if (tTitle) { var id = taskIdOf(tTitle); if (id != null) replaceWithInput(tTitle, tTitle.textContent, 'Titre de la tâche', function (v) { renameTask(id, v); }); }
     });
 
     document.addEventListener('change', function (e) {
@@ -559,21 +561,13 @@
       // ── Modal détail ──
       var mStatus = e.target.closest('[data-modal-status]');
       if (mStatus) { if (openTaskId != null) setTaskStatus(openTaskId, mStatus.value); return; }
-      var mSubCheck = e.target.closest('[data-modal-sub-check]');
-      if (mSubCheck) { if (openTaskId != null) toggleSub(openTaskId, mSubCheck.dataset.subId); return; }
       var mNotes = e.target.closest('[data-modal-notes]');
       if (mNotes) { if (openTaskId != null) updateNotes(openTaskId, mNotes.value); return; }
     });
 
-    // Modal : Enter dans le champ sous-tâche = ajouter ; Échap = fermer.
+    // Échap ferme le panneau (sauf pendant une édition inline).
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && openTaskId != null && !e.target.closest('.dashboard-final__todo-input')) { closeModal(); return; }
-      var mSubAdd = e.target.closest && e.target.closest('[data-modal-sub-add]');
-      if (mSubAdd && e.key === 'Enter') {
-        e.preventDefault();
-        var v = mSubAdd.value.trim();
-        if (v && openTaskId != null) addSub(openTaskId, v);
-      }
     });
 
     // ── Drag & drop : liste (entre blocs) ET board (entre colonnes) → change le statut. ──

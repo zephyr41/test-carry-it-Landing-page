@@ -34,6 +34,8 @@
 /* Conteneur de page : largeur max + centré (la grille). */
 .dashboard-final__page {
   max-width: var(--grid-max-width);
+  width: 100%;   /* remplit jusqu'à max-width (sinon, en flex-column, margin-inline:auto rétrécit
+                    la page au contenu → la To-do faisait 363px au lieu de la largeur de grille). */
   margin-inline: auto;
   padding-inline: var(--grid-page-padding);
   padding-block: var(--space-32) var(--grid-page-padding);   /* gap navbar→grille resserré (48 jugé trop) — symétrique avec le bas */
@@ -573,8 +575,24 @@
   gap: var(--space-label-gap);
 }
 
-.dashboard-final__taskpanel-label {
-  color: var(--color-text-secondary);
+/* Label de section : uniforme (type-data-label). Pas de couleur propre → cohérent avec « Checklist ». */
+.dashboard-final__taskpanel-label { }
+
+/* Statut = pastille compacte (select inline auto-large), pas un champ pleine largeur. */
+.dashboard-final__taskpanel-statusrow {
+  display: flex;
+}
+.dashboard-final__taskpanel-statusselect {
+  width: auto;
+}
+.dashboard-final__taskpanel-statusselect .ds-select {
+  width: auto;
+  height: auto;
+  padding-block: var(--space-4);
+  padding-inline: var(--space-12) var(--space-32);
+  font-size: var(--type-body-sm-size);
+  line-height: var(--type-body-sm-line);
+  border-radius: var(--radius-full);
 }
 
 /* Titre = héros du panneau (h2), collé au statut au-dessus (marge négative du gap section). */
