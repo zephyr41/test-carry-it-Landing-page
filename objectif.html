@@ -223,7 +223,7 @@
     /* Métrique (Mesurable) : Départ / Cible / Unité côte à côte. */
     .metric-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: var(--space-12);
     }
     @media (max-width: 520px) {
@@ -418,8 +418,8 @@
         letter: "M",
         title: "Mesurable",
         metric: true,
-        definition: "La métrique que tu suis, avec ton point de départ et ta cible à atteindre.",
-        hint: "Choisis une métrique concrète (un nombre qui bouge) et fixe ta cible : c'est elle, ton seuil de réussite. Départ = où tu en es aujourd'hui (souvent 0). Cible = le chiffre qui rend l'objectif atteint.",
+        definition: "La métrique que tu suis et la cible qui marque ta réussite.",
+        hint: "Choisis d'abord le type de mesure (distance, argent, nombre…), donne-lui un nom court, puis fixe ta cible : c'est ton seuil de réussite. Ex : type Distance, nom « Course », cible 100 km.",
         fields: []
       },
       {
@@ -466,16 +466,16 @@
       }
     ];
 
-    // Sous-ensemble CarryIT — chaque type propose une unité par défaut (éditable).
+    // Sous-ensemble CarryIT — chaque type propose une unité par défaut (éditable) + un exemple d'unité.
     const METRIC_TYPES = [
-      { key: "numeric", label: "Numérique", unit: "" },
-      { key: "money", label: "Argent", unit: "€" },
-      { key: "percent", label: "Pourcentage", unit: "%" },
-      { key: "distance", label: "Distance", unit: "km" },
-      { key: "time", label: "Temps", unit: "h" },
-      { key: "weight", label: "Poids", unit: "kg" },
-      { key: "pages", label: "Pages", unit: "pages" },
-      { key: "custom", label: "Custom", unit: "" }
+      { key: "numeric", label: "Nombre", unit: "", ph: "ex : clients, abonnés, ventes" },
+      { key: "money", label: "Argent", unit: "€", ph: "€, $" },
+      { key: "percent", label: "Pourcentage", unit: "%", ph: "%" },
+      { key: "distance", label: "Distance", unit: "km", ph: "km, m" },
+      { key: "time", label: "Temps", unit: "h", ph: "h, min" },
+      { key: "weight", label: "Poids", unit: "kg", ph: "kg, lb" },
+      { key: "pages", label: "Pages", unit: "pages", ph: "pages, chapitres" },
+      { key: "custom", label: "Autre (unité libre)", unit: "", ph: "ex : kg, €, pages" }
     ];
 
     const vagueWords = ["améliorer", "mieux", "plus", "optimiser", "progresser", "booster", "rapidement", "efficacement", "simplement"];
@@ -484,7 +484,7 @@
     const emptyForm = {
       titre: "",
       specific: { result: "" },
-      measurable: { name: "", type: "numeric", start: "", target: "", unit: "" },
+      measurable: { type: "numeric", unit: "", target: "" },
       achievable: { resources: "", constraints: "" },
       relevant: { hours: "" },
       timebound: { deadline: "" },
@@ -504,11 +504,9 @@
           // ou measurable.target) devient la CIBLE de la métrique ; l'ancien indicator devient le nom.
           const oldM = parsed.measurable || {};
           parsed.measurable = {
-            name: oldM.name || oldM.indicator || "",
             type: oldM.type || "numeric",
-            start: oldM.start || "",
-            target: oldM.target || parsed.specific.threshold || "",
-            unit: oldM.unit || ""
+            unit: oldM.unit || "",
+            target: oldM.target || parsed.specific.threshold || ""
           };
           delete parsed.specific.threshold;
           return parsed;
@@ -568,9 +566,9 @@
       // Mesurable = métrique structurée : complet dès qu'il y a un nom ET une cible.
       if (section.key === "measurable") {
         const m = form.measurable;
-        const hasName = isFilled(m.name);
+        const hasUnit = isFilled(m.unit);
         const hasTarget = isFilled(String(m.target));
-        return { filled: (hasName ? 1 : 0) + (hasTarget ? 1 : 0), total: 2, complete: hasName && hasTarget, warning: "" };
+        return { filled: (hasUnit ? 1 : 0) + (hasTarget ? 1 : 0), total: 2, complete: hasUnit && hasTarget, warning: "" };
       }
       const values = section.fields.map(([fieldKey]) => form[section.key][fieldKey]);
       const filled = values.filter(isFilled).length;
@@ -600,14 +598,13 @@
     // Résumé de la métrique (nom · départ → cible unité) pour l'aperçu et la phrase.
     function metricSummary() {
       const m = form.measurable;
-      const hasName = isFilled(m.name);
       const hasTarget = isFilled(String(m.target));
-      if (!hasName && !hasTarget) return "";
+      const hasUnit = isFilled(m.unit);
+      if (!hasTarget && !hasUnit) return "";
+      const t = METRIC_TYPES.find((x) => x.key === m.type);
       const unit = m.unit ? ` ${m.unit}` : "";
-      const range = hasTarget
-        ? (isFilled(String(m.start)) ? `${m.start} → ${m.target}${unit}` : `${m.target}${unit}`)
-        : "";
-      return [m.name, range].filter(Boolean).join(" · ");
+      const val = hasTarget ? `${m.target}${unit}` : m.unit;
+      return [t ? t.label : "", val].filter(Boolean).join(" · ");
     }
 
     function statusLabel(status, optional) {
@@ -627,16 +624,14 @@
         : "[échéance]";
       const result = stripJeVeux(form.specific.result || "[résultat concret]");
       const m = form.measurable;
+      const cible = isFilled(String(m.target)) ? m.target : "[cible]";
       const unit = m.unit ? ` ${m.unit}` : "";
-      const target = isFilled(String(m.target)) ? `${m.target}${unit}` : "[cible]";
-      const mName = m.name || "[indicateur]";
-      const startTxt = isFilled(String(m.start)) ? `de ${m.start}${unit} ` : "";
       const resources = form.achievable.resources || "[ce que j'ai déjà]";
       const constraints = form.achievable.constraints || "[ce qu'il me manque]";
       const hoursTxt = form.relevant.hours ? `${form.relevant.hours} par semaine` : "[temps par semaine]";
       const vision = form.animated?.vision;
 
-      let text = `D'ici ${deadline}, je veux ${result}.\nJe le suis avec ${mName} : ${startTxt}vers ${target}.\nJe peux déjà m'appuyer sur ${resources}.\nCe qu'il me faut pour démarrer : ${constraints}.\nJe peux y consacrer ${hoursTxt}.`;
+      let text = `D'ici ${deadline}, je veux ${result}.\nJe vise ${cible}${unit}.\nJe peux déjà m'appuyer sur ${resources}.\nCe qu'il me faut pour démarrer : ${constraints}.\nJe peux y consacrer ${hoursTxt}.`;
       if (vision) text += `\nSi j'y arrive : ${vision}.`;
       return text;
     }
@@ -648,10 +643,8 @@
         : "[échéance]";
       const result = stripJeVeux(form.specific.result || "[résultat concret]");
       const m = form.measurable;
+      const cible = isFilled(String(m.target)) ? m.target : "[cible]";
       const unit = m.unit ? ` ${m.unit}` : "";
-      const target = isFilled(String(m.target)) ? `${m.target}${unit}` : "[cible]";
-      const mName = m.name || "[indicateur]";
-      const startTxt = isFilled(String(m.start)) ? `de ${m.start}${unit} ` : "";
       const resources = form.achievable.resources || "[ce que j'ai déjà]";
       const constraints = form.achievable.constraints || "[ce qu'il me manque]";
       const hoursTxt = form.relevant.hours ? `${form.relevant.hours} par semaine` : "[temps par semaine]";
@@ -659,7 +652,7 @@
 
       const lines = [
         `D'ici ${escapeHtml(deadline)}, je veux ${escapeHtml(result)}.`,
-        `Je le suis avec ${escapeHtml(mName)} : ${escapeHtml(startTxt)}vers ${escapeHtml(target)}.`,
+        `Je vise ${escapeHtml(cible)}${escapeHtml(unit)}.`,
         `Je peux déjà m'appuyer sur ${escapeHtml(resources)}.`,
         `Ce qu'il me faut pour démarrer : ${escapeHtml(constraints)}.`,
         `Je peux y consacrer ${escapeHtml(hoursTxt)}.`
@@ -693,7 +686,7 @@
 
       const rows = [
         smartPreviewRow("S", "L'ambition", ambition, "Ton résultat concret"),
-        smartPreviewRow("M", "La mesure", measure, "Métrique · départ → cible"),
+        smartPreviewRow("M", "La mesure", measure, "Ton unité et ta cible"),
         smartPreviewRow("A", "Atteignable", attainable, "Ressources et manques à regarder en face"),
         smartPreviewRow("R", "Réaliste", realiste, "Temps réel que tu peux engager"),
         smartPreviewRow("T", "L'échéance", deadline, "Date limite")
@@ -708,11 +701,8 @@
       const opts = METRIC_TYPES
         .map((t) => `<option value="${t.key}"${m.type === t.key ? " selected" : ""}>${escapeHtml(t.label)}</option>`)
         .join("");
+      const curType = METRIC_TYPES.find((t) => t.key === m.type) || METRIC_TYPES[0];
       return `
-        <label class="input-group">
-          <span class="type-body-md field-label">Qu'est-ce que tu suis pour mesurer ta progression ?</span>
-          <input class="ds-input" type="text" data-field="measurable.name" value="${escapeHtml(m.name)}" placeholder="Ex : Clients payants, km parcourus, € investis">
-        </label>
         <label class="input-group">
           <span class="type-body-md field-label">Type de mesure</span>
           <div class="ds-select-wrapper">
@@ -721,16 +711,12 @@
         </label>
         <div class="metric-grid">
           <label class="input-group">
-            <span class="type-body-md field-label">Départ</span>
-            <input class="ds-input" type="number" inputmode="decimal" step="any" data-field="measurable.start" value="${escapeHtml(m.start)}" placeholder="0">
-          </label>
-          <label class="input-group">
-            <span class="type-body-md field-label">Cible</span>
-            <input class="ds-input" type="number" inputmode="decimal" step="any" data-field="measurable.target" value="${escapeHtml(m.target)}" placeholder="1000">
-          </label>
-          <label class="input-group">
             <span class="type-body-md field-label">Unité</span>
-            <input class="ds-input" type="text" data-field="measurable.unit" id="measurableUnit" value="${escapeHtml(m.unit)}" placeholder="clients">
+            <input class="ds-input" type="text" data-field="measurable.unit" id="measurableUnit" value="${escapeHtml(m.unit)}" placeholder="${escapeHtml(curType.ph)}">
+          </label>
+          <label class="input-group">
+            <span class="type-body-md field-label">Cible à atteindre</span>
+            <input class="ds-input" type="number" inputmode="decimal" step="any" data-field="measurable.target" value="${escapeHtml(m.target)}" placeholder="1000">
           </label>
         </div>
       `;
@@ -821,7 +807,7 @@
       if (field === "measurable.type") {
         const t = METRIC_TYPES.find((x) => x.key === event.target.value);
         const unitInput = document.getElementById("measurableUnit");
-        if (t && unitInput) { unitInput.value = t.unit; setValue("measurable.unit", t.unit); }
+        if (t && unitInput) { unitInput.value = t.unit; unitInput.placeholder = t.ph; setValue("measurable.unit", t.unit); }
       }
       saveForm();
       updateDynamic();
@@ -869,24 +855,24 @@
       const atteignable = [form.achievable.resources, form.achievable.constraints ? "manque : " + form.achievable.constraints : ""].filter(Boolean).join(" / ");
       const m = form.measurable;
       const targetNum = Number(String(m.target).replace(",", "."));
-      const startNum = Number(String(m.start).replace(",", "."));
       const cible = Number.isFinite(targetNum) ? targetNum : null;
-      const startVal = Number.isFinite(startNum) ? startNum : 0;
+      const typeLabel = (METRIC_TYPES.find((x) => x.key === m.type) || {}).label || "";
+      const kpiName = m.unit || typeLabel;
       const niveau = [m.target, m.unit].filter(Boolean).join(" ");
       const smartObj = {
         titre: form.titre || "",
         specifique,
         niveau,
-        mesurable: m.name,
-        kpiLabel: m.name,
+        mesurable: kpiName,
+        kpiLabel: kpiName,
         kpiTarget: cible,
         kpiTargetRaw: niveau,
         kpiTargetSource: "onboarding",
         kpiUnit: m.unit,
         metricType: m.type,
         globalKpi: {
-          label: m.name,
-          titre: m.name,
+          label: kpiName,
+          titre: kpiName,
           target: cible,
           cible: cible,
           targetLabel: niveau,
@@ -894,9 +880,9 @@
           unit: m.unit,
           unite: m.unit,
           metricType: m.type,
-          value: startVal,
-          valeur: startVal,
-          start: startVal,
+          value: 0,
+          valeur: 0,
+          start: 0,
           measures: []
         },
         atteignable,
