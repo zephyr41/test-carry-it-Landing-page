@@ -10,12 +10,15 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@calendarjs/ce/dist/style.min.css" />
   <link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/buttons.css" />
   <link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/inputs.css" />
+  <link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/select.css" />
   <link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/textarea.css" />
   <link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/badge.css" />
   <link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/grid.css" />
   <link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/card.css" />
   <link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/toast.css" />
   <link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/calendar.css" />
+  <link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/modal.css" />
+  <link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/confirm.css" />
 
   <style>
     /* ── Fonte du wordmark (hors DS) ── */
@@ -41,10 +44,17 @@
       z-index: 100;
       background: var(--color-background);
       border-bottom: var(--border-subtle);
+    }
+    /* Contenu de nav centré sur la même largeur/marge que .ds-container → aligné au contenu. */
+    .nav-inner {
+      position: relative;
+      width: 100%;
+      max-width: calc(var(--grid-max-width) + var(--grid-page-padding) * 2);
+      margin-inline: auto;
+      padding-inline: var(--grid-page-padding);
       display: grid;
       grid-template-columns: 1fr auto 1fr;
       align-items: center;
-      padding: 0 var(--space-page-desktop);
       height: var(--space-64);
     }
 
@@ -164,6 +174,7 @@
 
     /* Bouton d'aide « ? » : mono, sans orange. */
     .hint-btn {
+      position: relative;
       display: inline-grid;
       place-items: center;
       width: var(--space-16);
@@ -184,6 +195,19 @@
       color: var(--color-text-secondary);
       border: var(--border-strong);
     }
+    /* Étend la zone tactile à ~28px sans grossir le visuel (WCAG 2.5.8 AA). */
+    .hint-btn::after {
+      content: "";
+      position: absolute;
+      inset: calc(-1 * var(--space-8));
+    }
+
+    /* Message d'aide sous le CTA : ce qui reste à compléter. */
+    .validate-hint {
+      color: var(--color-text-muted);
+      text-align: center;
+    }
+    .validate-hint:empty { display: none; }
     .hint-panel {
       padding: var(--space-12) var(--space-16);
       border-radius: var(--radius-md);
@@ -195,6 +219,16 @@
     .field-group { display: grid; gap: var(--space-16); }
     /* Label de question : type-body-md (14, blanc) + medium — lisible, pas le 12px gris de type-label. */
     .field-label { font-weight: var(--font-weight-medium); }
+
+    /* Métrique (Mesurable) : Départ / Cible / Unité côte à côte. */
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-12);
+    }
+    @media (max-width: 520px) {
+      .metric-grid { grid-template-columns: 1fr; }
+    }
 
     /* Déclencheur date vide → couleur placeholder (comble l'état vide du datefield DS). */
     .ds-datefield__trigger[data-empty="true"] { color: var(--input-placeholder); }
@@ -286,7 +320,7 @@
     }
     @media (max-width: 640px) {
       .page { padding-block: var(--space-32) var(--space-64); }
-      nav { padding: 0 var(--space-page-mobile); }
+      .nav-inner { padding-inline: var(--space-page-mobile); }
       .nav-progress-label { left: var(--space-page-mobile); }
       .section-header { flex-wrap: wrap; }
     }
@@ -294,13 +328,15 @@
 </head>
 <body>
   <nav>
-    <button class="nav-back" onclick="goBack()" aria-label="Retour">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-    </button>
-    <span class="nav-logo">CARRY IT</span>
-    <button class="nav-reset" id="resetButton" type="button">Recommencer</button>
-    <div class="nav-progress" aria-label="Progression : objectif SMART">
-      <span class="nav-progress-label">Objectif SMART</span>
+    <div class="nav-inner">
+      <button class="nav-back" onclick="goBack()" aria-label="Retour">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      </button>
+      <span class="nav-logo">CARRY IT</span>
+      <button class="nav-reset" id="resetButton" type="button">Recommencer</button>
+      <div class="nav-progress" aria-label="Progression : objectif SMART">
+        <span class="nav-progress-label">Objectif SMART</span>
+      </div>
     </div>
   </nav>
 
@@ -331,6 +367,7 @@
         </div>
 
         <button type="button" id="validateButton" class="ds-button ds-button--primary ds-button--block">Valider l'objectif</button>
+        <p class="type-caption validate-hint" id="validateHint"></p>
       </aside>
     </section>
   </main>
@@ -338,6 +375,22 @@
   <div class="ds-toast toast" id="toast" role="status" aria-live="polite">
     <svg class="ds-toast__icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>
     <p class="ds-toast__message type-body-sm" id="toastMsg">Objectif copié.</p>
+  </div>
+
+  <!-- Confirmation avant « Recommencer » (action destructive) — pattern DS ds-confirm. -->
+  <div class="ds-modal-backdrop" id="resetConfirm" hidden>
+    <div class="ds-modal ds-confirm" role="alertdialog" aria-modal="true" aria-labelledby="resetConfirmTitle" aria-describedby="resetConfirmDesc">
+      <header class="ds-modal__header">
+        <h2 id="resetConfirmTitle" class="type-h2">Tout recommencer ?</h2>
+      </header>
+      <div class="ds-modal__body">
+        <p id="resetConfirmDesc" class="ds-confirm__desc type-body-md">Ton objectif SMART en cours sera effacé. C'est définitif.</p>
+      </div>
+      <footer class="ds-modal__footer">
+        <button type="button" class="ds-button ds-button--ghost ds-button--sm" id="resetCancel">Annuler</button>
+        <button type="button" class="ds-button ds-button--danger ds-button--sm" id="resetConfirmBtn">Tout effacer</button>
+      </footer>
+    </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/lemonadejs/dist/lemonade.min.js"></script>
@@ -357,19 +410,17 @@
         definition: "Un objectif spécifique dit exactement ce que tu veux réussir.",
         hint: "Ton objectif doit décrire un résultat précis. \"Améliorer mes finances\" n'est pas spécifique. \"5 000 € nets mensuels de revenus locatifs\" l'est. Plus c'est précis, plus tu sais quoi viser. C'est plus simple quand tu définis un seuil précis (un chiffre) ou un état précis (fait / pas fait).",
         fields: [
-          ["result", "Quel résultat concret veux-tu obtenir ?", "Ex : courir ___ km, atteindre ___ de CA mensuel, obtenir ___ biens (___ = ton seuil)"],
-          ["threshold", "Quel seuil précis ou état marque la réussite ?", "Ex : 100 km, 5 000 €, 1 000 clients · remplace le ___ (ou un état : signé, fait)"]
+          ["result", "Quel résultat concret veux-tu obtenir ?", "Ex : lancer une app payante, courir un marathon, obtenir des biens locatifs, publier un livre"]
         ]
       },
       {
         key: "measurable",
         letter: "M",
         title: "Mesurable",
-        definition: "Ce que tu vas suivre chaque mois pour voir ton avancée.",
-        hint: "Un indicateur : un chiffre ou une preuve qui bouge. Il te dit si tu avances ou pas. Sans indicateur, tu travailles à l'aveugle. Le chiffre n'a pas besoin d'être parfait au départ, il doit juste exister.",
-        fields: [
-          ["indicator", "Par rapport à ton seuil, quelle mesure tu vas suivre chaque mois pour voir que tu avances vers ton objectif ?", "Ex : montant investi ce mois, temps au km, chiffre d'affaires mensuel, utilisateurs actifs"]
-        ]
+        metric: true,
+        definition: "La métrique que tu suis, avec ton point de départ et ta cible à atteindre.",
+        hint: "Choisis une métrique concrète (un nombre qui bouge) et fixe ta cible : c'est elle, ton seuil de réussite. Départ = où tu en es aujourd'hui (souvent 0). Cible = le chiffre qui rend l'objectif atteint.",
+        fields: []
       },
       {
         key: "achievable",
@@ -410,9 +461,21 @@
         definition: "Ce que cette réussite change concrètement dans ta vie.",
         hint: "Pas besoin d'un paragraphe. Une phrase honnête suffit. Ce n'est pas de la motivation — c'est une ancre.",
         fields: [
-          ["vision", "Si tu l'atteins — à quoi ressemble ta vie ?", "Ex : je quitte mon job, j'ai une liberté financière réelle, je cours mon premier ultra..."]
+          ["vision", "À quoi ressemble ta vie si tu l'atteins ? (facultatif)", "Ex : je quitte mon job, j'ai une liberté financière réelle, je cours mon premier ultra..."]
         ]
       }
+    ];
+
+    // Sous-ensemble CarryIT — chaque type propose une unité par défaut (éditable).
+    const METRIC_TYPES = [
+      { key: "numeric", label: "Numérique", unit: "" },
+      { key: "money", label: "Argent", unit: "€" },
+      { key: "percent", label: "Pourcentage", unit: "%" },
+      { key: "distance", label: "Distance", unit: "km" },
+      { key: "time", label: "Temps", unit: "h" },
+      { key: "weight", label: "Poids", unit: "kg" },
+      { key: "pages", label: "Pages", unit: "pages" },
+      { key: "custom", label: "Custom", unit: "" }
     ];
 
     const vagueWords = ["améliorer", "mieux", "plus", "optimiser", "progresser", "booster", "rapidement", "efficacement", "simplement"];
@@ -420,8 +483,8 @@
 
     const emptyForm = {
       titre: "",
-      specific: { result: "", threshold: "" },
-      measurable: { indicator: "" },
+      specific: { result: "" },
+      measurable: { name: "", type: "numeric", start: "", target: "", unit: "" },
       achievable: { resources: "", constraints: "" },
       relevant: { hours: "" },
       timebound: { deadline: "" },
@@ -436,11 +499,18 @@
         if (saved) {
           const parsed = JSON.parse(saved);
           if (!parsed.animated) parsed.animated = { vision: "" };
-          if (!parsed.specific) parsed.specific = { result: "", threshold: "" };
-          if (!parsed.measurable) parsed.measurable = { indicator: "" };
-          // Migration : le seuil passe de Mesurable → Spécifique.
-          if (parsed.specific.threshold === undefined) parsed.specific.threshold = parsed.measurable.target || "";
-          delete parsed.measurable.target;
+          if (!parsed.specific) parsed.specific = { result: "" };
+          // Migration : Mesurable devient une métrique structurée ; le seuil (ancien specific.threshold
+          // ou measurable.target) devient la CIBLE de la métrique ; l'ancien indicator devient le nom.
+          const oldM = parsed.measurable || {};
+          parsed.measurable = {
+            name: oldM.name || oldM.indicator || "",
+            type: oldM.type || "numeric",
+            start: oldM.start || "",
+            target: oldM.target || parsed.specific.threshold || "",
+            unit: oldM.unit || ""
+          };
+          delete parsed.specific.threshold;
           return parsed;
         }
       } catch {}
@@ -459,6 +529,7 @@
     const resetButton = document.getElementById("resetButton");
     const copyButton = document.getElementById("copyButton");
     const validateButton = document.getElementById("validateButton");
+    const validateHint = document.getElementById("validateHint");
     const toast = document.getElementById("toast");
 
     function escapeHtml(value) {
@@ -483,27 +554,6 @@
       return hasNumber(value) || dateSignals.some((signal) => normalized.includes(signal));
     }
 
-    function parseMetricTarget(raw) {
-      const label = String(raw || "").replace(/\s+/g, " ").trim();
-      const match = label.match(/-?\d+(?:[\s.,]\d+)*/);
-      if (!match) return { value: null, unit: "", label };
-      const compact = match[0].replace(/\s/g, "");
-      const numericText = /^[+-]?\d{1,3}([.,]\d{3})+$/.test(compact)
-        ? compact.replace(/[.,]/g, "")
-        : compact.replace(",", ".");
-      const value = Number(numericText);
-      const unit = label
-        .replace(match[0], "")
-        .replace(/[=<>+~:]/g, " ")
-        .replace(/\s+/g, " ")
-        .trim();
-      return {
-        value: Number.isFinite(value) ? value : null,
-        unit,
-        label
-      };
-    }
-
     function getValue(path) {
       const [group, key] = path.split(".");
       return form[group][key];
@@ -515,6 +565,13 @@
     }
 
     function getSectionStatus(section) {
+      // Mesurable = métrique structurée : complet dès qu'il y a un nom ET une cible.
+      if (section.key === "measurable") {
+        const m = form.measurable;
+        const hasName = isFilled(m.name);
+        const hasTarget = isFilled(String(m.target));
+        return { filled: (hasName ? 1 : 0) + (hasTarget ? 1 : 0), total: 2, complete: hasName && hasTarget, warning: "" };
+      }
       const values = section.fields.map(([fieldKey]) => form[section.key][fieldKey]);
       const filled = values.filter(isFilled).length;
       const baseComplete = filled === section.fields.length;
@@ -540,10 +597,17 @@
       return "ds-badge ds-badge--muted";
     }
 
-    // Label Mesurable dynamique : injecte le seuil réel saisi dans Spécifique.
-    function measurableLabel() {
-      const seuil = form.specific.threshold.trim();
-      return `Par rapport à ${seuil || "ton seuil"}, quelle mesure tu vas suivre chaque mois pour voir que tu avances vers ton objectif ?`;
+    // Résumé de la métrique (nom · départ → cible unité) pour l'aperçu et la phrase.
+    function metricSummary() {
+      const m = form.measurable;
+      const hasName = isFilled(m.name);
+      const hasTarget = isFilled(String(m.target));
+      if (!hasName && !hasTarget) return "";
+      const unit = m.unit ? ` ${m.unit}` : "";
+      const range = hasTarget
+        ? (isFilled(String(m.start)) ? `${m.start} → ${m.target}${unit}` : `${m.target}${unit}`)
+        : "";
+      return [m.name, range].filter(Boolean).join(" · ");
     }
 
     function statusLabel(status, optional) {
@@ -556,35 +620,23 @@
     function stripJeVeux(s) {
       return String(s).replace(/^\s*je\s+veux\s+/i, "");
     }
-    // Seuil injecté DANS le résultat à l'emplacement ___ (ex : « courir ___ km » → « courir 100 km »).
-    // Pas de ___ → seuil ajouté en fin (compat).
-    function specificGoal(result, threshold) {
-      const r = stripJeVeux(result);
-      if (/_{2,}/.test(r)) return r.replace(/_{2,}/, threshold);
-      return `${r}, avec un seuil de réussite à ${threshold}`;
-    }
-    // Version compacte pour l'aperçu latéral (dot-join si pas de ___).
-    function specificPreview(result, threshold) {
-      const r = stripJeVeux(result);
-      if (/_{2,}/.test(r)) return threshold ? r.replace(/_{2,}/, threshold) : r;
-      return [r, threshold ? `seuil : ${threshold}` : ""].filter(Boolean).join(" · ");
-    }
-
     function buildObjective() {
       const rawDeadline = form.timebound.deadline;
       const deadline = rawDeadline
         ? new Date(rawDeadline).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })
         : "[échéance]";
-      const result = form.specific.result || "[résultat concret]";
-      const threshold = form.specific.threshold || "[seuil]";
-      const indicator = form.measurable.indicator || "[indicateur]";
+      const result = stripJeVeux(form.specific.result || "[résultat concret]");
+      const m = form.measurable;
+      const unit = m.unit ? ` ${m.unit}` : "";
+      const target = isFilled(String(m.target)) ? `${m.target}${unit}` : "[cible]";
+      const mName = m.name || "[indicateur]";
+      const startTxt = isFilled(String(m.start)) ? `de ${m.start}${unit} ` : "";
       const resources = form.achievable.resources || "[ce que j'ai déjà]";
       const constraints = form.achievable.constraints || "[ce qu'il me manque]";
       const hoursTxt = form.relevant.hours ? `${form.relevant.hours} par semaine` : "[temps par semaine]";
-      const goal = specificGoal(result, threshold);
       const vision = form.animated?.vision;
 
-      let text = `D'ici ${deadline}, je veux ${goal}.\nJe mesurerai mes progrès avec ${indicator}.\nJe peux déjà m'appuyer sur ${resources}.\nCe qu'il me faut pour démarrer : ${constraints}.\nJe peux y consacrer ${hoursTxt}.`;
+      let text = `D'ici ${deadline}, je veux ${result}.\nJe le suis avec ${mName} : ${startTxt}vers ${target}.\nJe peux déjà m'appuyer sur ${resources}.\nCe qu'il me faut pour démarrer : ${constraints}.\nJe peux y consacrer ${hoursTxt}.`;
       if (vision) text += `\nSi j'y arrive : ${vision}.`;
       return text;
     }
@@ -594,18 +646,20 @@
       const deadline = rawDeadline
         ? new Date(rawDeadline).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })
         : "[échéance]";
-      const result = form.specific.result || "[résultat concret]";
-      const threshold = form.specific.threshold || "[seuil]";
-      const indicator = form.measurable.indicator || "[indicateur]";
+      const result = stripJeVeux(form.specific.result || "[résultat concret]");
+      const m = form.measurable;
+      const unit = m.unit ? ` ${m.unit}` : "";
+      const target = isFilled(String(m.target)) ? `${m.target}${unit}` : "[cible]";
+      const mName = m.name || "[indicateur]";
+      const startTxt = isFilled(String(m.start)) ? `de ${m.start}${unit} ` : "";
       const resources = form.achievable.resources || "[ce que j'ai déjà]";
       const constraints = form.achievable.constraints || "[ce qu'il me manque]";
       const hoursTxt = form.relevant.hours ? `${form.relevant.hours} par semaine` : "[temps par semaine]";
-      const goal = specificGoal(result, threshold);
       const vision = form.animated?.vision;
 
       const lines = [
-        `D'ici ${escapeHtml(deadline)}, je veux ${escapeHtml(goal)}.`,
-        `Je mesurerai mes progrès avec ${escapeHtml(indicator)}.`,
+        `D'ici ${escapeHtml(deadline)}, je veux ${escapeHtml(result)}.`,
+        `Je le suis avec ${escapeHtml(mName)} : ${escapeHtml(startTxt)}vers ${escapeHtml(target)}.`,
         `Je peux déjà m'appuyer sur ${escapeHtml(resources)}.`,
         `Ce qu'il me faut pour démarrer : ${escapeHtml(constraints)}.`,
         `Je peux y consacrer ${escapeHtml(hoursTxt)}.`
@@ -632,14 +686,14 @@
       const deadline = rawDeadline
         ? new Date(rawDeadline).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })
         : "";
-      const ambition = form.specific.result ? specificPreview(form.specific.result, form.specific.threshold) : "";
-      const measure = form.measurable.indicator;
+      const ambition = form.specific.result ? stripJeVeux(form.specific.result) : "";
+      const measure = metricSummary();
       const attainable = [form.achievable.resources, form.achievable.constraints].filter(isFilled).join(" · ");
       const realiste = form.relevant.hours ? `${form.relevant.hours} par semaine` : "";
 
       const rows = [
-        smartPreviewRow("S", "L'ambition", ambition, "Résultat précis et son seuil"),
-        smartPreviewRow("M", "La mesure", measure, "Ce que tu suis chaque mois"),
+        smartPreviewRow("S", "L'ambition", ambition, "Ton résultat concret"),
+        smartPreviewRow("M", "La mesure", measure, "Métrique · départ → cible"),
         smartPreviewRow("A", "Atteignable", attainable, "Ressources et manques à regarder en face"),
         smartPreviewRow("R", "Réaliste", realiste, "Temps réel que tu peux engager"),
         smartPreviewRow("T", "L'échéance", deadline, "Date limite")
@@ -648,13 +702,47 @@
       return rows.join("");
     }
 
+    // Formulaire métrique inline (Mesurable) : nom + type + départ/cible/unité.
+    function metricFormHtml() {
+      const m = form.measurable;
+      const opts = METRIC_TYPES
+        .map((t) => `<option value="${t.key}"${m.type === t.key ? " selected" : ""}>${escapeHtml(t.label)}</option>`)
+        .join("");
+      return `
+        <label class="input-group">
+          <span class="type-body-md field-label">Qu'est-ce que tu suis pour mesurer ta progression ?</span>
+          <input class="ds-input" type="text" data-field="measurable.name" value="${escapeHtml(m.name)}" placeholder="Ex : Clients payants, km parcourus, € investis">
+        </label>
+        <label class="input-group">
+          <span class="type-body-md field-label">Type de mesure</span>
+          <div class="ds-select-wrapper">
+            <select class="ds-select" data-field="measurable.type">${opts}</select>
+          </div>
+        </label>
+        <div class="metric-grid">
+          <label class="input-group">
+            <span class="type-body-md field-label">Départ</span>
+            <input class="ds-input" type="number" inputmode="decimal" step="any" data-field="measurable.start" value="${escapeHtml(m.start)}" placeholder="0">
+          </label>
+          <label class="input-group">
+            <span class="type-body-md field-label">Cible</span>
+            <input class="ds-input" type="number" inputmode="decimal" step="any" data-field="measurable.target" value="${escapeHtml(m.target)}" placeholder="1000">
+          </label>
+          <label class="input-group">
+            <span class="type-body-md field-label">Unité</span>
+            <input class="ds-input" type="text" data-field="measurable.unit" id="measurableUnit" value="${escapeHtml(m.unit)}" placeholder="clients">
+          </label>
+        </div>
+      `;
+    }
+
     function renderSections() {
       sectionsContainer.innerHTML = sections.map((section) => {
         const status = getSectionStatus(section);
-        const fieldHtml = section.fields.map(([fieldKey, label, placeholder, type]) => {
+        const fieldHtml = section.metric ? metricFormHtml() : section.fields.map(([fieldKey, label, placeholder, type]) => {
           const path = `${section.key}.${fieldKey}`;
           const val = escapeHtml(getValue(path));
-          const displayLabel = (section.key === "measurable" && fieldKey === "indicator") ? measurableLabel() : label;
+          const displayLabel = label;
           const dateLabel = val ? new Date(val).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : 'Choisir une date…';
           const input = type === "date"
             ? `<div class="ds-datefield">
@@ -711,14 +799,13 @@
 
     function updateDynamic() {
       updateSectionStatuses();
-      const mlab = document.getElementById("label-measurable.indicator");
-      if (mlab) mlab.textContent = measurableLabel();
       objectiveText.innerHTML = buildObjectivePreview();
       objectivePhrase.innerHTML = buildObjectiveHtml();
-      const requiredComplete = sections
-        .filter((section) => !section.optional)
-        .every((section) => getSectionStatus(section).complete);
-      validateButton.disabled = !requiredComplete;
+      const missing = sections
+        .filter((section) => !section.optional && !getSectionStatus(section).complete)
+        .map((section) => section.title);
+      validateButton.disabled = missing.length > 0;
+      if (validateHint) validateHint.textContent = missing.length ? `À compléter : ${missing.join(", ")}` : "";
     }
 
     function render() {
@@ -730,6 +817,12 @@
       const field = event.target.dataset.field;
       if (!field) return;
       setValue(field, event.target.value);
+      // Changer le type de métrique pré-remplit l'unité (éditable ensuite).
+      if (field === "measurable.type") {
+        const t = METRIC_TYPES.find((x) => x.key === event.target.value);
+        const unitInput = document.getElementById("measurableUnit");
+        if (t && unitInput) { unitInput.value = t.unit; setValue("measurable.unit", t.unit); }
+      }
       saveForm();
       updateDynamic();
     });
@@ -745,39 +838,65 @@
       }
     };
 
-    resetButton.addEventListener("click", () => {
+    const resetConfirm = document.getElementById("resetConfirm");
+    const resetCancel = document.getElementById("resetCancel");
+    const resetConfirmBtn = document.getElementById("resetConfirmBtn");
+
+    function openResetConfirm() {
+      resetConfirm.hidden = false;
+      resetCancel.focus();
+    }
+    function closeResetConfirm() {
+      resetConfirm.hidden = true;
+      resetButton.focus();
+    }
+    function doReset() {
       form = structuredClone(emptyForm);
       saveForm();
       render();
       const ti = document.getElementById("titreInput");
       if (ti) ti.value = "";
-    });
+    }
+
+    resetButton.addEventListener("click", openResetConfirm);
+    resetCancel.addEventListener("click", closeResetConfirm);
+    resetConfirmBtn.addEventListener("click", () => { doReset(); closeResetConfirm(); });
+    resetConfirm.addEventListener("mousedown", (e) => { if (e.target === resetConfirm) closeResetConfirm(); });
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !resetConfirm.hidden) closeResetConfirm(); });
 
     validateButton.addEventListener("click", () => {
       const specifique = form.specific.result || "";
       const atteignable = [form.achievable.resources, form.achievable.constraints ? "manque : " + form.achievable.constraints : ""].filter(Boolean).join(" / ");
-      const metricTarget = parseMetricTarget(form.specific.threshold);
+      const m = form.measurable;
+      const targetNum = Number(String(m.target).replace(",", "."));
+      const startNum = Number(String(m.start).replace(",", "."));
+      const cible = Number.isFinite(targetNum) ? targetNum : null;
+      const startVal = Number.isFinite(startNum) ? startNum : 0;
+      const niveau = [m.target, m.unit].filter(Boolean).join(" ");
       const smartObj = {
         titre: form.titre || "",
         specifique,
-        niveau: metricTarget.label,
-        mesurable: form.measurable.indicator,
-        kpiLabel: form.measurable.indicator,
-        kpiTarget: metricTarget.value,
-        kpiTargetRaw: metricTarget.label,
+        niveau,
+        mesurable: m.name,
+        kpiLabel: m.name,
+        kpiTarget: cible,
+        kpiTargetRaw: niveau,
         kpiTargetSource: "onboarding",
-        kpiUnit: metricTarget.unit,
+        kpiUnit: m.unit,
+        metricType: m.type,
         globalKpi: {
-          label: form.measurable.indicator,
-          titre: form.measurable.indicator,
-          target: metricTarget.value,
-          cible: metricTarget.value,
-          targetLabel: metricTarget.label,
+          label: m.name,
+          titre: m.name,
+          target: cible,
+          cible: cible,
+          targetLabel: niveau,
           targetSource: "onboarding",
-          unit: metricTarget.unit,
-          unite: metricTarget.unit,
-          value: null,
-          valeur: null,
+          unit: m.unit,
+          unite: m.unit,
+          metricType: m.type,
+          value: startVal,
+          valeur: startVal,
+          start: startVal,
           measures: []
         },
         atteignable,
