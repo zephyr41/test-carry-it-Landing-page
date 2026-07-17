@@ -631,7 +631,7 @@
       const hoursTxt = form.relevant.hours ? `${form.relevant.hours} par semaine` : "[temps par semaine]";
       const vision = form.animated?.vision;
 
-      let text = `D'ici ${deadline}, je veux ${result}.\nJe vise ${cible}${unit}.\nJe peux déjà m'appuyer sur ${resources}.\nCe qu'il me faut pour démarrer : ${constraints}.\nJe peux y consacrer ${hoursTxt}.`;
+      let text = `D'ici ${deadline}, je veux ${result}.\nAtteindre ${cible}${unit}.\nJe peux déjà m'appuyer sur ${resources}.\nCe qu'il me faut pour démarrer : ${constraints}.\nJe peux y consacrer ${hoursTxt}.`;
       if (vision) text += `\nSi j'y arrive : ${vision}.`;
       return text;
     }
@@ -652,7 +652,7 @@
 
       const lines = [
         `D'ici ${escapeHtml(deadline)}, je veux ${escapeHtml(result)}.`,
-        `Je vise ${escapeHtml(cible)}${escapeHtml(unit)}.`,
+        `Atteindre ${escapeHtml(cible)}${escapeHtml(unit)}.`,
         `Je peux déjà m'appuyer sur ${escapeHtml(resources)}.`,
         `Ce qu'il me faut pour démarrer : ${escapeHtml(constraints)}.`,
         `Je peux y consacrer ${escapeHtml(hoursTxt)}.`
