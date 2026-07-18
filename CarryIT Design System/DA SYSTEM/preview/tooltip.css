@@ -111,3 +111,24 @@
     padding: var(--space-page-mobile);
   }
 }
+
+/* Alignments */
+.ds-tooltip-wrapper--bottom .ds-tooltip {
+  top: calc(100% + var(--tooltip-gap));
+  bottom: auto;
+}
+.ds-tooltip-wrapper--bottom .ds-tooltip::after {
+  top: auto;
+  bottom: 100%;
+  border-top: none;
+  border-bottom: var(--tooltip-arrow-size) solid var(--tooltip-background);
+}
+/* Alignments */
+.ds-tooltip--align-left {
+  left: -8px;
+  transform: none;
+}
+.ds-tooltip--align-left::after {
+  left: calc(8px + (var(--tooltip-trigger-size) / 2));
+  transform: translateX(-50%);
+}

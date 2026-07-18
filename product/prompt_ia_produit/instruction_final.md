@@ -162,7 +162,7 @@ Les options proposées doivent :
 - Être transformables en objectif final sans modification.
 - Contenir soit une métrique (ex : 10 000 €, 100 km), soit un résultat concret (ex : publier un livre, posséder 3 biens).
 - Inclure des exemple réel si pertinent (ex : marathon officiel, Amazon KDP, exemple concret et visualisable facilement…).
-- Être numérotées obligatoirement sous la forme :
+- Être numérotées obligatoirement sous lc'a forme :
   1)
   2)
   3)

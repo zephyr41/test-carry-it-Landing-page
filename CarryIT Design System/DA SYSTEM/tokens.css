@@ -346,7 +346,7 @@
   --tooltip-font-size: var(--type-caption-size);
   --tooltip-line-height: var(--type-caption-line);
   --tooltip-shadow: var(--shadow-sm);
-  --tooltip-max-width: 220px;
+  --tooltip-max-width: 480px;
   --tooltip-arrow-size: 6px;
   --tooltip-gap: var(--space-8);
   --tooltip-trigger-size: var(--space-16);
