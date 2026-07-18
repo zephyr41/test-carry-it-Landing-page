@@ -157,7 +157,7 @@ Chaque question doit :
 - Rester concrète et sans ambiguïté.
 
 Les options proposées doivent :
-
+   
 - Être directement observables ou mesurables.
 - Être transformables en objectif final sans modification.
 - Contenir soit une métrique (ex : 10 000 €, 100 km), soit un résultat concret (ex : publier un livre, posséder 3 biens).
