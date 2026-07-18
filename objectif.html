@@ -418,7 +418,7 @@
       if (section.key === "measurable") {
         const m = form.measurable;
         const hasName = isFilled(m.name);
-        const finalUnit = m.unitType === 'custom' ? m.unitCustom : m.unitType;
+        const finalUnit = ['nombre', 'custom'].includes(m.unitType) ? m.unitCustom : m.unitType;
         const hasUnit = isFilled(finalUnit);
         const filled = (hasName ? 1 : 0) + (hasUnit ? 1 : 0);
         return { filled, total: 2, complete: hasName && hasUnit, warning: "" };
@@ -452,7 +452,7 @@
       const result = stripJeVeux(form.specific.result || "[résultat concret]");
       const m = form.measurable;
       const mesureName = m.name || "[ce que je mesure]";
-      const finalUnit = m.unitType === 'custom' ? m.unitCustom : m.unitType;
+      const finalUnit = ['nombre', 'custom'].includes(m.unitType) ? m.unitCustom : m.unitType;
       const unitStr = finalUnit ? ` en ${finalUnit}` : "";
       const cibleStr = isFilled(String(m.target)) ? ` jusqu'à atteindre ${m.target}` : "";
       const mesure = `Je mesurerai ma progression chaque mois avec ${mesureName}${unitStr}${cibleStr}.`;
@@ -493,7 +493,7 @@
       const sConstraints = slot(form.achievable.constraints, form.achievable.constraints, "[ce qu'il me manque]");
       const sHours = slot(form.relevant.hours, `${form.relevant.hours} par semaine`, "[temps par semaine]");
       
-      const finalUnit = m.unitType === 'custom' ? m.unitCustom : m.unitType;
+      const finalUnit = ['nombre', 'custom'].includes(m.unitType) ? m.unitCustom : m.unitType;
       const unitStr = finalUnit ? ` en ${val(finalUnit)}` : "";
       const cibleStr = isFilled(String(m.target)) ? ` jusqu'à atteindre ${val(m.target)}` : "";
       
@@ -534,7 +534,7 @@
             <span class="type-body-md field-label">Unité</span>
             <div class="ds-select-wrapper">
               <select class="ds-select" data-field="measurable.unitType">
-                <option value="" ${m.unitType === '' ? 'selected' : ''}>Nombre (sans unité)</option>
+                <option value="nombre" ${m.unitType === 'nombre' ? 'selected' : ''}>Nombre</option>
                 <option value="€" ${m.unitType === '€' ? 'selected' : ''}>Argent</option>
                 <option value="%" ${m.unitType === '%' ? 'selected' : ''}>Pourcentage</option>
                 <option value="kg" ${m.unitType === 'kg' ? 'selected' : ''}>Poids</option>
@@ -546,14 +546,14 @@
                 <option value="custom" ${m.unitType === 'custom' ? 'selected' : ''}>Autre (au choix)</option>
               </select>
             </div>
-            <div id="customUnitWrapper" style="display: ${m.unitType === 'custom' ? 'block' : 'none'}; margin-top: var(--space-12);">
+            <div id="customUnitWrapper" style="display: ${['nombre', 'custom'].includes(m.unitType) ? 'block' : 'none'}; margin-top: var(--space-12);">
               <span class="type-body-md field-label" style="margin-bottom: var(--space-4); display: block;">Précise ton unité :</span>
               <input class="ds-input" type="text" data-field="measurable.unitCustom" value="${escapeHtml(m.unitCustom || "")}" placeholder="Ex : clients, kg, jours...">
             </div>
           </div>
           <label class="input-group">
             <span class="type-body-md field-label">Cible (optionnel)</span>
-            <input class="ds-input" type="number" inputmode="decimal" step="any" data-field="measurable.target" value="${escapeHtml(m.target || "")}" placeholder="Ex : 100">
+            <input class="ds-input" type="text" data-field="measurable.target" value="${escapeHtml(m.target || "")}" placeholder="Ex : 100, ou texte libre">
           </label>
         </div>
       `;
@@ -644,7 +644,7 @@
       if (field === "measurable.unitType") {
         const customWrapper = document.getElementById("customUnitWrapper");
         if (customWrapper) {
-          customWrapper.style.display = event.target.value === "custom" ? "block" : "none";
+          customWrapper.style.display = ['nombre', 'custom'].includes(event.target.value) ? "block" : "none";
         }
       }
       
