@@ -342,21 +342,12 @@
     ];
 
     // Sous-ensemble CarryIT — chaque type propose une unité par défaut (éditable) + un exemple d'unité.
-    const METRIC_TYPES = [
-      { key: "numeric", label: "Nombre", unit: "", ph: "ex : clients, abonnés, ventes" },
-      { key: "money", label: "Argent", unit: "€", ph: "€, $" },
-      { key: "percent", label: "Pourcentage", unit: "%", ph: "%" },
-      { key: "distance", label: "Distance", unit: "km", ph: "km, m" },
-      { key: "time", label: "Temps", unit: "h", ph: "h, min" },
-      { key: "weight", label: "Poids", unit: "kg", ph: "kg, lb" },
-      { key: "pages", label: "Pages", unit: "pages", ph: "pages, chapitres" },
-      { key: "custom", label: "Autre (unité libre)", unit: "", ph: "ex : kg, €, pages" }
-    ];
+
 
     const emptyForm = {
       titre: "",
       specific: { result: "" },
-      measurable: { type: "numeric", unit: "", target: "" },
+      measurable: { name: "", unitType: "km", unitCustom: "", target: "" },
       achievable: { resources: "", constraints: "" },
       relevant: { hours: "" },
       timebound: { deadline: "" },
@@ -375,9 +366,10 @@
           if (!parsed.specific) parsed.specific = { result: "" };
           const oldM = parsed.measurable || {};
           parsed.measurable = {
-            type: oldM.type || "numeric",
-            unit: oldM.unit || "",
-            target: oldM.target || parsed.specific.threshold || ""
+            name: oldM.name || "",
+            unitType: oldM.unitType || (oldM.unit ? "custom" : "km"),
+            unitCustom: oldM.unitCustom || oldM.unit || "",
+            target: oldM.target || ""
           };
           delete parsed.specific.threshold;
           return parsed;
@@ -424,9 +416,11 @@
     function getSectionStatus(section) {
       if (section.key === "measurable") {
         const m = form.measurable;
-        const hasUnit = isFilled(m.unit);
-        const hasTarget = isFilled(String(m.target));
-        return { filled: (hasUnit ? 1 : 0) + (hasTarget ? 1 : 0), total: 2, complete: hasUnit && hasTarget, warning: "" };
+        const hasName = isFilled(m.name);
+        const finalUnit = m.unitType === 'custom' ? m.unitCustom : m.unitType;
+        const hasUnit = isFilled(finalUnit);
+        const filled = (hasName ? 1 : 0) + (hasUnit ? 1 : 0);
+        return { filled, total: 2, complete: hasName && hasUnit, warning: "" };
       }
       const values = section.fields.map(([fieldKey]) => form[section.key][fieldKey]);
       const filled = values.filter(isFilled).length;
@@ -456,16 +450,11 @@
         : "[échéance]";
       const result = stripJeVeux(form.specific.result || "[résultat concret]");
       const m = form.measurable;
-      const cible = isFilled(String(m.target)) ? m.target : "[cible]";
-      const unit = m.unit ? ` ${m.unit}` : "";
-      const resources = form.achievable.resources || "[ce que j'ai déjà]";
-      const constraints = form.achievable.constraints || "[ce qu'il me manque]";
-      const hoursTxt = form.relevant.hours ? `${form.relevant.hours} par semaine` : "[temps par semaine]";
-      const vision = form.animated?.vision;
-
-      const mesure = m.unit
-        ? `Je mesurerai ma progression chaque mois ou chaque semaine en ${m.unit} jusqu'à atteindre ${cible}${unit}.`
-        : `Je mesurerai ma progression jusqu'à atteindre ${cible}.`;
+      const mesureName = m.name || "[ce que je mesure]";
+      const finalUnit = m.unitType === 'custom' ? m.unitCustom : m.unitType;
+      const unitStr = finalUnit ? ` en ${finalUnit}` : "";
+      const cibleStr = isFilled(String(m.target)) ? ` jusqu'à atteindre ${m.target}` : "";
+      const mesure = `Je mesurerai ma progression chaque mois avec ${mesureName}${unitStr}${cibleStr}.`;
 
       let text = `Je veux ${result}.\n${mesure}\nJe peux déjà m'appuyer sur ${resources}.\nCe qu'il me faut pour démarrer : ${constraints}.\nJe peux y consacrer ${hoursTxt}.\nÉchéance : ${deadline}.`;
       if (vision) text += `\nSi j'y arrive : ${vision}.`;
@@ -498,15 +487,16 @@
 
       const sDeadline = slot(rawDeadline, deadline, "[échéance]");
       const sResult = slot(form.specific.result, stripJeVeux(form.specific.result || ""), "[résultat concret]");
-      const sCible = slot(m.target, m.target, "[cible]");
+      const sMesureName = slot(m.name, m.name, "[ce que je mesure]");
       const sResources = slot(form.achievable.resources, form.achievable.resources, "[ce que j'ai déjà]");
       const sConstraints = slot(form.achievable.constraints, form.achievable.constraints, "[ce qu'il me manque]");
       const sHours = slot(form.relevant.hours, `${form.relevant.hours} par semaine`, "[temps par semaine]");
-      const unitSuffix = m.unit ? ` ${val(m.unit)}` : "";
-
-      const mesure = m.unit
-        ? `Je mesurerai ma progression chaque mois ou chaque semaine en ${val(m.unit)} jusqu'à atteindre ${sCible}${unitSuffix}.`
-        : `Je mesurerai ma progression jusqu'à atteindre ${sCible}.`;
+      
+      const finalUnit = m.unitType === 'custom' ? m.unitCustom : m.unitType;
+      const unitStr = finalUnit ? ` en ${val(finalUnit)}` : "";
+      const cibleStr = isFilled(String(m.target)) ? ` jusqu'à atteindre ${val(m.target)}` : "";
+      
+      const mesure = `Je mesurerai ma progression chaque mois avec ${sMesureName}${unitStr}${cibleStr}.`;
 
       const lines = [
         { key: "intro", html: `Je veux ${sResult}.` },
@@ -530,28 +520,32 @@
       }).join("");
     }
 
-    // Formulaire métrique inline (Mesurable) : type + unité + cible.
+    // Formulaire métrique inline (Mesurable) : nom (libre) + unité (datalist) + cible (optionnel).
     function metricFormHtml() {
       const m = form.measurable;
-      const opts = METRIC_TYPES
-        .map((t) => `<option value="${t.key}"${m.type === t.key ? " selected" : ""}>${escapeHtml(t.label)}</option>`)
-        .join("");
-      const curType = METRIC_TYPES.find((t) => t.key === m.type) || METRIC_TYPES[0];
       return `
         <label class="input-group">
-          <span class="type-body-md field-label">Type de mesure</span>
-          <div class="ds-select-wrapper">
-            <select class="ds-select" data-field="measurable.type">${opts}</select>
-          </div>
+          <span class="type-body-md field-label">Qu'est-ce que tu mesures ?</span>
+          <textarea class="ds-textarea" data-field="measurable.name" placeholder="Ex : Le nombre de kilomètres courus par semaine" rows="2">${escapeHtml(m.name || "")}</textarea>
         </label>
         <div class="metric-grid">
-          <label class="input-group">
+          <div class="input-group">
             <span class="type-body-md field-label">Unité</span>
-            <input class="ds-input" type="text" data-field="measurable.unit" id="measurableUnit" value="${escapeHtml(m.unit)}" placeholder="${escapeHtml(curType.ph)}">
-          </label>
+            <div class="ds-select-wrapper">
+              <select class="ds-select" data-field="measurable.unitType">
+                <option value="km" ${m.unitType === 'km' ? 'selected' : ''}>km</option>
+                <option value="heures" ${m.unitType === 'heures' ? 'selected' : ''}>heures</option>
+                <option value="€" ${m.unitType === '€' ? 'selected' : ''}>€</option>
+                <option value="%" ${m.unitType === '%' ? 'selected' : ''}>%</option>
+                <option value="ventes" ${m.unitType === 'ventes' ? 'selected' : ''}>ventes</option>
+                <option value="custom" ${m.unitType === 'custom' ? 'selected' : ''}>Autre (au choix)</option>
+              </select>
+            </div>
+            <input class="ds-input" type="text" data-field="measurable.unitCustom" value="${escapeHtml(m.unitCustom || "")}" placeholder="Écris ton unité..." style="display: ${m.unitType === 'custom' ? 'block' : 'none'}; margin-top: var(--space-8);">
+          </div>
           <label class="input-group">
-            <span class="type-body-md field-label">Cible à atteindre</span>
-            <input class="ds-input" type="number" inputmode="decimal" step="any" data-field="measurable.target" value="${escapeHtml(m.target)}" placeholder="1000">
+            <span class="type-body-md field-label">Cible (optionnel)</span>
+            <input class="ds-input" type="number" inputmode="decimal" step="any" data-field="measurable.target" value="${escapeHtml(m.target || "")}" placeholder="Ex : 100">
           </label>
         </div>
       `;
@@ -638,11 +632,6 @@
       const field = event.target.dataset.field;
       if (!field) return;
       setValue(field, event.target.value);
-      if (field === "measurable.type") {
-        const t = METRIC_TYPES.find((x) => x.key === event.target.value);
-        const unitInput = document.getElementById("measurableUnit");
-        if (t && unitInput) { unitInput.value = t.unit; unitInput.placeholder = t.ph; setValue("measurable.unit", t.unit); }
-      }
       saveForm();
       updateDynamic();
     });
