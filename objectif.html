@@ -56,9 +56,19 @@
       margin-top: var(--space-12);
     }
 
-    /* ── LAYOUT (grille 12 col DS : form ds-col-8 + sidebar ds-col-4, §4.8) ── */
+    /* ── LAYOUT : 2 colonnes qui démarrent en haut — form (col-8) + récap (col-4). ── */
     .form-layout { align-items: start; }
-    .stack { display: grid; gap: var(--space-24); }
+    .form-col { display: grid; }
+    /* Sections SMART SANS carte : séparées par un filet + l'espace de section.
+       L'œil suit une liste claire (input flow), pas un mur de boîtes sombres.
+       La seule carte de la page = le récap à droite (l'output). */
+    .stack { display: grid; gap: 0; }
+    .section-card {
+      display: grid;
+      gap: var(--space-16);                 /* header → champs */
+      padding-top: var(--space-section-gap); /* respiration entre sections (32) */
+      border-top: var(--border-subtle);      /* filet séparateur */
+    }
 
     /* ── SECTION CARDS (composition DS : ds-card + lettre + badge + champs) ── */
     .section-header {
@@ -122,7 +132,7 @@
       min-height: 0;
     }
     .output-card,
-    .smart-preview { min-height: 0; }
+    .smart-recap { min-height: 0; }
     /* Carte de sortie = carte définie DS (arête + filet + ombre). */
     .output-card {
       display: grid;
@@ -141,17 +151,18 @@
     }
     .output-help { color: var(--color-text-muted); margin-top: var(--space-4); }
 
+    /* Aperçu prose : connecteurs en retrait (secondary), valeurs saisies en blanc (hiérarchie premium),
+       placeholders en gris. Taille = .type-body-sm (markup). Plus d'italique = plus net. */
     .objective-phrase {
       padding-block: var(--space-16);
       border-bottom: var(--border-subtle);
-      color: var(--color-text-muted);
-      font-size: var(--type-body-sm-size);
-      line-height: var(--type-body-sm-line);
-      font-style: italic;
+      color: var(--color-text-secondary);
     }
+    .obj-val { color: var(--color-text-primary); font-weight: var(--font-weight-semibold); }
+    .obj-ph { color: var(--color-text-muted); }
 
-    .smart-preview { display: grid; }
-    .smart-preview-row {
+    .smart-recap { display: block; }
+    .smart-recap-row {
       display: grid;
       grid-template-columns: var(--smart-letter-width) 1fr;
       gap: var(--smart-col-gap);
@@ -159,26 +170,25 @@
       padding-block: var(--space-16);
       border-bottom: var(--border-subtle);
     }
-    .smart-preview-row:last-child { border-bottom: 0; }
-    .smart-preview-letter {
+    .smart-recap-row:last-child { border-bottom: 0; }
+    .smart-recap-letter {
       text-align: center;
       color: var(--smart-letter-color);
       font-size: var(--type-body-md-size);
       line-height: var(--type-data-label-line);   /* = ligne du label → lettre calée sur l'eyebrow */
       font-weight: var(--font-weight-semibold);
     }
-    .smart-preview-label {
+    .smart-recap-label {
       display: block;
       margin-bottom: var(--smart-dimension-gap);
       color: var(--color-text-primary);
       letter-spacing: var(--letter-spacing-label);
     }
-    .smart-preview-value {
+    /* Taille/ligne = classe .type-body-sm (markup) ; ici seulement la couleur. */
+    .smart-recap-value {
       color: var(--color-text-secondary);
-      font-size: var(--type-body-sm-size);
-      line-height: var(--type-body-sm-line);
     }
-    .smart-preview-value.empty { color: var(--color-text-muted); }
+    .smart-recap-value.empty { color: var(--color-text-muted); }
 
     /* ── TOAST (composant ds-toast + positionnement) ── */
     .toast {
@@ -229,11 +239,13 @@
     </header>
 
     <section class="ds-grid form-layout" aria-label="Formulaire objectif SMART">
-      <div class="input-group ds-col-8">
-        <span class="type-body-md field-label">Nom du projet</span>
-        <input id="titreInput" class="ds-input" type="text" placeholder="Ex : Immo, Marathon, SaaS…" />
+      <div class="form-col ds-col-8">
+        <div class="input-group">
+          <span class="type-body-md field-label">Nom du projet</span>
+          <input id="titreInput" class="ds-input" type="text" placeholder="Ex : Immo, Marathon, SaaS…" />
+        </div>
+        <div class="stack" id="sectionsContainer"></div>
       </div>
-      <div class="stack ds-col-8" id="sectionsContainer"></div>
 
       <aside class="side ds-col-4">
         <div class="output-card">
@@ -244,8 +256,8 @@
             </div>
             <button class="ds-button ds-button--subtle ds-button--xs" type="button" id="copyButton">Copier</button>
           </div>
-          <div class="objective-phrase" id="objectivePhrase"></div>
-          <div class="smart-preview" id="objectiveText"></div>
+          <div class="objective-phrase type-body-sm" id="objectivePhrase"></div>
+          <div class="smart-recap" id="objectiveText"></div>
         </div>
 
         <button type="button" id="validateButton" class="ds-button ds-button--primary ds-button--block">Valider l'objectif</button>
@@ -523,42 +535,49 @@
     }
 
     function buildObjectiveHtml() {
+      // Valeur saisie = blanc (obj-val) ; placeholder non rempli = gris (obj-ph). Hiérarchie premium.
+      const val = (v) => `<span class="obj-val">${escapeHtml(v)}</span>`;
+      const ph = (v) => `<span class="obj-ph">${escapeHtml(v)}</span>`;
+      const slot = (raw, formatted, placeholder) =>
+        isFilled(String(raw)) ? val(formatted) : ph(placeholder);
+
       const rawDeadline = form.timebound.deadline;
       const deadline = rawDeadline
         ? new Date(rawDeadline).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })
-        : "[échéance]";
-      const result = stripJeVeux(form.specific.result || "[résultat concret]");
+        : "";
       const m = form.measurable;
-      const cible = isFilled(String(m.target)) ? m.target : "[cible]";
-      const unit = m.unit ? ` ${m.unit}` : "";
-      const resources = form.achievable.resources || "[ce que j'ai déjà]";
-      const constraints = form.achievable.constraints || "[ce qu'il me manque]";
-      const hoursTxt = form.relevant.hours ? `${form.relevant.hours} par semaine` : "[temps par semaine]";
-      const vision = form.animated?.vision;
+
+      const sDeadline = slot(rawDeadline, deadline, "[échéance]");
+      const sResult = slot(form.specific.result, stripJeVeux(form.specific.result || ""), "[résultat concret]");
+      const sCible = slot(m.target, m.target, "[cible]");
+      const sResources = slot(form.achievable.resources, form.achievable.resources, "[ce que j'ai déjà]");
+      const sConstraints = slot(form.achievable.constraints, form.achievable.constraints, "[ce qu'il me manque]");
+      const sHours = slot(form.relevant.hours, `${form.relevant.hours} par semaine`, "[temps par semaine]");
+      const unitSuffix = m.unit ? ` ${val(m.unit)}` : "";
 
       const mesure = m.unit
-        ? `Je mesurerai ma progression chaque mois ou chaque semaine en ${escapeHtml(m.unit)} jusqu'à atteindre ${escapeHtml(cible)}${escapeHtml(unit)}.`
-        : `Je mesurerai ma progression jusqu'à atteindre ${escapeHtml(cible)}.`;
+        ? `Je mesurerai ma progression chaque mois ou chaque semaine en ${val(m.unit)} jusqu'à atteindre ${sCible}${unitSuffix}.`
+        : `Je mesurerai ma progression jusqu'à atteindre ${sCible}.`;
 
       const lines = [
-        `D'ici ${escapeHtml(deadline)}, je veux ${escapeHtml(result)}.`,
+        `D'ici ${sDeadline}, je veux ${sResult}.`,
         mesure,
-        `Je peux déjà m'appuyer sur ${escapeHtml(resources)}.`,
-        `Ce qu'il me faut pour démarrer : ${escapeHtml(constraints)}.`,
-        `Je peux y consacrer ${escapeHtml(hoursTxt)}.`
+        `Je peux déjà m'appuyer sur ${sResources}.`,
+        `Ce qu'il me faut pour démarrer : ${sConstraints}.`,
+        `Je peux y consacrer ${sHours}.`
       ];
-      if (vision) lines.push(`Si j'y arrive : ${escapeHtml(vision)}.`);
+      if (form.animated?.vision) lines.push(`Si j'y arrive : ${val(form.animated.vision)}.`);
       return lines.join("<br>");
     }
 
     function smartPreviewRow(letter, label, value, emptyText) {
       const isEmpty = !String(value).trim();
       return `
-        <div class="smart-preview-row">
-          <span class="smart-preview-letter">${escapeHtml(letter)}</span>
+        <div class="smart-recap-row">
+          <span class="smart-recap-letter">${escapeHtml(letter)}</span>
           <div>
-            <span class="smart-preview-label type-data-label">${escapeHtml(label)}</span>
-            <span class="smart-preview-value${isEmpty ? " empty" : ""}">${escapeHtml(isEmpty ? emptyText : value)}</span>
+            <span class="smart-recap-label type-data-label">${escapeHtml(label)}</span>
+            <span class="smart-recap-value type-body-sm${isEmpty ? " empty" : ""}">${escapeHtml(isEmpty ? emptyText : value)}</span>
           </div>
         </div>
       `;
@@ -651,7 +670,7 @@
           : '';
 
         return `
-          <article class="ds-card section-card">
+          <article class="section-card">
             <div class="section-header">
               <div class="section-title-row">
                 <span class="ds-smart__letter section-letter ${status.complete ? "is-complete" : ""}" data-letter="${escapeHtml(section.key)}">${escapeHtml(section.letter)}</span>
