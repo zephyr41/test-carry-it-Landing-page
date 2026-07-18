@@ -341,8 +341,8 @@
   --tooltip-text: var(--color-text-primary);
   --tooltip-border: var(--border-subtle);
   --tooltip-radius: var(--radius-sm);
-  --tooltip-padding-inline: var(--space-8);
-  --tooltip-padding-block: var(--space-4);
+  --tooltip-padding-inline: var(--space-16);
+  --tooltip-padding-block: var(--space-12);
   --tooltip-font-size: var(--type-caption-size);
   --tooltip-line-height: var(--type-caption-line);
   --tooltip-shadow: var(--shadow-sm);

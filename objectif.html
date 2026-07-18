@@ -12,16 +12,14 @@
   <link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/inputs.css" />
   <link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/select.css" />
   <link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/textarea.css" />
-  <link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/badge.css" />
   <link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/grid.css" />
   <link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/card.css" />
+  <link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/badge.css" />
   <link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/toast.css" />
   <link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/calendar.css" />
   <link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/modal.css" />
   <link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/confirm.css" />
   <link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/tooltip.css" />
-  <link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/progress.css" />
-  <link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/smart.css" />
   <link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/onboarding-nav.css" />
 
   <style>
@@ -35,45 +33,40 @@
     }
 
     /* ── Chrome de page + layout : uniquement des tokens DS ──
-       (les seules valeurs non-tokenisées sont structurelles : ratios de grille,
-       %, ch et breakpoints @media — non couverts par le système de tokens.) */
+       (seules valeurs non-tokenisées : ratios de grille, %, ch, breakpoints @media.) */
     body { min-height: 100dvh; }
     button, textarea, input { font: inherit; }
     button { cursor: pointer; }
 
-    /* Nav d'onboarding = composant DS .ds-onboarding-nav (preview/onboarding-nav.css). */
-
-    /* ── PAGE (largeur/marge d'écran = .ds-container ; ici juste le rythme vertical) ── */
-    .page {
-      padding-block: var(--space-48) var(--space-64);
-    }
+    .page { padding-block: var(--space-48) var(--space-64); }
 
     /* ── HERO ── */
     .hero { margin-bottom: var(--space-section-gap); }
     .lead {
-      color: var(--color-text-secondary);
-      max-width: 60ch;
-      margin-top: var(--space-12);
+      color: var(--color-text-primary);
+      font-size: var(--type-h3-size);
+      line-height: var(--type-h3-line, 1.5);
+      font-weight: var(--font-weight-regular);
+      max-width: 56ch;
+      margin-top: var(--space-16);
+      text-wrap: pretty;
     }
 
-    /* ── LAYOUT : 2 colonnes qui démarrent en haut — form (col-8) + récap (col-4). ── */
+    /* ── LAYOUT : pas-à-pas (col-7) + phrase en direct (col-5) ── */
     .form-layout { align-items: start; }
-    .form-col { display: grid; }
-    /* Sections SMART SANS carte : séparées par un filet + l'espace de section.
-       L'œil suit une liste claire (input flow), pas un mur de boîtes sombres.
-       La seule carte de la page = le récap à droite (l'output). */
-    .stack { display: grid; gap: 0; }
+    .form-col { display: grid; gap: var(--space-24); }
+    .nom-card,
     .section-card {
-      display: grid;
-      gap: var(--space-16);                 /* header → champs */
-      padding-top: var(--space-section-gap); /* respiration entre sections (32) */
-      border-top: var(--border-subtle);      /* filet séparateur */
+      border: var(--card-border-defined);
+      box-shadow: var(--card-shadow-defined);
     }
 
-    /* ── SECTION CARDS (composition DS : ds-card + lettre + badge + champs) ── */
+    /* ── PILE DE SECTIONS : toutes visibles d'un coup. ── */
+    .stack { display: grid; gap: var(--space-24); }
+
     .section-header {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
       gap: var(--space-12);
     }
@@ -83,31 +76,39 @@
       gap: var(--space-12);
       min-width: 0;
     }
-    /* Marqueur de lettre S/M/A/R/T : le glyphe = composant DS .ds-smart__letter.
-       Ici juste le placement flex + l'état « section complétée » (propre à l'onboarding). */
     .section-letter {
       flex: 0 0 auto;
-      width: var(--smart-letter-width);
-      text-align: center;
+      width: var(--space-48);
+      height: var(--space-48);
+      display: grid;
+      place-items: center;
+      border-radius: var(--radius-md);
+      background: var(--color-surface-raised);
+      border: var(--border-subtle);
+      color: var(--color-text-primary);
+      font-size: var(--type-h3-size);
+      font-weight: var(--font-weight-bold);
     }
-    .section-letter.is-complete { color: var(--color-text-primary); }
-    .section-title { min-width: 0; }
-
-    /* Aide « ? » = composant DS Tooltip (.ds-tooltip-trigger + .ds-tooltip). Aligné au titre. */
-    .section-title .ds-tooltip-wrapper { margin-left: var(--space-8); vertical-align: middle; }
-
-    /* Message sous le CTA : ce qui reste à compléter. */
-    .validate-hint {
+    .section-eyebrow {
       color: var(--color-text-muted);
-      text-align: center;
+      margin-bottom: var(--space-4);
     }
-    .validate-hint:empty { display: none; }
+    .section-title { min-width: 0; }
+    .section-title .ds-tooltip-wrapper { margin-left: var(--space-8); vertical-align: middle; }
+    /* Définition de la dimension : affichée en clair (plus premium qu'enfouie). */
+    .section-def {
+      color: var(--color-text-secondary);
+      max-width: 60ch;
+      margin-top: calc(-1 * var(--space-8));   /* header → définition : rythme resserré */
+      text-wrap: pretty;
+    }
+
+    /* Badges alignés sur le Design System (.ds-badge) */
 
     .field-group { display: grid; gap: var(--space-16); }
-    /* Label de question : type-body-md (14, blanc) + medium — lisible, pas le 12px gris de type-label. */
     .field-label { font-weight: var(--font-weight-medium); }
 
-    /* Métrique (Mesurable) : Départ / Cible / Unité côte à côte. */
+    /* Métrique (Mesurable) : Unité / Cible côte à côte. */
     .metric-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -117,23 +118,23 @@
       .metric-grid { grid-template-columns: 1fr; }
     }
 
-    /* Déclencheur date vide → couleur placeholder (comble l'état vide du datefield DS). */
     .ds-datefield__trigger[data-empty="true"] { color: var(--input-placeholder); }
 
-    /* ── SIDEBAR ── */
-    /* align-self:start + min-height:0 : la sidebar partage la rangée grille du form (très haut).
-       Sans ça, un élément grille ne rétrécit pas sous son contenu (min-height:auto) → tout s'étire. */
+    .validate-hint {
+      color: var(--color-text-muted);
+      text-align: center;
+    }
+    .validate-hint:empty { display: none; }
+
+    /* ── SIDEBAR : la phrase qui se construit ── */
     .side {
       display: grid;
       gap: var(--space-16);
       position: sticky;
-      top: calc(var(--space-64) + var(--space-16));
+      top: calc(var(--space-64) + var(--space-24));
       align-self: start;
       min-height: 0;
     }
-    .output-card,
-    .smart-recap { min-height: 0; }
-    /* Carte de sortie = carte définie DS (arête + filet + ombre). */
     .output-card {
       display: grid;
       gap: var(--space-16);
@@ -142,6 +143,7 @@
       border: var(--card-border-defined);
       border-radius: var(--card-radius);
       box-shadow: var(--card-shadow-defined);
+      min-height: 0;
     }
     .output-header {
       display: flex;
@@ -151,44 +153,24 @@
     }
     .output-help { color: var(--color-text-muted); margin-top: var(--space-4); }
 
-    /* Aperçu prose : connecteurs en retrait (secondary), valeurs saisies en blanc (hiérarchie premium),
-       placeholders en gris. Taille = .type-body-sm (markup). Plus d'italique = plus net. */
+    /* Phrase : connecteurs en retrait, valeurs saisies en blanc, placeholders gris.
+       La ou les lignes de l'étape active sont pleines, le reste en retrait. */
     .objective-phrase {
-      padding-block: var(--space-16);
-      border-bottom: var(--border-subtle);
-      color: var(--color-text-secondary);
+      display: grid;
+      gap: var(--space-12);
+      padding-top: var(--space-16);
+      border-top: var(--border-subtle);
     }
+    .phrase-line {
+      margin: 0;
+      color: var(--color-text-secondary);
+      opacity: 0.45;
+      text-wrap: pretty;
+      transition: opacity var(--motion-duration-base) var(--motion-ease-out);
+    }
+    .phrase-line.active { opacity: 1; }
     .obj-val { color: var(--color-text-primary); font-weight: var(--font-weight-semibold); }
     .obj-ph { color: var(--color-text-muted); }
-
-    .smart-recap { display: block; }
-    .smart-recap-row {
-      display: grid;
-      grid-template-columns: var(--smart-letter-width) 1fr;
-      gap: var(--smart-col-gap);
-      align-items: start;
-      padding-block: var(--space-16);
-      border-bottom: var(--border-subtle);
-    }
-    .smart-recap-row:last-child { border-bottom: 0; }
-    .smart-recap-letter {
-      text-align: center;
-      color: var(--smart-letter-color);
-      font-size: var(--type-body-md-size);
-      line-height: var(--type-data-label-line);   /* = ligne du label → lettre calée sur l'eyebrow */
-      font-weight: var(--font-weight-semibold);
-    }
-    .smart-recap-label {
-      display: block;
-      margin-bottom: var(--smart-dimension-gap);
-      color: var(--color-text-primary);
-      letter-spacing: var(--letter-spacing-label);
-    }
-    /* Taille/ligne = classe .type-body-sm (markup) ; ici seulement la couleur. */
-    .smart-recap-value {
-      color: var(--color-text-secondary);
-    }
-    .smart-recap-value.empty { color: var(--color-text-muted); }
 
     /* ── TOAST (composant ds-toast + positionnement) ── */
     .toast {
@@ -205,8 +187,6 @@
     .toast.visible { opacity: 1; transform: translateY(0); }
 
     /* ── RESPONSIVE ── */
-    /* ≤1024 : la grille DS passe à 8 col (form devient pleine largeur). La sidebar
-       tiendrait sur 4/8 (moitié) → on la force pleine largeur + on coupe le sticky. */
     @media (max-width: 1024px) {
       .side { grid-column: 1 / -1; position: static; }
     }
@@ -235,29 +215,30 @@
   <main class="page ds-container ds-container--reading">
     <header class="hero">
       <h1 class="type-display">Définis ton objectif SMART.</h1>
-      <p class="lead type-body-lg">SMART sert à transformer une ambition en objectif clair : spécifique, mesurable, atteignable, réaliste, daté. Pas besoin d'avoir tout le plan. Ici, tu poses ce que réussir veut dire.</p>
+      <p class="lead type-body-lg">SMART sert à transformer une ambition en objectif clair : spécifique, mesurable, atteignable, réaliste, daté.</p>
     </header>
 
     <section class="ds-grid form-layout" aria-label="Formulaire objectif SMART">
-      <div class="form-col ds-col-8">
-        <div class="input-group">
-          <span class="type-body-md field-label">Nom du projet</span>
-          <input id="titreInput" class="ds-input" type="text" placeholder="Ex : Immo, Marathon, SaaS…" />
+      <div class="form-col ds-col-7">
+        <div class="ds-card nom-card">
+          <div class="input-group">
+            <span class="type-body-md field-label">Nom du projet</span>
+            <input id="titreInput" class="ds-input" type="text" placeholder="Ex : Immo, Marathon, SaaS…" />
+          </div>
         </div>
         <div class="stack" id="sectionsContainer"></div>
       </div>
 
-      <aside class="side ds-col-4">
+      <aside class="side ds-col-5">
         <div class="output-card">
           <div class="output-header">
             <div>
-              <h2 class="type-h3">Ton objectif SMART</h2>
-              <p class="output-help type-caption">L'aperçu se construit pendant que tu remplis.</p>
+              <h2 class="type-h3" id="outputTitle">Ton objectif SMART</h2>
+              <p class="output-help type-caption">La phrase se construit pendant que tu remplis.</p>
             </div>
             <button class="ds-button ds-button--subtle ds-button--xs" type="button" id="copyButton">Copier</button>
           </div>
-          <div class="objective-phrase type-body-sm" id="objectivePhrase"></div>
-          <div class="smart-recap" id="objectiveText"></div>
+          <div class="objective-phrase type-body-lg" id="objectivePhrase"></div>
         </div>
 
         <button type="button" id="validateButton" class="ds-button ds-button--primary ds-button--block">Valider l'objectif</button>
@@ -302,9 +283,9 @@
         letter: "S",
         title: "Spécifique",
         definition: "Un objectif spécifique dit exactement ce que tu veux réussir.",
-        hint: "Ton objectif doit décrire un résultat précis. \"Améliorer mes finances\" n'est pas spécifique. \"5 000 € nets mensuels de revenus locatifs\" l'est. Plus c'est précis, plus tu sais quoi viser. C'est plus simple quand tu définis un seuil précis (un chiffre) ou un état précis (fait / pas fait).",
+        hint: "Un objectif spécifique veut dire qu'il doit être le plus détaillé possible.\n\nUn seuil précis à atteindre. il doit être binaire. tu peux répondre précisement à : est ce que je l'ai accomplie ou pas. plus ton objectif va être précis et détaillé. plus il sera simple de l'accomplir.\n\nExemple : il y'a une difference de préparation en voulant courir un marathon en 3H plutot ou vouloir 1000€ de revenue. mais : 1000e net ? Brut ?",
         fields: [
-          ["result", "Quel résultat concret veux-tu obtenir ?", "Ex : lancer une app payante, courir un marathon, obtenir des biens locatifs, publier un livre"]
+          ["result", "Quel résultat concret veux-tu obtenir ?", "Ex : courir un marathon en moins de 3h, générer 10 000 € nets/mois, publier un livre de 300 pages"]
         ]
       },
       {
@@ -372,9 +353,6 @@
       { key: "custom", label: "Autre (unité libre)", unit: "", ph: "ex : kg, €, pages" }
     ];
 
-    const vagueWords = ["améliorer", "mieux", "plus", "optimiser", "progresser", "booster", "rapidement", "efficacement", "simplement"];
-    const dateSignals = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre", "trimestre", "semaine", "mois", "jour", "q1", "q2", "q3", "q4", "s1", "s2"];
-
     const emptyForm = {
       titre: "",
       specific: { result: "" },
@@ -386,6 +364,7 @@
     };
 
     const STORAGE_KEY = "carryit_smart_form";
+    const STEP_KEY = "carryit_smart_step";
 
     function loadForm() {
       try {
@@ -394,8 +373,6 @@
           const parsed = JSON.parse(saved);
           if (!parsed.animated) parsed.animated = { vision: "" };
           if (!parsed.specific) parsed.specific = { result: "" };
-          // Migration : Mesurable devient une métrique structurée ; le seuil (ancien specific.threshold
-          // ou measurable.target) devient la CIBLE de la métrique ; l'ancien indicator devient le nom.
           const oldM = parsed.measurable || {};
           parsed.measurable = {
             type: oldM.type || "numeric",
@@ -414,14 +391,14 @@
     }
 
     let form = loadForm();
+    let activeSectionKey = null;   // section en cours d'édition → sa ligne s'éclaire dans la phrase
 
     const sectionsContainer = document.getElementById("sectionsContainer");
-    const objectiveText = document.getElementById("objectiveText");
     const objectivePhrase = document.getElementById("objectivePhrase");
+    const outputTitle = document.getElementById("outputTitle");
     const resetButton = document.getElementById("resetButton");
     const copyButton = document.getElementById("copyButton");
     const validateButton = document.getElementById("validateButton");
-    const validateHint = document.getElementById("validateHint");
     const toast = document.getElementById("toast");
 
     function escapeHtml(value) {
@@ -433,31 +410,18 @@
         .replaceAll("'", "&#039;");
     }
 
-    function isFilled(value) {
-      return value.trim().length > 0;
-    }
-
-    function hasNumber(value) {
-      return /[0-9]/.test(value);
-    }
-
-    function hasDateSignal(value) {
-      const normalized = value.toLowerCase();
-      return hasNumber(value) || dateSignals.some((signal) => normalized.includes(signal));
-    }
+    function isFilled(value) { return value.trim().length > 0; }
 
     function getValue(path) {
       const [group, key] = path.split(".");
       return form[group][key];
     }
-
     function setValue(path, value) {
       const [group, key] = path.split(".");
       form[group][key] = value;
     }
 
     function getSectionStatus(section) {
-      // Mesurable = métrique structurée : complet dès qu'il y a un nom ET une cible.
       if (section.key === "measurable") {
         const m = form.measurable;
         const hasUnit = isFilled(m.unit);
@@ -466,51 +430,25 @@
       }
       const values = section.fields.map(([fieldKey]) => form[section.key][fieldKey]);
       const filled = values.filter(isFilled).length;
-      const baseComplete = filled === section.fields.length;
-      let complete = baseComplete;
-      let warning = "";
-
-      if (section.key === "timebound") {
-        complete = baseComplete;
-      }
-
-      return {
-        filled,
-        total: section.fields.length,
-        complete,
-        warning
-      };
+      return { filled, total: section.fields.length, complete: filled === section.fields.length, warning: "" };
     }
 
-    /* Badges monochromes (DS : zéro vert/ambre sémantique — contraste seul). */
-    function badgeClass(status, optional) {
-      if (status.complete) return "ds-badge ds-badge--active";
-      if (status.filled > 0) return "ds-badge";
-      return "ds-badge ds-badge--muted";
+    function statusMeta(status, optional) {
+      if (status.complete) return { variant: "muted", label: "Complet" };
+      if (status.filled > 0) return { variant: "active", label: "À compléter" };
+      return optional ? { variant: "muted", label: "Optionnel" } : { variant: "default", label: "Vide" };
     }
-
-    // Résumé de la métrique (nom · départ → cible unité) pour l'aperçu et la phrase.
-    function metricSummary() {
-      const m = form.measurable;
-      const hasTarget = isFilled(String(m.target));
-      const hasUnit = isFilled(m.unit);
-      if (!hasTarget && !hasUnit) return "";
-      const t = METRIC_TYPES.find((x) => x.key === m.type);
-      const unit = m.unit ? ` ${m.unit}` : "";
-      const val = hasTarget ? `${m.target}${unit}` : m.unit;
-      return [t ? t.label : "", val].filter(Boolean).join(" · ");
-    }
-
-    function statusLabel(status, optional) {
-      if (status.complete) return "Complet";
-      if (status.filled > 0) return "À compléter";
-      return optional ? "Optionnel" : "Vide";
+    function statusBadgeHtml(section) {
+      const { variant, label } = statusMeta(getSectionStatus(section), section.optional);
+      const variantClass = variant === "default" ? "" : `ds-badge--${variant}`;
+      return `<span class="ds-badge ${variantClass}" data-badge="${escapeHtml(section.key)}">${label}</span>`;
     }
 
     // Évite « je veux je veux … » si l'utilisateur écrit déjà « je veux » dans le champ.
     function stripJeVeux(s) {
       return String(s).replace(/^\s*je\s+veux\s+/i, "");
     }
+
     function buildObjective() {
       const rawDeadline = form.timebound.deadline;
       const deadline = rawDeadline
@@ -529,13 +467,24 @@
         ? `Je mesurerai ma progression chaque mois ou chaque semaine en ${m.unit} jusqu'à atteindre ${cible}${unit}.`
         : `Je mesurerai ma progression jusqu'à atteindre ${cible}.`;
 
-      let text = `D'ici ${deadline}, je veux ${result}.\n${mesure}\nJe peux déjà m'appuyer sur ${resources}.\nCe qu'il me faut pour démarrer : ${constraints}.\nJe peux y consacrer ${hoursTxt}.`;
+      let text = `Je veux ${result}.\n${mesure}\nJe peux déjà m'appuyer sur ${resources}.\nCe qu'il me faut pour démarrer : ${constraints}.\nJe peux y consacrer ${hoursTxt}.\nÉchéance : ${deadline}.`;
       if (vision) text += `\nSi j'y arrive : ${vision}.`;
       return text;
     }
 
-    function buildObjectiveHtml() {
-      // Valeur saisie = blanc (obj-val) ; placeholder non rempli = gris (obj-ph). Hiérarchie premium.
+    // Chaque ligne de la phrase est rattachée aux dimensions qu'elle exprime :
+    // l'étape active éclaire sa ou ses lignes, le reste passe en retrait.
+    const LINE_SECTIONS = {
+      intro: ["specific"],
+      measure: ["measurable"],
+      resources: ["achievable"],
+      constraints: ["achievable"],
+      hours: ["relevant"],
+      deadline: ["timebound"],
+      vision: ["animated"]
+    };
+
+    function buildPhraseLines() {
       const val = (v) => `<span class="obj-val">${escapeHtml(v)}</span>`;
       const ph = (v) => `<span class="obj-ph">${escapeHtml(v)}</span>`;
       const slot = (raw, formatted, placeholder) =>
@@ -560,51 +509,28 @@
         : `Je mesurerai ma progression jusqu'à atteindre ${sCible}.`;
 
       const lines = [
-        `D'ici ${sDeadline}, je veux ${sResult}.`,
-        mesure,
-        `Je peux déjà m'appuyer sur ${sResources}.`,
-        `Ce qu'il me faut pour démarrer : ${sConstraints}.`,
-        `Je peux y consacrer ${sHours}.`
+        { key: "intro", html: `Je veux ${sResult}.` },
+        { key: "measure", html: mesure },
+        { key: "resources", html: `Je peux déjà m'appuyer sur ${sResources}.` },
+        { key: "constraints", html: `Ce qu'il me faut pour démarrer : ${sConstraints}.` },
+        { key: "hours", html: `Je peux y consacrer ${sHours}.` },
+        { key: "deadline", html: `Échéance : ${sDeadline}.` }
       ];
-      if (form.animated?.vision) lines.push(`Si j'y arrive : ${val(form.animated.vision)}.`);
-      return lines.join("<br>");
+      const visionFilled = isFilled(form.animated?.vision || "");
+      if (visionFilled) {
+        lines.push({ key: "vision", html: `Si j'y arrive : ${val(form.animated.vision)}.` });
+      }
+      return lines;
     }
 
-    function smartPreviewRow(letter, label, value, emptyText) {
-      const isEmpty = !String(value).trim();
-      return `
-        <div class="smart-recap-row">
-          <span class="smart-recap-letter">${escapeHtml(letter)}</span>
-          <div>
-            <span class="smart-recap-label type-data-label">${escapeHtml(label)}</span>
-            <span class="smart-recap-value type-body-sm${isEmpty ? " empty" : ""}">${escapeHtml(isEmpty ? emptyText : value)}</span>
-          </div>
-        </div>
-      `;
+    function renderPhrase() {
+      objectivePhrase.innerHTML = buildPhraseLines().map((line) => {
+        const active = !activeSectionKey || LINE_SECTIONS[line.key].includes(activeSectionKey);
+        return `<p class="phrase-line${active ? " active" : ""}">${line.html}</p>`;
+      }).join("");
     }
 
-    function buildObjectivePreview() {
-      const rawDeadline = form.timebound.deadline;
-      const deadline = rawDeadline
-        ? new Date(rawDeadline).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })
-        : "";
-      const ambition = form.specific.result ? stripJeVeux(form.specific.result) : "";
-      const measure = metricSummary();
-      const attainable = [form.achievable.resources, form.achievable.constraints].filter(isFilled).join(" · ");
-      const realiste = form.relevant.hours ? `${form.relevant.hours} par semaine` : "";
-
-      const rows = [
-        smartPreviewRow("S", "Spécifique", ambition, "Ton résultat concret"),
-        smartPreviewRow("M", "Mesurable", measure, "Ton unité et ta cible"),
-        smartPreviewRow("A", "Atteignable", attainable, "Ressources et manques à regarder en face"),
-        smartPreviewRow("R", "Réaliste", realiste, "Temps réel que tu peux engager"),
-        smartPreviewRow("T", "Temporel", deadline, "Date limite")
-      ];
-      if (form.animated?.vision) rows.push(smartPreviewRow("V", "Vision", form.animated.vision, ""));
-      return rows.join("");
-    }
-
-    // Formulaire métrique inline (Mesurable) : nom + type + départ/cible/unité.
+    // Formulaire métrique inline (Mesurable) : type + unité + cible.
     function metricFormHtml() {
       const m = form.measurable;
       const opts = METRIC_TYPES
@@ -631,76 +557,74 @@
       `;
     }
 
+    function missingSections() {
+      return sections
+        .filter((section) => !section.optional && !getSectionStatus(section).complete)
+        .map((section) => section.title);
+    }
+
     function renderSections() {
       sectionsContainer.innerHTML = sections.map((section) => {
-        const status = getSectionStatus(section);
-        const fieldHtml = section.metric ? metricFormHtml() : section.fields.map(([fieldKey, label, placeholder, type]) => {
-          const path = `${section.key}.${fieldKey}`;
-          const val = escapeHtml(getValue(path));
-          const displayLabel = label;
-          const dateLabel = val ? new Date(val).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : 'Choisir une date…';
-          const input = type === "date"
-            ? `<div class="ds-datefield">
-                 <button type="button" class="ds-datefield__trigger" data-empty="${val ? 'false' : 'true'}" onclick="toggleSmartCal(this, '${escapeHtml(path)}')" id="datebtn-${escapeHtml(path)}">
-                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-                   <span>${dateLabel}</span>
-                 </button>
-                 <input type="hidden" data-field="${escapeHtml(path)}" value="${val}" id="datehidden-${escapeHtml(path)}" />
-                 <div class="ds-datefield__popover" hidden id="datepop-${escapeHtml(path)}">
-                   <div class="ds-calendar-wrap"><div class="ds-cal-host" id="dscal-${escapeHtml(path)}"></div></div>
-                 </div>
-               </div>`
-            : `<textarea class="ds-textarea" data-field="${escapeHtml(path)}" placeholder="${escapeHtml(placeholder)}">${val}</textarea>`;
-          return `
-            <label class="input-group">
-              <span class="type-body-md field-label" id="label-${escapeHtml(path)}">${escapeHtml(displayLabel)}</span>
-              ${input}
-            </label>
-          `;
-        }).join("");
-
-        // Aide = composant DS Tooltip (survol/focus), icône « ? » du catalogue DS.
-        const hintTip = section.hint
-          ? `<span class="ds-tooltip-wrapper">
-               <button type="button" class="ds-tooltip-trigger" aria-label="Aide pour ${escapeHtml(section.title)}">
-                 <svg class="ds-tooltip-trigger-icon" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M6.2 6.3a1.8 1.8 0 0 1 3.5.6c0 1.2-1.8 1.8-1.8 1.8"/><path d="M8 11h.01"/></svg>
+      const fieldHtml = section.metric ? metricFormHtml() : section.fields.map(([fieldKey, label, placeholder, type]) => {
+        const path = `${section.key}.${fieldKey}`;
+        const val = escapeHtml(getValue(path));
+        const dateLabel = val ? new Date(val).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : 'Choisir une date…';
+        const input = type === "date"
+          ? `<div class="ds-datefield">
+               <button type="button" class="ds-datefield__trigger" data-empty="${val ? 'false' : 'true'}" onclick="toggleSmartCal(this, '${escapeHtml(path)}')" id="datebtn-${escapeHtml(path)}">
+                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                 <span>${dateLabel}</span>
                </button>
-               <span class="ds-tooltip" role="tooltip">${escapeHtml(section.hint)}</span>
-             </span>`
-          : '';
-
+               <input type="hidden" data-field="${escapeHtml(path)}" value="${val}" id="datehidden-${escapeHtml(path)}" />
+               <div class="ds-datefield__popover" hidden id="datepop-${escapeHtml(path)}">
+                 <div class="ds-calendar-wrap"><div class="ds-cal-host" id="dscal-${escapeHtml(path)}"></div></div>
+               </div>
+             </div>`
+          : `<textarea class="ds-textarea" data-field="${escapeHtml(path)}" placeholder="${escapeHtml(placeholder)}">${val}</textarea>`;
         return `
-          <article class="section-card">
-            <div class="section-header">
-              <div class="section-title-row">
-                <span class="ds-smart__letter section-letter ${status.complete ? "is-complete" : ""}" data-letter="${escapeHtml(section.key)}">${escapeHtml(section.letter)}</span>
-                <h2 class="type-h3 section-title">${escapeHtml(section.title)}${hintTip}</h2>
-              </div>
-              <span class="${badgeClass(status, section.optional)}" data-badge="${escapeHtml(section.key)}">${statusLabel(status, section.optional)}</span>
-            </div>
-            <div class="field-group">${fieldHtml}</div>
-          </article>
+          <label class="input-group">
+            <span class="type-body-md field-label" id="label-${escapeHtml(path)}">${escapeHtml(label)}</span>
+            ${input}
+          </label>
         `;
+      }).join("");
+
+      const hintTip = section.hint
+        ? `<span class="ds-tooltip-wrapper">
+             <button type="button" class="ds-tooltip-trigger" aria-label="Aide pour ${escapeHtml(section.title)}">
+               <svg class="ds-tooltip-trigger-icon" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M6.2 6.3a1.8 1.8 0 0 1 3.5.6c0 1.2-1.8 1.8-1.8 1.8"/><path d="M8 11h.01"/></svg>
+             </button>
+             <span class="ds-tooltip" role="tooltip">${escapeHtml(section.hint).replace(/\n/g, '<br>')}</span>
+           </span>`
+        : '';
+
+      return `
+        <article class="ds-card section-card" data-section="${escapeHtml(section.key)}">
+          <div class="section-header">
+            <div class="section-title-row">
+              <span class="section-letter">${escapeHtml(section.letter)}</span>
+              <h2 class="type-h3 section-title">${escapeHtml(section.title)}${hintTip}</h2>
+            </div>
+            ${statusBadgeHtml(section)}
+          </div>
+          <p class="section-def type-body-md">${escapeHtml(section.definition)}</p>
+          <div class="field-group">${fieldHtml}</div>
+        </article>
+      `;
       }).join("");
     }
 
-    function updateSectionStatuses() {
-      sections.forEach((section) => {
-        const status = getSectionStatus(section);
-        const badge = sectionsContainer.querySelector(`[data-badge="${section.key}"]`);
-        const letter = sectionsContainer.querySelector(`[data-letter="${section.key}"]`);
-        if (badge) { badge.className = badgeClass(status, section.optional); badge.textContent = statusLabel(status, section.optional); }
-        if (letter) { letter.className = `ds-smart__letter section-letter${status.complete ? " is-complete" : ""}`; }
-      });
-    }
-
+    // Mises à jour légères pendant la saisie (sans re-render des champs → focus conservé).
     function updateDynamic() {
-      updateSectionStatuses();
-      objectiveText.innerHTML = buildObjectivePreview();
-      objectivePhrase.innerHTML = buildObjectiveHtml();
-      const missing = sections
-        .filter((section) => !section.optional && !getSectionStatus(section).complete)
-        .map((section) => section.title);
+      sections.forEach((section) => {
+        const badge = sectionsContainer.querySelector(`[data-badge="${section.key}"]`);
+        if (badge) badge.outerHTML = statusBadgeHtml(section);
+      });
+      renderPhrase();
+      outputTitle.textContent = form.titre.trim() ? form.titre.trim() : "Ton objectif SMART";
+
+      const validateHint = document.getElementById("validateHint");
+      const missing = missingSections();
       validateButton.disabled = missing.length > 0;
       if (validateHint) validateHint.textContent = missing.length ? `À compléter : ${missing.join(", ")}` : "";
     }
@@ -714,7 +638,6 @@
       const field = event.target.dataset.field;
       if (!field) return;
       setValue(field, event.target.value);
-      // Changer le type de métrique pré-remplit l'unité (éditable ensuite).
       if (field === "measurable.type") {
         const t = METRIC_TYPES.find((x) => x.key === event.target.value);
         const unitInput = document.getElementById("measurableUnit");
@@ -722,6 +645,13 @@
       }
       saveForm();
       updateDynamic();
+    });
+
+    // Ligne active de la phrase = section en cours d'édition.
+    document.addEventListener("focusin", (event) => {
+      const card = event.target.closest("[data-section]");
+      const key = card ? card.dataset.section : null;
+      if (key !== activeSectionKey) { activeSectionKey = key; renderPhrase(); }
     });
 
     const resetConfirm = document.getElementById("resetConfirm");
@@ -750,7 +680,7 @@
     resetConfirm.addEventListener("mousedown", (e) => { if (e.target === resetConfirm) closeResetConfirm(); });
     document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !resetConfirm.hidden) closeResetConfirm(); });
 
-    validateButton.addEventListener("click", () => {
+    function submitObjective() {
       const specifique = form.specific.result || "";
       const atteignable = [form.achievable.resources, form.achievable.constraints ? "manque : " + form.achievable.constraints : ""].filter(Boolean).join(" / ");
       const m = form.measurable;
@@ -796,7 +726,9 @@
         localStorage.setItem("carryItObjectifSMART", JSON.stringify(smartObj));
       } catch {}
       window.location.href = "jalon.html";
-    });
+    }
+
+    validateButton.addEventListener("click", submitObjective);
 
     copyButton.addEventListener("click", async () => {
       const objective = buildObjective();
@@ -825,6 +757,7 @@
     titreInput.addEventListener("input", () => {
       form.titre = titreInput.value;
       saveForm();
+      updateDynamic();
     });
   </script>
 
@@ -913,8 +846,7 @@
         if (span) span.textContent = new Date(year, month, day).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
       }
       const pop = document.getElementById('datepop-' + path);
-      // La lib re-render (lemonade) pendant la phase de clic → un hide synchrone
-      // se fait clobber. On ferme au tick suivant, après le re-render.
+      // La lib re-render (lemonade) pendant la phase de clic → fermeture au tick suivant.
       openPath = null;
       setTimeout(() => { if (pop) pop.setAttribute('hidden', ''); }, 0);
     }
