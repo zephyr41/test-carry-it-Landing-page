@@ -348,7 +348,7 @@
     const emptyForm = {
       titre: "",
       specific: { result: "" },
-      measurable: { name: "", unitType: "", unitCustom: "", target: "" },
+      measurable: { name: "", unitType: "nombre", unitCustom: "", target: "" },
       achievable: { resources: "", constraints: "" },
       relevant: { hours: "" },
       timebound: { deadline: "" },
@@ -368,7 +368,7 @@
           const oldM = parsed.measurable || {};
           parsed.measurable = {
             name: oldM.name || "",
-            unitType: oldM.unitType !== undefined ? oldM.unitType : (oldM.unit ? "custom" : ""),
+            unitType: oldM.unitType !== undefined && oldM.unitType !== "" ? oldM.unitType : (oldM.unit ? "custom" : "nombre"),
             unitCustom: oldM.unitCustom || oldM.unit || "",
             target: oldM.target || ""
           };
