@@ -1096,18 +1096,30 @@
         .mission-source { display: block; font-size: 11px; color: rgba(255,255,255,0.55); margin-top: 12px; letter-spacing: 0.01em; font-style: italic; }
 
         .navigation-map {
+            /* Tokens from source graph "Success vs Abandon Graph" */
+            --color-background: #0A0A0B;
+            --color-surface: #161617;
+            --color-text-muted: rgba(255, 253, 246, 0.54);
+            --color-text-primary: #FFFDF6;
+            --color-text-secondary: #A8A8A8;
+            --color-accent-primary: #EE4408;
+            --card-border-defined: 1px solid color-mix(in srgb, #FFFDF6 10%, transparent);
+            --card-shadow-defined: 0 4px 12px -4px rgba(0, 0, 0, 0.45), inset 0 1px 0 color-mix(in srgb, #FFFDF6 5%, transparent);
+            --border-subtle: 1px solid rgba(255, 255, 255, 0.07);
+
             position: relative;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 20px;
-            padding: 50px 45px 45px;
-            backdrop-filter: blur(25px);
+            background: var(--color-surface);
+            border: var(--card-border-defined);
+            box-shadow: var(--card-shadow-defined);
+            border-radius: 16px;
+            padding: 48px 56px 40px;
             overflow: visible;
+            font-family: 'Inter', sans-serif;
         }
 
         .map-svg {
             width: 100%;
-            height: 320px;
+            height: auto;
             overflow: visible;
         }
 
@@ -1687,74 +1699,89 @@
             </header>
 
         <main class="navigation-map reveal" style="animation-delay: 0.2s;">
-            <svg class="map-svg" viewBox="0 0 1000 400">
-                <!-- Zone de Tri (4 mois / 94%) -->
-                <rect x="50" y="20" width="110" height="380" fill="rgba(238, 68, 8, 0.05)" rx="4" />
-                <text x="55" y="45" class="svg-label" style="fill: var(--accent); font-size: 9px;">ZONE DE TRI (SUR 2 ANS)</text>
-                <text x="55" y="60" class="svg-accent" style="font-size: 11px;">81% D'ABANDON*</text>
+    <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 36px; max-width: 720px;">
+      <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-muted);">D'après deux études longitudinales · Norcross et al., 1988 &amp; 2002</div>
+      <h2 style="margin: 0px; font-size: 28px; font-weight: 800; letter-spacing: -0.02em; color: var(--color-text-primary); line-height: 1.2; text-wrap: pretty;">81&nbsp;% abandonnent leurs ambitions sur 2 ans</h2>
+      <p style="margin: 0px; font-size: 14px; line-height: 1.55; color: var(--color-text-secondary); text-wrap: pretty;">Plus l'écart entre ton niveau actuel et le niveau visé est grand, plus les résultats mettent du temps à arriver.</p>
+      <p style="margin: 8px 0px 0px; font-size: 14px; line-height: 1.55; color: var(--color-text-secondary); text-wrap: pretty;">Voici 2 graphiques croisée :</p>
+      <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 14px;">
+        <div style="display: flex; align-items: baseline; gap: 12px;">
+          <span style="width: 24px; height: 0px; border-top: 2px dotted color-mix(in srgb, var(--color-text-primary) 55%, transparent); flex: 0 0 auto; transform: translateY(-4px);"></span>
+          <span style="font-size: 13px; color: var(--color-text-muted);"><strong style="color: var(--color-text-primary); font-weight: 700;">Objectif classique, sans méthode</strong> : (Pourcentage de gens qui continue leurs projet sur 2 ans)</span>
+        </div>
+        <div style="display: flex; align-items: baseline; gap: 12px;">
+          <span style="width: 24px; height: 3px; border-radius: 2px; background: var(--color-accent-primary); flex: 0 0 auto; transform: translateY(-3px);"></span>
+          <span style="font-size: 13px; color: var(--color-text-muted);"><strong style="color: var(--color-text-primary); font-weight: 700;">Objectif piloté par jalons</strong> : Temps réaliste pour atteindre les grands jalons sur 2 ans.</span>
+        </div>
+      </div>
+    </div>
 
-                <!-- Imagination (Ligne pointillée) -->
-                <path id="imaginationPath" class="expectation-path" d="M 50 350 L 950 60" />
-                <text x="820" y="85" class="svg-label" style="opacity: 0.4;">L'Imagination</text>
+    <svg class="map-svg" viewBox="0 0 1200 590" width="100%" font-family="Inter, sans-serif" style="display: block; overflow: visible;">
 
-                <!-- Trajectoire Réelle -->
-                <path id="realPath" class="trajectory-path" d="
-                    M 50 360
-                    L 90 350
-                    L 140 375
-                    L 250 370
-                    L 350 365
-                    L 450 372
-                    L 580 320
-                    L 660 345
-                    L 750 205
-                    L 840 225
-                    L 950 60"
-                />
+      <g stroke="color-mix(in srgb, var(--color-text-primary) 6%, transparent)" stroke-width="1">
+        <line x1="110" x2="1130" y1="380" y2="380"></line>
+        <line x1="110" x2="1130" y1="270" y2="270"></line>
+        <line x1="110" x2="1130" y1="160" y2="160"></line>
+        <line x1="110" x2="1130" y1="50" y2="50"></line>
+      </g>
+      <line x1="110" x2="1130" y1="490" y2="490" stroke="color-mix(in srgb, var(--color-text-primary) 18%, transparent)" stroke-width="1"></line>
 
-                <!-- ANNOTATIONS -->
+      <text x="94" y="18" fill="var(--color-text-secondary)" font-size="12.5">Part des personnes qui tiennent encore leur objectif <tspan fill="var(--color-text-muted)">(100&nbsp;% au départ → 19&nbsp;% après 2 ans)</tspan></text>
+      <g fill="var(--color-text-muted)" font-size="11" text-anchor="end" font-family="Inter, sans-serif">
+        <text x="94" y="494">0%</text>
+        <text x="94" y="384">25%</text>
+        <text x="94" y="274">50%</text>
+        <text x="94" y="164">75%</text>
+        <text x="94" y="54">100%</text>
+      </g>
+      <g fill="var(--color-text-muted)" font-size="12" text-anchor="middle">
+        <text x="110" y="520">Départ</text>
+        <text x="280" y="520">1 semaine</text>
+        <text x="450" y="520">1 mois</text>
+        <text x="620" y="520">3 mois</text>
+        <text x="790" y="520">6 mois</text>
+        <text x="960" y="520">1 an</text>
+        <text x="1130" y="520">2 ans</text>
+      </g>
 
-                <!-- Annotation 1 : Effort Invisible -->
-                <g transform="translate(180, 240)">
-                    <text class="svg-title" text-anchor="middle">L'Effort Invisible</text>
-                    <text y="18" class="svg-desc" text-anchor="middle">Sans preuves immédiates,</text>
-                    <text y="34" class="svg-desc" text-anchor="middle">la majorité s'arrête ici.</text>
-                    <line class="leader-line" x1="0" y1="45" x2="0" y2="135" />
-                </g>
+      <path class="gja-abandon" d="M 110,50 C 138.33333333333334,66.86666666666666 223.33333333333334,118.19999999999999 280,151.2 C 336.6666666666667,184.2 393.3333333333333,223.06666666666663 450,247.99999999999997 C 506.6666666666667,272.9333333333333 563.3333333333334,289.8 620,300.8 C 676.6666666666666,311.8 733.3333333333334,303 790,314 C 846.6666666666666,325 903.3333333333334,351.4 960,366.79999999999995 C 1016.6666666666666,382.19999999999993 1101.6666666666667,399.79999999999995 1130,406.4" fill="none" stroke="color-mix(in srgb, var(--color-text-primary) 38%, transparent)" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="1 7"></path>
+      <g fill="var(--color-surface)" stroke="color-mix(in srgb, var(--color-text-primary) 50%, transparent)" stroke-width="1.5">
+        <circle cx="110" cy="50" r="3.5"></circle>
+        <circle cx="280" cy="151.2" r="3.5"></circle>
+        <circle cx="450" cy="248" r="3.5"></circle>
+        <circle cx="620" cy="300.8" r="3.5"></circle>
+        <circle cx="790" cy="314" r="3.5"></circle>
+        <circle cx="1130" cy="406.4" r="3.5"></circle>
+      </g>
+      <g fill="var(--color-text-muted)" font-size="12" font-weight="500" text-anchor="middle" font-family="Inter, sans-serif">
+        <text x="134" y="44" text-anchor="start">100%</text>
+        <text x="280" y="135">77%</text>
+        <text x="450" y="232">55%</text>
+        <text x="620" y="285">43%</text>
+        <text x="790" y="298">40%</text>
+      </g>
+      <text x="1130" y="390" text-anchor="middle" fill="var(--color-text-primary)" font-size="13" font-weight="700" font-family="Inter, sans-serif">19%</text>
+      <text x="1148" y="410" text-anchor="start" fill="var(--color-text-secondary)" font-size="12">tiennent<tspan x="1148" dy="16">encore</tspan></text>
 
-                <!-- Annotation 2 : Jalons -->
-                <g transform="translate(450, 110)">
-                    <text class="svg-title" text-anchor="middle">Jalons : Points de Contrôle</text>
-                    <text y="18" class="svg-desc" text-anchor="middle">Savoir si tu recalibres ou si tu continues.</text>
-                    <text y="34" class="svg-desc" text-anchor="middle">6 mois au lieu de 3 ? C'est normal.</text>
-                    <text y="54" class="svg-accent" text-anchor="middle">C'est l'Aléa de Parcours.</text>
-                    <line class="leader-line" x1="0" y1="65" x2="0" y2="260" />
-                </g>
+      <path class="gja-success" d="M 110,490 C 138.33333333333334,488.5333333333333 223.33333333333334,485.59999999999997 280,481.2 C 336.6666666666667,476.8 393.3333333333333,471.6666666666667 450,463.6 C 506.6666666666667,455.53333333333336 563.3333333333334,440.1333333333333 620,432.8 C 676.6666666666666,425.4666666666667 733.3333333333334,445.2666666666667 790,419.6 C 846.6666666666666,393.93333333333334 903.3333333333334,340.40000000000003 960,278.8 C 1016.6666666666666,217.20000000000002 1101.6666666666667,88.13333333333333 1130,50" fill="none" stroke="var(--color-accent-primary)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="stroke-dasharray: 1193.28; stroke-dashoffset: 0;"></path>
+      <g fill="var(--color-surface)" stroke="var(--color-accent-primary)" stroke-width="2">
+        <circle cx="620" cy="432.8" r="4.5"></circle>
+        <circle cx="790" cy="419.6" r="4.5"></circle>
+        <circle cx="960" cy="278.8" r="4.5"></circle>
+      </g>
+      <g fill="var(--color-text-muted)" font-size="11" text-anchor="middle" font-family="Inter, sans-serif">
+        <text x="620" y="456">J1</text>
+        <text x="790" y="443">J2</text>
+        <text x="960" y="302">J3</text>
+      </g>
+      <text x="705" y="474" text-anchor="middle" fill="var(--color-text-muted)" font-size="12" font-style="italic">certains jalons prennent plus de temps que prévu</text>
+      <circle cx="1130" cy="50" r="5.5" fill="var(--color-accent-primary)"></circle>
+      <text x="1148" y="46" text-anchor="start" fill="var(--color-text-primary)" font-size="13" font-weight="700">Objectif<tspan x="1148" dy="16">atteint</tspan></text>
 
-                <!-- POINTS DE JALONS (Uniformisés) -->
-                <circle class="milestone-point" cx="140" cy="375" r="4.5" />
-                <circle class="milestone-point" cx="250" cy="370" r="4.5" />
-                <circle class="milestone-point" cx="350" cy="365" r="4.5" />
-                <circle class="milestone-point" cx="450" cy="372" r="4.5" />
-                <circle class="milestone-point" cx="750" cy="205" r="4.5" />
+    </svg>
 
-                <!-- LABELS JALONS -->
-                <text x="140" y="398" text-anchor="middle" class="svg-label">JALON 1</text>
-                <text x="250" y="393" text-anchor="middle" class="svg-label">JALON 2</text>
-                <text x="350" y="388" text-anchor="middle" class="svg-label">JALON 3</text>
-                <text x="450" y="395" text-anchor="middle" class="svg-label">JALON 4</text>
-                <!-- JALON 5 : Maintenant au dessus du point (y < 205) et couleur standard -->
-                <text x="750" y="185" text-anchor="middle" class="svg-label">JALON 5 (50%)</text>
-
-                <!-- FINAL -->
-                <circle class="milestone-point final" cx="950" cy="60" r="8" />
-                <text x="820" y="40" class="svg-label svg-accent" style="font-size: 13px; font-weight: 900;">AMBITION ATTEINTE</text>
-            </svg>
+    <p style="margin: 32px 0px 0px; padding-top: 16px; border-top: var(--border-subtle); font-size: 12px; color: var(--color-text-muted); line-height: 1.6;">Sources : <a style="color: inherit;" href="https://pubmed.ncbi.nlm.nih.gov/2980864/" target="_blank" rel="noopener">Norcross &amp; Vangarelli (1988), Journal of Substance Abuse</a> · <a style="color: inherit;" href="https://pubmed.ncbi.nlm.nih.gov/11920693/" target="_blank" rel="noopener">Norcross, Mrykalo &amp; Blagys (2002), Journal of Clinical Psychology</a>. Courbe orange illustrative.</p>
         </main>
-
-        <p class="svg-source type-caption" style="text-align: center; margin-top: 8px; opacity: 0.6; font-size: 11px;">
-            * Source : <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC7725288/#:~:text=One%20week%20into%20the%20new%20year%2C%2077%25,use%20of%20self%2Dreward%20achieved%20greater%20success%20rates." target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: underline;">Oscarsson et al. (2020), PLoS One</a>. Après 2 ans : 19 % ont tenu... ce qui signifie 81 % d'abandon !
-        </p>
         <footer class="briefing-footer reveal" style="animation-delay: 0.4s;">
             <div class="quit-check">
                 L’app qui t’amène là où tu veux abandonner… et qui te montre que c’est là que tout commence.
