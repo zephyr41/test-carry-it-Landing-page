@@ -566,6 +566,17 @@ Le fichier `tokens.css` complet fait ~470 lignes de tokens + les classes utilita
 </nav>
 ```
 
+### Onboarding nav
+
+Construit 2026-07-18 (extrait de `objectif.html`).
+
+1. **Rôle** : coquille de navigation d'un flux d'**onboarding** (objectif → jalon → …) : bouton retour + wordmark centré + action « Recommencer » + rail de progression collé au bas. **Distincte de `.ds-navbar`** (navbar **produit** : brand + menu projet + user + tabs Vision/Jalons/Exécution) — ici pas de tabs, pas de menu, juste l'avancement dans le flux.
+2. **Anatomie** : `<nav class="ds-onboarding-nav">` (sticky, `border-bottom`) > `.ds-onboarding-nav__inner` (grille `1fr auto 1fr`, largeur alignée sur `.ds-container`) = `.ds-onboarding-nav__back` (carré icône, chrome ghost mono) + `.ds-onboarding-nav__brand` (wordmark Rifton) + **`.ds-button--subtle.ds-button--xs`** (« Recommencer », réutilisé tel quel via `.ds-onboarding-nav__reset` pour l'alignement) + `.ds-onboarding-nav__progress` (`__progress-track` + `__progress-fill` + `__progress-label`).
+3. **Rail de progression** : élément propre à ce composant (≠ `.ds-progress`, barre de carte étiquetée). Remplissage **BLANC** (`--color-text-primary`), jamais l'accent orange (Principe 2 : la progression n'est pas une action). Étape figée par modifier `--1-3` / `--2-3` / `--3-3` (`transform: scaleX`, même convention que `.ds-progress__fill--17/--100`).
+4. **Tokens** : aucun token dédié — token-pur sur les primitives existantes (`--space-64/48/16/4`, `--grid-max-width`, `--grid-page-padding`, `--border-subtle/strong/focus`, `--radius-md`, `--color-*`, `--progress-transition`, `--z-overlay`). `.ds-onboarding-nav__reset` réutilise le composant Button.
+5. **Règles d'usage** : le retour = carré icône ghost (mono, jamais l'orange). « Recommencer » = action tertiaire → `ds-button--subtle`. Un seul rail, remplissage blanc. Réutilisable sur tous les écrans du flux (à migrer : `objectif-intro.html`, encore sur les anciens tokens).
+6. **Preview / usage réel** : `objectif.html`.
+
 ### Card
 
 1. **Rôle** : conteneur générique pour regrouper du contenu (base de tous les `-stage` de preview, et future base des cartes produit KPI/jalon).

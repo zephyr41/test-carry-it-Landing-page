@@ -575,6 +575,7 @@
   --grid-columns-tablet: 8;                                    /* tablette (≤1024px) */
   --grid-columns-mobile: 4;                                    /* mobile (≤600px) */
   --grid-max-width: 1280px;                                    /* largeur max du contenu (dashboard) — pas d'étalement infini + air sur les bords (MacBook ~1512) */
+  --grid-max-width-reading: 1120px;                            /* largeur des pages formulaire/lecture (onboarding) — plus étroite que le dashboard = plus de respiration latérale, lecture focalisée */
   --grid-gutter: var(--space-24);                              /* gouttière desktop entre colonnes */
   --grid-gutter-mobile: var(--space-16);                       /* gouttière resserrée sur petit écran */
   --grid-page-padding: var(--space-page-desktop);              /* marge de page (bords écran) — 32 */

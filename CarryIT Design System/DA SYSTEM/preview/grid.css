@@ -13,6 +13,12 @@
   padding-inline: var(--grid-page-padding);
 }
 
+/* Variante lecture/formulaire (onboarding) : contenu plus étroit = plus de respiration
+   latérale, lecture focalisée. Le dashboard (data-dense) garde .ds-container (1280). */
+.ds-container--reading {
+  max-width: calc(var(--grid-max-width-reading) + var(--grid-page-padding) * 2);
+}
+
 /* La grille : 12 pistes fluides, gouttière fixe. */
 .ds-grid {
   display: grid;
