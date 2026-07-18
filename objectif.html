@@ -690,32 +690,34 @@
       const specifique = form.specific.result || "";
       const atteignable = [form.achievable.resources, form.achievable.constraints ? "manque : " + form.achievable.constraints : ""].filter(Boolean).join(" / ");
       const m = form.measurable;
+      const finalUnit = ['nombre', 'custom'].includes(m.unitType) ? m.unitCustom : m.unitType;
       const targetNum = Number(String(m.target).replace(",", "."));
       const cible = Number.isFinite(targetNum) ? targetNum : null;
-      const typeLabel = (METRIC_TYPES.find((x) => x.key === m.type) || {}).label || "";
-      const kpiName = m.unit || typeLabel;
-      const niveau = [m.target, m.unit].filter(Boolean).join(" ");
+      const targetValue = cible !== null ? cible : m.target;
+      const kpiName = m.name || "[mesure]";
+      const niveau = [m.target, finalUnit].filter(Boolean).join(" ");
+      
       const smartObj = {
         titre: form.titre || "",
         specifique,
         niveau,
         mesurable: kpiName,
         kpiLabel: kpiName,
-        kpiTarget: cible,
+        kpiTarget: targetValue,
         kpiTargetRaw: niveau,
         kpiTargetSource: "onboarding",
-        kpiUnit: m.unit,
-        metricType: m.type,
+        kpiUnit: finalUnit,
+        metricType: m.unitType,
         globalKpi: {
           label: kpiName,
           titre: kpiName,
-          target: cible,
-          cible: cible,
+          target: targetValue,
+          cible: targetValue,
           targetLabel: niveau,
           targetSource: "onboarding",
-          unit: m.unit,
-          unite: m.unit,
-          metricType: m.type,
+          unit: finalUnit,
+          unite: finalUnit,
+          metricType: m.unitType,
           value: 0,
           valeur: 0,
           start: 0,
