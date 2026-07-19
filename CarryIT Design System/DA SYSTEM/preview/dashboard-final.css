@@ -169,10 +169,11 @@
 @media (min-width: 1025px) {
   .dashboard-final__moyen-row > .ds-col-4 { grid-column: span 3; }
   .dashboard-final__moyen-row > .ds-col-8 { grid-column: span 9; }
-  .dashboard-final__detail-card .ds-jalon-detail__section + .ds-jalon-detail__section { flex: 1; }
-  .dashboard-final__detail-card .ds-jalon-detail__kpi-grid { flex: 1; }
-  .dashboard-final__detail-card .ds-jalon-detail__kpi-grid .ds-kpi-card { display: flex; flex-direction: column; }
-  .dashboard-final__detail-card .ds-jalon-detail__kpi-grid .ds-kpi-card__metric { flex: 1; }
+  /* Cartes KPI COMPACTES (hauteur fixe du composant, ~190) : on ne les étire plus pour
+     remplir la colonne — c'est ce qui creusait la carte (bloc valeur en haut, filet+pied
+     en bas, ~400px de vide au milieu). Le mou de la colonne va au PIED : le filet + « Valider »
+     s'épinglent en bas de la colonne (margin-top:auto), les cartes gardent leur densité. */
+  .dashboard-final__detail-card .ds-jalon-detail__rule:last-of-type { margin-top: auto; }
 }
 
 /* Empilé (≤1024) : rail + détail pleine largeur, flux naturel (le viewport-fill ne tient

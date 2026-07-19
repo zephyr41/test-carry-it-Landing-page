@@ -326,6 +326,7 @@
   }
   function saveRaw(arr) {
     try { localStorage.setItem('carryit_v1_tasks', JSON.stringify(arr)); } catch (e) { return; }
+    if (window.CarryITSyncProject) window.CarryITSyncProject();   // to-do par-projet
     if (window.CarryITBuildDashboardData) window.CarryITDashboardData = window.CarryITBuildDashboardData();
     render();
     if (openTaskId != null) buildModal();   // reflète les changements dans le panneau ouvert
@@ -384,6 +385,7 @@
     var arr = readRaw(); var t = findRaw(arr, id); if (!t) return;
     t.notes = val;
     try { localStorage.setItem('carryit_v1_tasks', JSON.stringify(arr)); } catch (e) { return; }
+    if (window.CarryITSyncProject) window.CarryITSyncProject();   // to-do par-projet
     if (window.CarryITBuildDashboardData) window.CarryITDashboardData = window.CarryITBuildDashboardData();
     render();   // liste seulement — pas le modal (évite de perdre le focus du champ)
   }

@@ -1,0 +1,120 @@
+/* ────────────────────────────────────────────────────────────────────────
+   Spotlight d'onboarding (guided tour, 1 étape)
+   Met en surbrillance une cible réelle (bouton « Ajouter une mesure ») en
+   assombrissant le reste de la page, avec une bulle directive à côté.
+
+   Mécanique du « trou » : .ds-spotlight__ring est positionné (en JS) sur le
+   rectangle de la cible ; son box-shadow géant peint le scrim TOUT AUTOUR,
+   laissant la cible claire. Le ring a pointer-events:none → les clics passent
+   au vrai bouton dessous (aucune duplication de logique).
+   ──────────────────────────────────────────────────────────────────────── */
+
+.ds-spotlight {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-spotlight);
+  opacity: 0;
+  pointer-events: none;                 /* le scrim ne bloque pas ; seuls ring+bulle comptent */
+  transition: opacity var(--motion-duration-base) var(--motion-ease-out);
+}
+
+.ds-spotlight.is-active {
+  opacity: 1;
+}
+
+.ds-spotlight[hidden] {
+  display: none;
+}
+
+/* Le « trou » : transparent au centre, scrim projeté tout autour par le box-shadow. */
+.ds-spotlight__ring {
+  position: absolute;
+  border-radius: var(--button-radius-default);
+  box-shadow: 0 0 0 100vmax var(--modal-backdrop);
+  outline: var(--border-focus);
+  outline-offset: var(--space-4);
+  pointer-events: none;                 /* clic traverse vers le vrai bouton */
+  transition: opacity var(--motion-duration-base) var(--motion-ease-out);
+}
+
+/* Bulle directive (coach mark). */
+.ds-spotlight__bubble {
+  position: absolute;
+  width: min(360px, calc(100vw - 2 * var(--space-24)));
+  padding: var(--space-card-padding);
+  background: var(--color-surface-raised);
+  border: var(--border-subtle);
+  border-radius: var(--container-radius);
+  box-shadow: var(--shadow-lg);
+  pointer-events: auto;
+  display: grid;
+  gap: var(--space-element-gap);
+}
+
+.ds-spotlight__eyebrow {
+  color: var(--color-text-muted);
+}
+
+.ds-spotlight__title {
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.ds-spotlight__desc {
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.ds-spotlight__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-12);
+  margin-top: var(--space-4);
+}
+
+.ds-spotlight__actions .ds-button {
+  white-space: nowrap;
+}
+
+/* Flèche de la bulle vers la cible (par défaut : bulle sous la cible → flèche en haut). */
+.ds-spotlight__bubble::before {
+  content: "";
+  position: absolute;
+  width: var(--space-12);
+  height: var(--space-12);
+  background: var(--color-surface-raised);
+  border-left: var(--border-subtle);
+  border-top: var(--border-subtle);
+  transform: rotate(45deg);
+  top: calc(-1 * var(--space-8) + 1px);
+  left: var(--space-24);
+}
+
+/* Bulle AU-DESSUS de la cible → flèche en bas. */
+.ds-spotlight__bubble--above::before {
+  top: auto;
+  bottom: calc(-1 * var(--space-8) + 1px);
+  transform: rotate(225deg);
+}
+
+/* Étape sans cible (ex : « Maintenant, commence. ») : scrim plein porté par le conteneur
+   (le ring, qui peint habituellement le scrim, est masqué) + bulle centrée sans flèche. */
+.ds-spotlight--centered {
+  background: var(--modal-backdrop);
+}
+
+.ds-spotlight--centered .ds-spotlight__ring {
+  display: none;
+}
+
+.ds-spotlight__bubble--centered::before {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ds-spotlight,
+  .ds-spotlight__ring {
+    transition: none;
+  }
+}

@@ -64,10 +64,19 @@
   gap: var(--space-8);
 }
 
+/* Actions déférentes : au repos la carte ne montre que la donnée ; crayon + « Ajouter »
+   n'apparaissent qu'au survol / focus clavier (a11y). Pas de reflow (opacity seule). */
 .ds-kpi-card__head-actions {
   display: flex;
   align-items: center;
   gap: var(--space-8);
+  opacity: 0;
+  transition: opacity var(--motion-duration-fast) var(--motion-ease-out);
+}
+
+.ds-kpi-card:hover .ds-kpi-card__head-actions,
+.ds-kpi-card:focus-within .ds-kpi-card__head-actions {
+  opacity: 1;
 }
 
 .ds-kpi-card__eyebrow {
@@ -108,12 +117,19 @@
    Delta = valeur DYNAMIQUE (longueur variable) → le chip ne rétrécit jamais (info
    prioritaire), c'est la fraîcheur qui tronque si la place manque. */
 .ds-kpi-card__meta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
   min-width: 0;
   overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
-  text-align: right;
   color: var(--kpi-card-meta-color);
+}
+
+/* Le libellé fraîcheur tronque (le chip delta est prioritaire) ; l'icône ne rétrécit jamais. */
+.ds-kpi-card__meta-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .ds-kpi-card__footer .ds-delta {
@@ -126,6 +142,7 @@
 }
 
 .ds-kpi-card__meta-icon {
+  flex-shrink: 0;
   width: var(--space-12);
   height: var(--space-12);
   fill: none;
@@ -294,22 +311,26 @@
 /* Largeur de remplissage des barres de démo (même pattern que --17/--100 lib) */
 .ds-progress__fill--33 { transform: scaleX(0.33); }
 
-/* Dépassement : barre PLEINE (0→valeur) + tick vertical au seuil → « rempli,
-   seuil ici, dépassé » (bien plus lisible qu'un fade lu comme « reste à faire »). */
+/* Barre de progression : collée sous la valeur (respiration valeur→barre), plus « perdue »
+   en bas de la carte. */
 .ds-kpi-card .ds-progress {
   position: relative;
+  margin-top: var(--kpi-card-bar-gap);
 }
 
+/* Dépassement : barre PLEINE (0→valeur) + tick vertical au seuil → « rempli,
+   seuil ici, dépassé » (bien plus lisible qu'un fade lu comme « reste à faire »).
+   La position (left) est posée en JS depuis la donnée (cible/valeur), comme le scaleX du fill. */
 .ds-kpi-card__bar-tick {
   position: absolute;
   top: 0;
   bottom: 0;
-  width: var(--border-width-strong, 2px);
-  background: var(--color-background); /* sombre → visible sur le remplissage blanc */
+  width: var(--kpi-card-bar-tick-width);
+  background: var(--kpi-card-bar-tick-color); /* sombre → visible sur le remplissage blanc */
   transform: translateX(-50%);
 }
 
-.ds-kpi-card__bar-tick--29 { left: 29%; } /* seuil 15 / valeur 51 */
+.ds-kpi-card__bar-tick--29 { left: 29%; } /* seuil 15 / valeur 51 (démo statique) */
 
 @media (max-width: 640px) {
   .kpi-card-preview {

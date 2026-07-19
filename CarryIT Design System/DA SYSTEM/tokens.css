@@ -132,6 +132,9 @@
      au-dessus du contenu de page. Sans ça, un contenu positionné avec z-index
      (ex : dots du stepper) transperce le backdrop. */
   --z-overlay: 1000;
+  /* Spotlight d'onboarding : au-dessus du contenu de page, SOUS le modal (--z-overlay)
+     pour que la modale de saisie déclenchée par le spotlight le recouvre proprement. */
+  --z-spotlight: 900;
 
   /* Primitive shadow tokens */
   --shadow-none: none;
@@ -680,6 +683,11 @@
   --kpi-card-metric-gap: var(--space-16);
   /* respiration valeur → barre */
   --kpi-card-bar-gap: var(--space-12);
+  /* Tick de seuil (dépassement) : barre PLEINE + repère vertical au niveau de la cible.
+     2px = hairline lisible comme un seuil (raw px assumé en token composant, cf. heatmap/scheduler).
+     Sombre → tranche sur le remplissage blanc de la barre. */
+  --kpi-card-bar-tick-width: 2px;
+  --kpi-card-bar-tick-color: var(--color-background);
   /* respiration head (label + actions) → titre */
   --kpi-card-title-gap: var(--space-16);
   /* séparation du groupe valeur sous le cluster identité (2 groupes distincts) */

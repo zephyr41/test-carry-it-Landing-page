@@ -4,37 +4,38 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DA System — Dashboard (long terme)</title>
-<link rel="stylesheet" href="../tokens.css">
-<link rel="stylesheet" href="buttons.css">
-<link rel="stylesheet" href="progress.css">
-<link rel="stylesheet" href="card.css">
-<link rel="stylesheet" href="jalon-card.css">
-<link rel="stylesheet" href="badge.css">
-<link rel="stylesheet" href="checkbox.css">
-<link rel="stylesheet" href="disclosure.css">
-<link rel="stylesheet" href="table.css">
-<link rel="stylesheet" href="task-list.css">
-<link rel="stylesheet" href="court-terme.css">
-<link rel="stylesheet" href="delta.css">
-<link rel="stylesheet" href="kpi-card.css">
-<link rel="stylesheet" href="jalon-detail.css">
-<link rel="stylesheet" href="tabs.css">
-<link rel="stylesheet" href="timeline.css">
-<link rel="stylesheet" href="calendar-heatmap.css">
-<link rel="stylesheet" href="empty-state.css">
-<link rel="stylesheet" href="chart.css">
-<link rel="stylesheet" href="smart.css">
-<link rel="stylesheet" href="grid.css">
-<link rel="stylesheet" href="navbar.css">
-<link rel="stylesheet" href="inputs.css">
-<link rel="stylesheet" href="textarea.css">
-<link rel="stylesheet" href="select.css">
+<link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/tokens.css">
+<link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/buttons.css">
+<link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/progress.css">
+<link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/card.css">
+<link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/jalon-card.css">
+<link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/badge.css">
+<link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/checkbox.css">
+<link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/disclosure.css">
+<link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/table.css">
+<link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/task-list.css">
+<link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/court-terme.css">
+<link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/delta.css">
+<link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/kpi-card.css">
+<link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/jalon-detail.css">
+<link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/tabs.css">
+<link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/timeline.css">
+<link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/calendar-heatmap.css">
+<link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/empty-state.css">
+<link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/chart.css">
+<link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/smart.css">
+<link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/grid.css">
+<link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/navbar.css">
+<link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/inputs.css">
+<link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/textarea.css">
+<link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/select.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@calendarjs/ce/dist/style.min.css">
-<link rel="stylesheet" href="calendar.css">
-<link rel="stylesheet" href="modal.css">
-<link rel="stylesheet" href="effort-modal.css">
-<link rel="stylesheet" href="sync.css">
-<link rel="stylesheet" href="dashboard-final.css">
+<link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/calendar.css">
+<link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/modal.css">
+<link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/effort-modal.css">
+<link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/sync.css">
+<link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/dashboard-final.css">
+<link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/spotlight.css">
 </head>
 <body>
   <main class="dashboard-final">
@@ -59,7 +60,7 @@
               <!-- Dropdown de projets (rendu par projects.js depuis carryItAllObjectifs) : switch + supprimer. -->
               <div class="ds-navbar__project-menu" data-project-menu role="menu" hidden>
                 <ul class="ds-navbar__project-list" data-project-list></ul>
-                <a class="ds-navbar__project-add" href="../../../objectif.html">
+                <a class="ds-navbar__project-add" href="objectif.html">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v14M5 12h14"/></svg>
                   Ajouter un projet
                 </a>
@@ -211,6 +212,22 @@
       <div class="ds-sync-modal__foot">
         <p class="ds-sync-modal__note type-body-sm">Tes données ne quittent jamais ton appareil.</p>
         <button type="button" class="ds-button ds-button--ghost ds-button--block" data-sync-close>Fermer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Onboarding — tour spotlight multi-étapes. La COPY est centralisée dans spotlight.js
+       (tableau STEPS) : c'est là qu'on édite les textes. Ici, la coquille seulement. -->
+  <div class="ds-spotlight" data-spotlight hidden>
+    <div class="ds-spotlight__ring" data-spotlight-ring aria-hidden="true"></div>
+    <div class="ds-spotlight__bubble" data-spotlight-bubble role="dialog" aria-modal="false"
+         aria-labelledby="spotlight-title" aria-describedby="spotlight-desc">
+      <span class="ds-spotlight__eyebrow type-data-label" data-spotlight-eyebrow></span>
+      <h2 id="spotlight-title" class="ds-spotlight__title type-h3" data-spotlight-title></h2>
+      <p id="spotlight-desc" class="ds-spotlight__desc type-body-sm" data-spotlight-desc></p>
+      <div class="ds-spotlight__actions">
+        <button type="button" class="ds-button ds-button--subtle ds-button--xs" data-spotlight-skip></button>
+        <button type="button" class="ds-button ds-button--primary ds-button--sm" data-spotlight-cta></button>
       </div>
     </div>
   </div>
@@ -431,23 +448,26 @@
     </div>
   </div>
 
-  <script src="timeline.js"></script>
+  <script src="CarryIT%20Design%20System/DA%20SYSTEM/preview/timeline.js"></script>
   <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
-  <script src="dashboard-data.js"></script>
-  <script src="chart.js"></script>
-  <script src="dashboard-final.js"></script>
-  <script src="sync.js"></script>
-  <script src="smart.js"></script>
+  <!-- Isolation par projet : DOIT tourner avant dashboard-data.js (hydrate les clés live). -->
+  <script src="CarryIT%20Design%20System/DA%20SYSTEM/preview/project-sync.js"></script>
+  <script src="CarryIT%20Design%20System/DA%20SYSTEM/preview/dashboard-data.js"></script>
+  <script src="CarryIT%20Design%20System/DA%20SYSTEM/preview/chart.js"></script>
+  <script src="CarryIT%20Design%20System/DA%20SYSTEM/preview/dashboard-final.js"></script>
+  <script src="CarryIT%20Design%20System/DA%20SYSTEM/preview/sync.js"></script>
+  <script src="CarryIT%20Design%20System/DA%20SYSTEM/preview/smart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/lemonadejs/dist/lemonade.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@calendarjs/ce/dist/index.min.js"></script>
-  <script src="dashboard-actions.js"></script>
-  <script src="projects.js"></script>
-  <script src="dashboard-views.js"></script>
-  <script src="dashboard-heatmap.js"></script>
-  <script src="effort-modal.js"></script>
-  <script src="dashboard-effort.js"></script>
-  <script src="dashboard-kpi.js"></script>
-  <script src="dashboard-jalon.js"></script>
-  <script src="dashboard-todo.js"></script>
+  <script src="CarryIT%20Design%20System/DA%20SYSTEM/preview/dashboard-actions.js"></script>
+  <script src="CarryIT%20Design%20System/DA%20SYSTEM/preview/projects.js"></script>
+  <script src="CarryIT%20Design%20System/DA%20SYSTEM/preview/dashboard-views.js"></script>
+  <script src="CarryIT%20Design%20System/DA%20SYSTEM/preview/spotlight.js"></script>
+  <script src="CarryIT%20Design%20System/DA%20SYSTEM/preview/dashboard-heatmap.js"></script>
+  <script src="CarryIT%20Design%20System/DA%20SYSTEM/preview/effort-modal.js"></script>
+  <script src="CarryIT%20Design%20System/DA%20SYSTEM/preview/dashboard-effort.js"></script>
+  <script src="CarryIT%20Design%20System/DA%20SYSTEM/preview/dashboard-kpi.js"></script>
+  <script src="CarryIT%20Design%20System/DA%20SYSTEM/preview/dashboard-jalon.js"></script>
+  <script src="CarryIT%20Design%20System/DA%20SYSTEM/preview/dashboard-todo.js"></script>
 </body>
 </html>

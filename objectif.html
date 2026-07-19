@@ -732,6 +732,12 @@
         existing.push(smartObj);
         localStorage.setItem("carryItAllObjectifs", JSON.stringify(existing));
         localStorage.setItem("carryItObjectifSMART", JSON.stringify(smartObj));
+        // Nouveau projet = projet courant, et il démarre PROPRE : jalons + tâches vides,
+        // rattachés à CE projet (sinon le dashboard reste sur l'ancien projet / mélange les données).
+        localStorage.setItem("carryItEditingProjectIndex", String(existing.length - 1));
+        localStorage.setItem("carryItMilestones", "[]");
+        localStorage.setItem("carryit_v1_jalons", "[]");
+        localStorage.setItem("carryit_v1_tasks", "[]");
       } catch {}
       window.location.href = "jalon.html";
     }

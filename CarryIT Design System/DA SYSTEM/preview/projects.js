@@ -64,6 +64,9 @@
       measures: Array.isArray(gk.measures) ? gk.measures : (Array.isArray(obj.measures) ? obj.measures : []),
     }));
     localStorage.setItem('carryit_v1_jalons', JSON.stringify(Array.isArray(obj.jalons) ? obj.jalons : []));
+    // Tâches par-projet : sans ça, au switch les clés live gardent les tâches de l'ancien
+    // projet et le sync-retour (project-sync) les réécrit dans le nouveau (clobber).
+    localStorage.setItem('carryit_v1_tasks', JSON.stringify(Array.isArray(obj.tasks) ? obj.tasks : []));
   }
 
   function switchProject(i) {

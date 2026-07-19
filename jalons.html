@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Carry It - Timeline Finale</title>
 
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
@@ -1491,15 +1491,24 @@
             }
             .navigation-map {
                 padding: 24px 16px 20px;
+                border-radius: 14px;
+                width: 100%;
+                min-width: 0;
+                overflow: hidden;
+            }
+            .navigation-map h2 {
+                font-size: 22px !important;
+            }
+            /* Only the chart scrolls; header, legend and sources wrap to the viewport. */
+            .chart-scroll {
+                min-width: 0;
                 overflow-x: auto;
                 -webkit-overflow-scrolling: touch;
-                border-radius: 14px;
             }
             .map-svg {
-                min-width: 560px;
-                width: 560px;
-                height: 224px;
-                overflow: hidden;
+                min-width: 540px;
+                width: 540px;
+                height: auto;
             }
             .attempts-title { font-size: 18px; }
             .attempts-subtitle { font-size: 13px; }
@@ -1716,6 +1725,7 @@
       </div>
     </div>
 
+    <div class="chart-scroll">
     <svg class="map-svg" viewBox="0 0 1200 590" width="100%" font-family="Inter, sans-serif" style="display: block; overflow: visible;">
 
       <g stroke="color-mix(in srgb, var(--color-text-primary) 6%, transparent)" stroke-width="1">
@@ -1779,6 +1789,7 @@
       <text x="1148" y="46" text-anchor="start" fill="var(--color-text-primary)" font-size="13" font-weight="700">Objectif<tspan x="1148" dy="16">atteint</tspan></text>
 
     </svg>
+    </div>
 
     <p style="margin: 32px 0px 0px; padding-top: 16px; border-top: var(--border-subtle); font-size: 12px; color: var(--color-text-muted); line-height: 1.6;">Sources : <a style="color: inherit;" href="https://pubmed.ncbi.nlm.nih.gov/2980864/" target="_blank" rel="noopener">Norcross &amp; Vangarelli (1988), Journal of Substance Abuse</a> · <a style="color: inherit;" href="https://pubmed.ncbi.nlm.nih.gov/11920693/" target="_blank" rel="noopener">Norcross, Mrykalo &amp; Blagys (2002), Journal of Clinical Psychology</a>. Courbe orange illustrative.</p>
         </main>
@@ -1983,6 +1994,15 @@
 
             const total = milestones.length;
 
+            // Le "prochain jalon à faire" = le jalon non-final le plus proche dans le temps.
+            // Seul lui (+ l'objectif final) porte un critère de validation précis.
+            const nowTs = Date.now();
+            const nonFinal = milestones.filter((mm, i) => i !== 0);
+            const upcoming = nonFinal.filter(mm => new Date(mm.date).getTime() >= nowTs);
+            const nextPool = upcoming.length ? upcoming : nonFinal;
+            const nextJalon = nextPool.reduce((a, b) => (a && new Date(a.date) <= new Date(b.date) ? a : b), null);
+            const nextJalonId = nextJalon ? nextJalon.id : null;
+
             milestones.forEach((m, index) => {
                 const d = new Date(m.date);
                 const month = d.toLocaleDateString('fr-FR', { month: 'short' }).replace('.', '');
@@ -2029,7 +2049,9 @@
                         <div class="sep"></div>
 
                         ${(() => {
-                            const isFar = !isFinal && (new Date(m.date) - new Date() > 1000*60*60*24*180);
+                            const isNext = m.id === nextJalonId;
+                            const showCriteria = isFinal || isNext;
+                            const isFar = !isFinal && !isNext && (new Date(m.date) - new Date() > 1000*60*60*24*180);
                             const isMid = m.tag === 'Mi-parcours';
                             const ph = isFinal
                                 ? { t: "Ex : Marathon terminé.", d: "Ex : Terminer un marathon complet.", k: "Ex : Chrono officiel sous 3h00." }
@@ -2053,7 +2075,7 @@
                                       placeholder="${ph.d}"
                                       oninput="autoResize(this); update('${m.id}', 'desc', this.value)">${m.desc || ''}</textarea>
                         </div>
-                        <div class="form-group">
+                        ${showCriteria ? `<div class="form-group">
                             <div style="display:flex;align-items:center;gap:6px;">
                                 <span class="form-label">Critère de validation</span>
                                 <span class="help-tip">?
@@ -2067,7 +2089,7 @@
                             <textarea class="input" rows="2"
                                       placeholder="${ph.k}"
                                       oninput="autoResize(this); update('${m.id}', 'kpi', this.value)">${m.kpi || ''}</textarea>
-                        </div>`;
+                        </div>` : ''}`;
                         })()}
                     </div>
                 `;
@@ -2109,6 +2131,29 @@
 
         function save() {
             localStorage.setItem('carryItMilestones', JSON.stringify(milestones));
+            // Persiste dans le projet courant (source unique) : sans ça le dashboard,
+            // qui lit carryItAllObjectifs[projet].jalons, ne verrait pas ces jalons.
+            try {
+                const all = JSON.parse(localStorage.getItem('carryItAllObjectifs') || '[]');
+                if (Array.isArray(all) && all.length) {
+                    let i = parseInt(localStorage.getItem('carryItEditingProjectIndex') || '0', 10);
+                    if (isNaN(i) || i < 0 || i >= all.length) i = 0;
+                    const existing = Array.isArray(all[i].jalons) ? all[i].jalons : [];
+                    // Milestone {id,date,title,desc,kpi} → jalon dashboard {id,titre,date,statut,critere,kpis}.
+                    // On préserve les kpis déjà définis dans le dashboard (fusion par id).
+                    (milestones || []).forEach(m => {
+                        if (!m || !m.id) return;
+                        const j = existing.find(x => String(x.id) === String(m.id));
+                        if (j) { j.titre = m.title || j.titre; j.date = m.date || j.date; if (!j.critere) j.critere = m.desc || m.kpi || ''; }
+                        else existing.push({ id: m.id, titre: m.title || '', date: m.date, statut: m.statut || 'pending', critere: m.desc || m.kpi || '', kpis: [] });
+                    });
+                    // Retire les jalons supprimés côté timeline (ids absents des milestones).
+                    const ids = new Set((milestones || []).map(m => String(m.id)));
+                    all[i].jalons = existing.filter(j => ids.has(String(j.id)));
+                    localStorage.setItem('carryItAllObjectifs', JSON.stringify(all));
+                    localStorage.setItem('carryit_v1_jalons', JSON.stringify(all[i].jalons));
+                }
+            } catch (e) {}
         }
 
         function autoResize(el) {

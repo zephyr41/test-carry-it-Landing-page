@@ -9,6 +9,10 @@
   var EDIT_ICON = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
   var PLUS_ICON = '<svg class="ds-kpi-card__action-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16m8-8H4"/></svg>';
   var DOTS_ICON = '<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>';
+  // Horloge — mesure en retard sur sa cadence (état stale, ambre).
+  var CLOCK_ICON = '<svg class="ds-kpi-card__meta-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
+  // Jours d'une période de cadence → seuil de « retard » (au-delà = stale).
+  var FREQ_DAYS = { 'Quotidien': 1, 'Hebdomadaire': 7, 'Mensuel': 30 };
 
   var MONTHS_FR = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
   var STATUS_LABEL = { completed: 'Terminé', in_progress: 'Actif', pending: 'À venir' };
@@ -36,15 +40,29 @@
     return d.getUTCDate() + ' ' + MONTHS_FR[d.getUTCMonth()] + ' ' + d.getUTCFullYear();
   }
 
-  // "Il y a Nj" depuis la dernière mesure (identique à dashboard-final.js).
-  function freshness(dateStr) {
+  // Nombre de jours depuis une date (null si date invalide).
+  function daysSince(dateStr) {
     var iso = toISO(dateStr);
     var d = iso ? new Date(iso) : null;
-    if (!d || isNaN(d)) return '';
-    var days = Math.floor((Date.now() - d.getTime()) / 86400000);
+    if (!d || isNaN(d)) return null;
+    return Math.floor((Date.now() - d.getTime()) / 86400000);
+  }
+  // "Il y a Nj" depuis la dernière mesure (identique à dashboard-final.js).
+  function freshness(dateStr) {
+    var days = daysSince(dateStr);
+    if (days == null) return '';
     if (days <= 0) return "aujourd'hui";
     if (days === 1) return 'hier';
     return 'il y a ' + days + 'j';
+  }
+  // Mesure en retard : une période de cadence complète a été MANQUÉE (au-delà de 2× la
+  // cadence, on est dans la 2e période sans nouvelle mesure) → état ambre. Ex. hebdo : 8j
+  // reste normal, 40j = en retard.
+  function isStale(kpi) {
+    var period = FREQ_DAYS[kpi && kpi.frequency];
+    if (!period) return false;
+    var days = daysSince(lastMeasureDate(kpi));
+    return days != null && days > period * 2;
   }
   function lastMeasureDate(kpi) {
     var m = kpi && kpi.measures;
@@ -87,15 +105,22 @@
     // Meta v4 : « Hier · Hebdo » = fraîcheur (capitalisée) · fréquence abrégée.
     var fq = freqShort(kpi.frequency);
     var metaLine = [fresh ? cap(fresh) : '', fq].filter(Boolean).join(' · ');
-    // Barre de progression (v4) : ratio value/cible clampé 0-1. La valeur exacte (scaleX)
-    // est appliquée en JS après render (data-fill) — pas de style inline dans le HTML.
-    var pct = (kpi.value != null && kpi.target)
-      ? Math.max(0, Math.min(1, kpi.value / kpi.target)) : null;
-    var progress = pct == null ? '' :
-      '<div class="ds-progress" role="progressbar" aria-valuenow="' + Math.round(pct * 100) +
-        '" aria-valuemin="0" aria-valuemax="100" aria-label="Avancement du ' + esc(typeLabel).toLowerCase() + '">' +
-        '<div class="ds-progress__fill" data-fill="' + pct + '"></div>' +
-      '</div>';
+    var stale = isStale(kpi);
+    // Barre de progression : ratio value/cible clampé 0-1 (scaleX posé en JS via data-fill).
+    // Dépassement (value > cible) → barre PLEINE (fill 1) + tick de seuil à cible/valeur :
+    // lecture « rempli, seuil ici, dépassé » (data-tick posé en JS, pas de style inline).
+    var ratio = (kpi.value != null && kpi.target)
+      ? Math.max(0, kpi.value / kpi.target) : null;
+    var progress = '';
+    if (ratio != null) {
+      var fill = Math.min(1, ratio);
+      var tick = ratio > 1 ? '<div class="ds-kpi-card__bar-tick" data-tick="' + (kpi.target / kpi.value) + '"></div>' : '';
+      progress =
+        '<div class="ds-progress" role="progressbar" aria-valuenow="' + Math.round(fill * 100) +
+          '" aria-valuemin="0" aria-valuemax="100" aria-label="Avancement du ' + esc(typeLabel).toLowerCase() + '">' +
+          '<div class="ds-progress__fill" data-fill="' + fill + '"></div>' + tick +
+        '</div>';
+    }
     // Fréquence retirée du footer : « Hebdomadaire » tronquait toujours en « Hebdo… ».
     // Elle vit dans le modal d'édition du KPI, pas besoin de la répéter ici.
     return '<article class="ds-kpi-card ds-col-6">' +
@@ -117,7 +142,12 @@
       '<hr class="ds-kpi-card__divider">' +
       '<div class="ds-kpi-card__footer">' +
         '<span class="type-body-sm ds-delta">' + esc(foot) + '</span>' +
-        (metaLine ? '<span class="ds-kpi-card__meta type-body-sm">' + esc(metaLine) + '</span>' : '') +
+        (metaLine
+          ? '<span class="ds-kpi-card__meta type-body-sm' + (stale ? ' ds-kpi-card__meta--stale' : '') + '">' +
+              (stale ? CLOCK_ICON : '') +
+              '<span class="ds-kpi-card__meta-text">' + esc(metaLine) + '</span>' +
+            '</span>'
+          : '') +
       '</div>' +
     '</article>';
   }
@@ -189,6 +219,10 @@
     // Applique le remplissage des barres (scaleX) hors HTML — data-fill → transform.
     Array.prototype.forEach.call(card.querySelectorAll('.ds-progress__fill[data-fill]'), function (el) {
       el.style.transform = 'scaleX(' + el.dataset.fill + ')';
+    });
+    // Position du tick de seuil (cible/valeur) hors HTML — data-tick → left.
+    Array.prototype.forEach.call(card.querySelectorAll('.ds-kpi-card__bar-tick[data-tick]'), function (el) {
+      el.style.left = (el.dataset.tick * 100) + '%';
     });
 
     // Surligne dans le rail le jalon actuellement affiché (sinon on détaille j3 sans repère).

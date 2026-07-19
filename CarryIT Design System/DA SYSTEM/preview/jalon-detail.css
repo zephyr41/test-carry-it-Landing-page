@@ -90,6 +90,21 @@
   color: var(--color-text-primary);
 }
 
+/* Vue moyen terme : la carte KPI porte EN PLUS une barre de progression (absente du
+   composant de base kpi-card.html) → on resserre le rythme vertical pour tenir une carte
+   compacte (~cible 190) sans creux, en réutilisant des tokens d'échelle existants (jamais
+   d'offset custom). Scopé au grid moyen terme → la vue long terme (hero) n'est pas touchée.
+   Ligne du chiffre resserrée = barre « collée » sous la valeur (cible) + carte plus basse. */
+.ds-jalon-detail__kpi-grid .ds-kpi-card__value {
+  line-height: var(--type-data-value-line); /* 36 : nombre single-line, pas de clip (cap ~29) */
+}
+.ds-jalon-detail__kpi-grid .ds-kpi-card__metric {
+  margin-top: var(--space-8); /* rythme compact (= échelle de la variante résumé) */
+}
+.ds-jalon-detail__kpi-grid .ds-kpi-card__divider {
+  margin-block: var(--space-8); /* air autour du filet aligné sur --kpi-card-summary-divider-gap (8) */
+}
+
 /* ── Footer : Valider ce jalon + ⋯ ───────────────────────────── */
 .ds-jalon-detail__footer {
   display: flex;
