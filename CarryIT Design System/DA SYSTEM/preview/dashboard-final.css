@@ -97,20 +97,15 @@
   display: none;
 }
 
-/* La vue moyen terme occupe la hauteur restante sous la navbar et n'excède jamais le
-   viewport : pas de scroll de page (Principe 5). Le seul défilement possible est interne
-   au rail (liste de jalons) si les jalons débordent — la carte cadence reste visible. */
+/* Vue moyen terme : hauteur NATURELLE (pas de fill-viewport). Le contenu décide de la hauteur,
+   les cartes gardent leur taille fixe (composant), rien ne s'étire. Scroll de page si besoin. */
 .dashboard-final__page--moyen {
-  flex: 1;
-  min-height: 0;
-  overflow: hidden;
-  grid-template-rows: minmax(0, 1fr);
+  grid-template-rows: auto;
 }
 
-/* La rangée remplit la page ; les deux colonnes s'étirent à la même hauteur (v4). */
+/* Les deux colonnes s'ancrent en HAUT, chacune à sa hauteur naturelle (pas d'étirement). */
 .dashboard-final__moyen-row {
-  align-items: stretch;
-  min-height: 0;
+  align-items: flex-start;
 }
 
 /* CONTEXTE (col-4) : rail puis carte cadence empilés en haut (enquillés). Le rail épouse
@@ -165,15 +160,10 @@
 }
 
 /* Desktop : asymétrie SUR la grille 12 col — rail = 3 colonnes, détail = 9 (gouttière système).
-   Les cartes KPI absorbent le mou pour remplir la hauteur du détail (v4 : cartes hautes). */
+   Aucun étirement : les cartes KPI gardent leur hauteur fixe (composant), tout respire. */
 @media (min-width: 1025px) {
   .dashboard-final__moyen-row > .ds-col-4 { grid-column: span 3; }
   .dashboard-final__moyen-row > .ds-col-8 { grid-column: span 9; }
-  /* Cartes KPI COMPACTES (hauteur fixe du composant, ~190) : on ne les étire plus pour
-     remplir la colonne — c'est ce qui creusait la carte (bloc valeur en haut, filet+pied
-     en bas, ~400px de vide au milieu). Le mou de la colonne va au PIED : le filet + « Valider »
-     s'épinglent en bas de la colonne (margin-top:auto), les cartes gardent leur densité. */
-  .dashboard-final__detail-card .ds-jalon-detail__rule:last-of-type { margin-top: auto; }
 }
 
 /* Empilé (≤1024) : rail + détail pleine largeur, flux naturel (le viewport-fill ne tient
