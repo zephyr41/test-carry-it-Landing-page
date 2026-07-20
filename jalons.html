@@ -1961,12 +1961,12 @@
                             const isFar = !isFinal && !isNext && (new Date(m.date) - new Date() > 1000*60*60*24*180);
                             const isMid = m.tag === 'Mi-parcours';
                             const ph = isFinal
-                                ? { t: "Ex : Marathon terminé.", d: "Ex : Terminer un marathon complet.", k: "Ex : Chrono officiel sous 3h00." }
+                                ? { t: "Ex : Marathon terminé.", d: "Ex : Terminer un marathon complet.", k: "Ex : Chrono officiel sous 3h00.", sub_d: "L'objectif, en une phrase simple." }
                                 : isMid
-                                ? { t: "Ce qui doit être vrai à mi-chemin.", d: "Ce qui doit exister pour que la fin soit encore possible.", k: "La preuve. Binaire, oui ou non." }
+                                ? { t: "Ce qui doit être vrai à mi-chemin.", d: "Ce qui doit exister pour que la fin soit encore possible.", k: "La preuve. Binaire, oui ou non.", sub_d: "L'objectif, en une phrase simple." }
                                 : isFar
-                                ? { t: "Une direction. Tu préciseras quand tu seras plus proche.", d: "Quelle est la grande étape majeure qui doit être atteinte ? (Si tu galères reste approximatif. Le plus important c'est ton prochain Jalon, et que ton SMART soit clair.)", k: "Optionnel pour l'instant." }
-                                : { t: "Ex : Livrables clés à cette date.", d: "Ce que tu peux montrer à cette date.", k: "La preuve. Binaire, oui ou non." };
+                                ? { t: "Une direction. Tu préciseras quand tu seras plus proche.", d: "Quelle est la grande étape majeure qui doit être atteinte ?", k: "Optionnel pour l'instant.", sub_d: "Si tu galères reste approximatif. Le plus important c'est ton prochain Jalon, et que ton SMART soit clair." }
+                                : { t: "Ex : Livrables clés à cette date.", d: "Ce que tu peux montrer à cette date.", k: "La preuve. Binaire, oui ou non.", sub_d: "L'objectif, en une phrase simple." };
                             return `
                         <div class="form-group">
                             <span class="form-label">Titre du jalon</span>
@@ -1977,7 +1977,7 @@
                         </div>
                         <div class="form-group">
                             <span class="form-label">Description du jalon</span>
-                            <span class="form-sublabel">L'objectif, en une phrase simple.</span>
+                            <span class="form-sublabel">${ph.sub_d}</span>
                             <textarea class="input" rows="2"
                                       placeholder="${ph.d}"
                                       oninput="autoResize(this); update('${m.id}', 'desc', this.value)">${m.desc || ''}</textarea>
