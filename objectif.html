@@ -738,6 +738,8 @@
         localStorage.setItem("carryItMilestones", "[]");
         localStorage.setItem("carryit_v1_jalons", "[]");
         localStorage.setItem("carryit_v1_tasks", "[]");
+        // Nouveau projet → relancer le tour d'onboarding sur le dashboard (spotlight.js STORAGE_KEY).
+        localStorage.removeItem("carryit_onboard_done");
       } catch {}
       window.location.href = "jalon.html";
     }

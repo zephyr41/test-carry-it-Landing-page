@@ -1049,7 +1049,7 @@
             flex-direction: column;
             gap: 32px;
             margin: 0 auto;
-            padding: 90px 20px 110px;
+            padding: 40px 20px 140px;
             justify-content: center;
             align-items: center;
         }
@@ -1199,24 +1199,29 @@
             line-height: 1.6;
         }
 
+        /* DS Button — variante inverse, taille lg (tokens.css : --button-inverse-*, --button-height-lg 64,
+           --button-padding-inline-lg 32, --button-font-size 16 / --button-font-weight 700, --button-radius-pill) */
         .btn-launch {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 64px;
+            padding: 0 32px;
             background: #FFFDF6;
-            color: #000;
-            border: none;
-            padding: 14px 40px;
-            border-radius: 100px;
-            font-weight: 800;
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
+            color: #0A0A0B;
+            border: 1px solid #FFFDF6;
+            border-radius: 9999px;
+            font-size: 16px;
+            line-height: 24px;
+            font-weight: 700;
+            letter-spacing: 0;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: background-color 140ms cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .btn-launch:hover {
-            background: #EE4408;
-            color: white;
-            transform: translateY(-2px);
+            background: #DDDBD6;
+            color: #0A0A0B;
         }
 
         .reveal {
@@ -1484,7 +1489,7 @@
 
             /* BRIEFING */
             .briefing-shell {
-                padding: 64px 16px 80px;
+                padding: 64px 16px 110px;
                 gap: 24px;
             }
             .navigation-map {
@@ -1511,7 +1516,8 @@
             .attempts-title { font-size: 18px; }
             .attempts-subtitle { font-size: 13px; }
             .quit-check { font-size: 14px; }
-            .btn-launch { padding: 12px 28px; font-size: 12px; }
+            /* DS Button mobile : --button-height-mobile 48, --button-padding-inline-mobile 24 */
+            .btn-launch { height: 48px; padding: 0 24px; font-size: 16px; }
         }
 
 

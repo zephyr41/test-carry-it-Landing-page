@@ -332,6 +332,18 @@
 
 .ds-kpi-card__bar-tick--29 { left: 29%; } /* seuil 15 / valeur 51 (démo statique) */
 
+/* ── État vide « fantôme » : anatomie de carte en blocs skeleton STATIQUES (pas
+   d'animation → lit « à remplir », pas « en chargement ») + bordure dashed = placeholder. ── */
+.ds-kpi-card--empty { border: var(--kpi-card-define-border); }
+.ds-kpi-card--empty:hover,
+.ds-kpi-card--empty:focus-within { border: var(--kpi-card-define-border); }
+.ds-kpi-card--empty .ds-skeleton { animation: none; background-image: none; }
+/* Valeur = gros bloc (proportion du vrai nombre 40px), pas un filet. */
+.ds-kpi-card--empty .ds-skeleton--value { height: var(--space-48); }
+/* Barre pleine largeur dimmée (skeleton), pas de remplissage partiel. */
+.ds-kpi-card--empty .ds-progress__fill { background: var(--skeleton-base); transform: none; }
+.ds-kpi-card__empty-action { margin-top: var(--kpi-card-metric-gap); align-self: flex-start; }
+
 @media (max-width: 640px) {
   .kpi-card-preview {
     padding: var(--space-page-mobile);

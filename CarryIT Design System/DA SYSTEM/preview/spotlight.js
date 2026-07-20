@@ -34,10 +34,10 @@
     {
       id: 'result', view: 'moyen',
       target: '[data-kpi-type="lagging"][data-define-kpi], [data-kpi-type="lagging"][data-edit-kpi]',
-      eyebrow: '[EYEBROW — copy Nils]',
-      title: '[Titre résultat — copy Nils]',
-      desc: '[Le résultat précis à atteindre pour ce jalon — copy Nils]',
-      skip: 'Passer', cta: 'Définir le résultat',
+      eyebrow: 'Résultat',
+      title: 'Définit un résultat précis',
+      desc: 'Par rapport à ton critère de validation; définit un résultat mesurable, pour être sur que tu avance vers ton jalon actuel',
+      skip: 'Passer', cta: 'Définir',
       done: function (d) { return !!d.resultKpi; },
     },
     {
