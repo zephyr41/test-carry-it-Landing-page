@@ -34,33 +34,34 @@
     {
       id: 'result', view: 'moyen',
       target: '[data-kpi-type="lagging"][data-define-kpi], [data-kpi-type="lagging"][data-edit-kpi]',
-      eyebrow: 'Résultat',
-      title: 'Définit un résultat précis',
-      desc: 'Par rapport à ton critère de validation; définit un résultat mesurable, pour être sur que tu avance vers ton jalon actuel',
+      eyebrow: 'KPI de résultat',
+      title: "Quel chiffre te dira que c'est atteint ?",
+      showCriteria: true,
+      desc: "Mesure un indicateur de ce critère : c'est ton KPI de résultat. Ex : « économiser 500 € » → tu mesures combien tu as économisé. X/500.",
       skip: 'Passer', cta: 'Définir',
       done: function (d) { return !!d.resultKpi; },
     },
     {
       id: 'effort', view: 'moyen',
       target: '[data-kpi-type="leading"][data-define-kpi], [data-kpi-type="leading"][data-edit-kpi]',
-      eyebrow: '[EYEBROW — copy Nils]',
-      title: '[Titre effort — copy Nils]',
-      desc: "[Ce que tu fais pour faire avancer le résultat — copy Nils]",
-      skip: 'Passer', cta: "Définir l'effort",
+      eyebrow: "KPI d'effort",
+      title: "Qu'est-ce que tu vas faire chaque semaine pour atteindre ton résultat ?",
+      desc: "Tu peux le trouver en cours de route si tu ne l'as pas direct. L'important, c'est d'exécuter.",
+      skip: 'Passer', cta: 'Définir',
       done: function (d) { return !!d.effortKpi; },
     },
     {
       id: 'start', view: 'todo',
       target: null,   // centré, pas de cible
-      eyebrow: '[EYEBROW — copy Nils]',
+      eyebrow: 'Exécution',
       title: 'Maintenant, commence.',
-      desc: '[Petit mot de lancement — copy Nils]',
-      cta: "C'est parti",   // pas de skip sur l'étape terminale
+      desc: 'Ajoute ta première tâche. Et commence à exécuter.',
+      skip: 'Passer', cta: "C'est parti",
       finish: true,
     },
   ];
 
-  var root, ring, bubble, eyebrowEl, stepsEl, titleEl, descEl, skipBtn, ctaBtn;
+  var root, ring, bubble, eyebrowEl, stepsEl, titleEl, critEl, critTextEl, descEl, skipBtn, ctaBtn;
   var cur = -1, active = false;
 
   function tok(name, fallback) {
@@ -105,6 +106,12 @@
     eyebrowEl.textContent = step.eyebrow || '';
     titleEl.textContent = step.title || '';
     descEl.textContent = step.desc || '';
+    // Rappel dynamique du critère de validation du jalon actif (étape « KPI de résultat »).
+    if (critEl) {
+      var crit = step.showCriteria ? ((data().activeJalon || {}).critere || '') : '';
+      if (crit) { critTextEl.textContent = crit; critEl.hidden = false; }
+      else { critEl.hidden = true; }
+    }
     ctaBtn.textContent = step.cta || 'Continuer';
     if (step.skip) { skipBtn.textContent = step.skip; skipBtn.hidden = false; }
     else { skipBtn.hidden = true; }
@@ -156,6 +163,14 @@
     if (!step.view) return;
     var tab = document.querySelector('.ds-tabs__tab[data-view="' + step.view + '"]');
     if (tab && tab.getAttribute('aria-selected') !== 'true') tab.click();
+    // Étapes jalon (vue moyen) : forcer le détail sur le jalon ACTIF, même si l'onglet moyen
+    // était déjà sélectionné (sinon le clic ci-dessus est sauté et la vue garde un autre jalon
+    // sélectionné → le KPI se définit sur le mauvais jalon et done (jalon actif) ne se satisfait
+    // jamais → l'étape boucle). CarryITShowJalon n'est pas wrappé → pas de re-déclenchement.
+    if (step.view === 'moyen' && typeof window.CarryITShowJalon === 'function') {
+      var aj = data().activeJalon;
+      if (aj && aj.id != null) window.CarryITShowJalon(aj.id);
+    }
   }
 
   function enter(i) {
@@ -227,6 +242,8 @@
     bubble = root.querySelector('[data-spotlight-bubble]');
     eyebrowEl = root.querySelector('[data-spotlight-eyebrow]');
     stepsEl = root.querySelector('[data-spotlight-steps]');
+    critEl = root.querySelector('[data-spotlight-criteria]');
+    critTextEl = root.querySelector('[data-spotlight-criteria-text]');
     titleEl = root.querySelector('[data-spotlight-title]');
     descEl = root.querySelector('[data-spotlight-desc]');
     skipBtn = root.querySelector('[data-spotlight-skip]');

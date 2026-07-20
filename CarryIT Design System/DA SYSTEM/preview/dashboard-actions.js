@@ -79,8 +79,34 @@
     // SUR le calendrier (capture → la lib ne reçoit pas l'event) : le mois ne défile plus au scroll.
     if (calPop) calPop.addEventListener('wheel', function (e) { e.stopPropagation(); e.preventDefault(); }, { capture: true, passive: false });
 
+    // Rappel en tête du modal : ce que le KPI principal mesure (+ unité) et sa dernière valeur.
+    // Infos utiles pour saisir une mesure cohérente. Ligne « dernière valeur » masquée si aucune.
+    function populateRecall() {
+      var recall = document.querySelector('[data-measure-recall]');
+      if (!recall) return;
+      var d = (typeof window.CarryITBuildDashboardData === 'function')
+        ? window.CarryITBuildDashboardData() : (window.CarryITDashboardData || {});
+      var k = d.objectiveKpi || {};
+      var unit = k.unit || '';
+      var hasMetric = !!k.label;
+      var metric = (k.label || '') + (unit ? ' (' + unit + ')' : '');
+      var metricEl = recall.querySelector('[data-measure-recall-metric]');
+      var metricWrap = recall.querySelector('[data-measure-recall-metric-wrap]');
+      if (metricEl) metricEl.textContent = metric;
+      if (metricWrap) metricWrap.hidden = !hasMetric;
+      var measures = Array.isArray(k.measures) ? k.measures : [];
+      var last = measures.slice().sort(function (a, b) { return new Date(a.date) - new Date(b.date); }).pop();
+      var hasLast = !!(last && last.value != null);
+      var lastWrap = recall.querySelector('[data-measure-recall-last-wrap]');
+      var lastEl = recall.querySelector('[data-measure-recall-last]');
+      if (hasLast && lastEl) lastEl.textContent = String(last.value) + (unit ? ' ' + unit : '');
+      if (lastWrap) lastWrap.hidden = !hasLast;
+      recall.hidden = !(hasMetric || hasLast);
+    }
+
     function openMeasure() {
       editingKey = null;
+      populateRecall();
       if (titleEl) titleEl.textContent = 'Ajouter une mesure';
       if (deleteBtn) deleteBtn.hidden = true;
       initCalendar();
@@ -96,6 +122,7 @@
 
     // Édition d'une mesure existante — même modal, pré-rempli (règle DS : une seule porte d'édition).
     function openEdit(measure) {
+      populateRecall();
       var iso = toComparable(measure.date);
       editingKey = (measure.id != null) ? { by: 'id', v: measure.id } : { by: 'date', v: iso };
       if (titleEl) titleEl.textContent = 'Modifier la mesure';

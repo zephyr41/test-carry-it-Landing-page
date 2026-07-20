@@ -228,6 +228,10 @@
         <span class="ds-spotlight__steps" data-spotlight-steps></span>
       </div>
       <h2 id="spotlight-title" class="ds-spotlight__title" data-spotlight-title></h2>
+      <div class="ds-spotlight__criteria" data-spotlight-criteria hidden>
+        <span class="ds-spotlight__criteria-label">Ton critère de validation</span>
+        <p class="ds-spotlight__criteria-text" data-spotlight-criteria-text></p>
+      </div>
       <p id="spotlight-desc" class="ds-spotlight__desc" data-spotlight-desc></p>
       <div class="ds-spotlight__actions">
         <button type="button" class="ds-spotlight__skip" data-spotlight-skip></button>
@@ -249,6 +253,16 @@
         <p class="ds-modal__subtitle type-body-sm">Nouvelle valeur de ton KPI principal.</p>
       </header>
       <div class="ds-modal__body">
+        <div class="ds-measure-recall" data-measure-recall hidden>
+          <div class="ds-measure-recall__row" data-measure-recall-metric-wrap>
+            <span class="ds-measure-recall__label type-caption">Tu mesures</span>
+            <span class="ds-measure-recall__value type-body-sm" data-measure-recall-metric></span>
+          </div>
+          <div class="ds-measure-recall__row" data-measure-recall-last-wrap hidden>
+            <span class="ds-measure-recall__label type-caption">Dernière valeur</span>
+            <span class="ds-measure-recall__value type-body-sm" data-measure-recall-last></span>
+          </div>
+        </div>
         <div class="input-group">
           <label class="type-data-label">Date de la mesure</label>
           <div class="ds-datefield">
@@ -370,7 +384,8 @@
       <div class="ds-modal__body">
         <div class="input-group">
           <label class="type-label" for="kpi-label">Métrique</label>
-          <input id="kpi-label" class="ds-input" type="text" placeholder="km courus, clients onboardés…" data-kpi-field-label>
+          <p class="ds-field-hint type-caption">Ce que tu suis, sans l’unité.</p>
+          <input id="kpi-label" class="ds-input" type="text" placeholder="Sorties longues, clients onboardés…" data-kpi-field-label>
         </div>
         <div class="input-group">
           <label class="type-label" for="kpi-target">Cible</label>
@@ -378,7 +393,8 @@
         </div>
         <div class="input-group">
           <label class="type-label" for="kpi-unit">Unité</label>
-          <input id="kpi-unit" class="ds-input" type="text" placeholder="km, clients…" data-kpi-field-unit>
+          <p class="ds-field-hint type-caption">S’affiche après le chiffre : 12 km.</p>
+          <input id="kpi-unit" class="ds-input" type="text" placeholder="km, €, clients…" data-kpi-field-unit>
         </div>
         <div class="input-group">
           <label class="type-label" for="kpi-freq">Fréquence de saisie</label>

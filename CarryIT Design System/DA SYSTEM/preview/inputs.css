@@ -25,6 +25,13 @@
   gap: var(--space-8);   /* label → champ = unité de sens (§4.3 label-gap), plus serré que field→field (body 12) */
 }
 
+/* Aide sous un label : précise le rôle du champ (ex : distinguer Métrique / Unité). Collée
+   au label (gap réduit) puis le champ suit. */
+.ds-field-hint {
+  margin: calc(-1 * var(--space-4)) 0 0;
+  color: var(--color-text-muted);
+}
+
 .ds-input {
   width: 100%;
   min-height: var(--input-height);

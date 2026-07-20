@@ -86,14 +86,12 @@
   // Carte KPI de jalon — variante complète (head-actions : crayon + « Ajouter … »).
   function kpiCardHTML(kpi, typeLabel, addLabel, jalonId, kpiType) {
     var attrs = 'data-jalon-id="' + esc(jalonId) + '" data-kpi-type="' + esc(kpiType) + '"';
-    // Carte « fantôme » tant qu'il n'y a AUCUNE mesure — que le KPI soit défini ou non
-    // (état « défini mais 0 mesure » traité comme « pas défini » : même skeleton). Si le KPI
-    // existe déjà, le bouton ouvre l'édition (prefill) plutôt qu'un define vierge → pas de perte.
-    var hasMeasure = kpi && kpi.measures && kpi.measures.length > 0;
-    if (!hasMeasure) {
-      // État vide « fantôme » : on rejoue l'anatomie de la carte KPI (nombre · cible · barre ·
-      // pied) en blocs skeleton statiques → l'œil lit « carte de mesure à remplir », pas un
-      // simple texte. L'eyebrow reste réel (Effort/Résultat). Blocs décoratifs → aria-hidden.
+    // Carte « fantôme » UNIQUEMENT si aucun KPI n'est défini. Dès qu'il est défini (nom/cible),
+    // on affiche la vraie carte pour qu'on voie ce qu'on vient de remplir — même sans mesure
+    // encore (valeur « — »).
+    if (!kpi) {
+      // État vide « fantôme » : anatomie de la carte KPI en blocs skeleton statiques →
+      // l'œil lit « carte de mesure à remplir ». Eyebrow réel. Blocs décoratifs → aria-hidden.
       return '<article class="ds-kpi-card ds-kpi-card--empty ds-col-6">' +
         '<div class="ds-kpi-card__head">' +
           '<div class="ds-kpi-card__labels">' +
@@ -104,7 +102,7 @@
           '<span class="ds-skeleton ds-skeleton--value ds-skeleton--w-1-3"></span>' +
         '</div>' +
         '<div class="ds-progress" aria-hidden="true"><div class="ds-progress__fill"></div></div>' +
-        '<button type="button" class="ds-button ds-button--ghost ds-button--sm ds-kpi-card__empty-action" ' + (kpi ? 'data-edit-kpi' : 'data-define-kpi') + ' ' + attrs + '>Définir ' + (kpiType === 'leading' ? 'l’effort' : 'le résultat') + '</button>' +
+        '<button type="button" class="ds-button ds-button--ghost ds-button--sm ds-kpi-card__empty-action" data-define-kpi ' + attrs + '>Définir ' + (kpiType === 'leading' ? 'l’effort' : 'le résultat') + '</button>' +
       '</article>';
     }
     var unit = kpi.unitShort || kpi.unit || '';
@@ -144,13 +142,13 @@
         '</div>' +
       '</div>' +
       '<div class="ds-kpi-card__metric">' +
-        '<span class="ds-kpi-card__value">' + esc(fmt(kpi.value)) + '</span>' +
+        '<span class="ds-kpi-card__value">' + (kpi.value != null ? esc(fmt(kpi.value)) : '—') + '</span>' +
         (target ? '<span class="ds-kpi-card__target type-body-md">' + target + '</span>' : '') +
       '</div>' +
       progress +
       '<hr class="ds-kpi-card__divider">' +
       '<div class="ds-kpi-card__footer">' +
-        '<span class="type-body-sm ds-delta">' + esc(foot) + '</span>' +
+        (foot ? '<span class="type-body-sm ds-delta">' + esc(foot) + '</span>' : '<span class="type-body-sm ds-kpi-card__meta">Aucune mesure</span>') +
         (metaLine
           ? '<span class="ds-kpi-card__meta type-body-sm' + (stale ? ' ds-kpi-card__meta--stale' : '') + '">' +
               (stale ? CLOCK_ICON : '') +

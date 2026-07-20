@@ -3,6 +3,41 @@
   padding: var(--space-page-desktop);
 }
 
+/* Rappel dans « Ajouter une mesure » : ce que le KPI mesure (+ unité) et la dernière valeur.
+   Ligne dernière valeur masquée s'il n'y a aucune mesure. */
+.ds-measure-recall {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  padding: var(--space-12);
+  margin-bottom: var(--space-16);
+  border: var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-text-primary) 3%, transparent);
+}
+
+.ds-measure-recall__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-12);
+}
+
+.ds-measure-recall__label {
+  color: var(--color-text-muted);
+}
+
+.ds-measure-recall__value {
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-semibold);
+  text-align: right;
+}
+
+.ds-measure-recall[hidden],
+.ds-measure-recall__row[hidden] {
+  display: none;
+}
+
 .modal-page__hint {
   max-width: 480px;
   color: var(--color-text-secondary);
