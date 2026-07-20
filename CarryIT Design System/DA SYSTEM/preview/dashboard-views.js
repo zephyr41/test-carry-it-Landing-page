@@ -98,19 +98,12 @@
         '<div class="ds-kpi-card__head">' +
           '<div class="ds-kpi-card__labels">' +
             '<span class="ds-kpi-card__eyebrow type-data-label">' + esc(typeLabel) + '</span>' +
-            '<span class="ds-skeleton ds-skeleton--text ds-skeleton--w-2-3" aria-hidden="true"></span>' +
           '</div>' +
         '</div>' +
         '<div class="ds-kpi-card__metric" aria-hidden="true">' +
           '<span class="ds-skeleton ds-skeleton--value ds-skeleton--w-1-3"></span>' +
-          '<span class="ds-skeleton ds-skeleton--text ds-skeleton--w-1-4"></span>' +
         '</div>' +
         '<div class="ds-progress" aria-hidden="true"><div class="ds-progress__fill"></div></div>' +
-        '<hr class="ds-kpi-card__divider" aria-hidden="true">' +
-        '<div class="ds-kpi-card__footer" aria-hidden="true">' +
-          '<span class="ds-skeleton ds-skeleton--text ds-skeleton--w-1-3"></span>' +
-          '<span class="ds-skeleton ds-skeleton--text ds-skeleton--w-1-4"></span>' +
-        '</div>' +
         '<button type="button" class="ds-button ds-button--ghost ds-button--sm ds-kpi-card__empty-action" ' + (kpi ? 'data-edit-kpi' : 'data-define-kpi') + ' ' + attrs + '>Définir ' + (kpiType === 'leading' ? 'l’effort' : 'le résultat') + '</button>' +
       '</article>';
     }
