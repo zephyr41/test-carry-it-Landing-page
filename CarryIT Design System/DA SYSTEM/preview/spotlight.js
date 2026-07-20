@@ -60,7 +60,7 @@
     },
   ];
 
-  var root, ring, bubble, eyebrowEl, titleEl, descEl, skipBtn, ctaBtn;
+  var root, ring, bubble, eyebrowEl, stepsEl, titleEl, descEl, skipBtn, ctaBtn;
   var cur = -1, active = false;
 
   function tok(name, fallback) {
@@ -90,6 +90,17 @@
   }
 
   // ── Rendu du contenu de la bulle ─────────────────────────────────────────
+  // Indicateur d'étapes : un segment par étape du tour, l'étape courante en surbrillance.
+  function renderSteps(activeIndex) {
+    if (!stepsEl) return;
+    var html = '';
+    for (var k = 0; k < STEPS.length; k++) {
+      html += '<span' + (k === activeIndex ? ' class="is-active"' : '') + '></span>';
+    }
+    stepsEl.innerHTML = html;
+    stepsEl.setAttribute('aria-label', 'Étape ' + (activeIndex + 1) + ' sur ' + STEPS.length);
+  }
+
   function setCopy(step) {
     eyebrowEl.textContent = step.eyebrow || '';
     titleEl.textContent = step.title || '';
@@ -151,6 +162,7 @@
     cur = i;
     var step = STEPS[i];
     setCopy(step);
+    renderSteps(i);
     ensureView(step);
     active = true;
     root.hidden = false;
@@ -214,6 +226,7 @@
     ring = root.querySelector('[data-spotlight-ring]');
     bubble = root.querySelector('[data-spotlight-bubble]');
     eyebrowEl = root.querySelector('[data-spotlight-eyebrow]');
+    stepsEl = root.querySelector('[data-spotlight-steps]');
     titleEl = root.querySelector('[data-spotlight-title]');
     descEl = root.querySelector('[data-spotlight-desc]');
     skipBtn = root.querySelector('[data-spotlight-skip]');

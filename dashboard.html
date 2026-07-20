@@ -223,11 +223,14 @@
     <div class="ds-spotlight__ring" data-spotlight-ring aria-hidden="true"></div>
     <div class="ds-spotlight__bubble" data-spotlight-bubble role="dialog" aria-modal="false"
          aria-labelledby="spotlight-title" aria-describedby="spotlight-desc">
-      <span class="ds-spotlight__eyebrow type-data-label" data-spotlight-eyebrow></span>
-      <h2 id="spotlight-title" class="ds-spotlight__title type-h3" data-spotlight-title></h2>
-      <p id="spotlight-desc" class="ds-spotlight__desc type-body-sm" data-spotlight-desc></p>
+      <div class="ds-spotlight__head">
+        <span class="ds-spotlight__eyebrow" data-spotlight-eyebrow></span>
+        <span class="ds-spotlight__steps" data-spotlight-steps></span>
+      </div>
+      <h2 id="spotlight-title" class="ds-spotlight__title" data-spotlight-title></h2>
+      <p id="spotlight-desc" class="ds-spotlight__desc" data-spotlight-desc></p>
       <div class="ds-spotlight__actions">
-        <button type="button" class="ds-button ds-button--subtle ds-button--xs" data-spotlight-skip></button>
+        <button type="button" class="ds-spotlight__skip" data-spotlight-skip></button>
         <button type="button" class="ds-button ds-button--primary ds-button--sm" data-spotlight-cta></button>
       </div>
     </div>
