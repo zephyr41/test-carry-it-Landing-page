@@ -31,8 +31,14 @@
   background: color-mix(in srgb, var(--color-surface) 8%, transparent);
 }
 
+@keyframes panelIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 /* Conteneur de page : largeur max + centré (la grille). */
 .dashboard-final__page {
+  animation: panelIn 0.36s cubic-bezier(0.22, 0.61, 0.36, 1);
   max-width: var(--grid-max-width);
   width: 100%;   /* remplit jusqu'à max-width (sinon, en flex-column, margin-inline:auto rétrécit
                     la page au contenu → la To-do faisait 363px au lieu de la largeur de grille). */

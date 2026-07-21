@@ -27,7 +27,7 @@
       target: '.ds-chart-add-btn',
       eyebrow: 'POINT DE DÉPART',
       title: 'Où en es-tu ?',
-      desc: "Définis par rapport à ton objectif SMART où tu en es aujourd'hui",
+      desc: "Définis par rapport à ton objectif <strong>SMART</strong> <span class=\"help-tip\">?<span class=\"help-tip__bubble\" style=\"width:220px;\"><p>LE SMART c'est TON OBJECTIF. On va donc prendre ton niveau actuel.</p></span></span> où tu en es aujourd'hui",
       skip: 'Plus tard', cta: 'Ajouter ma première mesure',
       done: function (d) { return d.objectiveKpi && Array.isArray(d.objectiveKpi.measures) && d.objectiveKpi.measures.length > 0; },
     },
@@ -105,7 +105,7 @@
   function setCopy(step) {
     eyebrowEl.textContent = step.eyebrow || '';
     titleEl.textContent = step.title || '';
-    descEl.textContent = step.desc || '';
+    descEl.innerHTML = step.desc || '';
     // Rappel dynamique du critère de validation du jalon actif (étape « KPI de résultat »).
     if (critEl) {
       var crit = step.showCriteria ? ((data().activeJalon || {}).critere || '') : '';
