@@ -132,6 +132,11 @@
       };
     });
 
+    // Ordre chronologique — même tri que la timeline et la vue moyen terme. Le stockage
+    // garde l'ordre de création (jalon final en premier) : sans ce tri, « jalon actif » ici
+    // ≠ jalon affiché dans le détail → les KPI définis n'apparaissent jamais sur les cartes.
+    jalons.sort(function (a, b) { return new Date(a.date) - new Date(b.date); });
+
     var tasks = readJSON('carryit_v1_tasks');
     if (!Array.isArray(tasks)) tasks = [];
     tasks = tasks.map(normTask).filter(function (t) { return t && t.text; });
