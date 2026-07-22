@@ -344,6 +344,17 @@
 .ds-kpi-card--empty .ds-progress__fill { background: var(--skeleton-base); transform: none; }
 .ds-kpi-card__empty-action { margin-top: var(--kpi-card-metric-gap); align-self: flex-start; }
 
+/* Anatomie fantôme : le « 0 / cible » réel, en très basse opacité. Plus lisible qu'un bloc
+   skeleton — on voit la FORME de la donnée à venir (grand chiffre + cible), pas un rectangle. */
+.ds-kpi-card__value--ghost {
+  color: color-mix(in srgb, var(--color-text-primary) 22%, transparent);
+}
+
+.ds-kpi-card__target--ghost,
+.ds-kpi-card__name--ghost {
+  color: color-mix(in srgb, var(--color-text-muted) 60%, transparent);
+}
+
 @media (max-width: 640px) {
   .kpi-card-preview {
     padding: var(--space-page-mobile);

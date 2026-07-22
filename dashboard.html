@@ -230,27 +230,41 @@
     <div class="ds-spotlight__bubble" data-spotlight-bubble role="dialog" aria-modal="false"
          aria-labelledby="spotlight-title" aria-describedby="spotlight-desc">
       <div class="ds-spotlight__head">
-        <button type="button" class="ds-spotlight__back" data-spotlight-back aria-label="Étape précédente">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-            <path d="M8.5 3 4.5 7l4 4" stroke="currentColor" stroke-width="1.6"
-                  stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
         <span class="ds-spotlight__eyebrow" data-spotlight-eyebrow></span>
         <span class="ds-spotlight__steps" data-spotlight-steps></span>
       </div>
       <h2 id="spotlight-title" class="ds-spotlight__title" data-spotlight-title></h2>
-      <div class="ds-spotlight__criteria" data-spotlight-criteria hidden>
-        <span class="ds-spotlight__criteria-label" data-spotlight-criteria-label></span>
-        <p class="ds-spotlight__criteria-text" data-spotlight-criteria-text></p>
-      </div>
+      <!-- Rappel de ce sur quoi l'étape s'appuie : libellé gris, puis la phrase de
+           l'utilisateur citée en blanc — c'est SA donnée qui pilote l'étape. -->
+      <p class="ds-spotlight__quote-label" data-spotlight-quote-label hidden></p>
+      <p class="ds-spotlight__quote" data-spotlight-quote hidden></p>
       <p id="spotlight-desc" class="ds-spotlight__desc" data-spotlight-desc></p>
+      <hr class="ds-spotlight__rule" data-spotlight-rule hidden>
+      <p class="ds-spotlight__example" data-spotlight-example hidden></p>
       <div class="ds-spotlight__actions">
+        <button type="button" class="ds-spotlight__back" data-spotlight-back aria-label="Étape précédente">
+          <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor"
+               stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M10 3L5 8L10 13"/>
+          </svg>
+        </button>
+        <span class="ds-spotlight__spacer"></span>
         <button type="button" class="ds-spotlight__skip" data-spotlight-skip></button>
         <button type="button" class="ds-button ds-button--primary ds-button--sm" data-spotlight-cta></button>
       </div>
     </div>
   </div>
+
+  <!-- Reprise du guide après un « Passer » : tant qu'il reste un KPI à définir, le tour
+       reste rattrapable. Disparaît dès que tout est rempli, à la main ou par le guide. -->
+  <button type="button" class="ds-button ds-button--subtle ds-button--xs ds-spotlight-restart"
+          data-spotlight-restart hidden>
+    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor"
+         stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M5 12h14M13 6l6 6-6 6"/>
+    </svg>
+    Reprendre le guide
+  </button>
 
   <!-- Modal Ajouter une mesure (KPI global) : date + valeur + note → globalKpi.measures. -->
   <div class="ds-modal-backdrop" data-measure-modal hidden>
@@ -392,24 +406,49 @@
           </button>
         </div>
         <p class="ds-modal__subtitle type-body-sm" data-kpi-subtitle></p>
+        <!-- Rappel du critère du jalon : le KPI de résultat se mesure PAR RAPPORT à lui. -->
+        <p class="ds-modal__subtitle ds-modal__criteria type-body-sm" data-kpi-criteria hidden>
+          <span class="ds-modal__criteria-label">Critère de validation :</span>
+          <span data-kpi-criteria-text></span>
+        </p>
       </header>
       <div class="ds-modal__body">
         <div class="input-group">
-          <label class="type-label" for="kpi-label">Métrique</label>
-          <p class="ds-field-hint type-caption">Ce que tu suis, sans l’unité.</p>
-          <input id="kpi-label" class="ds-input" type="text" placeholder="Sorties longues, clients onboardés…" data-kpi-field-label>
+          <label class="type-label ds-field-label" for="kpi-label">Nom</label>
+          <p class="ds-field-hint type-caption">Décris ce que tu suis.</p>
+          <input id="kpi-label" class="ds-input" type="text" data-kpi-field-label>
+        </div>
+        <!-- Cible et unité = une seule décision (« combien, de quoi ») → une seule ligne. -->
+        <div class="ds-field-row">
+          <div class="input-group">
+            <label class="type-label ds-field-label" for="kpi-target">Cible</label>
+            <input id="kpi-target" class="ds-input" type="number" min="0" step="any" placeholder="100" data-kpi-field-target>
+          </div>
+          <div class="input-group">
+            <label class="type-label ds-field-label" for="kpi-unit">Unité</label>
+            <div class="ds-select-wrapper" data-kpi-unit-select>
+              <select id="kpi-unit" class="ds-select" data-kpi-field-unit>
+                <option value="">Nombre</option>
+                <option value="€">Argent (€)</option>
+                <option value="%">Pourcentage (%)</option>
+                <option value="kg">Poids (kg)</option>
+                <option value="km">Distance (km)</option>
+                <option value="h">Temps (h)</option>
+                <option value="pages">Pages</option>
+                <option value="__custom">Autre (au choix)</option>
+              </select>
+            </div>
+            <!-- « Autre » remplace le select par un champ libre ; le × ramène à la liste. -->
+            <div class="ds-field-clearable" data-kpi-unit-custom hidden>
+              <input class="ds-input" type="text" placeholder="Ton unité…" aria-label="Unité personnalisée" data-kpi-field-unit-custom>
+              <button type="button" class="ds-field-clear" aria-label="Revenir à la liste" data-kpi-unit-back>
+                <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 4L12 12M12 4L4 12"/></svg>
+              </button>
+            </div>
+          </div>
         </div>
         <div class="input-group">
-          <label class="type-label" for="kpi-target">Cible</label>
-          <input id="kpi-target" class="ds-input" type="number" min="0" step="any" placeholder="100" data-kpi-field-target>
-        </div>
-        <div class="input-group">
-          <label class="type-label" for="kpi-unit">Unité</label>
-          <p class="ds-field-hint type-caption">S’affiche après le chiffre : 12 km.</p>
-          <input id="kpi-unit" class="ds-input" type="text" placeholder="km, €, clients…" data-kpi-field-unit>
-        </div>
-        <div class="input-group">
-          <label class="type-label" for="kpi-freq">Fréquence de saisie</label>
+          <label class="type-label ds-field-label" for="kpi-freq">Fréquence de saisie</label>
           <div class="ds-select-wrapper">
             <select id="kpi-freq" class="ds-select" data-kpi-field-freq>
               <option>Quotidien</option>
@@ -419,13 +458,15 @@
           </div>
         </div>
         <div class="input-group">
-          <label class="type-label" for="kpi-mode">Mode de saisie</label>
+          <label class="type-label ds-field-label" for="kpi-mode">Mode de saisie</label>
           <div class="ds-select-wrapper">
             <select id="kpi-mode" class="ds-select" data-kpi-field-mode>
               <option value="incremental">Cumulatif (on additionne)</option>
               <option value="absolute">Instantané (dernière valeur)</option>
             </select>
           </div>
+          <!-- Le mode ne se devine pas : l'exemple chiffré dit ce que l'app affichera. -->
+          <p class="ds-field-hint ds-field-hint--after type-caption" data-kpi-mode-hint></p>
         </div>
         <p class="input-error-msg type-caption" data-kpi-msg hidden></p>
       </div>

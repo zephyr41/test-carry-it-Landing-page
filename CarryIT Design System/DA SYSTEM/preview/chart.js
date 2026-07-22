@@ -42,15 +42,6 @@
     return Number(m[3]) + ' ' + MONTHS_FR[Number(m[2]) - 1] + ' ' + m[1];
   }
 
-  function renderEmpty(shell) {
-    shell.innerHTML =
-      '<div class="ds-empty-state">' +
-        '<svg class="ds-empty-state__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5M4 19h16M9 16V9M14 16V7M19 16v-4"/></svg>' +
-        '<h3 class="type-h3">Aucune donnée enregistrée</h3>' +
-        '<p class="ds-empty-state__description type-body-md">Le graphique s\'affichera dès la première mesure enregistrée.</p>' +
-      '</div>';
-  }
-
   var chartInstance = null;
 
   function render() {
@@ -77,13 +68,10 @@
     });
     var data = Object.keys(byTime).sort().map(function (t) { return { time: t, value: byTime[t] }; });
 
-    // Aucune mesure mais un KPI défini → on trace le point de départ à 0 (aujourd'hui) :
-    // l'axe et la cible sont visibles dès l'onboarding, on comprend que la courbe part de zéro.
-    // Sans KPI du tout, rien à tracer → état vide DS.
-    if (!data.length) {
-      if (okpi.label == null && okpi.target == null) { renderEmpty(shell); return; }
-      data = [{ time: new Date().toISOString().slice(0, 10), value: 0 }];
-    }
+    // Pas d'état vide : sans mesure, on trace le point de départ à 0 (aujourd'hui). L'axe, la
+    // cible et le point sont là dès le premier écran — on comprend que la courbe part de zéro
+    // et où elle doit aller, au lieu de lire « aucune donnée ».
+    if (!data.length) data = [{ time: new Date().toISOString().slice(0, 10), value: 0 }];
 
     var target = okpi.target; // cible : l'axe monte jusqu'ici → vraie distance, sans flatter.
     var tokens = readTokens(el);
@@ -167,8 +155,17 @@
 
     series.setData(data);
 
-    // Pas de ligne cible : l'axe scale sur la trajectoire → la courbe montre l'élan.
-    // La cible (1000) vit sur la carte hero, pas ici (une seule source de vérité).
+    // Ligne de cible pointillée, titrée « Cible · N » : le haut du graphe est un repère, pas
+    // un bord de cadre. Sans cible connue, rien à tracer (on n'invente pas de plafond).
+    if (target > 0) {
+      series.createPriceLine({
+        price: target,
+        color: tokens.targetLine,
+        lineWidth: tokens.targetLineWidth || 1,
+        lineStyle: (LW.LineStyle && LW.LineStyle.Dashed) || 2,
+        axisLabelVisible: false,
+      });
+    }
 
     chart.timeScale().setVisibleRange({ from: data[0].time, to: data[data.length - 1].time });
 
@@ -188,6 +185,16 @@
     function positionPoints() {
       layer.replaceChildren();
       pointEls = [];
+      if (target > 0) {
+        var y = series.priceToCoordinate(target);
+        if (isFinite(y)) {
+          var lbl = document.createElement('span');
+          lbl.className = 'ds-chart-target-label';
+          lbl.textContent = 'Cible · ' + target;
+          lbl.style.top = y + 'px';
+          layer.appendChild(lbl);
+        }
+      }
       data.forEach(function (pt) {
         var x = chart.timeScale().timeToCoordinate(pt.time);
         var y = series.priceToCoordinate(pt.value);

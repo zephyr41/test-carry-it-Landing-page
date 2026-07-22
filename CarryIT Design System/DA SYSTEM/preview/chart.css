@@ -89,6 +89,20 @@
   pointer-events: none;
 }
 
+/* Étiquette de la ligne de cible : posée en HTML plutôt que par le titre natif de la
+   price line, qui ne se rend pas quand l'étiquette d'axe est masquée. */
+.ds-chart-target-label {
+  position: absolute;
+  /* À gauche : la droite est occupée par l'échelle de prix, l'étiquette s'y superposerait. */
+  left: 0;
+  transform: translateY(-100%);
+  padding-bottom: var(--space-4);
+  font-size: var(--chart-axis-font-size);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
 .ds-chart-point {
   position: absolute;
   z-index: 3;

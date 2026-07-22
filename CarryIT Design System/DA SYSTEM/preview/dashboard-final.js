@@ -86,7 +86,18 @@
       // La variante claire --hero met en valeur une VRAIE donnée. Vide → carte sombre
       // comme les autres, sinon l'état vide (texte clair) passe invisible sur fond clair.
       if (opts.hero) card.classList.remove('ds-kpi-card--hero');
-      card.innerHTML = emptyState(opts.emptyTitle, opts.emptyDesc, opts.cta);
+      // Anatomie fantôme, identique à la vue jalon → même carte dans les deux vues. Le CTA
+      // vers l'onboarding vit sur la carte SMART, qui est le vrai point d'entrée.
+      card.innerHTML =
+        '<div class="ds-kpi-card__labels">' +
+          '<span class="ds-kpi-card__eyebrow type-data-label">' + esc(eyebrow) + '</span>' +
+          '<span class="ds-kpi-card__name ds-kpi-card__name--ghost type-body-sm">À définir</span>' +
+        '</div>' +
+        '<div class="ds-kpi-card__metric" aria-hidden="true">' +
+          '<span class="ds-kpi-card__value ds-kpi-card__value--ghost">0</span>' +
+          '<span class="ds-kpi-card__target ds-kpi-card__target--ghost type-body-md">/ cible</span>' +
+        '</div>' +
+        '<hr class="ds-kpi-card__divider" aria-hidden="true">';
       return;
     }
     if (opts.hero) card.classList.add('ds-kpi-card--hero');
@@ -168,20 +179,10 @@
     }
     var d = window.CarryITDashboardData || {};
 
-    renderKpiCard('[data-objective-card]', "KPI de l'objectif", d.objectiveKpi, {
-      hero: true,
-      emptyTitle: 'Aucun objectif défini',
-      emptyDesc: 'Définis ton objectif SMART pour suivre ta progression.',
-    });
+    renderKpiCard('[data-objective-card]', "KPI de l'objectif", d.objectiveKpi, { hero: true });
     renderSmart(d.smart);
-    renderKpiCard('[data-effort-card]', 'Effort', d.effortKpi, {
-      emptyTitle: 'Aucun KPI d’effort',
-      emptyDesc: 'Les KPI du jalon en cours s’afficheront ici.',
-    });
-    renderKpiCard('[data-result-card]', 'Résultat', d.resultKpi, {
-      emptyTitle: 'Aucun KPI de résultat',
-      emptyDesc: 'Les KPI du jalon en cours s’afficheront ici.',
-    });
+    renderKpiCard('[data-effort-card]', 'Effort', d.effortKpi);
+    renderKpiCard('[data-result-card]', 'Résultat', d.resultKpi);
 
     renderChartHeader(d.objectiveKpi);
     if (window.CarryITRenderChart) window.CarryITRenderChart();

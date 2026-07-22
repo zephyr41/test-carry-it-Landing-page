@@ -89,19 +89,22 @@
     // Carte « fantôme » UNIQUEMENT si aucun KPI n'est défini. Dès qu'il est défini (nom/cible),
     // on affiche la vraie carte pour qu'on voie ce qu'on vient de remplir — même sans mesure
     // encore (valeur « 0 »).
+    var spot = 'data-spot="' + (kpiType === 'leading' ? 'effort-card' : 'result-card') + '"';
     if (!kpi) {
-      // État vide « fantôme » : anatomie de la carte KPI en blocs skeleton statiques →
-      // l'œil lit « carte de mesure à remplir ». Eyebrow réel. Blocs décoratifs → aria-hidden.
-      return '<article class="ds-kpi-card ds-kpi-card--empty ds-col-6">' +
+      // État vide « fantôme » : l'anatomie RÉELLE de la carte (grand chiffre + « / cible » +
+      // filet) en très basse opacité, bordure dashed = placeholder. L'œil lit la forme de la
+      // donnée à venir, pas un rectangle de chargement. Chiffres décoratifs → aria-hidden.
+      return '<article class="ds-kpi-card ds-kpi-card--empty ds-col-6" ' + spot + '>' +
         '<div class="ds-kpi-card__head">' +
           '<div class="ds-kpi-card__labels">' +
             '<span class="ds-kpi-card__eyebrow type-data-label">' + esc(typeLabel) + '</span>' +
           '</div>' +
         '</div>' +
         '<div class="ds-kpi-card__metric" aria-hidden="true">' +
-          '<span class="ds-skeleton ds-skeleton--value ds-skeleton--w-1-3"></span>' +
+          '<span class="ds-kpi-card__value ds-kpi-card__value--ghost">0</span>' +
+          '<span class="ds-kpi-card__target ds-kpi-card__target--ghost type-body-md">/ cible</span>' +
         '</div>' +
-        '<div class="ds-progress" aria-hidden="true"><div class="ds-progress__fill"></div></div>' +
+        '<hr class="ds-kpi-card__divider" aria-hidden="true">' +
         '<button type="button" class="ds-button ds-button--ghost ds-button--sm ds-kpi-card__empty-action" data-define-kpi ' + attrs + '>Définir ' + (kpiType === 'leading' ? 'l’effort' : 'le résultat') + '</button>' +
       '</article>';
     }
@@ -130,7 +133,7 @@
     }
     // Fréquence retirée du footer : « Hebdomadaire » tronquait toujours en « Hebdo… ».
     // Elle vit dans le modal d'édition du KPI, pas besoin de la répéter ici.
-    return '<article class="ds-kpi-card ds-col-6">' +
+    return '<article class="ds-kpi-card ds-col-6" ' + spot + '>' +
       '<div class="ds-kpi-card__head">' +
         '<div class="ds-kpi-card__labels">' +
           '<span class="ds-kpi-card__eyebrow type-data-label">' + esc(typeLabel) + '</span>' +

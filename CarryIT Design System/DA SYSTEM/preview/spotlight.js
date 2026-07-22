@@ -1,19 +1,19 @@
 /* ────────────────────────────────────────────────────────────────────────
    Onboarding — tour spotlight DIRIGISTE (auto-avance) en 4 étapes.
 
-   1 · Long terme  → 1re mesure du KPI global   (bouton « Ajouter une mesure »)
-   2 · Moyen terme → définir le RÉSULTAT (skippable)  (carte KPI résultat)
-   3 · Moyen terme → définir l'EFFORT               (carte KPI effort)
+   1 · Long terme  → 1re mesure du KPI global   (carte graphique)
+   2 · Moyen terme → définir le RÉSULTAT        (carte KPI résultat)
+   3 · Moyen terme → définir l'EFFORT           (carte KPI effort)
    4 · To-do       → « Maintenant, commence. »
 
    Le tour bascule lui-même de vue et se repositionne. Il avance automatiquement
    quand l'action de l'étape est faite : on écoute le rebuild central
    (window.CarryITRefreshDashboard) et on ré-évalue le prédicat `done` de l'étape.
-   Réutilise les vraies actions/modales (aucune logique dupliquée).
+   Réutilise les vraies actions/modales (aucune logique dupliquée) : le CTA CLIQUE
+   le vrai bouton de la page, et le tour s'efface le temps de la modale.
 
    ┌── COPY ──────────────────────────────────────────────────────────────┐
    │ Tous les textes affichés sont dans STEPS ci-dessous. Édite ICI (Nils). │
-   │ Les libellés « [ ... — copy Nils ] » sont des placeholders à remplacer.│
    └────────────────────────────────────────────────────────────────────────┘
    ──────────────────────────────────────────────────────────────────────── */
 (function () {
@@ -21,81 +21,78 @@
 
   var STORAGE_KEY = 'carryit_onboard_done';   // tour terminé (finish ou Échap)
 
-  function esc(v) {
-    return String(v == null ? '' : v).replace(/[&<>"]/g, function (c) {
-      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
-    });
-  }
-
   var STEPS = [
     {
       id: 'measure', view: 'long',
-      target: '.ds-chart-add-btn',
-      // Le trou reste sur le bouton (= « ajouter une mesure », c'est CE bouton qui alimente
-      // le KPI global). La bulle s'aligne à gauche sur la carte du graphe : elle tombe sur la
-      // zone vide du graphique au lieu de recouvrir la carte SMART, qu'on doit pouvoir lire.
-      bubbleAnchor: '.ds-chart-card',
-      // Second point éclairé : la ligne M du SMART. C'est elle que le graphe trace — les deux
-      // allumés en même temps, on fait le lien « mesurable du SMART = cette courbe ».
-      lit: '[data-smart-row="mesurable"]',
-      eyebrow: 'POINT DE DÉPART',
+      // Le halo tient TOUTE la carte graphique : l'étape parle de la courbe, pas du bouton.
+      spot: '.ds-chart-card',
+      cta: 'Ajouter ma première mesure',
+      ctaTarget: '.ds-chart-add-btn',
+      eyebrow: 'Point de départ',
       title: 'Où en es-tu ?',
-      // Fonction : le Mesurable est nommé en clair (repris du SMART), sinon la phrase parlerait
-      // d'un « Mesurable » abstrait alors qu'il est juste à côté, surligné.
-      desc: function (d) {
-        var m = (d.smart && d.smart.mesurable) || (d.objectiveKpi && d.objectiveKpi.label) || '';
-        return 'Ce graphique trace ton Mesurable de ton objectif long terme' +
-          (m ? ' : <strong>' + esc(m) + '</strong>' : '') +
-          '. Il démarre à 0. Maintenant, dis où tu en es vraiment';
+      body: 'Ce graphique mesure ton objectif long terme (Mesurable du SMART). Maintenant, regardons ton niveau actuel.',
+      // « Plus tard » sur la 1re étape = quitter le guide (rien derrière à passer).
+      skip: 'Plus tard', skipEnds: true,
+      done: function (d) {
+        var m = d.objectiveKpi && d.objectiveKpi.measures;
+        return !!(m && m.length);
       },
-      skip: 'Plus tard', cta: 'Ajouter ma première mesure',
-      done: function (d) { return d.objectiveKpi && Array.isArray(d.objectiveKpi.measures) && d.objectiveKpi.measures.length > 0; },
     },
     {
-      id: 'result', view: 'moyen',
-      target: '[data-kpi-type="lagging"][data-define-kpi], [data-kpi-type="lagging"][data-edit-kpi]',
-      eyebrow: 'Résultat',
+      id: 'result', view: 'moyen', place: 'above',
+      spot: '[data-spot="result-card"]',
+      cta: 'Définir mon KPI',
+      ctaTarget: '[data-kpi-type="lagging"][data-define-kpi], [data-kpi-type="lagging"][data-edit-kpi]',
+      eyebrow: 'KPI de résultat',
       title: 'Mesure les résultats de ton jalon.',
-      recall: function (d) {
-        return { label: 'Ton critère de validation', text: (d.activeJalon || {}).critere || '' };
-      },
-      desc: "Prends ton critère de validation : qu'est-ce que tu dois mesurer pour l'atteindre ? Ex : « courir 21 km en moins de 3h » → les km de ta plus longue sortie tenue à l'allure cible. X/21.",
-      skip: 'Passer', cta: 'Définir',
+      quoteLabel: 'Prends ton critère de validation :',
+      quote: function (d) { return (d.activeJalon || {}).critere || ''; },
+      body: "Qu'est-ce que tu dois mesurer pour l'atteindre ?",
+      example: "Ex : « courir 21 km en moins de 3h » → les km de ta plus longue sortie tenue à l'allure cible. X/21.",
+      skip: 'Passer',
       done: function (d) { return !!d.resultKpi; },
     },
     {
-      id: 'effort', view: 'moyen',
-      target: '[data-kpi-type="leading"][data-define-kpi], [data-kpi-type="leading"][data-edit-kpi]',
-      eyebrow: 'Effort',
-      title: 'Mesure les efforts que tu fais pour atteindre ton résultat.',
-      recall: function (d) {
-        return { label: 'Ton résultat', text: (d.resultKpi || {}).label || '' };
-      },
-      desc: "Prends ton résultat : qu'est-ce que tu fais chaque semaine pour le faire bouger ? Ex : « km à l'allure cible » → nombre de séances par semaine. X/3.",
-      skip: 'Passer', cta: 'Définir',
+      id: 'effort', view: 'moyen', place: 'right',
+      spot: '[data-spot="effort-card"]',
+      cta: 'Définir mon KPI',
+      ctaTarget: '[data-kpi-type="leading"][data-define-kpi], [data-kpi-type="leading"][data-edit-kpi]',
+      eyebrow: "KPI d'effort",
+      title: 'Mesure les efforts.',
+      quoteLabel: 'Ton KPI de résultat :',
+      // La citation est le KPI RÉELLEMENT saisi à l'étape d'avant : on enchaîne sur sa donnée.
+      quote: function (d) { return (d.resultKpi || {}).label || ''; },
+      body: "Prends ton KPI de résultat : qu'est-ce que tu fais chaque semaine pour le faire bouger ?",
+      example: "Ex : « km à l'allure cible » → nombre de séances par semaine.",
+      skip: 'Passer',
       done: function (d) { return !!d.effortKpi; },
     },
     {
-      id: 'start', view: 'todo',
-      target: null,   // centré, pas de cible
+      id: 'go', view: 'todo',
+      spot: '[data-todo-root]',
+      cta: "C'est parti", finish: true,
       eyebrow: 'Exécution',
       title: 'Maintenant, commence.',
-      desc: 'Ajoute ta première tâche. Et commence à exécuter.',
-      skip: 'Passer', cta: "C'est parti",
-      finish: true,
+      body: 'Ajoute ta première tâche. Et commence à exécuter.',
+      skip: 'Passer',
     },
   ];
 
-  var root, ring, bubble, eyebrowEl, stepsEl, titleEl, critEl, critLabelEl, critTextEl, descEl,
-      backBtn, skipBtn, ctaBtn;
-  var cur = -1, active = false;
+  // Modales que le tour ouvre lui-même : tant que l'une est ouverte, le tour s'efface.
+  var MODALS = '[data-kpi-modal], [data-measure-modal]';
+
+  var root, ring, bubble, eyebrowEl, stepsEl, titleEl, quoteLabelEl, quoteEl, descEl,
+      ruleEl, exampleEl, backBtn, skipBtn, ctaBtn, restartBtn;
+  var cur = -1, active = false, paused = false, everStarted = false;
+  var seq = 0;              // annule les transitions de vue en vol (double clic sur « Passer »)
+  var scrolledFor = null;   // id d'étape déjà recentrée (un seul essai de scroll par étape)
 
   function tok(name, fallback) {
     var v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
     var n = parseFloat(v);
     return isFinite(n) ? n : fallback;
   }
-  var PAD = tok('--space-8', 8), GAP = tok('--space-12', 12), EDGE = tok('--space-16', 16);
+  var PAD = tok('--space-8', 8), GAP = tok('--space-16', 16), EDGE = tok('--space-16', 16);
 
   function tourDone() { try { return localStorage.getItem(STORAGE_KEY) === '1'; } catch (e) { return false; } }
   function markTourDone() { try { localStorage.setItem(STORAGE_KEY, '1'); } catch (e) {} }
@@ -104,6 +101,11 @@
     return (typeof window.CarryITBuildDashboardData === 'function')
       ? window.CarryITBuildDashboardData()
       : (window.CarryITDashboardData || {});
+  }
+
+  function stepDone(i, d) {
+    var s = STEPS[i];
+    return typeof s.done === 'function' ? s.done(d) : false;
   }
 
   // Première étape non satisfaite (reprise après reload). Une étape sans `done` est terminale.
@@ -116,134 +118,193 @@
     return STEPS.length - 1;
   }
 
+  // Tout ce que le guide fait remplir est rempli → plus rien à reprendre.
+  function allFilled() {
+    var d = data();
+    for (var i = 0; i < STEPS.length; i++) {
+      if (typeof STEPS[i].done === 'function' && !STEPS[i].done(d)) return false;
+    }
+    return true;
+  }
+
+  function modalOpen() {
+    return Array.prototype.some.call(document.querySelectorAll(MODALS), function (m) { return !m.hidden; });
+  }
+
   // ── Rendu du contenu de la bulle ─────────────────────────────────────────
-  // Indicateur d'étapes : un segment par étape du tour, l'étape courante en surbrillance.
   function renderSteps(activeIndex) {
     if (!stepsEl) return;
     var html = '';
     for (var k = 0; k < STEPS.length; k++) {
-      html += '<span' + (k === activeIndex ? ' class="is-active"' : '') + '></span>';
+      // Segments CUMULATIFS : les étapes franchies restent pleines → on voit le chemin fait.
+      html += '<span' + (k <= activeIndex ? ' class="is-active"' : '') + '></span>';
     }
     stepsEl.innerHTML = html;
     stepsEl.setAttribute('aria-label', 'Étape ' + (activeIndex + 1) + ' sur ' + STEPS.length);
   }
 
+  function setText(el, text) {
+    if (!el) return;
+    el.textContent = text || '';
+    el.hidden = !text;
+  }
+
   function setCopy(step) {
+    var d = data();
     eyebrowEl.textContent = step.eyebrow || '';
     titleEl.textContent = step.title || '';
-    descEl.innerHTML = (typeof step.desc === 'function') ? step.desc(data()) : (step.desc || '');
-    // Encart de rappel : l'élément déjà défini sur lequel s'appuie l'étape courante
-    // (critère du jalon pour le KPI de résultat, KPI de résultat pour le KPI d'effort).
-    // Masqué si l'étape n'en déclare pas, ou si la valeur est vide (étape précédente passée).
-    if (critEl) {
-      var rec = (typeof step.recall === 'function') ? step.recall(data()) : null;
-      if (rec && rec.text) {
-        critLabelEl.textContent = rec.label;
-        critTextEl.textContent = rec.text;
-        critEl.hidden = false;
-      } else { critEl.hidden = true; }
-    }
+
+    var quote = typeof step.quote === 'function' ? step.quote(d) : (step.quote || '');
+    setText(quoteLabelEl, quote ? (step.quoteLabel || '') : '');
+    setText(quoteEl, quote ? '« ' + quote + ' »' : '');
+    // Citation présente → la question qui suit passe en blanc : c'est elle l'instruction.
+    descEl.textContent = (typeof step.body === 'function') ? step.body(d) : (step.body || '');
+    descEl.classList.toggle('ds-spotlight__desc--lead', !!quote);
+
+    setText(exampleEl, step.example || '');
+    if (ruleEl) ruleEl.hidden = !step.example;
+
     ctaBtn.textContent = step.cta || 'Continuer';
-    if (step.skip) { skipBtn.textContent = step.skip; skipBtn.hidden = false; }
-    else { skipBtn.hidden = true; }
+    setText(skipBtn, step.skip || '');
   }
 
   // ── Placement ────────────────────────────────────────────────────────────
   function positionCentered() {
     ring.style.display = 'none';
     root.classList.add('ds-spotlight--centered');
-    bubble.classList.add('ds-spotlight__bubble--centered');
-    bubble.classList.remove('ds-spotlight__bubble--above');
     var bw = bubble.offsetWidth, bh = bubble.offsetHeight;
     bubble.style.left = Math.round((window.innerWidth - bw) / 2) + 'px';
     bubble.style.top = Math.round((window.innerHeight - bh) / 2) + 'px';
   }
 
-  // Zones secondaires éclairées : passées au-dessus du scrim par une classe. Ré-appliqué à
-  // chaque positionnement, car les cartes se re-rendent (innerHTML) et perdent la classe.
-  var LIT_CLASS = 'ds-spotlight-lit';
-  function clearLit() {
-    Array.prototype.forEach.call(document.querySelectorAll('.' + LIT_CLASS), function (el) {
-      el.classList.remove(LIT_CLASS);
-    });
-  }
-  function applyLit(step) {
-    clearLit();
-    if (!step || !step.lit) return;
-    var el = document.querySelector(step.lit);
-    if (el) el.classList.add(LIT_CLASS);
-  }
+  function clamp(v, min, max) { return Math.min(Math.max(v, min), Math.max(max, min)); }
 
-  function positionOn(step) {
-    applyLit(step);
-    if (!step.target) { positionCentered(); return true; }
-    var target = document.querySelector(step.target);
-    if (!target) return false;                       // pas encore rendu → retry
-    var r = target.getBoundingClientRect();
-    if (r.width === 0 && r.height === 0) return false;
-
+  // Pose le halo sur un rectangle écran (cible ou onglet), sans toucher à la bulle.
+  function ringOn(r) {
     ring.style.display = '';
     root.classList.remove('ds-spotlight--centered');
-    bubble.classList.remove('ds-spotlight__bubble--centered');
     ring.style.left = (r.left - PAD) + 'px';
     ring.style.top = (r.top - PAD) + 'px';
     ring.style.width = (r.width + PAD * 2) + 'px';
     ring.style.height = (r.height + PAD * 2) + 'px';
+  }
 
-    var bw = bubble.offsetWidth, bh = bubble.offsetHeight;
-    var above = (window.innerHeight - r.bottom) < bh + GAP + EDGE;
-    var top = above ? (r.top - GAP - bh) : (r.bottom + GAP);
-    // `bubbleAnchor` (optionnel) : la bulle se cale sur le bord droit de CET élément plutôt
-    // que sous la cible — elle reste dans la carte au lieu de déborder sur la carte voisine.
-    var anchor = step.bubbleAnchor && document.querySelector(step.bubbleAnchor);
-    var left = anchor ? (anchor.getBoundingClientRect().right - bw) : (r.left - PAD);
-    var maxLeft = window.innerWidth - bw - EDGE;
-    if (left > maxLeft) left = maxLeft;
-    if (left < EDGE) left = EDGE;
-    bubble.style.left = left + 'px';
-    bubble.style.top = top + 'px';
-    // La flèche suit la cible tant qu'elle reste dans la bulle (bulle décalée → sinon elle
-    // pointerait le vide).
-    var tail = Math.min(Math.max(r.left + r.width / 2 - left - 6, 24), bw - 36);
-    bubble.style.setProperty('--spotlight-tail-x', Math.round(tail) + 'px');
-    bubble.classList.toggle('ds-spotlight__bubble--above', above);
+  function positionOn(step) {
+    if (!step.spot) { positionCentered(); return true; }
+    var target = document.querySelector(step.spot);
+    if (!target) return false;                       // pas encore rendu → retry
+    var r0 = target.getBoundingClientRect();
+    if (r0.width === 0 && r0.height === 0) return false;
+
+    // Cible hors zone confortable → UN seul recentrage par étape (pas de boucle scroll/replace).
+    if (scrolledFor !== step.id && (r0.top < 80 || r0.bottom > window.innerHeight * 0.72)) {
+      scrolledFor = step.id;
+      var maxY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+      var y = clamp(r0.top + window.scrollY - (window.innerHeight - r0.height) / 2, 0, maxY);
+      if (Math.abs(y - window.scrollY) > 4) {
+        window.scrollTo({ top: y, behavior: 'smooth' });
+        setTimeout(function () { if (active) positionOn(step); }, 450);
+        return true;
+      }
+    }
+
+    var r = target.getBoundingClientRect();
+    ringOn(r);
+
+    var vw = window.innerWidth, vh = window.innerHeight;
+    var bw = bubble.offsetWidth, bh = bubble.offsetHeight;   // hauteur RÉELLE, pas estimée
+    var top = r.top - PAD, left = r.left - PAD;
+    var right = r.right + PAD, bottom = r.bottom + PAD;
+    var x, y;
+
+    if (step.place === 'right' && right + GAP + bw < vw) {
+      x = right + GAP;
+      y = clamp(top, EDGE, vh - bh - EDGE);
+    } else if (step.place === 'left' && left - GAP - bw > EDGE) {
+      x = left - GAP - bw;
+      y = clamp(top, EDGE, vh - bh - EDGE);
+    } else if (step.place === 'above') {
+      y = Math.max(top - bh - GAP, EDGE);
+      x = clamp(left, EDGE, vw - bw - EDGE);
+    } else if (bottom + GAP + bh < vh) {
+      y = bottom + GAP;
+      x = clamp(left, EDGE, vw - bw - EDGE);
+    } else {
+      y = Math.max(top - bh - GAP, EDGE);
+      x = clamp(left, EDGE, vw - bw - EDGE);
+    }
+
+    bubble.style.left = Math.round(x) + 'px';
+    bubble.style.top = Math.round(y) + 'px';
     return true;
   }
 
-  var onReflow = function () { if (active) positionOn(STEPS[cur]); };
+  var onReflow = function () { if (active && !paused) positionOn(STEPS[cur]); };
 
   // ── Passage à une étape ──────────────────────────────────────────────────
-  function ensureView(step) {
-    if (!step.view) return;
-    var tab = document.querySelector('.ds-tabs__tab[data-view="' + step.view + '"]');
-    if (tab && tab.getAttribute('aria-selected') !== 'true') tab.click();
-    // Étapes jalon (vue moyen) : forcer le détail sur le jalon ACTIF, même si l'onglet moyen
-    // était déjà sélectionné (sinon le clic ci-dessus est sauté et la vue garde un autre jalon
-    // sélectionné → le KPI se définit sur le mauvais jalon et done (jalon actif) ne se satisfait
-    // jamais → l'étape boucle). CarryITShowJalon n'est pas wrappé → pas de re-déclenchement.
-    if (step.view === 'moyen' && typeof window.CarryITShowJalon === 'function') {
-      var aj = data().activeJalon;
-      if (aj && aj.id != null) window.CarryITShowJalon(aj.id);
-    }
+  function currentView() {
+    var tab = document.querySelector('.ds-tabs__tab[aria-selected="true"]');
+    return tab ? tab.dataset.view : null;
+  }
+
+  function showView(view) {
+    var tab = document.querySelector('.ds-tabs__tab[data-view="' + view + '"]');
+    if (tab) tab.click();
+  }
+
+  // Étapes jalon : forcer le détail sur le jalon ACTIF, même si l'onglet moyen était déjà
+  // sélectionné (sinon le KPI se définit sur le mauvais jalon et `done` ne se satisfait jamais).
+  function focusActiveJalon(step) {
+    if (step.view !== 'moyen' || typeof window.CarryITShowJalon !== 'function') return;
+    var aj = data().activeJalon;
+    if (aj && aj.id != null) window.CarryITShowJalon(aj.id);
+  }
+
+  function place(step, tries) {
+    var ok = positionOn(step);
+    if (!ok && (tries || 0) < 14) { setTimeout(function () { place(step, (tries || 0) + 1); }, 90); return; }
+    if (!ok) positionCentered();
+    bubble.classList.remove('ds-spotlight__bubble--hidden');
+    root.classList.add('is-active');
   }
 
   function enter(i) {
-    cur = i;
     var step = STEPS[i];
+    if (!step) { finish(); return; }
+    var mine = ++seq;
+    cur = i;
+    active = true;
+    paused = false;
+    everStarted = true;
+    scrolledFor = null;
+    syncRestart();
+
     setCopy(step);
     renderSteps(i);
-    if (backBtn) backBtn.disabled = (i === 0);
-    ensureView(step);
-    active = true;
-    root.hidden = false;
+    if (backBtn) backBtn.hidden = (i === 0);
 
-    var tries = 0;
-    (function tryPos() {
-      var ok = positionOn(step);
-      if (!ok && tries++ < 14) { setTimeout(tryPos, 90); return; }
-      if (!ok) positionCentered();   // cible introuvable (ex : pas de jalon) → message centré
-      requestAnimationFrame(function () { root.classList.add('is-active'); positionOn(step); });
-    })();
+    root.hidden = false;
+    bubble.classList.add('ds-spotlight__bubble--hidden');
+
+    var start = function () {
+      if (seq !== mine) return;
+      focusActiveJalon(step);
+      requestAnimationFrame(function () { if (seq === mine) place(step); });
+    };
+
+    if (step.view && step.view !== currentView()) {
+      // Guide l'œil : le halo glisse d'abord sur l'ONGLET, la vue bascule, puis il rejoint
+      // la cible. Sans cette étape, la vue change sous un halo resté sur l'ancienne carte.
+      var tab = document.querySelector('.ds-tabs__tab[data-view="' + step.view + '"]');
+      if (tab) { ringOn(tab.getBoundingClientRect()); root.classList.add('is-active'); }
+      setTimeout(function () {
+        if (seq !== mine) return;
+        showView(step.view);
+        setTimeout(start, 450);
+      }, 500);
+    } else {
+      start();
+    }
 
     window.addEventListener('resize', onReflow);
     window.addEventListener('scroll', onReflow, true);
@@ -259,11 +320,25 @@
 
   function finish() { stop(true); }
 
+  // Efface le tour le temps d'une modale : il reprendra sur la même étape à la fermeture.
+  function pause() {
+    paused = true;
+    root.classList.remove('is-active');
+    setTimeout(function () { if (paused) root.hidden = true; }, tok('--motion-duration-base', 220));
+  }
+
+  function resume() {
+    if (!active || !paused) return;
+    paused = false;
+    if (stepDone(cur, data())) { next(); return; }
+    enter(cur);
+  }
+
   function stop(persist) {
-    clearLit();
+    seq++;
     if (persist) markTourDone();
-    if (!active) { root.hidden = true; return; }
     active = false;
+    paused = false;
     root.classList.remove('is-active');
     window.removeEventListener('resize', onReflow);
     window.removeEventListener('scroll', onReflow, true);
@@ -271,16 +346,23 @@
     var hide = function () { root.hidden = true; };
     var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduce) hide(); else setTimeout(hide, tok('--motion-duration-base', 220));
+    syncRestart();
   }
 
-  function onKey(e) { if (e.key === 'Escape') finish(); }
+  function onKey(e) { if (e.key === 'Escape' && !paused) finish(); }
+
+  // ── Reprise du guide ─────────────────────────────────────────────────────
+  function syncRestart() {
+    if (!restartBtn) return;
+    restartBtn.hidden = active || !everStarted || allFilled();
+  }
 
   // Rebuild central (mesure ajoutée / KPI configuré) → l'étape est-elle satisfaite ?
   function onRefresh() {
+    syncRestart();
     if (!active) return;
-    var step = STEPS[cur];
-    if (typeof step.done === 'function' && step.done(data())) next();
-    else if (active) positionOn(step);   // sinon, la carte a pu re-render → repositionner
+    if (stepDone(cur, data())) { next(); return; }
+    if (!paused) positionOn(STEPS[cur]);   // la carte a pu re-render → repositionner
   }
 
   function wrapRefresh(name) {
@@ -300,31 +382,54 @@
     bubble = root.querySelector('[data-spotlight-bubble]');
     eyebrowEl = root.querySelector('[data-spotlight-eyebrow]');
     stepsEl = root.querySelector('[data-spotlight-steps]');
-    critEl = root.querySelector('[data-spotlight-criteria]');
-    critLabelEl = root.querySelector('[data-spotlight-criteria-label]');
-    critTextEl = root.querySelector('[data-spotlight-criteria-text]');
     titleEl = root.querySelector('[data-spotlight-title]');
+    quoteLabelEl = root.querySelector('[data-spotlight-quote-label]');
+    quoteEl = root.querySelector('[data-spotlight-quote]');
     descEl = root.querySelector('[data-spotlight-desc]');
+    ruleEl = root.querySelector('[data-spotlight-rule]');
+    exampleEl = root.querySelector('[data-spotlight-example]');
     backBtn = root.querySelector('[data-spotlight-back]');
     skipBtn = root.querySelector('[data-spotlight-skip]');
     ctaBtn = root.querySelector('[data-spotlight-cta]');
+    restartBtn = document.querySelector('[data-spotlight-restart]');
     if (!ring || !bubble || !titleEl || !ctaBtn) return;
 
     if (backBtn) backBtn.addEventListener('click', function () { prev(); });
-    skipBtn.addEventListener('click', function () { next(); });   // « Passer » = étape suivante
+    skipBtn.addEventListener('click', function () {
+      // « Plus tard » (1re étape) quitte ; « Passer » va à l'étape suivante.
+      if (STEPS[cur] && STEPS[cur].skipEnds) finish(); else next();
+    });
     ctaBtn.addEventListener('click', function () {
       var step = STEPS[cur];
+      if (!step) return;
       if (step.finish) { finish(); return; }
-      var t = step.target && document.querySelector(step.target);
-      if (t) t.click();   // ouvre la vraie modale ; l'avance se fait au rebuild (onRefresh)
+      var t = step.ctaTarget && document.querySelector(step.ctaTarget);
+      if (!t) return;
+      pause();               // la modale prend la main ; on revient à sa fermeture
+      t.click();
     });
+    if (restartBtn) restartBtn.addEventListener('click', function () {
+      restartBtn.hidden = true;
+      enter(firstIncomplete());
+    });
+
+    // Fermeture d'une modale ouverte par le tour (Annuler / Échap / croix) → on revient.
+    // L'enregistrement passe, lui, par onRefresh, qui fait avancer d'une étape.
+    if (window.MutationObserver) {
+      var obs = new MutationObserver(function () {
+        if (paused && !modalOpen()) resume();
+      });
+      Array.prototype.forEach.call(document.querySelectorAll(MODALS), function (m) {
+        obs.observe(m, { attributes: true, attributeFilter: ['hidden'] });
+      });
+    }
 
     wrapRefresh('CarryITRefreshDashboard');
     wrapRefresh('CarryITRefreshMoyen');
 
     // Démarrage (première étape non satisfaite). Laisser le dashboard peupler la donnée.
     setTimeout(function () {
-      if (tourDone()) return;
+      if (tourDone()) { everStarted = true; syncRestart(); return; }
       enter(firstIncomplete());
     }, 300);
   }

@@ -34,27 +34,22 @@
   outline: var(--border-focus);
   outline-offset: var(--space-4);
   pointer-events: none;                 /* clic traverse vers le vrai bouton */
-  transition: opacity var(--motion-duration-base) var(--motion-ease-out);
-}
-
-/* Zone secondaire éclairée (`lit` dans STEPS) : le scrim n'a qu'un seul trou (box-shadow du
-   ring), donc on fait PASSER l'élément au-dessus du scrim. Le halo de fond lui rend le fond
-   de sa carte, sinon le texte flotterait sur le voile sombre. */
-.ds-spotlight-lit {
-  position: relative;
-  z-index: calc(var(--z-spotlight) + 1);
-  border-radius: var(--radius-md);
-  background: var(--card-background);
-  box-shadow: 0 0 0 var(--space-8) var(--card-background);
-  outline: var(--border-focus);
-  outline-offset: var(--space-8);
+  /* Le halo GLISSE d'une cible à l'autre (y compris vers l'onglet lors d'un changement de
+     vue) : c'est ce déplacement qui guide l'œil, un saut sec le perdrait. */
+  transition: opacity var(--motion-duration-base) var(--motion-ease-out),
+              left var(--motion-duration-base) var(--motion-ease-out),
+              top var(--motion-duration-base) var(--motion-ease-out),
+              width var(--motion-duration-base) var(--motion-ease-out),
+              height var(--motion-duration-base) var(--motion-ease-out);
 }
 
 /* Bulle directive (coach mark) — design de réf « Onboarding Carry It Guide ». */
 .ds-spotlight__bubble {
   position: absolute;
   box-sizing: border-box;
-  width: min(384px, calc(100vw - 2 * var(--space-24)));
+  /* Marge de 16px de chaque côté sur petit écran — la même que le clamp de position en JS,
+     sinon la bulle serait posée à 16px mais large de plus que l'espace restant. */
+  width: min(384px, calc(100vw - 2 * var(--space-16)));
   padding: var(--space-24);
   background: #1C1C1E;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -63,6 +58,8 @@
   pointer-events: auto;
   display: flex;
   flex-direction: column;
+  transition: opacity var(--motion-duration-base) var(--motion-ease-out),
+              transform var(--motion-duration-base) var(--motion-ease-out);
 }
 
 /* En-tête : eyebrow (gauche) + indicateur d'étapes (droite). */
@@ -74,42 +71,7 @@
   margin-bottom: 14px;
 }
 
-/* Retour à l'étape précédente. Désactivé (et non masqué) sur la 1re étape : l'en-tête garde
-   la même hauteur et le même alignement d'une étape à l'autre. */
-.ds-spotlight__back {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 22px;
-  height: 22px;
-  margin-left: -4px;
-  padding: 0;
-  border: 0;
-  border-radius: var(--radius-sm);
-  background: transparent;
-  color: rgba(168, 168, 168, 0.9);
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: var(--motion-transition-default);
-}
-
-.ds-spotlight__back:hover {
-  color: var(--color-text-primary);
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.ds-spotlight__back:disabled {
-  opacity: 0.3;
-  cursor: default;
-}
-
-.ds-spotlight__back:disabled:hover {
-  color: rgba(168, 168, 168, 0.9);
-  background: transparent;
-}
-
 .ds-spotlight__eyebrow {
-  margin-right: auto;
   font: var(--font-weight-bold) 11px / 1 var(--font-body);
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -134,11 +96,14 @@
   background: var(--color-text-primary);
 }
 
+/* Titre = la phrase à retenir de l'étape. `balance` évite la dernière ligne orpheline
+   sur deux lignes, fréquent à cette largeur de bulle. */
 .ds-spotlight__title {
-  font: 750 21px / 1.25 var(--font-body);
+  font: 750 21px / 1.3 var(--font-body);
   letter-spacing: -0.01em;
   color: var(--color-text-primary);
-  margin: 0 0 var(--space-8);
+  margin: 0 0 14px;
+  text-wrap: balance;
 }
 
 .ds-spotlight__desc {
@@ -148,42 +113,87 @@
   text-wrap: pretty;
 }
 
-/* Rappel du critère de validation du jalon actif (étape « KPI de résultat »). */
-.ds-spotlight__criteria {
-  margin: 0 0 var(--space-12);
-  padding: var(--space-12);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.03);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-
-.ds-spotlight__criteria[hidden] {
-  display: none;
-}
-
-.ds-spotlight__criteria-label {
-  font: var(--font-weight-bold) 10px / 1 var(--font-body);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgba(168, 168, 168, 0.9);
-}
-
-.ds-spotlight__criteria-text {
-  font: var(--font-weight-medium) 13px / 1.45 var(--font-body);
+/* Quand une citation précède, la description N'EST PLUS du contexte : c'est la question
+   posée à l'utilisateur. Elle passe en blanc pour être l'élément qu'on lit en dernier. */
+.ds-spotlight__desc--lead {
   color: var(--color-text-primary);
+}
+
+/* Rappel de l'élément déjà défini sur lequel l'étape s'appuie : étiquette grise, puis la
+   phrase de l'utilisateur citée en blanc. Pas d'encadré : la citation se lit dans le flux,
+   entre le titre et la question. */
+.ds-spotlight__quote-label {
+  font: var(--font-weight-regular) 13px / 1.5 var(--font-body);
+  color: rgba(168, 168, 168, 0.85);
+  margin: 0 0 var(--space-4);
+}
+
+.ds-spotlight__quote {
+  font: 550 15px / 1.5 var(--font-body);
+  color: var(--color-text-primary);
+  margin: 0 0 14px;
+  text-wrap: pretty;
+}
+
+/* Exemple, sous un filet : c'est de l'aide, pas la consigne — plus petit et plus gris que
+   la question, et séparé pour qu'on puisse l'ignorer d'un coup d'œil. */
+.ds-spotlight__rule {
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  margin: 14px 0;
+}
+
+.ds-spotlight__example {
+  font: var(--font-weight-regular) 12.5px / 1.55 var(--font-body);
+  color: rgba(168, 168, 168, 0.75);
   margin: 0;
   text-wrap: pretty;
+}
+
+.ds-spotlight__quote-label[hidden],
+.ds-spotlight__quote[hidden],
+.ds-spotlight__rule[hidden],
+.ds-spotlight__example[hidden] {
+  display: none;
 }
 
 .ds-spotlight__actions {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
   gap: var(--space-12);
-  margin-top: 20px;
+  margin-top: var(--space-24);
+}
+
+/* Pousse « Passer » + CTA à droite ; le retour reste ancré à gauche. */
+.ds-spotlight__spacer {
+  flex: 1;
+}
+
+/* Retour à l'étape précédente : carré bordé, icône seule. Masqué sur la 1re étape (rien
+   derrière), l'espaceur garde les autres actions en place. */
+.ds-spotlight__back {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-32);
+  height: var(--space-32);
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-md);
+  background: none;
+  color: rgba(168, 168, 168, 0.85);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: var(--motion-transition-default);
+}
+
+.ds-spotlight__back:hover {
+  color: var(--color-text-primary);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+.ds-spotlight__back[hidden] {
+  display: none;
 }
 
 .ds-spotlight__actions .ds-button {
@@ -205,31 +215,8 @@
   color: var(--color-text-primary);
 }
 
-/* Flèche de la bulle vers la cible (par défaut : bulle sous la cible → flèche en haut). */
-.ds-spotlight__bubble::before {
-  content: "";
-  position: absolute;
-  width: var(--space-12);
-  height: var(--space-12);
-  background: #1C1C1E;
-  border-left: 1px solid rgba(255, 255, 255, 0.1);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  transform: rotate(45deg);
-  top: calc(-1 * var(--space-8) + 1px);
-  /* Position posée en JS quand la bulle est décalée de sa cible (--spotlight-tail-x) :
-     la flèche continue de pointer le bouton. */
-  left: var(--spotlight-tail-x, var(--space-24));
-}
-
-/* Bulle AU-DESSUS de la cible → flèche en bas. */
-.ds-spotlight__bubble--above::before {
-  top: auto;
-  bottom: calc(-1 * var(--space-8) + 1px);
-  transform: rotate(225deg);
-}
-
-/* Étape sans cible (ex : « Maintenant, commence. ») : scrim plein porté par le conteneur
-   (le ring, qui peint habituellement le scrim, est masqué) + bulle centrée sans flèche. */
+/* Étape sans cible : scrim plein porté par le conteneur (le ring, qui peint habituellement
+   le scrim, est masqué) + bulle centrée. */
 .ds-spotlight--centered {
   background: var(--modal-backdrop);
 }
@@ -238,7 +225,24 @@
   display: none;
 }
 
-.ds-spotlight__bubble--centered::before {
+/* Bulle masquée pendant une transition de vue : le halo glisse seul vers l'onglet, puis
+   la bulle revient sur la nouvelle cible. Sans ça, elle traverse l'écran avec lui. */
+.ds-spotlight__bubble--hidden {
+  opacity: 0;
+  transform: translateY(6px);
+  pointer-events: none;
+}
+
+/* Reprise du guide : ancrée en bas à droite, hors flux, au-dessus du contenu mais sous
+   les modales. */
+.ds-spotlight-restart {
+  position: fixed;
+  right: var(--space-24);
+  bottom: var(--space-24);
+  z-index: calc(var(--z-spotlight) - 1);
+}
+
+.ds-spotlight-restart[hidden] {
   display: none;
 }
 

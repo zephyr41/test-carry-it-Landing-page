@@ -27,6 +27,13 @@
   align-items: center;
 }
 
+/* `display` de classe l'emporte sur le `display:none` que le navigateur applique à
+   [hidden] : sans cette règle, un bouton masqué en JS (ex : « Supprimer » en création)
+   reste visible. */
+.ds-button[hidden] {
+  display: none;
+}
+
 .ds-button {
   display: inline-flex;
   align-items: center;

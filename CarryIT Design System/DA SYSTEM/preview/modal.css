@@ -94,6 +94,20 @@
   color: var(--color-text-secondary);
 }
 
+/* Second sous-titre : rappel du critère du jalon. L'étiquette passe en blanc pour que
+   l'œil accroche le critère lui-même et non la ligne « Jalon 1/5 » juste au-dessus. */
+.ds-modal__criteria {
+  margin-top: var(--space-4);
+}
+
+.ds-modal__criteria-label {
+  color: var(--color-text-primary);
+}
+
+.ds-modal__criteria[hidden] {
+  display: none;
+}
+
 .ds-modal__close {
   /* En flux dans le header-row → alignée verticalement au titre (align-items:center).
      Tirée vers le coin par une marge négative = inset < padding de contenu, sans casser
