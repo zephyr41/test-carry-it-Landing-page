@@ -150,6 +150,23 @@
   text-wrap: pretty;
 }
 
+/* Filet d'hésitation : même registre gris que l'exemple, aligné à droite pour tomber sous
+   « Passer » — l'affordance qu'il légitime. Fondu court : il se pose, il ne surgit pas. */
+.ds-spotlight__hint {
+  font: var(--font-weight-regular) 12.5px / 1.55 var(--font-body);
+  color: rgba(168, 168, 168, 0.75);
+  text-align: right;
+  margin: 14px 0 0;
+  text-wrap: pretty;
+  animation: ds-spotlight-hint-in var(--motion-duration-base) var(--motion-ease-out) both;
+}
+
+@keyframes ds-spotlight-hint-in {
+  from { opacity: 0; transform: translateY(-2px); }
+  to { opacity: 1; transform: none; }
+}
+
+.ds-spotlight__hint[hidden],
 .ds-spotlight__quote-label[hidden],
 .ds-spotlight__quote[hidden],
 .ds-spotlight__rule[hidden],
@@ -248,7 +265,13 @@
 
 @media (prefers-reduced-motion: reduce) {
   .ds-spotlight,
-  .ds-spotlight__ring {
+  .ds-spotlight__ring,
+  .ds-spotlight__bubble {
     transition: none;
+  }
+
+  /* Le filet reste, sans glissement : il apparaît d'un coup. */
+  .ds-spotlight__hint {
+    animation: none;
   }
 }

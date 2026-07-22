@@ -49,7 +49,7 @@
       quote: function (d) { return (d.activeJalon || {}).critere || ''; },
       body: "Qu'est-ce que tu dois mesurer pour l'atteindre ?",
       example: "Ex : « courir 21 km en moins de 3h » → les km de ta plus longue sortie tenue à l'allure cible. X/21.",
-      skip: 'Passer',
+      skip: 'Passer', hint: true,
       done: function (d) { return !!d.resultKpi; },
     },
     {
@@ -64,7 +64,7 @@
       quote: function (d) { return (d.resultKpi || {}).label || ''; },
       body: "Prends ton KPI de résultat : qu'est-ce que tu fais chaque semaine pour le faire bouger ?",
       example: "Ex : « km à l'allure cible » → nombre de séances par semaine.",
-      skip: 'Passer',
+      skip: 'Passer', hint: true,
       done: function (d) { return !!d.effortKpi; },
     },
     {
@@ -81,9 +81,17 @@
   // Modales que le tour ouvre lui-même : tant que l'une est ouverte, le tour s'efface.
   var MODALS = '[data-kpi-modal], [data-measure-modal]';
 
+  // Filet des étapes KPI. JAMAIS affiché d'emblée : le montrer à tout le monde reviendrait à
+  // souffler d'abandonner avant même d'avoir essayé, et à consoler pour un effort pas fourni.
+  // Il ne sort que sur une hésitation constatée : la modale ouverte puis annulée (la personne
+  // a cherché et n'a pas trouvé), ou du temps passé sur l'étape sans rien ouvrir.
+  var HINT = 'Pas encore clair ? Passe — le KPI se précise en exécutant. Ou demande une proposition à l’IA.';
+  var HINT_DELAY = 25000;
+
   var root, ring, bubble, eyebrowEl, stepsEl, titleEl, quoteLabelEl, quoteEl, descEl,
-      ruleEl, exampleEl, backBtn, skipBtn, ctaBtn, restartBtn;
+      ruleEl, exampleEl, hintEl, backBtn, skipBtn, ctaBtn, restartBtn;
   var cur = -1, active = false, paused = false, everStarted = false;
+  var hintFor = {}, hintTimer = null;   // étapes où l'hésitation a déjà été constatée
   var seq = 0;              // annule les transitions de vue en vol (double clic sur « Passer »)
   var scrolledFor = null;   // id d'étape déjà recentrée (un seul essai de scroll par étape)
 
@@ -163,6 +171,8 @@
 
     setText(exampleEl, step.example || '');
     if (ruleEl) ruleEl.hidden = !step.example;
+    // Une fois méritée, la ligne reste : revenir sur l'étape ne remet pas le compteur à zéro.
+    setText(hintEl, (step.hint && hintFor[step.id]) ? HINT : '');
 
     ctaBtn.textContent = step.cta || 'Continuer';
     setText(skipBtn, step.skip || '');
@@ -241,6 +251,22 @@
 
   var onReflow = function () { if (active && !paused) positionOn(STEPS[cur]); };
 
+  // Hésitation constatée sur une étape KPI → le filet sort (et la bulle se repose, elle a grandi).
+  function earnHint(i) {
+    var step = STEPS[i];
+    if (!step || !step.hint || hintFor[step.id]) return;
+    hintFor[step.id] = true;
+    if (cur !== i || !active) return;
+    setText(hintEl, HINT);
+    if (!paused) positionOn(step);
+  }
+
+  function armHint(i) {
+    clearTimeout(hintTimer);
+    if (!STEPS[i] || !STEPS[i].hint || hintFor[STEPS[i].id]) return;
+    hintTimer = setTimeout(function () { earnHint(i); }, HINT_DELAY);
+  }
+
   // ── Passage à une étape ──────────────────────────────────────────────────
   function currentView() {
     var tab = document.querySelector('.ds-tabs__tab[aria-selected="true"]');
@@ -281,6 +307,7 @@
 
     setCopy(step);
     renderSteps(i);
+    armHint(i);
     if (backBtn) backBtn.hidden = (i === 0);
 
     root.hidden = false;
@@ -323,6 +350,7 @@
   // Efface le tour le temps d'une modale : il reprendra sur la même étape à la fermeture.
   function pause() {
     paused = true;
+    clearTimeout(hintTimer);   // le temps passé dans la modale n'est pas de l'hésitation
     root.classList.remove('is-active');
     setTimeout(function () { if (paused) root.hidden = true; }, tok('--motion-duration-base', 220));
   }
@@ -331,11 +359,14 @@
     if (!active || !paused) return;
     paused = false;
     if (stepDone(cur, data())) { next(); return; }
+    // Modale ouverte puis fermée sans rien enregistrer : la personne a cherché sans trouver.
+    if (STEPS[cur] && STEPS[cur].hint) hintFor[STEPS[cur].id] = true;
     enter(cur);
   }
 
   function stop(persist) {
     seq++;
+    clearTimeout(hintTimer);
     if (persist) markTourDone();
     active = false;
     paused = false;
@@ -388,6 +419,7 @@
     descEl = root.querySelector('[data-spotlight-desc]');
     ruleEl = root.querySelector('[data-spotlight-rule]');
     exampleEl = root.querySelector('[data-spotlight-example]');
+    hintEl = root.querySelector('[data-spotlight-hint]');
     backBtn = root.querySelector('[data-spotlight-back]');
     skipBtn = root.querySelector('[data-spotlight-skip]');
     ctaBtn = root.querySelector('[data-spotlight-cta]');
