@@ -1041,7 +1041,7 @@
 
   <section id="cinema" style="position:relative; background:#08080a; border-top:1px solid var(--color-border-subtle);">
     <div id="cinemaTrack" style="position:relative; height:1700vh;">
-      <div id="cinemaSticky" style="position:sticky; top:0; height:100vh; overflow:hidden;">
+      <div id="cinemaSticky" style="position:sticky; top:0; height:100vh; height:100dvh; overflow:hidden;">
         <div aria-hidden="true" style="position:absolute; inset:0; pointer-events:none; background:none, radial-gradient(120% 90% at 50% 120%, rgba(0,0,0,0.6), transparent 55%);"></div>
         <span id="cinemaKicker" style="opacity:0; position:absolute; top:calc(64px + 22px); left:clamp(20px,5vw,72px); font-size:11px; font-weight:700; letter-spacing:0.22em; text-transform:uppercase; color:rgba(255,253,246,0.34); z-index:6;">Le système en mouvement</span>
 
@@ -1840,7 +1840,13 @@
       loop();
       // scroll 100% libre (pas de step-lock : anti-pattern) — la lecture est assurée par les plateaux de dwell
       document.documentElement.style.scrollSnapType = '';
-      window.addEventListener('resize', () => { measure(); });
+      let lastW = window.innerWidth;
+      window.addEventListener('resize', () => { 
+          if (window.innerWidth !== lastW) {
+              lastW = window.innerWidth;
+              measure(); 
+          }
+      });
       setTimeout(() => { measure(); }, 700);
      } catch(e){ window.__cineErr = (e && e.stack) || String(e); }
     })();
