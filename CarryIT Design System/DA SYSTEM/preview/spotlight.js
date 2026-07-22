@@ -19,7 +19,8 @@
 (function () {
   'use strict';
 
-  var STORAGE_KEY = 'carryit_onboard_done';   // tour terminé (finish ou Échap)
+  var STORAGE_KEY = 'carryit_onboard_done';      // tour terminé par un choix explicite
+  var SUSPEND_KEY = 'carryit_onboard_suspended'; // Échap : mis de côté pour cette session
 
   var STEPS = [
     {
@@ -40,7 +41,7 @@
     {
       id: 'result', view: 'moyen', place: 'above',
       spot: '[data-spot="result-card"]',
-      cta: 'Définir mon KPI',
+      cta: 'Définir le résultat',
       ctaTarget: '[data-kpi-type="lagging"][data-define-kpi], [data-kpi-type="lagging"][data-edit-kpi]',
       eyebrow: 'KPI de résultat',
       title: 'Mesure les résultats de ton jalon.',
@@ -56,7 +57,7 @@
     {
       id: 'effort', view: 'moyen', place: 'right',
       spot: '[data-spot="effort-card"]',
-      cta: 'Définir mon KPI',
+      cta: "Définir l'effort",
       ctaTarget: '[data-kpi-type="leading"][data-define-kpi], [data-kpi-type="leading"][data-edit-kpi]',
       eyebrow: "KPI d'effort",
       title: 'Mesure les efforts.',
@@ -100,8 +101,13 @@
     },
     {
       id: 'go', view: 'todo',
-      spot: '[data-todo-root]',
-      cta: "C'est parti", finish: true,
+      // Le halo tenait toute la vue To-do : un cadre autour de la page n'est pas un
+      // spotlight. Il désigne le bouton d'ajout, et le CTA l'ouvre au lieu de fermer sur
+      // un ordre non exécuté (« Maintenant, commence » suivi d'un bouton qui ferme).
+      spot: '[data-todo-add][data-add-status="todo"]',
+      cta: 'Ajouter ma première tâche',
+      ctaTarget: '[data-todo-add][data-add-status="todo"]',
+      finish: true,
       eyebrow: 'Exécution',
       title: 'Maintenant, commence.',
       body: 'Ajoute ta première tâche. Et commence à exécuter.',
@@ -190,18 +196,17 @@
   // ── Rendu du contenu de la bulle ─────────────────────────────────────────
   function renderSteps(activeIndex) {
     if (!stepsEl) return;
-    // Un segment par étape RÉELLEMENT parcourue : une étape sans objet ne compte pas, sinon
-    // la barre promet un pas de plus qui n'arrivera jamais.
-    var d = data(), html = '', shown = 0, pos = 0;
+    // Dénominateur FIXE (toutes les étapes du tour). Le calculer sur les étapes actuellement
+    // affichables le faisait grandir en cours de route — 1/4 puis 3/5 puis 4/6 — parce que
+    // les étapes de la boucle n'existent qu'une fois les KPI créés. Un compteur qui recule
+    // pendant l'effort est l'un des schémas d'abandon les mieux documentés.
+    var html = '';
     for (var k = 0; k < STEPS.length; k++) {
-      if (stepSkipped(k, d)) continue;
-      shown++;
-      if (k === activeIndex) pos = shown;
       // Segments CUMULATIFS : les étapes franchies restent pleines → on voit le chemin fait.
       html += '<span' + (k <= activeIndex ? ' class="is-active"' : '') + '></span>';
     }
     stepsEl.innerHTML = html;
-    stepsEl.setAttribute('aria-label', 'Étape ' + pos + ' sur ' + shown);
+    stepsEl.setAttribute('aria-label', 'Étape ' + (activeIndex + 1) + ' sur ' + STEPS.length);
   }
 
   function setText(el, text) {
@@ -297,24 +302,28 @@
 
     var vw = window.innerWidth, vh = window.innerHeight;
     var bw = bubble.offsetWidth, bh = bubble.offsetHeight;   // hauteur RÉELLE, pas estimée
+    // Bord haut = sous la navbar : le clamp partait de 16px et la bulle recouvrait le logo
+    // et les onglets, c'est-à-dire les repères qui disent où le tour vient de nous emmener.
+    var nav = document.querySelector('.ds-navbar');
+    var topEdge = nav ? Math.max(EDGE, nav.getBoundingClientRect().bottom + GAP) : EDGE;
     var top = r.top - PAD, left = r.left - PAD;
     var right = r.right + PAD, bottom = r.bottom + PAD;
     var x, y;
 
     if (step.place === 'right' && right + GAP + bw < vw) {
       x = right + GAP;
-      y = clamp(top, EDGE, vh - bh - EDGE);
+      y = clamp(top, topEdge, vh - bh - EDGE);
     } else if (step.place === 'left' && left - GAP - bw > EDGE) {
       x = left - GAP - bw;
-      y = clamp(top, EDGE, vh - bh - EDGE);
+      y = clamp(top, topEdge, vh - bh - EDGE);
     } else if (step.place === 'above') {
-      y = Math.max(top - bh - GAP, EDGE);
+      y = Math.max(top - bh - GAP, topEdge);
       x = clamp(left, EDGE, vw - bw - EDGE);
     } else if (bottom + GAP + bh < vh) {
       y = bottom + GAP;
       x = clamp(left, EDGE, vw - bw - EDGE);
     } else {
-      y = Math.max(top - bh - GAP, EDGE);
+      y = Math.max(top - bh - GAP, topEdge);
       x = clamp(left, EDGE, vw - bw - EDGE);
     }
 
@@ -427,11 +436,31 @@
 
   function finish() { stop(true); }
 
-  // Efface le tour le temps d'une modale : il reprendra sur la même étape à la fermeture.
+  // Sortie non définitive (Échap) : le tour se retire, reste rattrapable par « Reprendre le
+  // guide », mais ne se relancera pas tout seul au prochain chargement de cette session.
+  function suspend() {
+    try { sessionStorage.setItem(SUSPEND_KEY, '1'); } catch (e) {}
+    stop(false);
+  }
+
+  // Modale ouverte par le tour. La consigne RESTE affichée, sur le côté : c'est le seul
+  // écran où l'utilisateur produit vraiment quelque chose, et c'était le seul où on lui
+  // retirait la question et l'exemple. La bulle passe en mode consigne (sans boutons, sans
+  // scrim) et se range à gauche de la modale, qui est centrée.
+  var ASIDE_MIN_WIDTH = 980;
   function pause() {
     paused = true;
     clearTimeout(hintTimer);   // le temps passé dans la modale n'est pas de l'hésitation
     setPageInert(false);       // sinon la modale que le tour vient d'ouvrir serait inerte
+    ring.style.display = 'none';
+
+    if (window.innerWidth >= ASIDE_MIN_WIDTH) {
+      root.classList.add('ds-spotlight--aside');
+      bubble.style.left = EDGE + 'px';
+      bubble.style.top = Math.max(EDGE, Math.round((window.innerHeight - bubble.offsetHeight) / 2)) + 'px';
+      return;
+    }
+    // Trop étroit pour loger la consigne à côté : on s'efface comme avant.
     root.classList.remove('is-active');
     setTimeout(function () { if (paused) root.hidden = true; }, tok('--motion-duration-base', 220));
   }
@@ -439,6 +468,7 @@
   function resume() {
     if (!active || !paused) return;
     paused = false;
+    root.classList.remove('ds-spotlight--aside');
     if (stepDone(cur, data())) { next(); return; }
     // Modale ouverte puis fermée sans rien enregistrer : la personne a cherché sans trouver.
     if (STEPS[cur] && STEPS[cur].hint) hintFor[STEPS[cur].id] = true;
@@ -453,7 +483,7 @@
     if (persist) markTourDone();
     active = false;
     paused = false;
-    root.classList.remove('is-active');
+    root.classList.remove('is-active', 'ds-spotlight--aside');
     window.removeEventListener('resize', onReflow);
     window.removeEventListener('scroll', onReflow, true);
     document.removeEventListener('keydown', onKey);
@@ -483,7 +513,10 @@
   }
 
   function onKey(e) {
-    if (e.key === 'Escape' && !paused) { finish(); return; }
+    // Échap SUSPEND, il ne termine pas. C'est le geste appris pour fermer les trois modales
+    // que ce tour ouvre : le taper une fraction de seconde trop tard clôturait le guide pour
+    // de bon. Le tour ne se reproposera pas dans cette session, mais rien n'est gravé.
+    if (e.key === 'Escape' && !paused) { suspend(); return; }
     if (e.key !== 'Tab' || paused) return;
     var f = focusables();
     if (!f.length) return;
@@ -497,7 +530,10 @@
   // ── Reprise du guide ─────────────────────────────────────────────────────
   function syncRestart() {
     if (!restartBtn) return;
-    restartBtn.hidden = active || !everStarted || allFilled();
+    // Un tour mené à son terme ne se repropose plus. Sans ça, le bouton campait en bas à
+    // droite à CHAQUE chargement tant qu'aucun effort n'était noté : un rappel permanent de
+    // retard, c'est-à-dire la relance artificielle que la marque s'interdit.
+    restartBtn.hidden = active || !everStarted || tourDone() || allFilled();
   }
 
   // Rebuild central (mesure ajoutée / KPI configuré) → l'étape est-elle satisfaite ?
@@ -547,11 +583,13 @@
     ctaBtn.addEventListener('click', function () {
       var step = STEPS[cur];
       if (!step) return;
-      if (step.finish) { finish(); return; }
       // Étape sans cible d'action (elle montre, elle ne fait pas faire) : le CTA acquitte.
-      if (!step.ctaTarget) { next(); return; }
+      if (!step.ctaTarget) { if (step.finish) finish(); else next(); return; }
       var t = document.querySelector(step.ctaTarget);
-      if (!t) return;
+      if (!t) { if (step.finish) finish(); return; }
+      // Étape terminale AVEC une action : on la déclenche et on rend la main, sans revenir
+      // sur le tour — sinon le dernier CTA se contenterait de fermer.
+      if (step.finish) { stop(true); t.click(); return; }
       pause();               // la modale prend la main ; on revient à sa fermeture
       t.click();
     });
@@ -576,7 +614,9 @@
 
     // Démarrage (première étape non satisfaite). Laisser le dashboard peupler la donnée.
     setTimeout(function () {
-      if (tourDone()) { everStarted = true; syncRestart(); return; }
+      var suspended = false;
+      try { suspended = sessionStorage.getItem(SUSPEND_KEY) === '1'; } catch (e) {}
+      if (tourDone() || suspended) { everStarted = true; syncRestart(); return; }
       // Rien à guider tant que l'objectif et le jalon n'existent pas : le tour parlerait de
       // « ton jalon » devant un écran « Aucun jalon », et ses cibles n'existeraient pas.
       // Ce chemin est celui de quelqu'un qui arrive au dashboard avant l'onboarding SMART.
