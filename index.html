@@ -1036,7 +1036,7 @@
 
   <div id="presentationSection" data-reveal="" style="text-align:center; padding:clamp(80px,12vh,140px) clamp(20px,5vw,32px) clamp(6px,2vh,20px);">
     <h2 style="margin:0; font-size:clamp(2.6rem,6vw,4.6rem); font-weight:900; letter-spacing:-0.045em; line-height:1;">Voici CARRY IT</h2>
-    <p style="margin:18px auto 0; max-width:46ch; font-size:clamp(16px,1.2vw,19px); color:var(--color-text-secondary); line-height:1.5;">CARRY IT relie tes objectifs long terme, tes étapes majeures, ta progression réelle et l'exécution, dans un seul endroit.</p>
+    <p style="margin:18px auto 0; max-width:44ch; padding:0 12px; font-size:clamp(14px,1.5vw,19px); color:var(--color-text-secondary); line-height:1.5;">CARRY IT relie tes objectifs long terme, tes étapes majeures, ta progression réelle et l'exécution, dans un seul endroit.</p>
   </div>
 
   <section id="cinema" style="position:relative; background:#08080a; border-top:1px solid var(--color-border-subtle);">
@@ -1929,12 +1929,11 @@
             });
         })();
 
-        // Vidéo hero : chargée uniquement sur desktop (économise 1.3MB sur mobile)
+        // Vidéo hero : chargée partout maintenant
         (function() {
-            const isDesktop = window.matchMedia('(min-width: 769px)').matches;
             const isFastConn = !navigator.connection ||
                 !['slow-2g','2g','3g'].includes(navigator.connection.effectiveType);
-            if (isDesktop && isFastConn) {
+            if (isFastConn) {
                 const video = document.getElementById('heroVideo');
                 if (video) {
                     const srcMp4 = document.createElement('source');
