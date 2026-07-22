@@ -230,12 +230,18 @@
     <div class="ds-spotlight__bubble" data-spotlight-bubble role="dialog" aria-modal="false"
          aria-labelledby="spotlight-title" aria-describedby="spotlight-desc">
       <div class="ds-spotlight__head">
+        <button type="button" class="ds-spotlight__back" data-spotlight-back aria-label="Étape précédente">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <path d="M8.5 3 4.5 7l4 4" stroke="currentColor" stroke-width="1.6"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
         <span class="ds-spotlight__eyebrow" data-spotlight-eyebrow></span>
         <span class="ds-spotlight__steps" data-spotlight-steps></span>
       </div>
       <h2 id="spotlight-title" class="ds-spotlight__title" data-spotlight-title></h2>
       <div class="ds-spotlight__criteria" data-spotlight-criteria hidden>
-        <span class="ds-spotlight__criteria-label">Ton critère de validation</span>
+        <span class="ds-spotlight__criteria-label" data-spotlight-criteria-label></span>
         <p class="ds-spotlight__criteria-text" data-spotlight-criteria-text></p>
       </div>
       <p id="spotlight-desc" class="ds-spotlight__desc" data-spotlight-desc></p>

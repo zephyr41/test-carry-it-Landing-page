@@ -114,7 +114,7 @@
 
   // ── Carte SMART ────────────────────────────────────────────────────
   function smartRow(letter, dimension, text, textCls, field) {
-    return '<li class="ds-smart__row">' +
+    return '<li class="ds-smart__row" data-smart-row="' + field + '">' +
       '<span class="ds-smart__letter">' + letter + '</span>' +
       '<div class="ds-smart__body">' +
         '<span class="ds-smart__dimension type-data-label">' + dimension + '</span>' +

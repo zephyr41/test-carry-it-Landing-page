@@ -77,8 +77,13 @@
     });
     var data = Object.keys(byTime).sort().map(function (t) { return { time: t, value: byTime[t] }; });
 
-    // Rien à tracer → état vide DS (pas de courbe fantôme).
-    if (!data.length) { renderEmpty(shell); return; }
+    // Aucune mesure mais un KPI défini → on trace le point de départ à 0 (aujourd'hui) :
+    // l'axe et la cible sont visibles dès l'onboarding, on comprend que la courbe part de zéro.
+    // Sans KPI du tout, rien à tracer → état vide DS.
+    if (!data.length) {
+      if (okpi.label == null && okpi.target == null) { renderEmpty(shell); return; }
+      data = [{ time: new Date().toISOString().slice(0, 10), value: 0 }];
+    }
 
     var target = okpi.target; // cible : l'axe monte jusqu'ici → vraie distance, sans flatter.
     var tokens = readTokens(el);

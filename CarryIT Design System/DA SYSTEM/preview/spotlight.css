@@ -37,6 +37,19 @@
   transition: opacity var(--motion-duration-base) var(--motion-ease-out);
 }
 
+/* Zone secondaire éclairée (`lit` dans STEPS) : le scrim n'a qu'un seul trou (box-shadow du
+   ring), donc on fait PASSER l'élément au-dessus du scrim. Le halo de fond lui rend le fond
+   de sa carte, sinon le texte flotterait sur le voile sombre. */
+.ds-spotlight-lit {
+  position: relative;
+  z-index: calc(var(--z-spotlight) + 1);
+  border-radius: var(--radius-md);
+  background: var(--card-background);
+  box-shadow: 0 0 0 var(--space-8) var(--card-background);
+  outline: var(--border-focus);
+  outline-offset: var(--space-8);
+}
+
 /* Bulle directive (coach mark) — design de réf « Onboarding Carry It Guide ». */
 .ds-spotlight__bubble {
   position: absolute;
@@ -61,7 +74,42 @@
   margin-bottom: 14px;
 }
 
+/* Retour à l'étape précédente. Désactivé (et non masqué) sur la 1re étape : l'en-tête garde
+   la même hauteur et le même alignement d'une étape à l'autre. */
+.ds-spotlight__back {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  margin-left: -4px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: rgba(168, 168, 168, 0.9);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: var(--motion-transition-default);
+}
+
+.ds-spotlight__back:hover {
+  color: var(--color-text-primary);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.ds-spotlight__back:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.ds-spotlight__back:disabled:hover {
+  color: rgba(168, 168, 168, 0.9);
+  background: transparent;
+}
+
 .ds-spotlight__eyebrow {
+  margin-right: auto;
   font: var(--font-weight-bold) 11px / 1 var(--font-body);
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -168,7 +216,9 @@
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   transform: rotate(45deg);
   top: calc(-1 * var(--space-8) + 1px);
-  left: var(--space-24);
+  /* Position posée en JS quand la bulle est décalée de sa cible (--spotlight-tail-x) :
+     la flèche continue de pointer le bouton. */
+  left: var(--spotlight-tail-x, var(--space-24));
 }
 
 /* Bulle AU-DESSUS de la cible → flèche en bas. */
