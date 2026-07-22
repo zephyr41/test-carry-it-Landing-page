@@ -1,4 +1,4 @@
-/* Effort modal — composant métier : assemble Modal + date nav + Scheduler + Input number.
+/* Effort modal : composant métier : assemble Modal + date nav + Scheduler + Input number.
    Zéro valeur en dur : tout référence tokens.css. */
 
 /* max-height / scroll gérés par .ds-modal (token --modal-max-height, header+footer fixes). */
@@ -256,7 +256,7 @@
 }
 
 /* Étend la zone tactile du resize vers le haut (≥24px, WCAG 2.5.8 AA) sans
-   changer le grip visuel — transparent, ne recouvre que le bas du bloc. */
+   changer le grip visuel : transparent, ne recouvre que le bas du bloc. */
 .ds-scheduler__resize::before {
   content: "";
   position: absolute;

@@ -58,7 +58,7 @@
     var dash = window.CarryITDashboardData || {};
     var okpi = dash.objectiveKpi || {};
     // Robuste : rejette null/undefined/NaN (garde 0) et DÉDOUBLONNE par date. lightweight-charts
-    // exige des temps uniques et croissants — 2 mesures le même jour (date par défaut =
+    // exige des temps uniques et croissants : 2 mesures le même jour (date par défaut =
     // aujourd'hui) → "Value is null" en boucle sinon. Dernière valeur d'une même date l'emporte.
     var byTime = {};
     (okpi.measures || []).forEach(function (m) {
@@ -69,7 +69,7 @@
     var data = Object.keys(byTime).sort().map(function (t) { return { time: t, value: byTime[t] }; });
 
     // Pas d'état vide : sans mesure, on trace le point de départ à 0 (aujourd'hui). L'axe, la
-    // cible et le point sont là dès le premier écran — on comprend que la courbe part de zéro
+    // cible et le point sont là dès le premier écran : on comprend que la courbe part de zéro
     // et où elle doit aller, au lieu de lire « aucune donnée ».
     if (!data.length) data = [{ time: new Date().toISOString().slice(0, 10), value: 0 }];
 
@@ -174,7 +174,7 @@
     layer.className = 'ds-chart-point-layer';
     shell.appendChild(layer);
 
-    var pointEls = [];      // { time, el } — pour activer le point le plus proche au survol de la ligne
+    var pointEls = [];      // { time, el } : pour activer le point le plus proche au survol de la ligne
     var activePoint = null; // point le plus proche du curseur (pour le clic → édition)
 
     // Clic sur une mesure → l'app ouvre l'édition (édite/supprime), comme dashboard.html.
@@ -205,10 +205,10 @@
         point.style.top = y + 'px';
         point.tabIndex = 0;
         var val = document.createElement('span');
-        val.className = 'ds-chart-point__value';   // bulle valeur — au-dessus du point
+        val.className = 'ds-chart-point__value';   // bulle valeur : au-dessus du point
         val.textContent = String(pt.value);
         var date = document.createElement('span');
-        date.className = 'ds-chart-point__date';    // date — en-dessous du point
+        date.className = 'ds-chart-point__date';    // date : en-dessous du point
         date.textContent = fmtDate(pt.time);
         point.appendChild(val);
         point.appendChild(date);

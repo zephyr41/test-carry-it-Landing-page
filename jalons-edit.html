@@ -46,7 +46,7 @@
             --text-s:        var(--c-gris);
         }
 
-        /* ══ DS COMPONENTS — Card ══════════════════════════════ */
+        /* ══ DS COMPONENTS : Card ══════════════════════════════ */
         .card {
             background: var(--c-surface-1);
             border: 1px solid var(--c-border);
@@ -83,7 +83,7 @@
             margin: 10px 0;
         }
 
-        /* ══ DS COMPONENTS — Badges & Chips ════════════════════ */
+        /* ══ DS COMPONENTS : Badges & Chips ════════════════════ */
         .badge-position {
             display: inline-flex; align-items: center;
             padding: 3px 9px; border-radius: var(--radius-sm);
@@ -107,7 +107,7 @@
         .chip--late    { background: rgba(163,21,13,0.12); color: #e05545; }
         .chip--late    .chip__dot { background: #A3150D; }
 
-        /* ══ DS COMPONENTS — Form & Inputs ═════════════════════ */
+        /* ══ DS COMPONENTS : Form & Inputs ═════════════════════ */
         .form-group {
             display: flex; flex-direction: column; gap: 6px;
             margin-bottom: 22px;
@@ -383,7 +383,7 @@
             }
         }
 
-        /* CARTE — layout timeline, visuel via .card DS */
+        /* CARTE : layout timeline, visuel via .card DS */
         .item-card {
             flex: 1;
             margin-left: var(--card-gap);
@@ -1677,7 +1677,7 @@
                     tag: item.tag,
                     title: isFinal ? (smart.specifique || "") : item.label,
                     desc: isFinal ? (smart.specifique || "") : "",
-                    kpi: isFinal ? (smart.niveau || (smart.specifique && smart.specifique.includes(' — ') ? smart.specifique.split(' — ')[1] : smart.specifique) || "") : ""
+                    kpi: isFinal ? (smart.niveau || (smart.specifique && smart.specifique.includes(' : ') ? smart.specifique.split(', ')[1] : smart.specifique) || "") : ""
                 };
             });
             save();

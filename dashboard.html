@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DA System — Dashboard (long terme)</title>
+<title>DA System · Dashboard (long terme)</title>
 <style>
-  /* Rifton = fonte de marque (wordmark de la navbar) — @font-face côté page. */
+  /* Rifton = fonte de marque (wordmark de la navbar) : @font-face côté page. */
   @font-face {
     font-family: 'Rifton';
     src: url('assets/rifton/rifton-regular.woff2') format('woff2'),
@@ -58,7 +58,7 @@
         <!-- Étage haut -->
         <div class="ds-navbar__top">
           <div class="ds-navbar__left">
-            <a class="ds-navbar__brand" href="#" aria-label="CarryIT — accueil">
+            <a class="ds-navbar__brand" href="#" aria-label="CarryIT, accueil">
               <img class="ds-navbar__brand-mark" src="assets/images/site/logo_png.webp" alt="" aria-hidden="true">
               <span class="ds-navbar__brand-name type-data-label">CARRY IT</span>
             </a>
@@ -115,7 +115,7 @@
         <!-- 1 · KPI de l'objectif (rempli par dashboard-final.js depuis localStorage) -->
         <article class="ds-col-3 ds-kpi-card ds-kpi-card--summary ds-kpi-card--hero" data-objective-card></article>
 
-        <!-- 2 · Jalon actif (stepper — carte du bas de timeline.html, rendue par timeline.js) -->
+        <!-- 2 · Jalon actif (stepper : carte du bas de timeline.html, rendue par timeline.js) -->
         <article class="ds-col-3 ds-jalon-active" data-jalon-active hidden>
           <span class="ds-jalon-active__eyebrow type-data-label" data-active-eyebrow></span>
           <h3 class="ds-jalon-active__title type-h3" data-active-title></h3>
@@ -146,7 +146,7 @@
             </button>
           </div>
           <div class="ds-chart-shell">
-            <div id="dsChartCanvas" class="ds-chart-canvas" aria-label="Évolution du KPI — nombre de clients payants"></div>
+            <div id="dsChartCanvas" class="ds-chart-canvas" aria-label="Évolution du KPI : nombre de clients payants"></div>
           </div>
         </article>
 
@@ -223,7 +223,7 @@
     </div>
   </div>
 
-  <!-- Onboarding — tour spotlight multi-étapes. La COPY est centralisée dans spotlight.js
+  <!-- Onboarding : tour spotlight multi-étapes. La COPY est centralisée dans spotlight.js
        (tableau STEPS) : c'est là qu'on édite les textes. Ici, la coquille seulement. -->
   <div class="ds-spotlight" data-spotlight hidden>
     <div class="ds-spotlight__ring" data-spotlight-ring aria-hidden="true"></div>
@@ -235,14 +235,14 @@
       </div>
       <h2 id="spotlight-title" class="ds-spotlight__title" data-spotlight-title></h2>
       <!-- Rappel de ce sur quoi l'étape s'appuie : libellé gris, puis la phrase de
-           l'utilisateur citée en blanc — c'est SA donnée qui pilote l'étape. -->
+           l'utilisateur citée en blanc : c'est SA donnée qui pilote l'étape. -->
       <p class="ds-spotlight__quote-label" data-spotlight-quote-label hidden></p>
       <p class="ds-spotlight__quote" data-spotlight-quote hidden></p>
       <p id="spotlight-desc" class="ds-spotlight__desc" data-spotlight-desc></p>
       <hr class="ds-spotlight__rule" data-spotlight-rule hidden>
       <p class="ds-spotlight__example" data-spotlight-example hidden></p>
       <!-- Filet : n'apparaît qu'après une hésitation constatée (temps passé ou modale
-           annulée), jamais d'emblée — sinon on souffle d'abandonner avant d'avoir essayé. -->
+           annulée), jamais d'emblée : sinon on souffle d'abandonner avant d'avoir essayé. -->
       <p class="ds-spotlight__hint" data-spotlight-hint hidden aria-live="polite"></p>
       <div class="ds-spotlight__actions">
         <button type="button" class="ds-spotlight__back" data-spotlight-back aria-label="Étape précédente">

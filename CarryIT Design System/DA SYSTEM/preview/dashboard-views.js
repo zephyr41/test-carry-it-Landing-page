@@ -1,7 +1,7 @@
-/* Dashboard — commutation des vues (Long terme / Moyen terme / To-do) + rendu de la
+/* Dashboard : commutation des vues (Long terme / Moyen terme / To-do) + rendu de la
    vue moyen terme : rail (timeline, rendu par timeline.js) + détail du jalon sélectionné.
    Vide pur : lit window.CarryITDashboardData, ne fabrique aucune donnée.
-   NB : deltaText/freshness sont dupliqués depuis dashboard-final.js (helpers privés) —
+   NB : deltaText/freshness sont dupliqués depuis dashboard-final.js (helpers privés) :
    à consolider dans un module partagé quand la vue moyen terme sera stabilisée. */
 (function () {
   'use strict';
@@ -9,7 +9,7 @@
   var EDIT_ICON = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
   var PLUS_ICON = '<svg class="ds-kpi-card__action-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16m8-8H4"/></svg>';
   var DOTS_ICON = '<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>';
-  // Horloge — mesure en retard sur sa cadence (état stale, ambre).
+  // Horloge : mesure en retard sur sa cadence (état stale, ambre).
   var CLOCK_ICON = '<svg class="ds-kpi-card__meta-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
   // Jours d'une période de cadence → seuil de « retard » (au-delà = stale).
   var FREQ_DAYS = { 'Quotidien': 1, 'Hebdomadaire': 7, 'Mensuel': 30 };
@@ -83,11 +83,11 @@
     return fmt(kpi.target - kpi.value) + ' restants';
   }
 
-  // Carte KPI de jalon — variante complète (head-actions : crayon + « Ajouter … »).
+  // Carte KPI de jalon : variante complète (head-actions : crayon + « Ajouter … »).
   function kpiCardHTML(kpi, typeLabel, addLabel, jalonId, kpiType) {
     var attrs = 'data-jalon-id="' + esc(jalonId) + '" data-kpi-type="' + esc(kpiType) + '"';
     // Carte « fantôme » UNIQUEMENT si aucun KPI n'est défini. Dès qu'il est défini (nom/cible),
-    // on affiche la vraie carte pour qu'on voie ce qu'on vient de remplir — même sans mesure
+    // on affiche la vraie carte pour qu'on voie ce qu'on vient de remplir : même sans mesure
     // encore (valeur « 0 »).
     var spot = 'data-spot="' + (kpiType === 'leading' ? 'effort-card' : 'result-card') + '"';
     if (!kpi) {
@@ -187,7 +187,7 @@
     var effort = (jalon.kpis || []).find(function (k) { return k.type === 'leading'; }) || null;
     var result = (jalon.kpis || []).find(function (k) { return k.type === 'lagging'; }) || null;
     var status = STATUS_LABEL[jalon.statut] || '';
-    // Pas de « Mois N » fabriqué (c'était index+1 déguisé en date — la marque ne fabrique pas de données).
+    // Pas de « Mois N » fabriqué (c'était index+1 déguisé en date : la marque ne fabrique pas de données).
     var meta = 'Jalon ' + (index + 1) + '/' + total + (status ? ' · ' + status : '');
     var due = fmtDue(jalon.date);
 
@@ -226,11 +226,11 @@
         '</footer>' +
       '</div>';
 
-    // Applique le remplissage des barres (scaleX) hors HTML — data-fill → transform.
+    // Applique le remplissage des barres (scaleX) hors HTML : data-fill → transform.
     Array.prototype.forEach.call(card.querySelectorAll('.ds-progress__fill[data-fill]'), function (el) {
       el.style.transform = 'scaleX(' + el.dataset.fill + ')';
     });
-    // Position du tick de seuil (cible/valeur) hors HTML — data-tick → left.
+    // Position du tick de seuil (cible/valeur) hors HTML : data-tick → left.
     Array.prototype.forEach.call(card.querySelectorAll('.ds-kpi-card__bar-tick[data-tick]'), function (el) {
       el.style.left = (el.dataset.tick * 100) + '%';
     });
@@ -242,7 +242,7 @@
     });
   }
 
-  // Rend le jalon actif (premier non terminé) — l'état par défaut de la vue.
+  // Rend le jalon actif (premier non terminé) : l'état par défaut de la vue.
   function renderActive() {
     var list = sortedJalons();
     var total = list.length;
@@ -269,14 +269,14 @@
     if (name === 'todo' && window.CarryITRefreshTodo) window.CarryITRefreshTodo();
   }
 
-  // Ré-affiche un jalon donné (après ajout de mesure) — data déjà rebuildée par l'appelant.
+  // Ré-affiche un jalon donné (après ajout de mesure) : data déjà rebuildée par l'appelant.
   window.CarryITShowJalon = function (id) {
     var list = sortedJalons();
     var idx = list.findIndex(function (j) { return String(j.id) === String(id); });
     if (idx >= 0) renderDetail(list[idx], idx, list.length);
     else renderActive();   // jalon supprimé → retombe sur le jalon actif
   };
-  // Re-render le détail courant (ou le jalon actif) — appelé après une écriture.
+  // Re-render le détail courant (ou le jalon actif) : appelé après une écriture.
   window.CarryITRefreshMoyen = function () {
     if (currentJalonId != null) window.CarryITShowJalon(currentJalonId);
     else renderActive();

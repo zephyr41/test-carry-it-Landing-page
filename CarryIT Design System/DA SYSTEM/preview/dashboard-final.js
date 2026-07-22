@@ -1,4 +1,4 @@
-/* Dashboard (long terme) — orchestrateur.
+/* Dashboard (long terme) : orchestrateur.
    Lit window.CarryITDashboardData (couche localStorage de dashboard-data.js) et remplit
    les cartes : KPI objectif (hero), KPI effort, KPI résultat, carte SMART.
    Vide pur : aucune donnée inventée. Objectif/SMART absents → état vide DS + CTA vers

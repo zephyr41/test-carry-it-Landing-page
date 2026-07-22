@@ -91,7 +91,7 @@
 .sk-row     { display: flex; align-items: flex-start; gap: var(--space-12); }
 .sk-col     { display: flex; flex-direction: column; gap: var(--space-8); flex: 1; min-width: 0; }
 
-/* ── Vue 1 — Long terme : SMART + timeline côte à côte, KPI résumé dessous ── */
+/* ── Vue 1 : Long terme : SMART + timeline côte à côte, KPI résumé dessous ── */
 .sk-longterme__top {
   display: grid;
   grid-template-columns: 300px 1fr;
@@ -114,7 +114,7 @@
   align-items: center;
 }
 
-/* ── Vue 2 — Moyen terme (jalon détail) ─────────────────────── */
+/* ── Vue 2 : Moyen terme (jalon détail) ─────────────────────── */
 .sk-jalon { display: flex; flex-direction: column; gap: var(--space-24); }
 .sk-jalon__kpis {
   display: grid;
@@ -122,7 +122,7 @@
   gap: var(--space-16);
 }
 
-/* ── Vue 3 — To-do list ─────────────────────────────────────── */
+/* ── Vue 3 : To-do list ─────────────────────────────────────── */
 .sk-todo__row {
   display: flex;
   align-items: center;

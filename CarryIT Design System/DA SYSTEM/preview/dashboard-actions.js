@@ -1,4 +1,4 @@
-/* Dashboard — interactions : ajouter une mesure au KPI global + éditer l'objectif SMART.
+/* Dashboard : interactions : ajouter une mesure au KPI global + éditer l'objectif SMART.
    Écrit dans les 2 namespaces (legacy carryItObjectifSMART + React carryit_v1_*), puis
    rafraîchit toutes les vues via window.CarryITRefreshDashboard (re-lit localStorage). */
 (function () {
@@ -50,7 +50,7 @@
       return (p.length < 3) ? 'Choisir une date' : (parseInt(p[2], 10) + ' ' + MONTHS[parseInt(p[1], 10) - 1] + ' ' + p[0]);
     }
 
-    // Calendar DS (@calendarjs) en POPOVER — compact : déclencheur + calendrier au clic.
+    // Calendar DS (@calendarjs) en POPOVER : compact : déclencheur + calendrier au clic.
     var cal = null, measureDate = null;
     function setDate(iso) { measureDate = iso; if (dateLabel) dateLabel.textContent = fmtDate(iso); }
     function closePop() { if (calPop) calPop.hidden = true; if (dateTrigger) dateTrigger.setAttribute('aria-expanded', 'false'); }
@@ -120,7 +120,7 @@
       valEl.focus();
     }
 
-    // Édition d'une mesure existante — même modal, pré-rempli (règle DS : une seule porte d'édition).
+    // Édition d'une mesure existante : même modal, pré-rempli (règle DS : une seule porte d'édition).
     function openEdit(measure) {
       populateRecall();
       var iso = toComparable(measure.date);
@@ -172,7 +172,7 @@
     });
   }
 
-  // Date comparable (yyyy-mm-dd) depuis ISO ou jj/mm/aaaa — les 2 formats coexistent en stockage.
+  // Date comparable (yyyy-mm-dd) depuis ISO ou jj/mm/aaaa : les 2 formats coexistent en stockage.
   function toComparable(d) {
     if (!d) return '';
     if (/^\d{4}-\d{2}-\d{2}/.test(d)) return d.slice(0, 10);
@@ -246,7 +246,7 @@
     writeMeasures(readMeasuresRaw().filter(function (m) { return !sameMeasure(m, key); }));
   }
 
-  // ── Éditer l'objectif SMART — INLINE dans la carte (pas de modal) ──
+  // ── Éditer l'objectif SMART : INLINE dans la carte (pas de modal) ──
   // Ligne = lettre (S/M/A/R/T, vide pour la cible) + label + champ. Ordre calqué sur
   // dashboard.html : S · M · Cible (3e) · A · R · T. Actions Annuler/Enregistrer EN BAS.
   function ta(attr, value) { return '<textarea class="ds-textarea" rows="2" ' + attr + '>' + esc(value) + '</textarea>'; }

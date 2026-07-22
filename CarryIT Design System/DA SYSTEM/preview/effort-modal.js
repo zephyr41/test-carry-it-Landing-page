@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  // Scheduler à SCROLL INFINI : le rail des heures boucle (…22,23,00,01…). Technique standard —
+  // Scheduler à SCROLL INFINI : le rail des heures boucle (…22,23,00,01…). Technique standard :
   // on empile COPIES copies de 24h et on recentre le scroll aux bords (contenu identique = illusion
   // d'infini). La valeur stockée = heure mod 24. state.top = position ABSOLUE (px) du bloc dans le rail.
   var HOURS = 24;

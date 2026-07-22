@@ -1,5 +1,5 @@
 /* ============================================================
-   Grid — système 12 colonnes fluides
+   Grid : système 12 colonnes fluides
    Colonnes fluides (fr), gouttière + marge fixes (tokens).
    Responsive : 12 col desktop → 8 tablette (≤1024) → 4 mobile (≤600).
    Une carte se pose sur N colonnes via .ds-col-N.
@@ -26,7 +26,7 @@
   gap: var(--grid-gutter);
 }
 
-/* Spans desktop — 1 à 12. */
+/* Spans desktop : 1 à 12. */
 .ds-col-1  { grid-column: span 1; }
 .ds-col-2  { grid-column: span 2; }
 .ds-col-3  { grid-column: span 3; }

@@ -1,4 +1,4 @@
-/* Dashboard — « Configurer / Modifier un KPI de jalon » (définition, pas mesure).
+/* Dashboard : « Configurer / Modifier un KPI de jalon » (définition, pas mesure).
    Crayon d'une carte KPI (édition) ou « Définir… » d'une carte vide (création). Champs :
    métrique, cible, unité, fréquence, mode. Type fixe (leading/lagging, porté par le bouton).
    Écrit carryit_v1_jalons[].kpis[], recalcule la valeur (mode peut changer), rafraîchit. */
@@ -23,7 +23,7 @@
     return Array.isArray(jalons) ? jalons.find(function (j) { return String(j.id) === String(id); }) : null;
   }
 
-  // Placeholders descriptifs : une phrase entière, pas une liste de mots — l'utilisateur
+  // Placeholders descriptifs : une phrase entière, pas une liste de mots, l'utilisateur
   // recopie la FORME de ce qu'on attend (une chose mesurable, sur une période).
   var PLACEHOLDER = {
     leading: 'Nombre de séances de musculation par semaine…',

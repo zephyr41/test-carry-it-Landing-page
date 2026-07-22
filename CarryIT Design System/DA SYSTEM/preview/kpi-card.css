@@ -232,7 +232,7 @@
 /* Delta = composant partagé .ds-delta (écart-à-cible inline quiet, cf. delta.css).
    Migré hors de la KPI card pour être réutilisable sur d'autres écrans. */
 
-/* ── Variante COMPACTE (vue long terme — lecture seule, brève) ──
+/* ── Variante COMPACTE (vue long terme : lecture seule, brève) ──
    Padding + rythme resserrés → carte plus dense qu'en vue jalon. */
 .ds-kpi-card--summary {
   gap: 0;
@@ -345,7 +345,7 @@
 .ds-kpi-card__empty-action { margin-top: var(--kpi-card-metric-gap); align-self: flex-start; }
 
 /* Anatomie fantôme : le « 0 / cible » réel, en très basse opacité. Plus lisible qu'un bloc
-   skeleton — on voit la FORME de la donnée à venir (grand chiffre + cible), pas un rectangle. */
+   skeleton : on voit la FORME de la donnée à venir (grand chiffre + cible), pas un rectangle. */
 .ds-kpi-card__value--ghost {
   color: color-mix(in srgb, var(--color-text-primary) 22%, transparent);
 }

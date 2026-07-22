@@ -39,7 +39,7 @@
 }
 
 /* Label de champ en blanc : dans un formulaire de modale, les labels sont la structure de
-   lecture — en gris secondaire ils passaient derrière les valeurs saisies. */
+   lecture : en gris secondaire ils passaient derrière les valeurs saisies. */
 .ds-field-label {
   color: var(--color-text-primary);
   font-weight: var(--font-weight-medium);
@@ -103,7 +103,7 @@
   color: var(--input-placeholder);
 }
 
-/* Contrôles natifs (date picker, steppers) rendus en sombre — sinon popup/icônes clairs. */
+/* Contrôles natifs (date picker, steppers) rendus en sombre : sinon popup/icônes clairs. */
 .ds-input[type="date"],
 .ds-input[type="number"] {
   color-scheme: dark;
@@ -175,7 +175,7 @@
   color: var(--input-error-text);
 }
 
-/* File input — natif restylé : le bouton du sélecteur reprend le chrome d'un bouton
+/* File input : natif restylé : le bouton du sélecteur reprend le chrome d'un bouton
    ghost sm (affordance DS), le nom de fichier passe en texte secondaire. On garde la
    sémantique + le clavier natifs (pas de trigger custom masqué). */
 .ds-file-field {

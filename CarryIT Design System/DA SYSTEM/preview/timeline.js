@@ -1,4 +1,4 @@
-/* Timeline — rendu dynamique depuis localStorage (carryit_v1_jalons).
+/* Timeline : rendu dynamique depuis localStorage (carryit_v1_jalons).
    États dérivés du statut : completed = fait, premier pending = courant, autres pending = à venir.
    Jalons cliquables : émettent l'événement `carryit:jalon-open` (l'app branche l'ouverture de la vue). */
 
@@ -51,7 +51,7 @@
     btn.type = 'button';
     btn.dataset.jalonId = jalon.id;
     if (index === curIdx) btn.setAttribute('aria-current', 'step');
-    // Titre seul (fidèle moyen-terme-v4) — pas de sous-label « Jalon X/5 ».
+    // Titre seul (fidèle moyen-terme-v4) : pas de sous-label « Jalon X/5 ».
     btn.append(el('span', 'ds-timeline__title type-body-lg', jalon.titre));
 
     li.append(rail, marker, btn);

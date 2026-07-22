@@ -1,4 +1,4 @@
-// KPI history — ✎ ouvre l'effort modal réutilisé (pré-rempli), 🗑 supprime.
+// KPI history : ✎ ouvre l'effort modal réutilisé (pré-rempli), 🗑 supprime.
 (function () {
   var modal = document.getElementById('measureModal');
   var qty = document.getElementById('effortQty');

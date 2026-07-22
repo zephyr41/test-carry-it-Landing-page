@@ -162,7 +162,7 @@
   gap: var(--space-12);
 }
 
-/* Sections de corps (titre + description + action) : rythme GROUPÉ — gap:0 + marges
+/* Sections de corps (titre + description + action) : rythme GROUPÉ, gap:0 + marges
    par relation, jamais uniforme. Scopé aux modals qui adoptent .ds-modal__section
    (confirm.html / modal.html gardent leur corps simple). */
 .ds-modal__body:has(.ds-modal__section) {

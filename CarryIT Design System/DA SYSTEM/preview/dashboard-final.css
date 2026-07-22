@@ -19,7 +19,7 @@
 .ds-kpi-card--hero .ds-kpi-card__value,
 .ds-kpi-card--hero .ds-kpi-card__target,
 .ds-kpi-card--hero .ds-kpi-card__meta {
-  color: var(--color-surface);   /* texte sombre sur fond blanc — inclut __name (sinon blanc sur blanc) */
+  color: var(--color-surface);   /* texte sombre sur fond blanc : inclut __name (sinon blanc sur blanc) */
 }
 
 .ds-kpi-card--hero .ds-kpi-card__divider {
@@ -44,7 +44,7 @@
                     la page au contenu → la To-do faisait 363px au lieu de la largeur de grille). */
   margin-inline: auto;
   padding-inline: var(--grid-page-padding);
-  padding-block: var(--space-32) var(--grid-page-padding);   /* gap navbar→grille resserré (48 jugé trop) — symétrique avec le bas */
+  padding-block: var(--space-32) var(--grid-page-padding);   /* gap navbar→grille resserré (48 jugé trop) : symétrique avec le bas */
   /* Grille VERTICALE : rangée KPI compacte (auto) + rangée contenu à hauteur définie
      (≥ token, grandit si le contenu déborde). Rythme vertical stable, vide ou rempli,
      sans forcer 100vh. */
@@ -58,7 +58,7 @@
   display: flex;
 }
 
-/* ── Ligne des 4 cartes : sur la grille DS (.ds-grid) — chaque carte = span 3 (4×3=12). ── */
+/* ── Ligne des 4 cartes : sur la grille DS (.ds-grid), chaque carte = span 3 (4×3=12). ── */
 
 /* Les cartes réutilisées : pas de marge propre (l'espacement vient de la grille). */
 .dashboard-final__kpi-row > * {
@@ -69,7 +69,7 @@
 /* La carte « Jalon actif » n'a pas de marge haute ici (elle vit dans une grille, pas sous une timeline).
    La bande KPI long terme est un contexte COMPACT : les 3 tuiles y sont à --kpi-card-summary-padding (16).
    Le jalon rejoint ce padding pour que les 4 cadres aient le MÊME inset (cohérence de bande).
-   Son rythme interne (eyebrow→titre→stepper) reste canonique — on n'aligne que le cadre. */
+   Son rythme interne (eyebrow→titre→stepper) reste canonique : on n'aligne que le cadre. */
 .dashboard-final .ds-jalon-active {
   margin-top: 0;
   --jalon-active-padding: var(--kpi-card-summary-padding);
@@ -165,7 +165,7 @@
   flex-direction: column;
 }
 
-/* Desktop : asymétrie SUR la grille 12 col — rail = 3 colonnes, détail = 9 (gouttière système).
+/* Desktop : asymétrie SUR la grille 12 col, rail = 3 colonnes, détail = 9 (gouttière système).
    Aucun étirement : les cartes KPI gardent leur hauteur fixe (composant), tout respire. */
 @media (min-width: 1025px) {
   .dashboard-final__moyen-row > .ds-col-4 { grid-column: span 3; }
@@ -665,7 +665,7 @@
   border-top: var(--border-subtle);
 }
 
-/* ── Rangée du bas : sur la grille DS — graphique span 8 + SMART span 4. ── */
+/* ── Rangée du bas : sur la grille DS, graphique span 8 + SMART span 4. ── */
 
 /* Les composants ont une largeur propre : on la neutralise, la colonne de grille pilote. */
 .dashboard-final__bottom-row > * {
@@ -678,7 +678,7 @@
   height: 100%;
 }
 
-/* Reflow responsive — le span est une décision de vue. Breakpoints alignés sur la grille DS. */
+/* Reflow responsive : le span est une décision de vue. Breakpoints alignés sur la grille DS. */
 @media (max-width: 1024px) {
   /* Grille à 8 col : KPI 2 par ligne (span 4), rangée du bas empilée pleine largeur. */
   .dashboard-final__kpi-row > * { grid-column: span 4; }

@@ -1,8 +1,8 @@
-/* Synchroniser — transfert manuel des données CarryIT entre appareils (sans backend).
+/* Synchroniser : transfert manuel des données CarryIT entre appareils (sans backend).
    Export : télécharge un .json (objectif SMART + jalons).
    Import : le bouton « Importer » ouvre le sélecteur de fichier (input caché) ; au chargement,
    si des données existent déjà, le bouton passe en confirmation (« Remplacer mes données »,
-   danger) — 2e clic = écrasement + reload. Sinon import immédiat + reload. */
+   danger) : 2e clic = écrasement + reload. Sinon import immédiat + reload. */
 (function () {
   'use strict';
 

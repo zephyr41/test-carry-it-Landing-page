@@ -24,7 +24,7 @@
   border-radius: var(--container-radius);
 }
 
-/* Primary nav tabs (icon + label) — placé nu dans la navbar, pas dans une carte */
+/* Primary nav tabs (icon + label) : placé nu dans la navbar, pas dans une carte */
 .ds-tabs {
   display: inline-flex;
   align-items: center;

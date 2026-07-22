@@ -76,7 +76,7 @@
   color: var(--color-text-secondary);
 }
 
-/* Les 2 cartes KPI vivent sur la grille DS (.ds-grid + .ds-col-6 chacune) — plus de grille
+/* Les 2 cartes KPI vivent sur la grille DS (.ds-grid + .ds-col-6 chacune) : plus de grille
    locale : gouttière = --grid-gutter, reflow géré par grid.css. */
 /* Largeur fixe (360) du composant neutralisée → la colonne de grille (col-6) pilote la largeur. */
 .ds-jalon-detail__kpi-grid .ds-kpi-card {

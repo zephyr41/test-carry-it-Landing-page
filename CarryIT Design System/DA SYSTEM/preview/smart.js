@@ -1,4 +1,4 @@
-/* SMART card — accordéon inline.
+/* SMART card : accordéon inline.
    Les champs longs (A/R) sont réduits à 2 lignes ; un « Voir plus ⌄ » n'est injecté QUE si le
    texte déborde vraiment (mesuré). Clic → déplie le texte inline (la carte grandit ; la page peut
    scroller = comportement standard/premium, la carte reste courte tant qu'on ne déplie pas).

@@ -43,11 +43,11 @@
               height var(--motion-duration-base) var(--motion-ease-out);
 }
 
-/* Bulle directive (coach mark) — design de réf « Onboarding Carry It Guide ». */
+/* Bulle directive (coach mark) : design de réf « Onboarding Carry It Guide ». */
 .ds-spotlight__bubble {
   position: absolute;
   box-sizing: border-box;
-  /* Marge de 16px de chaque côté sur petit écran — la même que le clamp de position en JS,
+  /* Marge de 16px de chaque côté sur petit écran : la même que le clamp de position en JS,
      sinon la bulle serait posée à 16px mais large de plus que l'espace restant. */
   width: min(384px, calc(100vw - 2 * var(--space-16)));
   padding: var(--space-24);
@@ -135,7 +135,7 @@
   text-wrap: pretty;
 }
 
-/* Exemple, sous un filet : c'est de l'aide, pas la consigne — plus petit et plus gris que
+/* Exemple, sous un filet : c'est de l'aide, pas la consigne, plus petit et plus gris que
    la question, et séparé pour qu'on puisse l'ignorer d'un coup d'œil. */
 .ds-spotlight__rule {
   border: 0;
@@ -151,7 +151,7 @@
 }
 
 /* Filet d'hésitation : même registre gris que l'exemple, aligné à droite pour tomber sous
-   « Passer » — l'affordance qu'il légitime. Fondu court : il se pose, il ne surgit pas. */
+   « Passer » : l'affordance qu'il légitime. Fondu court : il se pose, il ne surgit pas. */
 .ds-spotlight__hint {
   font: var(--font-weight-regular) 12.5px / 1.55 var(--font-body);
   color: rgba(168, 168, 168, 0.75);

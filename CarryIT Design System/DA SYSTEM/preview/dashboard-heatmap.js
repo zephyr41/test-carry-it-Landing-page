@@ -1,4 +1,4 @@
-/* Dashboard — carte cadence (heatmap) de la vue moyen terme, dynamique.
+/* Dashboard : carte cadence (heatmap) de la vue moyen terme, dynamique.
    Remplace calendar-heatmap.js (100% DEMO hardcodé). Lit window.CarryITDashboardData :
    pour le jalon actif, pose sur la grille du mois courant la DERNIÈRE mesure de chaque
    jour (effort ou résultat), avec popover au survol (bloc horaire réel + valeur + delta).

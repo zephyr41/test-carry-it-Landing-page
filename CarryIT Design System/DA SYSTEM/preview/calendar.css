@@ -12,7 +12,7 @@
   margin-bottom: var(--space-section-gap);
 }
 
-/* CalendarJS (@calendarjs/ce) theming — map lib's --lm-* custom properties
+/* CalendarJS (@calendarjs/ce) theming : map lib's --lm-* custom properties
    to our tokens.css. Zero visual value hardcoded here, only var() refs. */
 .ds-calendar-wrap {
   display: inline-block;
@@ -42,14 +42,14 @@
 
 /* Lib styles the selected day via .lm-calendar-content>div[data-selected=true]
    with a color not covered by its own --lm-* custom properties (specificity
-   0,2,1) — match/exceed that specificity to override with our tokens. */
+   0,2,1) : match/exceed that specificity to override with our tokens. */
 .ds-calendar-wrap .lm-calendar-content > div[data-selected="true"] {
   background: var(--calendar-day-selected-background);
   color: var(--calendar-day-selected-text);
 }
 
 /* Nav buttons (prev/next month) ship a hardcoded light bg + black glyph in the
-   lib's style.min.css, not covered by --lm-* — override with our tokens only. */
+   lib's style.min.css, not covered by --lm-* : override with our tokens only. */
 .ds-calendar-wrap .lm-calendar-icon {
   background: transparent;
   color: var(--color-text-secondary);
@@ -60,7 +60,7 @@
 }
 
 /* La lib rend les flèches de nav en icônes Material ↑/↓ (ligatures "expand_less"
-   /"expand_more") — contre-intuitif pour changer de mois. On masque la ligature
+   /"expand_more") : contre-intuitif pour changer de mois. On masque la ligature
    et on affiche ‹ (mois précédent) / › (mois suivant), cohérent avec la date-nav
    du modal effort et l'attente utilisateur. Supprime aussi la dépendance Material Icons. */
 .ds-calendar-wrap .lm-calendar-navigation button {

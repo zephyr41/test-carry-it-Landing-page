@@ -106,7 +106,7 @@
 }
 
 /* Justification (A/R) réduite à 2 lignes ; dépliée inline au clic sur « Voir plus »
-   (accordéon — la carte grandit, la page peut scroller : comportement standard/premium). */
+   (accordéon : la carte grandit, la page peut scroller : comportement standard/premium). */
 .ds-smart__text--clamp {
   display: -webkit-box;
   -webkit-line-clamp: var(--smart-clamp-lines);
@@ -120,7 +120,7 @@
   overflow: visible;
 }
 
-/* Affordance « Voir plus / moins » + chevron — injectée par JS seulement si le texte déborde. */
+/* Affordance « Voir plus / moins » + chevron : injectée par JS seulement si le texte déborde. */
 .ds-smart__more {
   display: inline-flex;
   align-items: center;

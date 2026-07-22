@@ -1,4 +1,4 @@
-/* Dashboard — sélecteur de projets (navbar). Liste carryItAllObjectifs, permet de
+/* Dashboard : sélecteur de projets (navbar). Liste carryItAllObjectifs, permet de
    changer de projet courant et d'en supprimer. Le projet courant est « projeté » dans
    les clés live lues par dashboard-final (carryItObjectifSMART + carryit_v1_*), puis reload. */
 (function () {
@@ -104,7 +104,7 @@
     window.location.reload();
   }
 
-  // Confirmation inline (remplace la ligne) — action irréversible.
+  // Confirmation inline (remplace la ligne) : action irréversible.
   function confirmDelete(i) {
     var row = list.querySelector('.ds-navbar__project-row[data-index="' + i + '"]');
     if (!row) return;

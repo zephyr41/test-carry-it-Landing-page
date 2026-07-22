@@ -46,7 +46,7 @@
             --text-s:        var(--c-gris);
         }
 
-        /* ══ DS COMPONENTS — Card ══════════════════════════════ */
+        /* ══ DS COMPONENTS : Card ══════════════════════════════ */
         .card {
             background: var(--c-surface-1);
             border: 1px solid var(--c-border);
@@ -82,7 +82,7 @@
             margin: 10px 0;
         }
 
-        /* ══ DS COMPONENTS — Badges & Chips ════════════════════ */
+        /* ══ DS COMPONENTS : Badges & Chips ════════════════════ */
         .badge-position {
             display: inline-flex; align-items: center;
             padding: 3px 9px; border-radius: var(--radius-sm);
@@ -106,7 +106,7 @@
         .chip--late    { background: rgba(163,21,13,0.12); color: #e05545; }
         .chip--late    .chip__dot { background: #A3150D; }
 
-        /* ══ DS COMPONENTS — Form & Inputs ═════════════════════ */
+        /* ══ DS COMPONENTS : Form & Inputs ═════════════════════ */
         .form-group {
             display: flex; flex-direction: column; gap: 6px;
             margin-bottom: 22px;
@@ -382,7 +382,7 @@
             }
         }
 
-        /* CARTE — layout timeline, visuel via .card DS */
+        /* CARTE : layout timeline, visuel via .card DS */
         .item-card {
             flex: 1;
             margin-left: var(--card-gap);
@@ -1199,7 +1199,7 @@
             line-height: 1.6;
         }
 
-        /* DS Button — variante inverse, taille lg (tokens.css : --button-inverse-*, --button-height-lg 64,
+        /* DS Button : variante inverse, taille lg (tokens.css : --button-inverse-*, --button-height-lg 64,
            --button-padding-inline-lg 32, --button-font-size 16 / --button-font-weight 700, --button-radius-pill) */
         .btn-launch {
             display: inline-flex;
@@ -1758,14 +1758,14 @@
 
             let candidates;
             if (totalMonths >= 3 && totalMonths <= 12) {
-                // CAS 1 — Moyen (3–12 mois) : Décollage + Mi-parcours + Final
+                // CAS 1 : Moyen (3–12 mois) : Décollage + Mi-parcours + Final
                 candidates = [
                     { label: 'Décollage', date: addMonths(today, 1) },
                     { label: 'Mi-parcours', date: halfDate },
                     { label: 'Vision Finale', date: deadline },
                 ];
             } else if (totalMonths > 12) {
-                // CAS 2 — Long (>1 an) : J+3 + J+6 + Année 1 + Mi-parcours + Final
+                // CAS 2 : Long (>1 an) : J+3 + J+6 + Année 1 + Mi-parcours + Final
                 candidates = [
                     { label: 'Premier trimestre', date: addMonths(today, 3) },
                     { label: '6 mois', date: addMonths(today, 6) },
@@ -1804,7 +1804,7 @@
             const total = deduped.length;
             deduped.forEach((d, i) => { d.tag = `Jalon ${i + 1}/${total}`; });
 
-            return deduped.sort((a, b) => b.date - a.date); // descending — index 0 = deadline
+            return deduped.sort((a, b) => b.date - a.date); // descending : index 0 = deadline
         }
 
         // --- DATA ---
@@ -1839,7 +1839,7 @@
                     tag: item.tag,
                     title: isFinal ? (smart.specifique || "") : item.label,
                     desc: isFinal ? (smart.specifique || "") : "",
-                    kpi: isFinal ? (smart.niveau || (smart.specifique && smart.specifique.includes(' — ') ? smart.specifique.split(' — ')[1] : smart.specifique) || "") : ""
+                    kpi: isFinal ? (smart.niveau || (smart.specifique && smart.specifique.includes(' : ') ? smart.specifique.split(', ')[1] : smart.specifique) || "") : ""
                 };
             });
             save();
@@ -1894,7 +1894,7 @@
                 finalM.tag = "Jalon final";
                 if(smart.specifique && !finalM.title) finalM.title = smart.specifique;
                 finalM.desc = smart.specifique || finalM.desc || "";
-                finalM.kpi = smart.niveau || (smart.specifique && smart.specifique.includes(' — ') ? smart.specifique.split(' — ')[1] : smart.specifique) || "";
+                finalM.kpi = smart.niveau || (smart.specifique && smart.specifique.includes(' : ') ? smart.specifique.split(', ')[1] : smart.specifique) || "";
             }
 
             container.innerHTML = '<div class="timeline-line"></div>';

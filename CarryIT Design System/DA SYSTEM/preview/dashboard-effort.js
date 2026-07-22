@@ -1,7 +1,7 @@
-/* Dashboard — « Ajouter un effort / un résultat » (mesure d'un KPI de jalon).
+/* Dashboard : « Ajouter un effort / un résultat » (mesure d'un KPI de jalon).
    Ouvre l'effort-modal (scheduler QUAND + quantité + note), paramétré selon le KPI cliqué,
    persiste la mesure dans carryit_v1_jalons[].kpis[].measures, recalcule la valeur du KPI
-   (effort = cumulatif, résultat = dernière valeur — porté du legacy dashboard.html), rafraîchit.
+   (effort = cumulatif, résultat = dernière valeur : porté du legacy dashboard.html), rafraîchit.
    Modèle mesure : { id, date, value, time, duration, note }. Rien inventé. */
 (function () {
   'use strict';

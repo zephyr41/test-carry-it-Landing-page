@@ -1,4 +1,4 @@
-/* Dashboard — couche de données.
+/* Dashboard : couche de données.
    Lit localStorage (carryItObjectifSMART + carryit_v1_jalons), normalise les champs
    doublés FR/EN, et expose window.CarryITDashboardData.
    Rien inventé : une clé/valeur absente → null. La carte affichera son état vide
@@ -37,8 +37,8 @@
       value: num(pick(m.value, m.valeur)),
       total: num(pick(m.total)),
       delta: num(pick(m.delta)),
-      time: pick(m.time, m.heure),           // "hh:mm" — bloc horaire du popover cadence
-      duration: pick(m.duration, m.duree),   // "1h", "30min" — hauteur du bloc
+      time: pick(m.time, m.heure),           // "hh:mm" : bloc horaire du popover cadence
+      duration: pick(m.duration, m.duree),   // "1h", "30min" : hauteur du bloc
       note: pick(m.note),
     };
   }
@@ -80,7 +80,7 @@
 
   function build() {
     var smartRaw = readJSON('carryItObjectifSMART') || {};
-    // Fallback stockage React (le vrai app écrit AUSSI ces clés) — sans ça, un SMART/KPI
+    // Fallback stockage React (le vrai app écrit AUSSI ces clés) : sans ça, un SMART/KPI
     // stocké côté « v1 » ne s'affiche pas alors qu'il a bien été importé.
     var v1smart = readJSON('carryit_v1_smart') || {};   // { S, M, A, R, T }
     var v1kpi = readJSON('carryit_v1_kpi') || {};        // { label, target/cible, unit, value, measures }
@@ -132,7 +132,7 @@
       };
     });
 
-    // Ordre chronologique — même tri que la timeline et la vue moyen terme. Le stockage
+    // Ordre chronologique : même tri que la timeline et la vue moyen terme. Le stockage
     // garde l'ordre de création (jalon final en premier) : sans ce tri, « jalon actif » ici
     // ≠ jalon affiché dans le détail → les KPI définis n'apparaissent jamais sur les cartes.
     jalons.sort(function (a, b) { return new Date(a.date) - new Date(b.date); });

@@ -1,4 +1,4 @@
-/* Delta — écart-à-cible sous forme de CHIP qui accroche l'œil.
+/* Delta : écart-à-cible sous forme de CHIP qui accroche l'œil.
    La TAILLE vient de `type-body-sm` (utilitaire = source unique) → poser en markup :
    class="type-body-sm ds-delta". Ce fichier ne pilote que le CHROME du chip + couleur.
    Monochrome : fond surélevé + texte primary (pop sans orange). Réutilise le chrome du Badge.

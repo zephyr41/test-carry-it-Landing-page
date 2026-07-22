@@ -1,4 +1,4 @@
-/* dashboard-todo.js — Vue To-do (Exécution).
+/* dashboard-todo.js : Vue To-do (Exécution).
    Porté de la to-do de dashboard.html, adapté aux tokens/composants du DA SYSTEM.
    - Tâches scopées au JALON visionné (barre de switch jalon en haut, comme le project switcher legacy).
    - Liste = 3 blocs repliables (En cours / À faire / Terminé), chaque bloc = dropzone (drag inter-bloc = change le statut).
@@ -387,7 +387,7 @@
     try { localStorage.setItem('carryit_v1_tasks', JSON.stringify(arr)); } catch (e) { return; }
     if (window.CarryITSyncProject) window.CarryITSyncProject();   // to-do par-projet
     if (window.CarryITBuildDashboardData) window.CarryITDashboardData = window.CarryITBuildDashboardData();
-    render();   // liste seulement — pas le modal (évite de perdre le focus du champ)
+    render();   // liste seulement : pas le modal (évite de perdre le focus du champ)
   }
 
   // ── Panneau détail = Modal (DS §520) : statut · notes · checklist · supprimer. ──
@@ -406,7 +406,7 @@
     var openCount = (task.subtasks || []).filter(function (s) { return !s.done; }).length;
     var opt = function (v, l) { return '<option value="' + v + '"' + (status === v ? ' selected' : '') + '>' + l + '</option>'; };
 
-    // Panneau latéral (droite) — pas de backdrop, le dashboard reste visible/cliquable (comme le legacy).
+    // Panneau latéral (droite) : pas de backdrop, le dashboard reste visible/cliquable (comme le legacy).
     root.innerHTML =
       // classe .ct : le panneau vit hors du root To-do → sans elle, les règles .ct des
       // sous-tâches (texte à gauche, croix rentrée, glisser-déposer) ne s'appliqueraient pas.
@@ -486,7 +486,7 @@
   }
 
   var dragId = null;
-  var dragSub = null;   // { taskId, subId } — glisser d'une sous-tâche (réordonnancement)
+  var dragSub = null;   // { taskId, subId } : glisser d'une sous-tâche (réordonnancement)
   function clearDrop() {
     Array.prototype.forEach.call(document.querySelectorAll('.is-drop-target, .is-sub-drop, .insert-before, .insert-after'), function (n) {
       n.classList.remove('is-drop-target'); n.classList.remove('is-sub-drop');

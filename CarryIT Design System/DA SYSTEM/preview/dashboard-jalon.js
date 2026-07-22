@@ -1,4 +1,4 @@
-/* Dashboard — « Modifier le jalon » : titre, échéance (calendrier DS), critère de validation.
+/* Dashboard : « Modifier le jalon » : titre, échéance (calendrier DS), critère de validation.
    Écrit carryit_v1_jalons[], rafraîchit le rail (timeline) + le détail. Rien inventé. */
 (function () {
   'use strict';

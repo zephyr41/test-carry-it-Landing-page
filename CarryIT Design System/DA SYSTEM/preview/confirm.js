@@ -1,4 +1,4 @@
-/* Pattern Confirmation — un dialogue unique (role="alertdialog"), configuré par le déclencheur.
+/* Pattern Confirmation : un dialogue unique (role="alertdialog"), configuré par le déclencheur.
    Le déclencheur porte : data-title, data-desc, data-action-label, data-action-variant (danger|inverse).
    Focus par défaut sur Annuler (choix sûr). Fermeture : Annuler, clic backdrop, Échap.
    L'action réelle (supprimer/valider) = câblage produit ; ici on ferme juste. */

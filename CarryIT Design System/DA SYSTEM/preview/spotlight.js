@@ -1,5 +1,5 @@
 /* ────────────────────────────────────────────────────────────────────────
-   Onboarding — tour spotlight DIRIGISTE (auto-avance) en 4 étapes.
+   Onboarding : tour spotlight DIRIGISTE (auto-avance) en 4 étapes.
 
    1 · Long terme  → 1re mesure du KPI global   (carte graphique)
    2 · Moyen terme → définir le RÉSULTAT        (carte KPI résultat)
@@ -85,7 +85,7 @@
   // souffler d'abandonner avant même d'avoir essayé, et à consoler pour un effort pas fourni.
   // Il ne sort que sur une hésitation constatée : la modale ouverte puis annulée (la personne
   // a cherché et n'a pas trouvé), ou du temps passé sur l'étape sans rien ouvrir.
-  var HINT = 'Pas encore clair ? Passe — le KPI se précise en exécutant. Ou demande une proposition à l’IA.';
+  var HINT = 'Pas encore clair ? Passe : le KPI se précise en exécutant. Ou demande une proposition à une IA.';
   var HINT_DELAY = 25000;
 
   var root, ring, bubble, eyebrowEl, stepsEl, titleEl, quoteLabelEl, quoteEl, descEl,

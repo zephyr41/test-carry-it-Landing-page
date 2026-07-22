@@ -1,5 +1,5 @@
 /* ────────────────────────────────────────────────────────────────────────
-   Isolation par projet — source unique = carryItAllObjectifs[index courant].
+   Isolation par projet : source unique = carryItAllObjectifs[index courant].
 
    Le dashboard lit/écrit des clés « live » (carryItObjectifSMART, carryit_v1_*,
    carryItMilestones). Ce module fait de ces clés une simple PROJECTION du projet

@@ -1,5 +1,5 @@
 /* ============================================================
-   Navbar — barre d'application (app shell)
+   Navbar : barre d'application (app shell)
    Pleine largeur, filet en bas. Contenu aligné sur la grille DS.
    2 étages : marque + projet + menus (haut) · onglets de vue (bas).
    Réutilise .ds-tabs pour la rangée d'onglets.
@@ -41,7 +41,7 @@
   text-decoration: none;
 }
 
-/* Logo de marque (image) — pas de pastille de fond, le logo porte sa propre forme. */
+/* Logo de marque (image) : pas de pastille de fond, le logo porte sa propre forme. */
 .ds-navbar__brand-mark {
   display: block;
   width: var(--space-24);

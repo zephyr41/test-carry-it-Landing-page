@@ -29,7 +29,7 @@
 .ds-kpi-history {
   padding: var(--kpi-history-padding);
   background: var(--card-background);
-  /* Carte DÉFINIE (§912) — arête + ombre douce, cohérent avec les cartes KPI voisines
+  /* Carte DÉFINIE (§912) : arête + ombre douce, cohérent avec les cartes KPI voisines
      (le CSS utilisait --card-border subtle, désync avec la spec). */
   border: var(--card-border-defined);
   border-radius: var(--card-radius);
@@ -90,7 +90,7 @@
   border-bottom: var(--kpi-history-row-border);
 }
 
-/* Ligne principale : relevé — label date à gauche, valeur à droite. */
+/* Ligne principale : relevé, label date à gauche, valeur à droite. */
 .ds-kpi-history__main {
   display: flex;
   align-items: baseline;

@@ -125,7 +125,7 @@
   box-shadow: var(--chart-point-hover-ring);
 }
 
-/* Valeur (bulle) au-dessus du point, date en-dessous — révélées au survol. */
+/* Valeur (bulle) au-dessus du point, date en-dessous : révélées au survol. */
 .ds-chart-point__value,
 .ds-chart-point__date {
   position: absolute;
