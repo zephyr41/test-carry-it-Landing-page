@@ -31,8 +31,7 @@
       eyebrow: 'Point de départ',
       title: 'Où en es-tu ?',
       body: 'Ce graphique mesure ton objectif long terme (Mesurable du SMART). Maintenant, regardons ton niveau actuel.',
-      // « Plus tard » sur la 1re étape = quitter le guide (rien derrière à passer).
-      skip: 'Plus tard', skipEnds: true,
+      skip: 'Passer',
       done: function (d) {
         var m = d.objectiveKpi && d.objectiveKpi.measures;
         return !!(m && m.length);
@@ -82,7 +81,7 @@
       title: 'Ton effort se note ici.',
       body: "Ce bouton alimente ton KPI d'effort : il mesure ce que tu fais. Tu viens le noter à chaque fois que tu avances.",
       // Rien à noter avant d'avoir fait quelque chose : passer est une réponse légitime.
-      skip: 'Pas encore',
+      skip: 'Passer',
       done: function (d) {
         var m = d.effortKpi && d.effortKpi.measures;
         return !!(m && m.length);
@@ -364,6 +363,8 @@
     if (!ok) positionCentered();
     bubble.classList.remove('ds-spotlight__bubble--hidden');
     root.classList.add('is-active');
+    // Le CTA prend le focus : c'est l'action attendue, et ça amène le clavier dans la bulle.
+    if (ctaBtn && !bubble.contains(document.activeElement)) ctaBtn.focus({ preventScroll: true });
   }
 
   function enter(i) {
@@ -383,6 +384,7 @@
     if (backBtn) backBtn.hidden = (i === 0);
 
     root.hidden = false;
+    setPageInert(true);
     bubble.classList.add('ds-spotlight__bubble--hidden');
 
     var start = function () {
@@ -426,6 +428,7 @@
   function pause() {
     paused = true;
     clearTimeout(hintTimer);   // le temps passé dans la modale n'est pas de l'hésitation
+    setPageInert(false);       // sinon la modale que le tour vient d'ouvrir serait inerte
     root.classList.remove('is-active');
     setTimeout(function () { if (paused) root.hidden = true; }, tok('--motion-duration-base', 220));
   }
@@ -443,6 +446,7 @@
     seq++;
     clearTimeout(hintTimer);
     markSpotlit(null);   // les actions de carte reviennent à leur révélation au survol
+    setPageInert(false);
     if (persist) markTourDone();
     active = false;
     paused = false;
@@ -456,7 +460,36 @@
     syncRestart();
   }
 
-  function onKey(e) { if (e.key === 'Escape' && !paused) finish(); }
+  // ── Accès clavier ────────────────────────────────────────────────────────
+  // Sans ça, la bulle arrive après 40+ tabulations : le tour est visible mais inatteignable
+  // au clavier, et le focus continue de parcourir la page sous le voile.
+  function focusables() {
+    return Array.prototype.filter.call(
+      bubble.querySelectorAll('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'),
+      function (el) { return !el.hidden && el.offsetParent !== null; }
+    );
+  }
+
+  // Le reste de la page devient inerte tant que le tour a la main. `inert` retire aussi les
+  // éléments de l'ordre de tabulation ET du lecteur d'écran, ce qu'aucun piège JS ne fait.
+  function setPageInert(on) {
+    Array.prototype.forEach.call(document.body.children, function (el) {
+      if (el === root || el === restartBtn) return;
+      if (on) el.setAttribute('inert', ''); else el.removeAttribute('inert');
+    });
+  }
+
+  function onKey(e) {
+    if (e.key === 'Escape' && !paused) { finish(); return; }
+    if (e.key !== 'Tab' || paused) return;
+    var f = focusables();
+    if (!f.length) return;
+    var first = f[0], last = f[f.length - 1];
+    // Boucle : la tabulation reste dans la bulle tant que l'étape est ouverte.
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    else if (!bubble.contains(document.activeElement)) { e.preventDefault(); first.focus(); }
+  }
 
   // ── Reprise du guide ─────────────────────────────────────────────────────
   function syncRestart() {
@@ -503,10 +536,11 @@
     if (!ring || !bubble || !titleEl || !ctaBtn) return;
 
     if (backBtn) backBtn.addEventListener('click', function () { prev(); });
-    skipBtn.addEventListener('click', function () {
-      // « Plus tard » (1re étape) quitte ; « Passer » va à l'étape suivante.
-      if (STEPS[cur] && STEPS[cur].skipEnds) finish(); else next();
-    });
+    var closeBtn = root.querySelector('[data-spotlight-close]');
+    if (closeBtn) closeBtn.addEventListener('click', function () { finish(); });
+    // Un seul mot pour avancer (« Passer »), un seul geste pour quitter (la croix) : le
+    // tour avait quatre libellés pour deux concepts, impossible d'en apprendre la règle.
+    skipBtn.addEventListener('click', function () { next(); });
     ctaBtn.addEventListener('click', function () {
       var step = STEPS[cur];
       if (!step) return;

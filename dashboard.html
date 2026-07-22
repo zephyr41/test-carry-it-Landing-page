@@ -228,11 +228,17 @@
        (tableau STEPS) : c'est là qu'on édite les textes. Ici, la coquille seulement. -->
   <div class="ds-spotlight" data-spotlight hidden>
     <div class="ds-spotlight__ring" data-spotlight-ring aria-hidden="true"></div>
-    <div class="ds-spotlight__bubble" data-spotlight-bubble role="dialog" aria-modal="false"
+    <div class="ds-spotlight__bubble" data-spotlight-bubble role="dialog" aria-modal="true"
          aria-labelledby="spotlight-title" aria-describedby="spotlight-desc">
       <div class="ds-spotlight__head">
         <span class="ds-spotlight__eyebrow" data-spotlight-eyebrow></span>
         <span class="ds-spotlight__steps" data-spotlight-steps></span>
+        <!-- Sortie permanente : sans elle, quitter le guide n'était possible qu'à la 1re
+             étape ou par Échap, qui n'est annoncé nulle part. -->
+        <button type="button" class="ds-spotlight__close" data-spotlight-close aria-label="Quitter le guide">
+          <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor"
+               stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 4L12 12M12 4L4 12"/></svg>
+        </button>
       </div>
       <h2 id="spotlight-title" class="ds-spotlight__title" data-spotlight-title></h2>
       <!-- Rappel de ce sur quoi l'étape s'appuie : libellé gris, puis la phrase de
