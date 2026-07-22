@@ -1818,14 +1818,12 @@
           const kick = root.querySelector('#cinemaKicker');
           if (kick) kick.style.opacity = (smoothstep(entryF) * 0.9).toFixed(3);
           if (dotsHolder) dotsHolder.style.opacity = smoothstep(entryF).toFixed(3);
+          curDash.style.transition = 'none';
+          curDash.style.opacity = smoothstep(entryF).toFixed(3);
           if (inSec !== dashIn) {
             dashIn = inSec;
-            curDash.style.transition = 'opacity .8s cubic-bezier(0.22,1,0.36,1)';
-            curDash.style.opacity = inSec ? '1' : '0';
             if (inSec) {
               cur.ty += 46; // part 46px plus bas, le lerp la fait remonter en douceur
-              const act = [...texts].find(tx => (+tx.dataset.beat) === activeText);
-              if (act) staggerIn(act);
             }
           }
         } catch (e) { window.__cineLoopErr = (e && e.stack) || String(e); }
