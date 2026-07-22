@@ -47,7 +47,9 @@
       title: 'Mesure les résultats de ton jalon.',
       quoteLabel: 'Prends ton critère de validation :',
       quote: function (d) { return (d.activeJalon || {}).critere || ''; },
-      body: "Qu'est-ce que tu dois mesurer pour l'atteindre ?",
+      // La 2e phrase nomme la BOUCLE : sans elle, le tour n'apprend qu'à définir des KPI,
+      // jamais à les nourrir, et le dashboard reste à zéro un mois plus tard.
+      body: "Qu'est-ce que tu dois mesurer pour l'atteindre ? Tu viendras saisir ce chiffre à chaque avancée.",
       example: "Ex : « courir 21 km en moins de 3h » → les km de ta plus longue sortie tenue à l'allure cible. X/21.",
       skip: 'Passer', hint: true,
       done: function (d) { return !!d.resultKpi; },
@@ -62,7 +64,7 @@
       quoteLabel: 'Ton KPI de résultat :',
       // La citation est le KPI RÉELLEMENT saisi à l'étape d'avant : on enchaîne sur sa donnée.
       quote: function (d) { return (d.resultKpi || {}).label || ''; },
-      body: "Prends ton KPI de résultat : qu'est-ce que tu fais chaque semaine pour le faire bouger ?",
+      body: "Prends ton KPI de résultat : qu'est-ce que tu fais chaque semaine pour le faire bouger ? Tu viendras saisir ce chiffre chaque semaine.",
       example: "Ex : « km à l'allure cible » → nombre de séances par semaine.",
       skip: 'Passer', hint: true,
       done: function (d) { return !!d.effortKpi; },
