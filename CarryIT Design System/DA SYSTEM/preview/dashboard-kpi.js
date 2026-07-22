@@ -42,7 +42,8 @@
         labelEl = $('[data-kpi-field-label]'), targetEl = $('[data-kpi-field-target]'),
         unitEl = $('[data-kpi-field-unit]'), unitCustomEl = $('[data-kpi-field-unit-custom]'),
         unitSelectWrap = $('[data-kpi-unit-select]'), unitCustomWrap = $('[data-kpi-unit-custom]'),
-        freqEl = $('[data-kpi-field-freq]'), modeEl = $('[data-kpi-field-mode]'),
+        freqEl = $('[data-kpi-field-freq]'), freqGroup = $('[data-kpi-freq-group]'),
+        modeEl = $('[data-kpi-field-mode]'),
         modeHintEl = $('[data-kpi-mode-hint]'), deleteBtn = $('[data-kpi-delete]');
     var target = null;   // { jalonId, kpiType, isEdit }
 
@@ -115,6 +116,10 @@
       unitEl.value = custom ? '' : unit;
       if (unitCustomEl) unitCustomEl.value = custom ? unit : '';
 
+      // La fréquence n'a de sens que pour l'effort : c'est lui qui se tient à un rythme.
+      // Un résultat se saisit quand il bouge, on ne lui demande pas de cadence.
+      var isEffort = kpiType === 'leading';
+      if (freqGroup) freqGroup.hidden = !isEffort;
       freqEl.value = (kpi && kpi.frequency) ? kpi.frequency : 'Hebdomadaire';
       modeEl.value = (kpi && kpi.mode) ? kpi.mode : (kpiType === 'leading' ? 'incremental' : 'absolute');
       syncModeHint();
@@ -142,7 +147,10 @@
       kpi.titre = label; kpi.label = label;
       kpi.cible = num(targetEl.value); kpi.target = kpi.cible;
       kpi.unite = unitValue(); kpi.unit = kpi.unite;
-      kpi.frequence = freqEl.value; kpi.frequency = freqEl.value;
+      // Pas de cadence stockée sur un résultat : sinon la carte le déclarerait « en retard »
+      // alors qu'il n'a aucun rythme de saisie à tenir.
+      var freq = (target.kpiType === 'leading') ? freqEl.value : '';
+      kpi.frequence = freq; kpi.frequency = freq;
       kpi.modeMesure = modeEl.value; kpi.mode = modeEl.value;
       if (!Array.isArray(kpi.measures)) kpi.measures = [];
       if (window.CarryITRecomputeKpi) window.CarryITRecomputeKpi(kpi, target.kpiType);

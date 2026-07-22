@@ -70,6 +70,25 @@
       done: function (d) { return !!d.effortKpi; },
     },
     {
+      // La boucle, montrée au lieu d'être décrite : le halo tient le bouton qui sert à nourrir
+      // le KPI, et le CTA l'ouvre pour de vrai. Sans mesure, tout ce qui précède reste à zéro.
+      id: 'log', view: 'moyen', place: 'right',
+      spot: '[data-spot="effort-add"]',
+      // KPI d'effort passé → le bouton n'existe pas : l'étape n'a rien à montrer.
+      skipIf: function (d) { return !d.effortKpi; },
+      cta: 'Ajouter un effort',
+      ctaTarget: '[data-spot="effort-add"]',
+      eyebrow: 'La boucle',
+      title: "C'est ici que ça se joue.",
+      body: 'Chaque semaine, tu reviens saisir ton effort par ce bouton. C\'est cette saisie qui fait monter tes KPI : sans elle, ton dashboard reste à zéro.',
+      // Rien à noter avant d'avoir fait quelque chose : passer est une réponse légitime.
+      skip: 'Pas encore',
+      done: function (d) {
+        var m = d.effortKpi && d.effortKpi.measures;
+        return !!(m && m.length);
+      },
+    },
+    {
       id: 'go', view: 'todo',
       spot: '[data-todo-root]',
       cta: "C'est parti", finish: true,
@@ -81,7 +100,7 @@
   ];
 
   // Modales que le tour ouvre lui-même : tant que l'une est ouverte, le tour s'efface.
-  var MODALS = '[data-kpi-modal], [data-measure-modal]';
+  var MODALS = '[data-kpi-modal], [data-measure-modal], [data-effort-modal]';
 
   // Filet des étapes KPI. JAMAIS affiché d'emblée : le montrer à tout le monde reviendrait à
   // souffler d'abandonner avant même d'avoir essayé, et à consoler pour un effort pas fourni.
@@ -118,10 +137,26 @@
     return typeof s.done === 'function' ? s.done(d) : false;
   }
 
+  // Étape sans objet dans l'état courant (ex : nourrir un KPI d'effort qui n'existe pas).
+  function stepSkipped(i, d) {
+    var s = STEPS[i];
+    return !!(s && typeof s.skipIf === 'function' && s.skipIf(d));
+  }
+
+  // Index suivant/précédent réellement affichable, en sautant les étapes sans objet.
+  function seek(from, dir) {
+    var d = data();
+    for (var i = from + dir; i >= 0 && i < STEPS.length; i += dir) {
+      if (!stepSkipped(i, d)) return i;
+    }
+    return -1;
+  }
+
   // Première étape non satisfaite (reprise après reload). Une étape sans `done` est terminale.
   function firstIncomplete() {
     var d = data();
     for (var i = 0; i < STEPS.length; i++) {
+      if (stepSkipped(i, d)) continue;
       if (typeof STEPS[i].done !== 'function') return i;   // terminale
       if (!STEPS[i].done(d)) return i;
     }
@@ -132,6 +167,7 @@
   function allFilled() {
     var d = data();
     for (var i = 0; i < STEPS.length; i++) {
+      if (stepSkipped(i, d)) continue;
       if (typeof STEPS[i].done === 'function' && !STEPS[i].done(d)) return false;
     }
     return true;
@@ -144,13 +180,18 @@
   // ── Rendu du contenu de la bulle ─────────────────────────────────────────
   function renderSteps(activeIndex) {
     if (!stepsEl) return;
-    var html = '';
+    // Un segment par étape RÉELLEMENT parcourue : une étape sans objet ne compte pas, sinon
+    // la barre promet un pas de plus qui n'arrivera jamais.
+    var d = data(), html = '', shown = 0, pos = 0;
     for (var k = 0; k < STEPS.length; k++) {
+      if (stepSkipped(k, d)) continue;
+      shown++;
+      if (k === activeIndex) pos = shown;
       // Segments CUMULATIFS : les étapes franchies restent pleines → on voit le chemin fait.
       html += '<span' + (k <= activeIndex ? ' class="is-active"' : '') + '></span>';
     }
     stepsEl.innerHTML = html;
-    stepsEl.setAttribute('aria-label', 'Étape ' + (activeIndex + 1) + ' sur ' + STEPS.length);
+    stepsEl.setAttribute('aria-label', 'Étape ' + pos + ' sur ' + shown);
   }
 
   function setText(el, text) {
@@ -341,11 +382,14 @@
   }
 
   function next() {
-    if (cur + 1 < STEPS.length) enter(cur + 1);
-    else finish();
+    var i = seek(cur, 1);
+    if (i >= 0) enter(i); else finish();
   }
 
-  function prev() { if (cur > 0) enter(cur - 1); }
+  function prev() {
+    var i = seek(cur, -1);
+    if (i >= 0) enter(i);
+  }
 
   function finish() { stop(true); }
 

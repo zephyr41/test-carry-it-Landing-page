@@ -141,7 +141,8 @@
         '</div>' +
         '<div class="ds-kpi-card__head-actions">' +
           '<button type="button" class="ds-row-action" data-edit-kpi ' + attrs + ' aria-label="Modifier le KPI">' + EDIT_ICON + '</button>' +
-          '<button type="button" class="ds-button ds-button--ghost ds-button--xs ds-kpi-card__action" data-add-measure ' + attrs + '>' + PLUS_ICON + esc(addLabel) + '</button>' +
+          '<button type="button" class="ds-button ds-button--ghost ds-button--xs ds-kpi-card__action" data-add-measure ' + attrs +
+            ' data-spot="' + (kpiType === 'leading' ? 'effort-add' : 'result-add') + '">' + PLUS_ICON + esc(addLabel) + '</button>' +
         '</div>' +
       '</div>' +
       '<div class="ds-kpi-card__metric">' +

@@ -451,8 +451,10 @@
             </div>
           </div>
         </div>
-        <div class="input-group">
+        <!-- Effort seulement : un résultat se saisit quand il bouge, pas à date fixe. -->
+        <div class="input-group" data-kpi-freq-group>
           <label class="type-label ds-field-label" for="kpi-freq">Fréquence de saisie</label>
+          <p class="ds-field-hint type-caption">À quel rythme tu viendras noter ton effort.</p>
           <div class="ds-select-wrapper">
             <select id="kpi-freq" class="ds-select" data-kpi-field-freq>
               <option>Quotidien</option>
