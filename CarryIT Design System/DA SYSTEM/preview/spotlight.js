@@ -242,10 +242,23 @@
     ring.style.height = (r.height + PAD * 2) + 'px';
   }
 
+  // Certaines cibles ne sont visibles qu'au survol de leur carte (actions du head). Le halo
+  // les désignerait à vide : on les force visibles tant que l'étape les vise. Ré-appliqué à
+  // chaque positionnement, car les cartes se re-rendent (innerHTML) et perdent la classe.
+  var SPOTLIT = 'is-spotlit';
+  function markSpotlit(target) {
+    Array.prototype.forEach.call(document.querySelectorAll('.' + SPOTLIT), function (el) {
+      el.classList.remove(SPOTLIT);
+    });
+    var host = target && target.closest && target.closest('.ds-kpi-card__head-actions');
+    if (host) host.classList.add(SPOTLIT);
+  }
+
   function positionOn(step) {
-    if (!step.spot) { positionCentered(); return true; }
+    if (!step.spot) { markSpotlit(null); positionCentered(); return true; }
     var target = document.querySelector(step.spot);
     if (!target) return false;                       // pas encore rendu → retry
+    markSpotlit(target);
     var r0 = target.getBoundingClientRect();
     if (r0.width === 0 && r0.height === 0) return false;
 
@@ -413,6 +426,7 @@
   function stop(persist) {
     seq++;
     clearTimeout(hintTimer);
+    markSpotlit(null);   // les actions de carte reviennent à leur révélation au survol
     if (persist) markTourDone();
     active = false;
     paused = false;

@@ -75,7 +75,10 @@
 }
 
 .ds-kpi-card:hover .ds-kpi-card__head-actions,
-.ds-kpi-card:focus-within .ds-kpi-card__head-actions {
+.ds-kpi-card:focus-within .ds-kpi-card__head-actions,
+/* Cible du tour d'onboarding : le halo désignerait un bouton invisible (les actions
+   n'apparaissent qu'au survol), donc on les révèle le temps de l'étape. */
+.ds-kpi-card__head-actions.is-spotlit {
   opacity: 1;
 }
 
