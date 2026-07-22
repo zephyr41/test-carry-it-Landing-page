@@ -19,8 +19,7 @@
 (function () {
   'use strict';
 
-  var STORAGE_KEY = 'carryit_onboard_done';      // tour terminé par un choix explicite
-  var SUSPEND_KEY = 'carryit_onboard_suspended'; // Échap : mis de côté pour cette session
+  var STORAGE_KEY = 'carryit_onboard_done';   // tour terminé (finish ou Échap)
 
   var STEPS = [
     {
@@ -32,7 +31,8 @@
       eyebrow: 'Point de départ',
       title: 'Où en es-tu ?',
       body: 'Ce graphique mesure ton objectif long terme (Mesurable du SMART). Maintenant, regardons ton niveau actuel.',
-      skip: 'Passer',
+      // « Plus tard » sur la 1re étape = quitter le guide (rien derrière à passer).
+      skip: 'Plus tard', skipEnds: true,
       done: function (d) {
         var m = d.objectiveKpi && d.objectiveKpi.measures;
         return !!(m && m.length);
@@ -41,7 +41,7 @@
     {
       id: 'result', view: 'moyen', place: 'above',
       spot: '[data-spot="result-card"]',
-      cta: 'Définir le résultat',
+      cta: 'Définir mon KPI',
       ctaTarget: '[data-kpi-type="lagging"][data-define-kpi], [data-kpi-type="lagging"][data-edit-kpi]',
       eyebrow: 'KPI de résultat',
       title: 'Mesure les résultats de ton jalon.',
@@ -57,7 +57,7 @@
     {
       id: 'effort', view: 'moyen', place: 'right',
       spot: '[data-spot="effort-card"]',
-      cta: "Définir l'effort",
+      cta: 'Définir mon KPI',
       ctaTarget: '[data-kpi-type="leading"][data-define-kpi], [data-kpi-type="leading"][data-edit-kpi]',
       eyebrow: "KPI d'effort",
       title: 'Mesure les efforts.',
@@ -82,7 +82,7 @@
       title: 'Ton effort se note ici.',
       body: "Ce bouton alimente ton KPI d'effort : il mesure ce que tu fais. Tu viens le noter à chaque fois que tu avances.",
       // Rien à noter avant d'avoir fait quelque chose : passer est une réponse légitime.
-      skip: 'Passer',
+      skip: 'Pas encore',
       done: function (d) {
         var m = d.effortKpi && d.effortKpi.measures;
         return !!(m && m.length);
@@ -101,13 +101,8 @@
     },
     {
       id: 'go', view: 'todo',
-      // Le halo tenait toute la vue To-do : un cadre autour de la page n'est pas un
-      // spotlight. Il désigne le bouton d'ajout, et le CTA l'ouvre au lieu de fermer sur
-      // un ordre non exécuté (« Maintenant, commence » suivi d'un bouton qui ferme).
-      spot: '[data-todo-add][data-add-status="todo"]',
-      cta: 'Ajouter ma première tâche',
-      ctaTarget: '[data-todo-add][data-add-status="todo"]',
-      finish: true,
+      spot: '[data-todo-root]',
+      cta: "C'est parti", finish: true,
       eyebrow: 'Exécution',
       title: 'Maintenant, commence.',
       body: 'Ajoute ta première tâche. Et commence à exécuter.',
@@ -196,17 +191,18 @@
   // ── Rendu du contenu de la bulle ─────────────────────────────────────────
   function renderSteps(activeIndex) {
     if (!stepsEl) return;
-    // Dénominateur FIXE (toutes les étapes du tour). Le calculer sur les étapes actuellement
-    // affichables le faisait grandir en cours de route — 1/4 puis 3/5 puis 4/6 — parce que
-    // les étapes de la boucle n'existent qu'une fois les KPI créés. Un compteur qui recule
-    // pendant l'effort est l'un des schémas d'abandon les mieux documentés.
-    var html = '';
+    // Un segment par étape RÉELLEMENT parcourue : une étape sans objet ne compte pas, sinon
+    // la barre promet un pas de plus qui n'arrivera jamais.
+    var d = data(), html = '', shown = 0, pos = 0;
     for (var k = 0; k < STEPS.length; k++) {
+      if (stepSkipped(k, d)) continue;
+      shown++;
+      if (k === activeIndex) pos = shown;
       // Segments CUMULATIFS : les étapes franchies restent pleines → on voit le chemin fait.
       html += '<span' + (k <= activeIndex ? ' class="is-active"' : '') + '></span>';
     }
     stepsEl.innerHTML = html;
-    stepsEl.setAttribute('aria-label', 'Étape ' + (activeIndex + 1) + ' sur ' + STEPS.length);
+    stepsEl.setAttribute('aria-label', 'Étape ' + pos + ' sur ' + shown);
   }
 
   function setText(el, text) {
@@ -234,9 +230,6 @@
 
     ctaBtn.textContent = step.cta || 'Continuer';
     setText(skipBtn, step.skip || '');
-    // Un CTA dont la cible n'existe pas avalait le clic en silence. Il se désactive plutôt
-    // que de faire croire à une action.
-    ctaBtn.disabled = !!(step.ctaTarget && !document.querySelector(step.ctaTarget));
   }
 
   // ── Placement ────────────────────────────────────────────────────────────
@@ -302,28 +295,24 @@
 
     var vw = window.innerWidth, vh = window.innerHeight;
     var bw = bubble.offsetWidth, bh = bubble.offsetHeight;   // hauteur RÉELLE, pas estimée
-    // Bord haut = sous la navbar : le clamp partait de 16px et la bulle recouvrait le logo
-    // et les onglets, c'est-à-dire les repères qui disent où le tour vient de nous emmener.
-    var nav = document.querySelector('.ds-navbar');
-    var topEdge = nav ? Math.max(EDGE, nav.getBoundingClientRect().bottom + GAP) : EDGE;
     var top = r.top - PAD, left = r.left - PAD;
     var right = r.right + PAD, bottom = r.bottom + PAD;
     var x, y;
 
     if (step.place === 'right' && right + GAP + bw < vw) {
       x = right + GAP;
-      y = clamp(top, topEdge, vh - bh - EDGE);
+      y = clamp(top, EDGE, vh - bh - EDGE);
     } else if (step.place === 'left' && left - GAP - bw > EDGE) {
       x = left - GAP - bw;
-      y = clamp(top, topEdge, vh - bh - EDGE);
+      y = clamp(top, EDGE, vh - bh - EDGE);
     } else if (step.place === 'above') {
-      y = Math.max(top - bh - GAP, topEdge);
+      y = Math.max(top - bh - GAP, EDGE);
       x = clamp(left, EDGE, vw - bw - EDGE);
     } else if (bottom + GAP + bh < vh) {
       y = bottom + GAP;
       x = clamp(left, EDGE, vw - bw - EDGE);
     } else {
-      y = Math.max(top - bh - GAP, topEdge);
+      y = Math.max(top - bh - GAP, EDGE);
       x = clamp(left, EDGE, vw - bw - EDGE);
     }
 
@@ -375,8 +364,6 @@
     if (!ok) positionCentered();
     bubble.classList.remove('ds-spotlight__bubble--hidden');
     root.classList.add('is-active');
-    // Le CTA prend le focus : c'est l'action attendue, et ça amène le clavier dans la bulle.
-    if (ctaBtn && !bubble.contains(document.activeElement)) ctaBtn.focus({ preventScroll: true });
   }
 
   function enter(i) {
@@ -396,7 +383,6 @@
     if (backBtn) backBtn.hidden = (i === 0);
 
     root.hidden = false;
-    setPageInert(true);
     bubble.classList.add('ds-spotlight__bubble--hidden');
 
     var start = function () {
@@ -436,31 +422,10 @@
 
   function finish() { stop(true); }
 
-  // Sortie non définitive (Échap) : le tour se retire, reste rattrapable par « Reprendre le
-  // guide », mais ne se relancera pas tout seul au prochain chargement de cette session.
-  function suspend() {
-    try { sessionStorage.setItem(SUSPEND_KEY, '1'); } catch (e) {}
-    stop(false);
-  }
-
-  // Modale ouverte par le tour. La consigne RESTE affichée, sur le côté : c'est le seul
-  // écran où l'utilisateur produit vraiment quelque chose, et c'était le seul où on lui
-  // retirait la question et l'exemple. La bulle passe en mode consigne (sans boutons, sans
-  // scrim) et se range à gauche de la modale, qui est centrée.
-  var ASIDE_MIN_WIDTH = 980;
+  // Efface le tour le temps d'une modale : il reprendra sur la même étape à la fermeture.
   function pause() {
     paused = true;
     clearTimeout(hintTimer);   // le temps passé dans la modale n'est pas de l'hésitation
-    setPageInert(false);       // sinon la modale que le tour vient d'ouvrir serait inerte
-    ring.style.display = 'none';
-
-    if (window.innerWidth >= ASIDE_MIN_WIDTH) {
-      root.classList.add('ds-spotlight--aside');
-      bubble.style.left = EDGE + 'px';
-      bubble.style.top = Math.max(EDGE, Math.round((window.innerHeight - bubble.offsetHeight) / 2)) + 'px';
-      return;
-    }
-    // Trop étroit pour loger la consigne à côté : on s'efface comme avant.
     root.classList.remove('is-active');
     setTimeout(function () { if (paused) root.hidden = true; }, tok('--motion-duration-base', 220));
   }
@@ -468,7 +433,6 @@
   function resume() {
     if (!active || !paused) return;
     paused = false;
-    root.classList.remove('ds-spotlight--aside');
     if (stepDone(cur, data())) { next(); return; }
     // Modale ouverte puis fermée sans rien enregistrer : la personne a cherché sans trouver.
     if (STEPS[cur] && STEPS[cur].hint) hintFor[STEPS[cur].id] = true;
@@ -479,11 +443,10 @@
     seq++;
     clearTimeout(hintTimer);
     markSpotlit(null);   // les actions de carte reviennent à leur révélation au survol
-    setPageInert(false);
     if (persist) markTourDone();
     active = false;
     paused = false;
-    root.classList.remove('is-active', 'ds-spotlight--aside');
+    root.classList.remove('is-active');
     window.removeEventListener('resize', onReflow);
     window.removeEventListener('scroll', onReflow, true);
     document.removeEventListener('keydown', onKey);
@@ -493,47 +456,12 @@
     syncRestart();
   }
 
-  // ── Accès clavier ────────────────────────────────────────────────────────
-  // Sans ça, la bulle arrive après 40+ tabulations : le tour est visible mais inatteignable
-  // au clavier, et le focus continue de parcourir la page sous le voile.
-  function focusables() {
-    return Array.prototype.filter.call(
-      bubble.querySelectorAll('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'),
-      function (el) { return !el.hidden && el.offsetParent !== null; }
-    );
-  }
-
-  // Le reste de la page devient inerte tant que le tour a la main. `inert` retire aussi les
-  // éléments de l'ordre de tabulation ET du lecteur d'écran, ce qu'aucun piège JS ne fait.
-  function setPageInert(on) {
-    Array.prototype.forEach.call(document.body.children, function (el) {
-      if (el === root || el === restartBtn) return;
-      if (on) el.setAttribute('inert', ''); else el.removeAttribute('inert');
-    });
-  }
-
-  function onKey(e) {
-    // Échap SUSPEND, il ne termine pas. C'est le geste appris pour fermer les trois modales
-    // que ce tour ouvre : le taper une fraction de seconde trop tard clôturait le guide pour
-    // de bon. Le tour ne se reproposera pas dans cette session, mais rien n'est gravé.
-    if (e.key === 'Escape' && !paused) { suspend(); return; }
-    if (e.key !== 'Tab' || paused) return;
-    var f = focusables();
-    if (!f.length) return;
-    var first = f[0], last = f[f.length - 1];
-    // Boucle : la tabulation reste dans la bulle tant que l'étape est ouverte.
-    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
-    else if (!bubble.contains(document.activeElement)) { e.preventDefault(); first.focus(); }
-  }
+  function onKey(e) { if (e.key === 'Escape' && !paused) finish(); }
 
   // ── Reprise du guide ─────────────────────────────────────────────────────
   function syncRestart() {
     if (!restartBtn) return;
-    // Un tour mené à son terme ne se repropose plus. Sans ça, le bouton campait en bas à
-    // droite à CHAQUE chargement tant qu'aucun effort n'était noté : un rappel permanent de
-    // retard, c'est-à-dire la relance artificielle que la marque s'interdit.
-    restartBtn.hidden = active || !everStarted || tourDone() || allFilled();
+    restartBtn.hidden = active || !everStarted || allFilled();
   }
 
   // Rebuild central (mesure ajoutée / KPI configuré) → l'étape est-elle satisfaite ?
@@ -575,21 +503,18 @@
     if (!ring || !bubble || !titleEl || !ctaBtn) return;
 
     if (backBtn) backBtn.addEventListener('click', function () { prev(); });
-    var closeBtn = root.querySelector('[data-spotlight-close]');
-    if (closeBtn) closeBtn.addEventListener('click', function () { finish(); });
-    // Un seul mot pour avancer (« Passer »), un seul geste pour quitter (la croix) : le
-    // tour avait quatre libellés pour deux concepts, impossible d'en apprendre la règle.
-    skipBtn.addEventListener('click', function () { next(); });
+    skipBtn.addEventListener('click', function () {
+      // « Plus tard » (1re étape) quitte ; « Passer » va à l'étape suivante.
+      if (STEPS[cur] && STEPS[cur].skipEnds) finish(); else next();
+    });
     ctaBtn.addEventListener('click', function () {
       var step = STEPS[cur];
       if (!step) return;
+      if (step.finish) { finish(); return; }
       // Étape sans cible d'action (elle montre, elle ne fait pas faire) : le CTA acquitte.
-      if (!step.ctaTarget) { if (step.finish) finish(); else next(); return; }
+      if (!step.ctaTarget) { next(); return; }
       var t = document.querySelector(step.ctaTarget);
-      if (!t) { if (step.finish) finish(); return; }
-      // Étape terminale AVEC une action : on la déclenche et on rend la main, sans revenir
-      // sur le tour — sinon le dernier CTA se contenterait de fermer.
-      if (step.finish) { stop(true); t.click(); return; }
+      if (!t) return;
       pause();               // la modale prend la main ; on revient à sa fermeture
       t.click();
     });
@@ -614,14 +539,7 @@
 
     // Démarrage (première étape non satisfaite). Laisser le dashboard peupler la donnée.
     setTimeout(function () {
-      var suspended = false;
-      try { suspended = sessionStorage.getItem(SUSPEND_KEY) === '1'; } catch (e) {}
-      if (tourDone() || suspended) { everStarted = true; syncRestart(); return; }
-      // Rien à guider tant que l'objectif et le jalon n'existent pas : le tour parlerait de
-      // « ton jalon » devant un écran « Aucun jalon », et ses cibles n'existeraient pas.
-      // Ce chemin est celui de quelqu'un qui arrive au dashboard avant l'onboarding SMART.
-      var d = data();
-      if (!d.objectiveKpi || !d.objectiveKpi.label || !d.activeJalon) return;
+      if (tourDone()) { everStarted = true; syncRestart(); return; }
       enter(firstIncomplete());
     }, 300);
   }
