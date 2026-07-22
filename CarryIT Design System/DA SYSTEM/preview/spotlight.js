@@ -72,7 +72,7 @@
     {
       // La boucle, montrée au lieu d'être décrite : le halo tient le bouton qui sert à nourrir
       // le KPI, et le CTA l'ouvre pour de vrai. Sans mesure, tout ce qui précède reste à zéro.
-      id: 'log', view: 'moyen', place: 'right',
+      id: 'log-effort', view: 'moyen', place: 'right',
       spot: '[data-spot="effort-add"]',
       // KPI d'effort passé → le bouton n'existe pas : l'étape n'a rien à montrer.
       skipIf: function (d) { return !d.effortKpi; },
@@ -80,13 +80,24 @@
       ctaTarget: '[data-spot="effort-add"]',
       eyebrow: 'La boucle',
       title: 'Ton effort se note ici.',
-      body: 'Dès que tu fais quelque chose qui compte, tu viens le noter par ce bouton. C\'est ce qui fait monter tes KPI.',
+      body: "Ce bouton alimente ton KPI d'effort : il mesure ce que tu fais. Tu viens le noter à chaque fois que tu avances.",
       // Rien à noter avant d'avoir fait quelque chose : passer est une réponse légitime.
       skip: 'Pas encore',
       done: function (d) {
         var m = d.effortKpi && d.effortKpi.measures;
         return !!(m && m.length);
       },
+    },
+    {
+      // Même geste, autre carte : on le montre sans le faire faire (rien n'a encore bougé,
+      // et un résultat inventé pour l'exercice fausserait la première mesure).
+      id: 'log-result', view: 'moyen', place: 'left',
+      spot: '[data-spot="result-add"]',
+      skipIf: function (d) { return !d.resultKpi; },
+      cta: 'Suivant',
+      eyebrow: 'La boucle',
+      title: 'Pareil pour ton résultat.',
+      body: 'Ce bouton-là alimente ton KPI de résultat. Tu viens le noter dès que ton résultat bouge.',
     },
     {
       id: 'go', view: 'todo',
@@ -250,8 +261,13 @@
     Array.prototype.forEach.call(document.querySelectorAll('.' + SPOTLIT), function (el) {
       el.classList.remove(SPOTLIT);
     });
-    var host = target && target.closest && target.closest('.ds-kpi-card__head-actions');
+    if (!target) return;
+    // La cible EST une action de carte, ou elle en contient (halo posé sur les deux cartes).
+    var host = target.closest && target.closest('.ds-kpi-card__head-actions');
     if (host) host.classList.add(SPOTLIT);
+    Array.prototype.forEach.call(target.querySelectorAll('.ds-kpi-card__head-actions'), function (el) {
+      el.classList.add(SPOTLIT);
+    });
   }
 
   function positionOn(step) {
@@ -495,7 +511,9 @@
       var step = STEPS[cur];
       if (!step) return;
       if (step.finish) { finish(); return; }
-      var t = step.ctaTarget && document.querySelector(step.ctaTarget);
+      // Étape sans cible d'action (elle montre, elle ne fait pas faire) : le CTA acquitte.
+      if (!step.ctaTarget) { next(); return; }
+      var t = document.querySelector(step.ctaTarget);
       if (!t) return;
       pause();               // la modale prend la main ; on revient à sa fermeture
       t.click();
