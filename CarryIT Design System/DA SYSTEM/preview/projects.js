@@ -41,10 +41,15 @@
         '<button type="button" class="ds-navbar__project-del" data-project-del="' + i + '" aria-label="Supprimer le projet">' + TRASH + '</button>';
       list.appendChild(li);
     });
-    if (label) {
-      if (all.length) label.textContent = projectTitle(all[cur], cur);
-      else { var s = readJSON('carryItObjectifSMART'); label.textContent = (s && typeof s === 'object' && s.titre) ? s.titre : 'Carry It'; }
-    }
+    // `name` vide = aucun projet nommé : la navbar affiche la marque en repli, mais le titre
+    // d'onglet ne doit pas la répéter (« Carry It | Carry It »).
+    var name = '';
+    if (all.length) name = projectTitle(all[cur], cur);
+    else { var s = readJSON('carryItObjectifSMART'); name = (s && typeof s === 'object' && s.titre) ? s.titre : ''; }
+    if (label) label.textContent = name || 'Carry It';
+    // Onglet : « Carry It | <projet> ». Le projet identifie l'onglet quand plusieurs
+    // objectifs sont ouverts en parallèle.
+    document.title = name ? 'Carry It | ' + name : 'Carry It';
   }
 
   // Projette un projet dans les clés live lues par dashboard-final.
