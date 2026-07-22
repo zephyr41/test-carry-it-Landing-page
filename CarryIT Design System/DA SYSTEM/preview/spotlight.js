@@ -229,6 +229,9 @@
 
     ctaBtn.textContent = step.cta || 'Continuer';
     setText(skipBtn, step.skip || '');
+    // Un CTA dont la cible n'existe pas avalait le clic en silence. Il se désactive plutôt
+    // que de faire croire à une action.
+    ctaBtn.disabled = !!(step.ctaTarget && !document.querySelector(step.ctaTarget));
   }
 
   // ── Placement ────────────────────────────────────────────────────────────
@@ -574,6 +577,11 @@
     // Démarrage (première étape non satisfaite). Laisser le dashboard peupler la donnée.
     setTimeout(function () {
       if (tourDone()) { everStarted = true; syncRestart(); return; }
+      // Rien à guider tant que l'objectif et le jalon n'existent pas : le tour parlerait de
+      // « ton jalon » devant un écran « Aucun jalon », et ses cibles n'existeraient pas.
+      // Ce chemin est celui de quelqu'un qui arrive au dashboard avant l'onboarding SMART.
+      var d = data();
+      if (!d.objectiveKpi || !d.objectiveKpi.label || !d.activeJalon) return;
       enter(firstIncomplete());
     }, 300);
   }
