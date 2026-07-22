@@ -49,7 +49,7 @@
       quote: function (d) { return (d.activeJalon || {}).critere || ''; },
       // La 2e phrase nomme la BOUCLE : sans elle, le tour n'apprend qu'à définir des KPI,
       // jamais à les nourrir, et le dashboard reste à zéro un mois plus tard.
-      body: "Qu'est-ce que tu dois mesurer pour l'atteindre ? Tu viens saisir ce chiffre dès que ton résultat augmente.",
+      body: "Qu'est-ce que tu dois mesurer pour l'atteindre ? Tu viens le noter dès que ton résultat augmente.",
       example: "Ex : « courir 21 km en moins de 3h » → les km de ta plus longue sortie tenue à l'allure cible. X/21.",
       skip: 'Passer', hint: true,
       done: function (d) { return !!d.resultKpi; },
@@ -64,7 +64,7 @@
       quoteLabel: 'Ton KPI de résultat :',
       // La citation est le KPI RÉELLEMENT saisi à l'étape d'avant : on enchaîne sur sa donnée.
       quote: function (d) { return (d.resultKpi || {}).label || ''; },
-      body: "Prends ton KPI de résultat : qu'est-ce que tu fais chaque semaine pour le faire bouger ? Tu viens saisir ce chiffre chaque semaine.",
+      body: "Prends ton KPI de résultat : qu'est-ce que tu fais chaque semaine pour le faire bouger ? Tu viens le noter à chaque fois que tu avances.",
       example: "Ex : « km à l'allure cible » → nombre de séances par semaine.",
       skip: 'Passer', hint: true,
       done: function (d) { return !!d.effortKpi; },
@@ -79,8 +79,8 @@
       cta: 'Ajouter un effort',
       ctaTarget: '[data-spot="effort-add"]',
       eyebrow: 'La boucle',
-      title: "C'est ici que ça se joue.",
-      body: 'Chaque semaine, tu reviens saisir ton effort par ce bouton. C\'est cette saisie qui fait monter tes KPI : sans elle, ton dashboard reste à zéro.',
+      title: 'Ton effort se note ici.',
+      body: 'Dès que tu fais quelque chose qui compte, tu viens le noter par ce bouton. C\'est ce qui fait monter tes KPI.',
       // Rien à noter avant d'avoir fait quelque chose : passer est une réponse légitime.
       skip: 'Pas encore',
       done: function (d) {
