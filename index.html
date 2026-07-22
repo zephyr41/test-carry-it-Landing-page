@@ -1046,7 +1046,7 @@
         <span id="cinemaKicker" style="opacity:0; position:absolute; top:calc(64px + 22px); left:clamp(20px,5vw,72px); font-size:11px; font-weight:700; letter-spacing:0.22em; text-transform:uppercase; color:rgba(255,253,246,0.34); z-index:6;">Le système en mouvement</span>
 
         <div id="cinemaStage" style="position:absolute; inset:0; overflow:hidden;">
-          <div id="cinemaDash" style="position:absolute; top:0; left:0; width:3700px; height:760px; transform-origin:0 0; will-change:transform;">
+          <div id="cinemaDash" style="opacity:0; position:absolute; top:0; left:0; width:3700px; height:760px; transform-origin:0 0; will-change:transform;">
             <div id="cx-screen0" data-screen="0" data-screen-label="Long terme" style="position:absolute; top:0; left:0; width:1180px; height:760px; display:flex; flex-direction:column; box-sizing:border-box; background:#0A0A0B; border:1px solid rgba(255,253,246,0.1); border-radius:18px; box-shadow:0 50px 120px rgba(0,0,0,0.55); overflow:hidden;">
               <div style="display:flex; flex-direction:column; background:#0A0A0B; border-bottom:1px solid rgba(255,255,255,0.07); border-radius:18px 18px 0 0; flex-shrink:0;">
     <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 32px 8px;">
@@ -1473,7 +1473,18 @@
       const DW = 3700, DH = 760;
       // 3 app views side-by-side; camera dezooms to whole board, then frames each card in the RIGHT zone (text sits left)
       // fxc/fyc = where card centre lands (stage fraction); fw/fh = frame the card fits into (fraction, margins baked in)
-      const stopDefs = [
+      const isMob = window.innerWidth < 700;
+      const stopDefs = isMob ? [
+        { sel: '#cx-smart',       selM: '#cxm-smart',      fxc: 0.72, fyc: 0.50, fw: 0.44, fh: 0.76, text: 0, draw: 'vision' },
+        { sel: '#cx-jalons',      selM: '#cxm-jalons',     hi: '#cx-jalons', fxc: 0.72, fyc: 0.50, fw: 0.42, fh: 0.84, text: 1, draw: 'jalons' },
+        { sel: '#cx-jactive',     selM: '#cxm-jactive',    hi: '#cx-jalons', fxc: 0.66, fyc: 0.50, fw: 0.54, fh: 0.34, text: 2, draw: 'jnode' },
+        { sel: '#cx-crit',        selM: '#cxm-crit',       hi: null, fxc: 0.70, fyc: 0.50, fw: 0.40, fh: 0.22, text: 3, draw: 'jactive' },
+        { sel: '#cx-jdetail',     selM: '#cxm-jdetail',    hi: null, fxc: 0.70, fyc: 0.50, fw: 0.46, fh: 0.76, text: 3, draw: 'jfull' },
+        { sel: '#cx-kpi-result',  selM: '#cxm-kpi-result', hi: null, fxc: 0.72, fyc: 0.50, fw: 0.42, fh: 0.44, text: 4, draw: 'result' },
+        { sel: '#cx-kpi-effort',  selM: '#cxm-kpi-effort', hi: null, fxc: 0.72, fyc: 0.50, fw: 0.42, fh: 0.44, text: 5, draw: 'effort' },
+        { sel: '#cx-todo',        selM: '#cxm-todo',       hi: '#cx-encours', fxc: 0.70, fyc: 0.50, fw: 0.56, fh: 0.92, text: 6, draw: 'todo' },
+        { sel: '#cx-encours',     selM: '#cxm-encours',    hi: '#cx-encours', fxc: 0.70, fyc: 0.50, fw: 0.60, fh: 0.86, text: 6, draw: 'todo' }
+      ] : [
         { sel: '#cx-screen0',     selM: '#cxm-smart',      fxc: 0.50, fyc: 0.50, fw: 0.72, fh: 0.74, text: -1 },
         { sel: '#cx-smart',       selM: '#cxm-smart',      fxc: 0.72, fyc: 0.50, fw: 0.44, fh: 0.76, text: 0, draw: 'vision' },
         { sel: '#cx-jalons',      selM: '#cxm-jalons',     hi: '#cx-jalons', fxc: 0.72, fyc: 0.50, fw: 0.42, fh: 0.84, text: 1, draw: 'jalons' },
@@ -1487,7 +1498,7 @@
       ];
       const N = stopDefs.length;
       // répartition des arrêts le long du track (uniforme — le scroll-snap gère les pauses)
-      const SEGW = [1, 1, 1, 1, 1, 1, 1, 1, 1];
+      const SEGW = Array(N - 1).fill(1);
       const wsum = SEGW.reduce((a, b) => a + b, 0);
       const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
       const lerp = (a, b, t) => a + (b - a) * t;
