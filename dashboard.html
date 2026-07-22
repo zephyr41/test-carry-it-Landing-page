@@ -4,6 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DA System — Dashboard (long terme)</title>
+<style>
+  /* Rifton = fonte de marque (wordmark de la navbar) — @font-face côté page. */
+  @font-face {
+    font-family: 'Rifton';
+    src: url('assets/rifton/rifton-regular.woff2') format('woff2'),
+         url('assets/rifton/rifton-regular.otf') format('opentype');
+    font-weight: 400;
+    font-display: swap;
+  }
+</style>
 <link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/tokens.css">
 <link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/buttons.css">
 <link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/progress.css">
@@ -49,7 +59,7 @@
         <div class="ds-navbar__top">
           <div class="ds-navbar__left">
             <a class="ds-navbar__brand" href="#" aria-label="CarryIT — accueil">
-              <span class="ds-navbar__brand-mark" aria-hidden="true">C</span>
+              <img class="ds-navbar__brand-mark" src="assets/images/site/logo_png.webp" alt="" aria-hidden="true">
               <span class="ds-navbar__brand-name type-data-label">CARRY IT</span>
             </a>
             <span class="ds-navbar__sep" aria-hidden="true">/</span>
@@ -72,10 +82,6 @@
             <button type="button" class="ds-button ds-button--subtle ds-button--xs" data-sync-open>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
               Synchroniser
-            </button>
-            <button type="button" class="ds-navbar__user" aria-label="Menu utilisateur">
-              <span class="ds-navbar__user-avatar" aria-hidden="true">N</span>
-              <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5L7 8.5L10 5.5"/></svg>
             </button>
           </div>
         </div>

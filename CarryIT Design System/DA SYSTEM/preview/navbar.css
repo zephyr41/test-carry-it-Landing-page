@@ -41,20 +41,18 @@
   text-decoration: none;
 }
 
+/* Logo de marque (image) — pas de pastille de fond, le logo porte sa propre forme. */
 .ds-navbar__brand-mark {
-  display: inline-grid;
-  place-items: center;
+  display: block;
   width: var(--space-24);
   height: var(--space-24);
-  border-radius: var(--radius-sm);
-  background: var(--color-text-primary);
-  color: var(--color-background);
-  font-weight: var(--font-weight-bold);
-  font-size: var(--type-body-sm-size);
+  object-fit: contain;
 }
 
+/* Wordmark en Rifton (fonte de marque, @font-face côté page). */
 .ds-navbar__brand-name {
   color: var(--color-text-primary);
+  font-family: 'Rifton', var(--font-body);
   letter-spacing: 0.08em;
 }
 

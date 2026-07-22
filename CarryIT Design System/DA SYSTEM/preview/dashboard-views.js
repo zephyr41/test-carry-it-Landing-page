@@ -88,7 +88,7 @@
     var attrs = 'data-jalon-id="' + esc(jalonId) + '" data-kpi-type="' + esc(kpiType) + '"';
     // Carte « fantôme » UNIQUEMENT si aucun KPI n'est défini. Dès qu'il est défini (nom/cible),
     // on affiche la vraie carte pour qu'on voie ce qu'on vient de remplir — même sans mesure
-    // encore (valeur « — »).
+    // encore (valeur « 0 »).
     if (!kpi) {
       // État vide « fantôme » : anatomie de la carte KPI en blocs skeleton statiques →
       // l'œil lit « carte de mesure à remplir ». Eyebrow réel. Blocs décoratifs → aria-hidden.
@@ -142,7 +142,7 @@
         '</div>' +
       '</div>' +
       '<div class="ds-kpi-card__metric">' +
-        '<span class="ds-kpi-card__value">' + (kpi.value != null ? esc(fmt(kpi.value)) : '—') + '</span>' +
+        '<span class="ds-kpi-card__value">' + esc(fmt(kpi.value != null ? kpi.value : 0)) + '</span>' +
         (target ? '<span class="ds-kpi-card__target type-body-md">' + target + '</span>' : '') +
       '</div>' +
       progress +

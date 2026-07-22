@@ -102,7 +102,7 @@
         '<span class="ds-kpi-card__name type-body-sm">' + esc(kpi.label || '') + '</span>' +
       '</div>' +
       '<div class="ds-kpi-card__metric">' +
-        '<span class="ds-kpi-card__value">' + esc(fmt(kpi.value)) + '</span>' +
+        '<span class="ds-kpi-card__value">' + esc(fmt(kpi.value != null ? kpi.value : 0)) + '</span>' +
         (target ? '<span class="ds-kpi-card__target type-body-md">' + target + '</span>' : '') +
       '</div>' +
       '<hr class="ds-kpi-card__divider">' +
