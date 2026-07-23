@@ -33,6 +33,7 @@
 
   function normMeasure(m) {
     return {
+      id: pick(m.id),                        // identifiant de la mesure : cible de l'édition/suppression
       date: pick(m.date),
       value: num(pick(m.value, m.valeur)),
       total: num(pick(m.total)),
@@ -159,8 +160,29 @@
     };
   }
 
+  // Les mesures d'avant l'historique n'ont pas d'id : sans lui, une ligne du relevé n'est pas
+  // adressable et « modifier » retomberait en ajout, donc en doublon. On les identifie une
+  // fois, AVANT le premier build : la couche data doit voir les mêmes id que le stockage.
+  function backfillMeasureIds() {
+    var jalons = readJSON('carryit_v1_jalons');
+    if (!Array.isArray(jalons)) return;
+    var touched = false;
+    jalons.forEach(function (j) {
+      (Array.isArray(j && j.kpis) ? j.kpis : []).forEach(function (k) {
+        (Array.isArray(k && k.measures) ? k.measures : []).forEach(function (m, i) {
+          if (m && !m.id) {
+            m.id = 'm-legacy-' + (j.id != null ? j.id : '?') + '-' + (k.type || '?') + '-' + i;
+            touched = true;
+          }
+        });
+      });
+    });
+    if (touched) { try { localStorage.setItem('carryit_v1_jalons', JSON.stringify(jalons)); } catch (e) {} }
+  }
+
   // build() est ré-exposé : après une édition SMART ou l'ajout d'une mesure,
   // on relit localStorage et on rafraîchit les vues (window.CarryITDashboardData).
   window.CarryITBuildDashboardData = build;
+  backfillMeasureIds();
   window.CarryITDashboardData = build();
 })();

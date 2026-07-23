@@ -15,6 +15,7 @@
   var FREQ_DAYS = { 'Quotidien': 1, 'Hebdomadaire': 7, 'Mensuel': 30 };
 
   var MONTHS_FR = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+  var MONTHS_SHORT_FR = ['janv', 'févr', 'mars', 'avr', 'mai', 'juin', 'juil', 'août', 'sept', 'oct', 'nov', 'déc'];
   var STATUS_LABEL = { completed: 'Terminé', in_progress: 'Actif', pending: 'À venir' };
   var FREQ_SHORT = { 'Quotidien': 'Quotid.', 'Hebdomadaire': 'Hebdo', 'Mensuel': 'Mensuel' };
   function freqShort(f) { return f ? (FREQ_SHORT[f] || f) : ''; }
@@ -38,6 +39,14 @@
     var d = iso ? new Date(iso) : null;
     if (!d || isNaN(d)) return '';
     return d.getUTCDate() + ' ' + MONTHS_FR[d.getUTCMonth()] + ' ' + d.getUTCFullYear();
+  }
+
+  // Date de relevé : « 12 sept ». L'année est portée par l'échéance du jalon, pas par la ligne.
+  function fmtShortDate(dateStr) {
+    var iso = toISO(dateStr);
+    var d = iso ? new Date(iso) : null;
+    if (!d || isNaN(d)) return '';
+    return d.getUTCDate() + ' ' + MONTHS_SHORT_FR[d.getUTCMonth()];
   }
 
   // Nombre de jours depuis une date (null si date invalide).
@@ -163,6 +172,55 @@
     '</article>';
   }
 
+  // Relevé d'un KPI : une ligne par mesure, la plus récente en haut (on relit ce qu'on vient
+  // de saisir). Sans historique, une valeur fausse restait définitive : chaque ligne porte
+  // donc l'id de sa mesure, cible de l'édition. Rendu dans le modal « Modifier le KPI »
+  // (dashboard-kpi.js) : on corrige un relevé là où on corrige la définition.
+  function kpiHistoryHTML(kpi, typeLabel, jalonId, kpiType) {
+    if (!kpi) return '';
+    var unit = kpi.unitShort || kpi.unit || '';
+    var fq = freqShort(kpi.frequency);
+    var eyebrow = 'Relevés' + (fq ? ' · ' + fq : '');
+    var rows = (kpi.measures || []).slice().sort(function (a, b) {
+      return String(b.date || '').localeCompare(String(a.date || ''));
+    });
+
+    var body = rows.length
+      ? '<div class="ds-kpi-history__cols">' +
+          '<span class="type-data-label">Date</span>' +
+          '<span class="type-data-label ds-kpi-history__col--value">Valeur</span>' +
+          '<span aria-hidden="true"></span>' +
+        '</div>' +
+        '<ol class="ds-kpi-history__list">' + rows.map(function (m) {
+          var note = (m.note || '').trim();
+          return '<li class="ds-kpi-history__row">' +
+            '<div class="ds-kpi-history__main">' +
+              '<span class="ds-kpi-history__date type-body-sm">' + esc(fmtShortDate(m.date)) + '</span>' +
+              '<span class="ds-kpi-history__value type-body-md">' + esc(fmt(m.value)) +
+                (unit ? ' <span class="ds-kpi-history__unit">' + esc(unit) + '</span>' : '') +
+              '</span>' +
+              '<div class="ds-kpi-history__actions">' +
+                '<button type="button" class="ds-kpi-history__action ds-kpi-history__edit-btn" data-edit-measure' +
+                  ' data-jalon-id="' + esc(jalonId) + '" data-kpi-type="' + esc(kpiType) + '"' +
+                  ' data-measure-id="' + esc(m.id || '') + '" aria-label="Modifier la mesure">' + EDIT_ICON + '</button>' +
+              '</div>' +
+            '</div>' +
+            (note ? '<p class="ds-kpi-history__note type-body-sm">' + esc(note) + '</p>' : '') +
+          '</li>';
+        }).join('') + '</ol>'
+      : '<div class="ds-empty-state ds-kpi-history__empty">' +
+          '<h3 class="type-h3 ds-empty-state__title">Aucune mesure enregistrée</h3>' +
+          '<p class="ds-empty-state__description type-body-md">Ajoute une première mesure pour démarrer le suivi.</p>' +
+        '</div>';
+
+    return '<article class="ds-kpi-history">' +
+      '<header class="ds-kpi-history__head">' +
+        '<span class="ds-kpi-history__eyebrow type-data-label">' + esc(eyebrow) + '</span>' +
+        '<h3 class="ds-kpi-history__title type-h3">' + esc(kpi.label || '') + '</h3>' +
+      '</header>' + body +
+    '</article>';
+  }
+
   function emptyDetail() {
     return '<div class="ds-empty-state">' +
       '<svg class="ds-empty-state__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V5m0 0l14 5L4 15"/></svg>' +
@@ -278,6 +336,9 @@
     else renderActive();   // jalon supprimé → retombe sur le jalon actif
   };
   // Re-render le détail courant (ou le jalon actif) : appelé après une écriture.
+  // Le modal KPI (dashboard-kpi.js) rend le même relevé : une seule source de markup.
+  window.CarryITKpiHistoryHTML = kpiHistoryHTML;
+
   window.CarryITRefreshMoyen = function () {
     if (currentJalonId != null) window.CarryITShowJalon(currentJalonId);
     else renderActive();

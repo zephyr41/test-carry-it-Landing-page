@@ -28,6 +28,7 @@
 <link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/court-terme.css">
 <link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/delta.css">
 <link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/kpi-card.css">
+<link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/kpi-history.css">
 <link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/skeleton.css">
 <link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/jalon-detail.css">
 <link rel="stylesheet" href="CarryIT%20Design%20System/DA%20SYSTEM/preview/tabs.css">
@@ -400,9 +401,13 @@
         <p class="input-error-msg type-caption" data-effort-msg hidden></p>
       </form>
 
-      <footer class="ds-modal__footer">
-        <button type="button" class="ds-button ds-button--ghost ds-button--sm" data-effort-close>Annuler</button>
-        <button type="button" class="ds-button ds-button--inverse ds-button--sm" data-effort-save>Enregistrer</button>
+      <!-- Supprimer : visible uniquement en édition d'une mesure existante (historique KPI). -->
+      <footer class="ds-modal__footer ds-kpi-history-modal__footer">
+        <button type="button" class="ds-button ds-button--danger ds-button--sm" data-effort-delete hidden>Supprimer</button>
+        <div class="ds-modal__footer-actions">
+          <button type="button" class="ds-button ds-button--ghost ds-button--sm" data-effort-close>Annuler</button>
+          <button type="button" class="ds-button ds-button--inverse ds-button--sm" data-effort-save>Enregistrer</button>
+        </div>
       </footer>
     </div>
   </div>
@@ -483,6 +488,9 @@
           <p class="ds-field-hint ds-field-hint--after type-caption" data-kpi-mode-hint></p>
         </div>
         <p class="input-error-msg type-caption" data-kpi-msg hidden></p>
+        <!-- Relevés du KPI : on corrige une mesure là où on corrige la définition.
+             Rempli par dashboard-kpi.js en édition seulement (rien à relire à la création). -->
+        <div data-kpi-history hidden></div>
       </div>
       <footer class="ds-modal__footer">
         <button type="button" class="ds-button ds-button--danger ds-button--sm" data-kpi-delete hidden>Supprimer</button>

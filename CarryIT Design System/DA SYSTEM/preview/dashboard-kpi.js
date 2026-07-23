@@ -44,7 +44,8 @@
         unitSelectWrap = $('[data-kpi-unit-select]'), unitCustomWrap = $('[data-kpi-unit-custom]'),
         freqEl = $('[data-kpi-field-freq]'), freqGroup = $('[data-kpi-freq-group]'),
         modeEl = $('[data-kpi-field-mode]'),
-        modeHintEl = $('[data-kpi-mode-hint]'), deleteBtn = $('[data-kpi-delete]');
+        modeHintEl = $('[data-kpi-mode-hint]'), deleteBtn = $('[data-kpi-delete]'),
+        historyEl = $('[data-kpi-history]');
     var target = null;   // { jalonId, kpiType, isEdit }
 
     function close() { modal.hidden = true; target = null; }
@@ -124,6 +125,14 @@
       modeEl.value = (kpi && kpi.mode) ? kpi.mode : (kpiType === 'leading' ? 'incremental' : 'absolute');
       syncModeHint();
 
+      // Relevés : uniquement en édition (à la création il n'y a rien à relire).
+      if (historyEl) {
+        var html = (kpi && window.CarryITKpiHistoryHTML)
+          ? window.CarryITKpiHistoryHTML(kpi, isEffort ? 'Effort' : 'Résultat', jalonId, kpiType) : '';
+        historyEl.innerHTML = html;
+        historyEl.hidden = !html;
+      }
+
       modal.hidden = false;
       labelEl.focus();
     }
@@ -180,7 +189,15 @@
       if (edit) { open(edit.dataset.jalonId, edit.dataset.kpiType, true); return; }
       var define = e.target.closest('[data-define-kpi]');
       if (define) { open(define.dataset.jalonId, define.dataset.kpiType, false); return; }
+      // Relevé : on bascule vers le modal de mesure (jamais deux modals empilés).
+      // dashboard-effort.js rouvre celui-ci en sortant, via CarryITOpenKpiModal.
+      var measure = e.target.closest('[data-kpi-history] [data-edit-measure]');
+      if (measure) close();
     });
+
+    // Retour de bascule : dashboard-effort.js rouvre le modal KPI après un enregistrement,
+    // une suppression ou une annulation, pour qu'on reprenne où on en était.
+    window.CarryITOpenKpiModal = function (jalonId, kpiType) { open(jalonId, kpiType, true); };
 
     unitEl.addEventListener('change', function () {
       if (unitEl.value === '__custom') { setUnitMode(true); if (unitCustomEl) unitCustomEl.focus(); }

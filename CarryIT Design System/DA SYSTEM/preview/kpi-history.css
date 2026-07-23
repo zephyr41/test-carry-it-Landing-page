@@ -178,6 +178,35 @@
   color: var(--color-danger);
 }
 
+/* ── Dans le modal « Modifier le KPI » ───────────────────────────
+   Le relevé y est un groupe de champs de plus, pas un objet posé sur le modal : sans ça
+   c'est une carte dans une carte (double arête, double fond, double rayon). Il partage la
+   surface du modal, un filet le sépare du formulaire. */
+[data-kpi-history] .ds-kpi-history {
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+[data-kpi-history] {
+  margin-top: var(--space-24);
+  padding-top: var(--space-24);
+  border-top: var(--border-subtle);
+}
+
+/* Le nom du KPI est déjà dans le champ « Nom », deux groupes plus haut. */
+[data-kpi-history] .ds-kpi-history__title {
+  display: none;
+}
+
+/* Dernière ligne : le filet fermait sur du vide, la liste s'arrête net. */
+[data-kpi-history] .ds-kpi-history__row:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
 /* ── Édition = effort modal réutilisé, pré-rempli ────────────────
    Masqué sans display:none → le scheduler mesure sa hauteur au chargement. */
 .ds-kpi-history-modal.is-hidden {
@@ -188,6 +217,14 @@
 /* Footer à deux pôles : Supprimer (destructif) à gauche, Enregistrer à droite. */
 .ds-kpi-history-modal__footer {
   justify-content: space-between;
+}
+
+/* Annuler + Enregistrer restent groupés à droite, y compris quand Supprimer est masqué
+   (ajout d'une mesure) : margin-left:auto tient le pôle droit sans dépendre du frère. */
+.ds-kpi-history-modal__footer > .ds-modal__footer-actions {
+  display: flex;
+  gap: var(--space-12);
+  margin-left: auto;
 }
 
 .ds-kpi-history-modal__delete {

@@ -48,7 +48,8 @@
     kpi.value = kpi.valeur;
   }
 
-  function saveMeasure(jalonId, kpiType, measure) {
+  // Écrit dans le KPI ciblé : mutate reçoit le tableau de mesures, recompute + persiste ensuite.
+  function writeMeasures(jalonId, kpiType, mutate) {
     var jalons = readJSON(JALONS_KEY);
     if (!Array.isArray(jalons)) return false;
     var jalon = jalons.find(function (j) { return String(j.id) === String(jalonId); });
@@ -56,10 +57,58 @@
     var kpi = jalon.kpis.find(function (k) { return (k && k.type) === kpiType; });
     if (!kpi) return false;
     if (!Array.isArray(kpi.measures)) kpi.measures = [];
-    kpi.measures.push(measure);
+    if (mutate(kpi.measures) === false) return false;
     recompute(kpi, kpiType);
     try { localStorage.setItem(JALONS_KEY, JSON.stringify(jalons)); } catch (e) { return false; }
     return true;
+  }
+
+  function saveMeasure(jalonId, kpiType, measure) {
+    return writeMeasures(jalonId, kpiType, function (list) { list.push(measure); });
+  }
+
+  // Édition d'une mesure existante : on écrase les champs saisis, on garde l'id et le reste.
+  function updateMeasure(jalonId, kpiType, measureId, fields) {
+    return writeMeasures(jalonId, kpiType, function (list) {
+      var m = list.find(function (x) { return x && String(x.id) === String(measureId); });
+      if (!m) return false;
+      Object.keys(fields).forEach(function (k) { m[k] = fields[k]; });
+    });
+  }
+
+  function deleteMeasure(jalonId, kpiType, measureId) {
+    return writeMeasures(jalonId, kpiType, function (list) {
+      var i = list.findIndex(function (x) { return x && String(x.id) === String(measureId); });
+      if (i < 0) return false;
+      list.splice(i, 1);
+    });
+  }
+
+  // Mesure brute (localStorage) : la couche data normalise, l'édition a besoin de l'original.
+  function rawMeasure(jalonId, kpiType, measureId) {
+    var jalons = readJSON(JALONS_KEY);
+    if (!Array.isArray(jalons)) return null;
+    var jalon = jalons.find(function (j) { return String(j.id) === String(jalonId); });
+    var kpi = jalon && Array.isArray(jalon.kpis)
+      ? jalon.kpis.find(function (k) { return (k && k.type) === kpiType; }) : null;
+    if (!kpi || !Array.isArray(kpi.measures)) return null;
+    return kpi.measures.find(function (m) { return m && String(m.id) === String(measureId); }) || null;
+  }
+
+  // "14:30" → 14.5 ; "1h30" / "45min" / "2h" → heures décimales. Null si illisible :
+  // le scheduler garde alors sa position par défaut plutôt que d'inventer un horaire.
+  function parseHour(s) {
+    var m = /^(\d{1,2}):(\d{2})$/.exec(String(s || ''));
+    return m ? Number(m[1]) + Number(m[2]) / 60 : null;
+  }
+  function parseDuration(s) {
+    var t = String(s || '').trim();
+    var min = /^(\d+)\s*min$/.exec(t);
+    if (min) return Number(min[1]) / 60;
+    var hm = /^(\d+)h(\d{2})$/.exec(t);
+    if (hm) return Number(hm[1]) + Number(hm[2]) / 60;
+    var h = /^(\d+)h$/.exec(t);
+    return h ? Number(h[1]) : null;
   }
 
   // KPI normalisé (label/unit/value) depuis la couche data, pour paramétrer le modal.
@@ -75,18 +124,29 @@
     if (!modal) return;
     var titleEl = $('#effort-title'), subEl = $('[data-effort-subtitle]'), ctxEl = $('[data-effort-context]'),
         qtyLabel = $('[data-effort-qty-label]'), blockEyebrow = $('[data-effort-block-eyebrow]'),
-        qtyEl = $('#effortQty'), noteEl = $('#effortNote'), msgEl = $('[data-effort-msg]');
-    var target = null;   // { jalonId, kpiType }
+        qtyEl = $('#effortQty'), noteEl = $('#effortNote'), msgEl = $('[data-effort-msg]'),
+        delBtn = $('[data-effort-delete]');
+    var target = null;   // { jalonId, kpiType, measureId } — measureId non nul = édition
+    // Ouvert depuis le modal « Modifier le KPI » : on y revient en sortant (bascule, pas empilement).
+    var returnToKpi = null;
 
-    function close() { modal.hidden = true; target = null; }
+    function close() {
+      modal.hidden = true;
+      target = null;
+      var back = returnToKpi;
+      returnToKpi = null;
+      if (back && window.CarryITOpenKpiModal) window.CarryITOpenKpiModal(back.jalonId, back.kpiType);
+    }
 
-    function open(jalonId, kpiType) {
+    function open(jalonId, kpiType, measureId) {
       var kpi = findKpi(jalonId, kpiType);
       var isEffort = kpiType === 'leading';
       var unit = (kpi && (kpi.unit || kpi.unitShort)) || '';
-      target = { jalonId: jalonId, kpiType: kpiType };
+      var editing = measureId ? rawMeasure(jalonId, kpiType, measureId) : null;
+      target = { jalonId: jalonId, kpiType: kpiType, measureId: editing ? measureId : null };
 
-      if (titleEl) titleEl.textContent = isEffort ? 'Ajouter un effort' : 'Ajouter un résultat';
+      if (titleEl) titleEl.textContent = editing ? 'Modifier la mesure'
+        : (isEffort ? 'Ajouter un effort' : 'Ajouter un résultat');
       // Sous-titre : cadrage (secondary) + nom du KPI (dynamique → blanc pour ressortir).
       if (subEl) {
         subEl.textContent = (isEffort ? 'Note ce que tu as fait pour ' : 'Nouvelle valeur pour ');
@@ -113,14 +173,25 @@
       }
       if (blockEyebrow) blockEyebrow.textContent = isEffort ? 'Effort' : 'Résultat';
       if (msgEl) msgEl.hidden = true;
+      // Supprimer n'a de sens que sur une mesure déjà enregistrée.
+      if (delBtn) delBtn.hidden = !editing;
 
       modal.hidden = false;
       // Scheduler mesure sa hauteur de ligne au montage → invisible tant que caché : re-mesurer ici.
       if (window.CarryITEffort) {
-        window.CarryITEffort.setDate(new Date());
+        var when = editing && /^\d{4}-\d{2}-\d{2}/.test(String(editing.date || ''))
+          ? new Date(String(editing.date).slice(0, 10) + 'T00:00:00') : new Date();
+        var startHour = editing ? parseHour(editing.time) : null;
+        var duration = editing ? parseDuration(editing.duration) : null;
+        window.CarryITEffort.setDate(when);
         window.CarryITEffort.reset();
-        window.CarryITEffort.refresh(15, 1);   // re-mesure PUIS place le bloc à 15:00
+        // En édition on replace le bloc sur son créneau d'origine : réenregistrer ne doit pas
+        // déplacer silencieusement l'horaire saisi.
+        window.CarryITEffort.refresh(startHour == null ? 15 : startHour, duration == null ? 1 : duration);
       }
+      // Après reset() : c'est lui qui vide quantité et note, le pré-remplissage passe donc en dernier.
+      if (qtyEl) qtyEl.value = editing && editing.value != null ? editing.value : '';
+      if (noteEl) noteEl.value = editing ? (editing.note || '') : '';
       if (qtyEl) qtyEl.focus();
     }
 
@@ -132,28 +203,53 @@
         return;
       }
       var st = window.CarryITEffort.getState();
-      var measure = {
-        id: 'm-' + Date.now() + '-' + Math.random().toString(16).slice(2),
+      var fields = {
         date: toISO(window.CarryITEffort.getDate()),
         value: value,
         time: window.CarryITEffort.formatHour(st.startHour),
         duration: window.CarryITEffort.formatDuration(st.duration),
         note: noteEl ? noteEl.value.trim() : '',
       };
-      if (!saveMeasure(target.jalonId, target.kpiType, measure)) {
+      var ok = target.measureId
+        ? updateMeasure(target.jalonId, target.kpiType, target.measureId, fields)
+        : saveMeasure(target.jalonId, target.kpiType, Object.assign(
+            { id: 'm-' + Date.now() + '-' + Math.random().toString(16).slice(2) }, fields));
+      if (!ok) {
         if (msgEl) { msgEl.textContent = 'Enregistrement impossible.'; msgEl.hidden = false; }
         return;
       }
+      refresh();
+    }
+
+    function del() {
+      if (!target || !target.measureId) return;
+      if (!deleteMeasure(target.jalonId, target.kpiType, target.measureId)) {
+        if (msgEl) { msgEl.textContent = 'Suppression impossible.'; msgEl.hidden = false; }
+        return;
+      }
+      refresh();
+    }
+
+    function refresh() {
+      var back = returnToKpi;
+      returnToKpi = null;          // close() ne rouvre pas : on rouvre nous-mêmes, après le refresh
       close();
       if (window.CarryITRefreshDashboard) window.CarryITRefreshDashboard();
       if (window.CarryITRefreshMoyen) window.CarryITRefreshMoyen();
+      // Réouverture après coup : le modal KPI doit afficher le relevé à jour, pas l'ancien.
+      if (back && window.CarryITOpenKpiModal) window.CarryITOpenKpiModal(back.jalonId, back.kpiType);
     }
 
-    // Ouverture (délégation : les cartes KPI sont re-rendues).
+    // Ouverture (délégation : cartes KPI et relevés sont re-rendus à chaque refresh).
     document.addEventListener('click', function (e) {
-      var btn = e.target.closest('[data-add-measure]');
-      if (!btn) return;
-      open(btn.dataset.jalonId, btn.dataset.kpiType);
+      var add = e.target.closest('[data-add-measure]');
+      if (add) { open(add.dataset.jalonId, add.dataset.kpiType); return; }
+      var edit = e.target.closest('[data-edit-measure]');
+      if (edit) {
+        returnToKpi = edit.closest('[data-kpi-history]')
+          ? { jalonId: edit.dataset.jalonId, kpiType: edit.dataset.kpiType } : null;
+        open(edit.dataset.jalonId, edit.dataset.kpiType, edit.dataset.measureId);
+      }
     });
 
     modal.addEventListener('click', function (e) { if (e.target === modal) close(); });
@@ -162,6 +258,7 @@
     });
     var saveBtn = $('[data-effort-save]');
     if (saveBtn) saveBtn.addEventListener('click', save);
+    if (delBtn) delBtn.addEventListener('click', del);
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !modal.hidden) close(); });
   }
 
