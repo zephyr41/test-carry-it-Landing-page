@@ -1,0 +1,54 @@
+/* Blocage mobile : l'onboarding et le dashboard se font sur ordinateur ou tablette.
+   Actif sous 768px uniquement (tablettes incluses à partir de 768px). */
+
+.desktop-gate { display: none; }
+
+@media (max-width: 767px) {
+    body > *:not(.desktop-gate) { display: none !important; }
+
+    .desktop-gate {
+        display: grid;
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        align-content: center;
+        justify-items: start;
+        text-align: left;
+        padding: 40px 28px;
+        gap: 0;
+        background: var(--bg-primary, #080809);
+        color: var(--text-primary, #FFFDF6);
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    .desktop-gate-brand {
+        font-family: 'Rifton', 'Inter', sans-serif;
+        letter-spacing: 0.14em;
+        font-size: 0.75rem;
+        color: rgba(255, 253, 246, 0.36);
+        margin-bottom: 44px;
+    }
+
+    .desktop-gate h2 {
+        font-size: 2.125rem;
+        font-weight: 700;
+        line-height: 1.14;
+        letter-spacing: -0.02em;
+        max-width: 15ch;
+        color: rgba(255, 253, 246, 0.96);
+        margin-bottom: 22px;
+    }
+
+    .desktop-gate p {
+        font-size: 1.0625rem;
+        line-height: 1.55;
+        max-width: 32ch;
+        color: rgba(255, 253, 246, 0.6);
+    }
+
+    .desktop-gate p + p {
+        margin-top: 14px;
+        color: rgba(255, 253, 246, 0.42);
+        font-size: 0.9375rem;
+    }
+}
